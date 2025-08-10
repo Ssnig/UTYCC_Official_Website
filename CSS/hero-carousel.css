@@ -1,0 +1,79 @@
+/* Hero Carousel Styles */
+.hero-container {
+    position: relative;
+    overflow: hidden;
+    height: 80vh; /* Adjust as needed */
+}
+
+.hero-slideshow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.hero-slide.active {
+    opacity: 1;
+}
+
+.hero-overlay {
+    background-image: linear-gradient(rgba(0, 51, 102, 0.75), rgba(0, 51, 102, 0.75));
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+}
+
+/* Optional: Navigation Dots */
+.hero-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 4;
+}
+
+.hero-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.hero-dot.active {
+    background-color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-container {
+        height: 70vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-container {
+        height: 60vh;
+    }
+}

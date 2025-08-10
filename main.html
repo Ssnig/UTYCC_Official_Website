@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./CSS/hero-carousel.css">
+    <script src="./JS/hero-carousel.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -56,13 +58,25 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero-bg text-white">
-        <div class="container mx-auto px-6 py-24 md:py-32 text-center">
+        <section class="hero-container">
+        <!-- Image Carousel Background -->
+        <div class="hero-slideshow">
+            <div class="hero-slide active" style="background-image: url(./Img/hero-carousel/1.jpg)"></div>
+            <div class="hero-slide" style="background-image: url('img/campus-2.jpg')"></div>
+            
+        </div>
+        
+        <!-- Overlay -->
+        <div class="hero-overlay"></div>
+        
+        <!-- Content -->
+        <div class="hero-content container mx-auto px-6 py-24 md:py-32 text-center">
             <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">University of Technology - Yatanarpon Cyber City</h1>
             <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto font-light">A Leading Engineering Institution for Sustainable Development</p>
             <a href="#programs" class="bg-white text-blue-800 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition text-lg shadow-lg">Explore Programs</a>
         </div>
     </section>
+
 
     <!-- Stats Section -->
     <section class="bg-blue-800 text-white">
