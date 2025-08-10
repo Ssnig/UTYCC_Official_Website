@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="./CSS/star-layout.css">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <script src="./JS/star-layout.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
@@ -222,39 +223,29 @@
                 class="order-1 md:order-2 bg-[url('./Img/hero-carousel/2.jpg')] bg-contain bg-no-repeat bg-center w-full aspect-video rounded-lg shadow-xl"
               ></div> -->
               <!-- Star Container -->
-<div class="star-container">
-    <!-- Center -->
-    <div class="logo-circle center-circle">
-      <span>UTYCC</span>
-      <span>Center</span>
-    </div>
-    
-    <!-- Star Points -->
-    <div class="logo-circle star-top">
-      <span>Depal</span>
-      <span>1</span>
-    </div>
-    
-    <div class="logo-circle star-right-top">
-      <span>Depal</span>
-      <span>2</span>
-    </div>
-    
-    <div class="logo-circle star-right-bottom">
-      <span>Depal</span>
-      <span>3</span>
-    </div>
-    
-    <div class="logo-circle star-bottom">
-      <span>Depal</span>
-      <span>4</span>
-    </div>
-    
-    <div class="logo-circle star-left-bottom">
-      <span>Depal</span>
-      <span>5</span>
-    </div>
+<div class="star-wrapper">
+  <!-- Center Logo -->
+  <div class="star-center">
+    <img src="Img/logo/utycc_logo_favicon/apple-touch-icon.png" class="logo-badge static-logo" alt="UTYCC">
   </div>
+
+  <!-- Star Points -->
+  <div class="star-point " style="--angle: 0deg">
+    <div class="logo-badge static-logo">IST</div>
+  </div>
+  <div class="star-point" style="--angle: 72deg">
+    <div class="logo-badge static-logo">CE</div>
+  </div>
+  <div class="star-point" style="--angle: 144deg">
+    <div class="logo-badge static-logo">EcE</div>
+  </div>
+  <div class="star-point" style="--angle: 216deg">
+    <div class="logo-badge static-logo">PrE</div>
+  </div>
+  <div class="star-point" style="--angle: 288deg">
+    <div class="logo-badge static-logo">AmE</div>
+  </div>
+</div>
               
             </div>
           </section>
