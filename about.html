@@ -1,204 +1,587 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="./CSS/star-layout.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet" href="./CSS/footer.css">
-    <script src="./JS/star-layout.js"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
-      rel="stylesheet"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>University of Technology - Yatanarpon Cyber City (UTYCC)</title>
-    <link
-      rel="shortcut icon"
-      href="./Img/logo/utycc_logo_favicon/favicon.ico"
-      type="image/x-icon"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="./CSS/hero-carousel.css" />
-    <script src="./JS/hero-carousel.js"></script>
-    <link rel="stylesheet" href="CSS/font.css" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Our University</title>
+    <!-- Combined CSS for all pages -->
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-      }
-      .hero-bg {
-        background-image: linear-gradient(
-            rgba(0, 51, 102, 0.75),
-            rgba(0, 51, 102, 0.75)
-          ),
-          url("https://placehold.co/1600x800/003366/FFFFFF?text=UTYCC+Campus");
-        background-size: cover;
-        background-position: center;
-      }
-      .stat-card {
-        background-color: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-      }
-      /* This new style makes the program cards look clickable */
-      .program-card {
-        cursor: pointer;
-      }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --light-background: #f5f7fa;
+            --dark-text: #333;
+            --accent-color: #2980b9;
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --card-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--light-background);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        body.loaded {
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero Section - index.html */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: url('https://via.placeholder.com/1600x600/2980b9/ffffff?text=University+Hero') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* Overlay for readability */
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.5em;
+            font-weight: 300;
+        }
+
+        /* About Section */
+        .about-section {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            animation: slideInUp 0.8s ease-in-out;
+        }
+
+        .about-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .about-section p {
+            font-size: 1.1em;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Major Programs Section */
+        .majors-section {
+            margin-bottom: 60px;
+        }
+
+        .majors-section h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--accent-color);
+            animation: slideInUp 0.8s ease-in-out;
+        }
+
+        .major-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .major-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--dark-text);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .major-card.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .major-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .major-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .major-card h3 {
+            font-size: 1.8em;
+            margin: 20px 20px 10px;
+            color: var(--accent-color);
+        }
+
+        .major-card p {
+            font-size: 1em;
+            padding: 0 20px 20px;
+            flex-grow: 1;
+        }
+
+        /* Detail Pages Styling */
+        .detail-hero {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background-size: cover;
+            background-position: center center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .detail-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .detail-hero-content {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        .detail-hero-content h1 {
+            font-size: 3em;
+            font-weight: 700;
+        }
+
+        .overview-section,
+        .career-section,
+        .facilities-section {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            padding: 30px;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .visible-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .overview-section h2,
+        .career-section h2,
+        .facilities-section h2 {
+            font-size: 2em;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .overview-section p,
+        .facilities-section p {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .career-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .career-section ul li {
+            background-color: var(--light-background);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            font-size: 1.05em;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .career-section ul li strong {
+            color: var(--accent-color);
+            margin-right: 8px;
+        }
+
+        /* Back Button */
+        .back-button-container {
+            text-align: center;
+            margin-top: 60px;
+            margin-bottom: 40px;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 1.1em;
+        }
+
+        .back-button:hover {
+            background-color: #1e6fa3;
+            transform: translateY(-2px);
+        }
+
+        /* CSS Keyframe Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5em;
+            }
+
+            .hero-content p {
+                font-size: 1.2em;
+            }
+
+            .about-section h2,
+            .majors-section h2,
+            .overview-section h2,
+            .career-section h2,
+            .facilities-section h2,
+            .detail-hero-content h1 {
+                font-size: 1.8em;
+            }
+
+            .major-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .major-card h3 {
+                font-size: 1.5em;
+            }
+
+            .major-card p {
+                font-size: 0.95em;
+            }
+
+            .overview-section p,
+            .facilities-section p {
+                font-size: 1em;
+            }
+
+            .career-section ul li {
+                font-size: 0.95em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2em;
+            }
+
+            .hero-content p {
+                font-size: 1em;
+            }
+
+            .hero, .detail-hero {
+                height: 400px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .about-section,
+            .majors-section,
+            .overview-section,
+            .career-section,
+            .facilities-section {
+                padding: 20px;
+            }
+
+            .back-button {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }
     </style>
-  </head>
-  <body class="bg-gray-100">
-    <header class="bg-white shadow-md sticky top-0 z-50">
-      <nav
-        class="container mx-auto px-6 py-3 flex justify-between items-center"
-      >
-        <a href="#" class="flex items-center space-x-3">
-          <div class="p-2 rounded-lg">
-            <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="" />
-          </div>
-          <div>
-            <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
-            <span class="text-xs text-gray-500"
-              >University of Technology</span
-            >
-          </div>
-        </a>
-        <div class="hidden md:flex items-center space-x-6">
-          <a
-            href="#about"
-            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-            >ကျွန်ုပ်တို့အကြောင်း</a
-          >
-          <a
-            href="#programs"
-            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-            >ပညာရေးအစီအစဉ်များ</a
-          >
-          <a
-            href="#collaboration"
-            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-            >ပူးပေါင်းဆောင်ရွက်မှု</a
-          >
-          <a
-            href="#contact"
-            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-            >ဆက်သွယ်ရန်</a
-          >
-        </div>
-        <button id="mobile-menu-button" class="md:hidden text-blue-900">
-          <i class="fas fa-bars text-2xl"></i>
-        </button>
-      </nav>
-      <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-        <a
-          href="#about"
-          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-          >ကျွန်ုပ်တို့အကြောင်း</a
-        >
-        <a
-          href="#programs"
-          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-          >ပညာရေးအစီအစဉ်များ</a
-        >
-        <a
-          href="#collaboration"
-          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-          >ပူးပေါင်းဆောင်ရွက်မှု</a
-        >
-        <a
-          href="#contact"
-          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-          >ဆက်သွယ်ရန်</a
-        >
-      </div>
-    </header>
-
-    <!-- ဒီကစရန် -->
-
-    <footer id="contact" class="bg-blue-900 text-white">
-      <div class="container mx-auto px-6 py-12">
-        <div class="grid md:grid-cols-4 gap-8">
-          <div>
-            <h3 class="text-lg font-bold mb-4">UTYCC</h3>
-            <p class="text-blue-200 text-sm">
-              Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay
-              Region, Myanmar
-            </p>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold mb-4">Faculties</h3>
-            <ul class="space-y-2 text-sm text-blue-200">
-              <li>Information Science Technology</li>
-              <li>Computer Engineering</li>
-              <li>Electronics Engineering</li>
-              <li>Advanced Materials Engineering</li>
-              <li>Precision Engineering</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold mb-4">Contact Us</h3>
-            <p class="text-blue-200 text-sm">
-              Email: info@utycc.edu.mm (example)
-            </p>
-            <p class="text-blue-200 text-sm">
-              Phone: +95 (XX) XXX XXX (example)
-            </p>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold mb-4">Follow Us</h3>
-            <div class="flex space-x-4">
-              <a href="#" class="text-blue-200 hover:text-white"
-                ><i class="fab fa-facebook-f text-xl"></i
-              ></a>
-              <a href="#" class="text-blue-200 hover:text-white"
-                ><i class="fab fa-linkedin-in text-xl"></i
-              ></a>
-            </div>
-            <br />
-            <br />
-            <div>
-              <div class="newtons-cradle">
-                <div class="newtons-cradle__dot"></div>
-                <div class="newtons-cradle__dot"></div>
-                <div class="newtons-cradle__dot"></div>
-                <div class="newtons-cradle__dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
-        >
-          &copy; 2025 University of Technology - Yatanarpon Cyber City. All
-          Rights Reserved.
-        </div>
-      </div>
-    </footer>
+</head>
+<body>
+    <div id="app"></div>
 
     <script>
-      // --- DOM Elements ---
-      const navLinks = document.querySelectorAll('.nav-link');
-      const mobileMenuButton = document.getElementById('mobile-menu-button');
-      const mobileMenu = document.getElementById('mobile-menu');
+        // Data for all majors
+        const majors = {
+            'is': {
+                title: 'Information Systems (IS)',
+                heroImage: 'https://via.placeholder.com/1600x500/2980b9/ffffff?text=Information+Systems+Header',
+                cardImage: 'https://via.placeholder.com/500x300/2980b9/ffffff?text=Information+Systems',
+                cardDescription: 'Learn to design, implement, and manage information systems that drive business success.',
+                overview: `The Information Systems (IS) program focuses on the intersection of business and technology. Students learn to analyze business requirements, design and implement information systems, manage databases, and ensure data security. This program prepares graduates to bridge the gap between technical teams and business operations, driving efficiency and innovation within organizations. You'll gain expertise in areas such as system analysis, database management, network administration, and project management.`,
+                careers: [
+                    '<strong>Systems Analyst:</strong> Design and implement information systems.',
+                    '<strong>Database Administrator:</strong> Manage and maintain organizational databases.',
+                    '<strong>IT Consultant:</strong> Advise businesses on technology solutions.',
+                    '<strong>Business Intelligence Analyst:</strong> Analyze data to support business decisions.',
+                    '<strong>Network Administrator:</strong> Manage and secure computer networks.'
+                ],
+                facilities: `Our IS students have access to state-of-the-art computer labs equipped with the latest software for database management, system design, and network simulation. We also provide access to specialized industry tools and platforms, along with dedicated faculty mentors who offer guidance on research projects and career paths. Collaborative workspaces are available for group projects and hands-on learning.`
+            },
+            'ce': {
+                title: 'Computer Engineering (CE)',
+                heroImage: 'https://via.placeholder.com/1600x500/2980b9/ffffff?text=Computer+Engineering+Header',
+                cardImage: 'https://via.placeholder.com/500x300/2980b9/ffffff?text=Computer+Engineering',
+                cardDescription: 'Combine computer science and electrical engineering to build hardware and software systems.',
+                overview: `Computer Engineering (CE) is a discipline that integrates elements of computer science and electrical engineering. This program focuses on the design, development, and implementation of computer hardware and software systems. Students will gain a deep understanding of digital logic, computer architecture, embedded systems, operating systems, and network protocols, preparing them to innovate in a rapidly evolving technological landscape.`,
+                careers: [
+                    '<strong>Hardware Engineer:</strong> Design and develop computer components.',
+                    '<strong>Software Engineer:</strong> Develop applications and operating systems.',
+                    '<strong>Embedded Systems Engineer:</strong> Design systems for specific functions (e.g., IoT devices).',
+                    '<strong>Network Architect:</strong> Design and implement computer networks.',
+                    '<strong>VLSI Design Engineer:</strong> Work on very large-scale integration circuits.'
+                ],
+                facilities: `Our CE program boasts cutting-edge labs for circuit design, embedded systems, and computer architecture. Students have access to specialized equipment for prototyping, testing, and debugging hardware, as well as high-performance computing resources for complex simulations. Faculty expertise spans various areas of computer engineering, providing ample opportunities for research collaboration.`
+            },
+            'ece': {
+                title: 'Electrical and Computer Engineering (ECE)',
+                heroImage: 'https://via.placeholder.com/1600x500/2980b9/ffffff?text=Electrical+and+Computer+Engineering+Header',
+                cardImage: 'https://via.placeholder.com/500x300/2980b9/ffffff?text=Electrical+and+Computer+Engineering',
+                cardDescription: 'Explore the principles of electricity, electronics, and computing for innovative solutions.',
+                overview: `Electrical and Computer Engineering (ECE) is a broad field that encompasses the study and application of electricity, electronics, and electromagnetism. This program delves into areas such as power systems, control systems, signal processing, microelectronics, and telecommunications, in addition to the computer engineering aspects of hardware and software integration. ECE graduates are at the forefront of designing technologies that power our modern world.`,
+                careers: [
+                    '<strong>Electrical Engineer:</strong> Design electrical systems and components.',
+                    '<strong>Telecommunications Engineer:</strong> Develop communication systems.',
+                    '<strong>Control Systems Engineer:</strong> Design automated control systems.',
+                    '<strong>Microelectronics Engineer:</strong> Work on the design of integrated circuits.',
+                    '<strong>Power Systems Engineer:</strong> Design and manage electrical power grids.'
+                ],
+                facilities: `Our ECE department offers extensive laboratory facilities for circuit analysis, digital signal processing, power electronics, and embedded systems. Students gain hands-on experience with oscilloscopes, spectrum analyzers, and specialized simulation software. We encourage participation in faculty-led research projects, covering diverse topics from renewable energy to advanced communication systems.`
+            },
+            'pre': {
+                title: 'Petroleum Engineering (PRE)',
+                heroImage: 'https://via.placeholder.com/1600x500/2980b9/ffffff?text=Petroleum+Engineering+Header',
+                cardImage: 'https://via.placeholder.com/500x300/2980b9/ffffff?text=Petroleum+Engineering',
+                cardDescription: 'Focus on the exploration, drilling, production, and management of oil and natural gas resources.',
+                overview: `Petroleum Engineering (PRE) focuses on the discovery, extraction, production, and management of oil and natural gas resources. Students learn about reservoir engineering, drilling operations, production technology, and petroleum economics. The program emphasizes sustainable practices and the latest technologies for efficient and environmentally responsible resource recovery. You'll develop skills in geological analysis, fluid mechanics, and advanced drilling techniques.`,
+                careers: [
+                    '<strong>Reservoir Engineer:</strong> Optimize oil and gas recovery from reservoirs.',
+                    '<strong>Drilling Engineer:</strong> Design and manage drilling operations.',
+                    '<strong>Production Engineer:</strong> Maximize efficiency of oil and gas production.',
+                    '<strong>Petrophysicist:</strong> Analyze rock and fluid properties of reservoirs.',
+                    '<strong>Geologist (Petroleum):</strong> Identify and evaluate potential drilling sites.'
+                ],
+                facilities: `Our PRE program provides access to specialized labs for core analysis, fluid properties, and drilling simulation. Students utilize industry-standard software for reservoir modeling and production optimization. Field trips to operational sites offer practical insights, and our faculty, with extensive industry experience, provide mentorship and opportunities for involvement in energy research initiatives.`
+            },
+            'ame': {
+                title: 'Aerospace Mechanical Engineering (AME)',
+                heroImage: 'https://via.placeholder.com/1600x500/2980b9/ffffff?text=Aerospace+Mechanical+Engineering+Header',
+                cardImage: 'https://via.placeholder.com/500x300/2980b9/ffffff?text=Aerospace+Mechanical+Engineering',
+                cardDescription: 'Design, analyze, and test aircraft, spacecraft, and other mechanical systems.',
+                overview: `Aerospace Mechanical Engineering (AME) is a dynamic field focusing on the design, analysis, and testing of aircraft, spacecraft, and other mechanical systems. This program combines principles of mechanical engineering with specialized aerospace topics such as aerodynamics, propulsion, flight mechanics, and structural design. Students are prepared to contribute to the next generation of aerospace innovation.`,
+                careers: [
+                    '<strong>Aerospace Engineer:</strong> Design aircraft, spacecraft, and missiles.',
+                    '<strong>Mechanical Engineer:</strong> Design and analyze mechanical systems.',
+                    '<strong>Propulsion Engineer:</strong> Develop engines and propulsion systems.',
+                    '<strong>Stress Analyst:</strong> Evaluate the structural integrity of components.',
+                    '<strong>Manufacturing Engineer:</strong> Oversee the production of aerospace components.'
+                ],
+                facilities: `Our AME program offers access to advanced labs for aerodynamics (wind tunnels), materials testing, and robotics. Students utilize sophisticated CAD/CAE software for design and simulation. We provide opportunities for hands-on projects, including building and testing drones and small-scale aircraft. Faculty research areas include advanced materials, unmanned aerial vehicles, and sustainable aviation.`
+            }
+        };
 
-      // --- Event Listeners ---
-      navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          // This ensures the page scrolls smoothly to the target section
-          const targetId = link.getAttribute('href');
-          document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+        const appContainer = document.getElementById('app');
+
+        // Function to render the main page
+        function renderMainPage() {
+            appContainer.innerHTML = `
+            
+                <main class="container">
+                    <section class="about-section">
+                        <h2>About Our University</h2>
+                        <p>
+                            At our esteemed institution, we are dedicated to fostering academic excellence, critical thinking, and a vibrant community. We offer a diverse range of programs designed to equip students with the skills and knowledge needed to excel in their chosen fields and make a meaningful impact on the world. Our commitment to innovation, research, and holistic development ensures that every student receives a world-class education.
+                        </p>
+                    </section>
+                    <section class="majors-section">
+                        <h2>Our Major Programs</h2>
+                        <div class="major-grid" id="major-cards-container">
+                            <!-- Major cards will be inserted here by JavaScript -->
+                        </div>
+                    </section>
+                </main>
+            `;
+
+            const cardsContainer = document.getElementById('major-cards-container');
+            let delay = 0;
+
+            for (const majorKey in majors) {
+                const major = majors[majorKey];
+                const card = document.createElement('a');
+                card.href = `#${majorKey}`;
+                card.className = 'major-card';
+                card.innerHTML = `
+                    <img src="${major.cardImage}" alt="${major.title}">
+                    <h3>${major.title}</h3>
+                    <p>${major.cardDescription}</p>
+                `;
+                
+                card.style.transitionDelay = `${delay}s`;
+                cardsContainer.appendChild(card);
+                delay += 0.1;
+
+                card.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    renderDetailPage(majorKey);
+                    history.pushState({ major: majorKey }, '', `#${majorKey}`);
+                });
+
+                // Trigger fade-in animation
+                setTimeout(() => card.classList.add('fade-in'), 50);
+            }
+        }
+
+        // Function to render a detail page
+        function renderDetailPage(majorKey) {
+            const major = majors[majorKey];
+            if (!major) {
+                renderMainPage();
+                return;
+            }
+
+            document.title = `${major.title} - Our University`;
+            appContainer.innerHTML = `
+                <header class="detail-hero" style="background-image: url('${major.heroImage}');">
+                    <div class="detail-hero-content">
+                        <h1>${major.title}</h1>
+                    </div>
+                </header>
+                <main class="container">
+                    <div id="content-to-animate">
+                        <section class="overview-section">
+                            <h2>Program Overview</h2>
+                            <p>${major.overview}</p>
+                        </section>
+                        <section class="career-section">
+                            <h2>Career Opportunities</h2>
+                            <ul>
+                                ${major.careers.map(career => `<li>${career}</li>`).join('')}
+                            </ul>
+                        </section>
+                        <section class="facilities-section">
+                            <h2>Facilities & Resources</h2>
+                            <p>${major.facilities}</p>
+                        </section>
+                        <div class="back-button-container">
+                            <a href="#" class="back-button">← Back to Majors</a>
+                        </div>
+                    </div>
+                </main>
+            `;
+
+            // Back button event listener
+            appContainer.querySelector('.back-button').addEventListener('click', (event) => {
+                event.preventDefault();
+                history.pushState({ page: 'home' }, '', '#');
+                renderMainPage();
+            });
+
+            // Trigger animations
+            const sections = document.querySelectorAll('.overview-section, .career-section, .facilities-section');
+            sections.forEach((section, index) => {
+                setTimeout(() => {
+                    section.classList.add('visible-content');
+                }, index * 200 + 100);
+            });
+        }
+
+        // Handle initial load and popstate (browser back/forward)
+        function handleNavigation() {
+            const hash = window.location.hash.substring(1);
+            if (hash && majors[hash]) {
+                renderDetailPage(hash);
+            } else {
+                renderMainPage();
+            }
+        }
+
+        window.addEventListener('popstate', handleNavigation);
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+            handleNavigation();
         });
-      });
-
-      mobileMenuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
-      });
     </script>
-  </body>
+</body>
 </html>
