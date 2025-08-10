@@ -44,6 +44,10 @@
         background-color: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
       }
+      /* This new style makes the program cards look clickable */
+      .program-card {
+        cursor: pointer;
+      }
     </style>
   </head>
   <body class="bg-gray-100">
@@ -64,22 +68,22 @@
         <div class="hidden md:flex items-center space-x-6">
           <a
             href="#about"
-            class="text-gray-700 hover:text-blue-800 transition font-medium"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
             >ကျွန်ုပ်တို့အကြောင်း</a
           >
           <a
             href="#programs"
-            class="text-gray-700 hover:text-blue-800 transition font-medium"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
             >ပညာရေးအစီအစဉ်များ</a
           >
           <a
             href="#collaboration"
-            class="text-gray-700 hover:text-blue-800 transition font-medium"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
             >ပူးပေါင်းဆောင်ရွက်မှု</a
           >
           <a
             href="#contact"
-            class="text-gray-700 hover:text-blue-800 transition font-medium"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
             >ဆက်သွယ်ရန်</a
           >
         </div>
@@ -89,259 +93,280 @@
       </nav>
       <!-- Mobile Menu -->
       <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-        <a href="#about" class="block py-2 text-gray-700 hover:text-blue-800"
+        <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
           >ကျွန်ုပ်တို့အကြောင်း</a
         >
-        <a href="#programs" class="block py-2 text-gray-700 hover:text-blue-800"
+        <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
           >ပညာရေးအစီအစဉ်များ</a
         >
         <a
           href="#collaboration"
-          class="block py-2 text-gray-700 hover:text-blue-800"
+          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
           >ပူးပေါင်းဆောင်ရွက်မှု</a
         >
-        <a href="#contact" class="block py-2 text-gray-700 hover:text-blue-800"
+        <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
           >ဆက်သွယ်ရန်</a
         >
       </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-container">
-      <!-- Image Carousel Background -->
-      <div class="hero-slideshow">
-        <div
-          class="hero-slide active"
-          style="background-image: url(./Img/hero-carousel/1.jpg)"
-        ></div>
-        <div
-          class="hero-slide"
-          style="background-image: url(./Img/hero-carousel/2.JPG)"
-        ></div>
-      </div>
+    <!-- This div will contain all the main content that can be hidden -->
+    <div id="main-content">
+        <!-- Hero Section -->
+        <section class="hero-container">
+          <!-- Image Carousel Background -->
+          <div class="hero-slideshow">
+            <div
+              class="hero-slide active"
+              style="background-image: url(./Img/hero-carousel/1.jpg)"
+            ></div>
+            <div
+              class="hero-slide"
+              style="background-image: url(./Img/hero-carousel/2.JPG)"
+            ></div>
+          </div>
 
-      <!-- Overlay -->
-      <div
-        class="hero-overlay bg-gradient-to-br from-blue-50/80 to-white/40"
-      ></div>
-
-      <!-- Content -->
-      <div
-        class="hero-content container mx-auto px-6 py-24 md:py-32 text-center"
-      >
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-          University of Technology - Yatanarpon Cyber City
-        </h1>
-        <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto font-light">
-          A Leading Engineering Institution for Sustainable Development
-        </p>
-        <a
-          href="#programs"
-          class="bg-white text-blue-800 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition text-lg shadow-lg"
-          >Explore Programs</a
-        >
-      </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="bg-blue-800 text-white">
-      <div class="container mx-auto px-6 py-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <i class="fas fa-calendar-alt text-3xl mb-2 text-blue-300"></i>
-            <p class="text-xl font-bold">Established 2010</p>
-            <p class="text-sm text-blue-200">Serving Since</p>
-          </div>
-          <div>
-            <i class="fas fa-users text-3xl mb-2 text-blue-300"></i>
-            <p class="text-xl font-bold">~12,000</p>
-            <p class="text-sm text-blue-200">Students</p>
-          </div>
-          <div>
-            <i class="fas fa-check-circle text-3xl mb-2 text-blue-300"></i>
-            <p class="text-xl font-bold">~21%</p>
-            <p class="text-sm text-blue-200">Acceptance Rate</p>
-          </div>
-          <div>
-            <i class="fas fa-award text-3xl mb-2 text-blue-300"></i>
-            <p class="text-xl font-bold">ISO 9001:2015</p>
-            <p class="text-sm text-blue-200">Certified Quality</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 py-16">
-      <!-- About Us Section -->
-      <section id="about" class="mb-20">
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-          <div class="order-2 md:order-1">
-            <h2 class="text-3xl font-bold text-blue-900 mb-4">
-              Our Vision & Mission
-            </h2>
-            <p class="text-gray-700 mb-6 leading-relaxed">
-              Established on 17 October 2010, UTYCC is a public university under
-              the Ministry of Science and Technology, located in Yatanarpon
-              Cyber City, near Pyin Oo Lwin.
-            </p>
-            <div class="space-y-4">
-              <div>
-                <h3
-                  class="font-semibold text-lg text-blue-900 flex items-center"
-                >
-                  <i class="fas fa-eye mr-3 text-blue-600"></i>Vision
-                </h3>
-                <p class="text-gray-600 ml-8">
-                  To be a leading engineering institution for sustainable
-                  development.
-                </p>
-              </div>
-              <div>
-                <h3
-                  class="font-semibold text-lg text-blue-900 flex items-center"
-                >
-                  <i class="fas fa-bullseye mr-3 text-blue-600"></i>Mission
-                </h3>
-                <p class="text-gray-600 ml-8">
-                  To provide high-quality teaching, research, and socially
-                  responsible engineering education.
-                </p>
-              </div>
-            </div>
-          </div>
+          <!-- Overlay -->
           <div
-            class="order-1 md:order-2 bg-[url('./Img/hero-carousel/2.jpg')] bg-contain bg-no-repeat bg-center w-full aspect-video rounded-lg shadow-xl"
+            class="hero-overlay bg-gradient-to-br from-blue-50/80 to-white/40"
           ></div>
-        </div>
-      </section>
 
-      <!-- Academic Programs Section -->
-      <section
-        id="programs"
-        class="mb-20 bg-white p-8 md:p-12 rounded-lg shadow-lg"
-      >
-        <h2 class="text-3xl font-bold text-blue-900 mb-10 text-center">
-          ပညာရေးအစီအစဉ်များ (Academic Programs)
-        </h2>
-
-        <!-- Bachelor's Degrees -->
-        <div class="mb-10">
-          <h3
-            class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2"
-          >
-            ဘွဲ့ကြိုသင်တန်းများ (Bachelor's Degrees - 6 Years)
-          </h3>
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div
-              class="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
-            >
-              <h4 class="text-lg font-bold text-blue-900">
-                Information Science and Technology (IST)
-              </h4>
-            </div>
-            <div
-              class="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
-            >
-              <h4 class="text-lg font-bold text-blue-900">
-                Computer Engineering (CE)
-              </h4>
-            </div>
-            <div
-              class="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
-            >
-              <h4 class="text-lg font-bold text-blue-900">
-                Electronics Engineering (EcE)
-              </h4>
-            </div>
-            <div
-              class="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
-            >
-              <h4 class="text-lg font-bold text-blue-900">
-                Precision Engineering (PrE)
-              </h4>
-            </div>
-            <div
-              class="border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
-            >
-              <h4 class="text-lg font-bold text-blue-900">
-                Materials and Metallurgy (AME)
-              </h4>
-            </div>
-          </div>
-        </div>
-
-        <!-- Master's and PhD -->
-        <div class="grid md:grid-cols-2 gap-8">
-          <div>
-            <h3
-              class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2"
-            >
-              ဘွဲ့လွန်သင်တန်းများ (Master's Degrees - 2 Years)
-            </h3>
-            <p class="text-gray-700">
-              Master's degrees are offered in IST, CE, ECE, AME, and PrE,
-              combining coursework and a thesis.
-            </p>
-          </div>
-          <div>
-            <h3
-              class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2"
-            >
-              ပါရဂူဘွဲ့ (Doctoral Degree - 3 Years)
-            </h3>
-            <p class="text-gray-700">
-              A Ph.D. program is available in Information Technology.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- International Collaboration Section -->
-      <section id="collaboration" class="mb-16">
-        <h2 class="text-3xl font-bold text-blue-900 mb-8 text-center">
-          နိုင်ငံတကာ ပူးပေါင်းဆောင်ရွက်မှု
-        </h2>
-        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Content -->
           <div
-            class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6"
+            class="hero-content container mx-auto px-6 py-24 md:py-32 text-center"
           >
-            <img
-              src="https://placehold.co/100x100/3b82f6/ffffff?text=ACU"
-              class="rounded-full"
-              alt="ACU Logo"
-            />
-            <div>
-              <h3 class="text-xl font-semibold text-blue-900">
-                ASEAN-KOREA Cyber University (ACU)
-              </h3>
-              <p class="text-gray-600 mt-1">
-                Engaging in e-Learning projects to enhance digital education
-                across the region.
-              </p>
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+              University of Technology - Yatanarpon Cyber City
+            </h1>
+            <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto font-light">
+              A Leading Engineering Institution for Sustainable Development
+            </p>
+            <a
+              href="#programs"
+              class="bg-white text-blue-800 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition text-lg shadow-lg"
+              >Explore Programs</a
+            >
+          </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="bg-blue-800 text-white">
+          <div class="container mx-auto px-6 py-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div>
+                <i class="fas fa-calendar-alt text-3xl mb-2 text-blue-300"></i>
+                <p class="text-xl font-bold">Established 2010</p>
+                <p class="text-sm text-blue-200">Serving Since</p>
+              </div>
+              <div>
+                <i class="fas fa-users text-3xl mb-2 text-blue-300"></i>
+                <p class="text-xl font-bold">~12,000</p>
+                <p class="text-sm text-blue-200">Students</p>
+              </div>
+              <div>
+                <i class="fas fa-check-circle text-3xl mb-2 text-blue-300"></i>
+                <p class="text-xl font-bold">~21%</p>
+                <p class="text-sm text-blue-200">Acceptance Rate</p>
+              </div>
+              <div>
+                <i class="fas fa-award text-3xl mb-2 text-blue-300"></i>
+                <p class="text-xl font-bold">ISO 9001:2015</p>
+                <p class="text-sm text-blue-200">Certified Quality</p>
+              </div>
             </div>
           </div>
-          <div
-            class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6"
-          >
-            <img
-              src="https://placehold.co/100x100/16a34a/ffffff?text=MU"
-              class="rounded-full"
-              alt="Miyazaki University Logo"
-            />
-            <div>
-              <h3 class="text-xl font-semibold text-blue-900">
-                Miyazaki University, Japan
-              </h3>
-              <p class="text-gray-600 mt-1">
-                Offering a Double Master's Degree program, fostering
-                international academic exchange.
-              </p>
+        </section>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-6 py-16">
+          <!-- About Us Section -->
+          <section id="about" class="mb-20">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+              <div class="order-2 md:order-1">
+                <h2 class="text-3xl font-bold text-blue-900 mb-4">
+                  Our Vision & Mission
+                </h2>
+                <p class="text-gray-700 mb-6 leading-relaxed">
+                  Established on 17 October 2010, UTYCC is a public university under
+                  the Ministry of Science and Technology, located in Yatanarpon
+                  Cyber City, near Pyin Oo Lwin.
+                </p>
+                <div class="space-y-4">
+                  <div>
+                    <h3
+                      class="font-semibold text-lg text-blue-900 flex items-center"
+                    >
+                      <i class="fas fa-eye mr-3 text-blue-600"></i>Vision
+                    </h3>
+                    <p class="text-gray-600 ml-8">
+                      To be a leading engineering institution for sustainable
+                      development.
+                    </p>
+                  </div>
+                  <div>
+                    <h3
+                      class="font-semibold text-lg text-blue-900 flex items-center"
+                    >
+                      <i class="fas fa-bullseye mr-3 text-blue-600"></i>Mission
+                    </h3>
+                    <p class="text-gray-600 ml-8">
+                      To provide high-quality teaching, research, and socially
+                      responsible engineering education.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="order-1 md:order-2 bg-[url('./Img/hero-carousel/2.jpg')] bg-contain bg-no-repeat bg-center w-full aspect-video rounded-lg shadow-xl"
+              ></div>
             </div>
-          </div>
-        </div>
-      </section>
-    </main>
+          </section>
+
+          <!-- Academic Programs Section -->
+          <section
+            id="programs"
+            class="mb-20 bg-white p-8 md:p-12 rounded-lg shadow-lg"
+          >
+            <h2 class="text-3xl font-bold text-blue-900 mb-10 text-center">
+              ပညာရေးအစီအစဉ်များ (Academic Programs)
+            </h2>
+
+            <!-- Bachelor's Degrees -->
+            <div class="mb-10">
+              <h3
+                class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2"
+              >
+                ဘွဲ့ကြိုသင်တန်းများ (Bachelor's Degrees - 6 Years)
+              </h3>
+              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div
+                  class="program-card border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
+                  data-program="ist"
+                >
+                  <h4 class="text-lg font-bold text-blue-900">
+                    Information Science and Technology (IST)
+                  </h4>
+                </div>
+                <div
+                  class="program-card border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
+                  data-program="ce"
+                >
+                  <h4 class="text-lg font-bold text-blue-900">
+                    Computer Engineering (CE)
+                  </h4>
+                </div>
+                <div
+                  class="program-card border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
+                  data-program="ece"
+                >
+                  <h4 class="text-lg font-bold text-blue-900">
+                    Electronics Engineering (EcE)
+                  </h4>
+                </div>
+                <div
+                  class="program-card border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
+                  data-program="pre"
+                >
+                  <h4 class="text-lg font-bold text-blue-900">
+                    Precision Engineering (PrE)
+                  </h4>
+                </div>
+                <div
+                  class="program-card border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition"
+                  data-program="ame"
+                >
+                  <h4 class="text-lg font-bold text-blue-900">
+                    Advanced Materials Engineering (AME)
+                  </h4>
+                </div>
+              </div>
+            </div>
+
+            <!-- Master's and PhD -->
+            <div class="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3
+                  class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2"
+                >
+                  ဘွဲ့လွန်သင်တန်းများ (Master's Degrees - 2 Years)
+                </h3>
+                <p class="text-gray-700">
+                  Master's degrees are offered in IST, CE, ECE, AME, and PrE,
+                  combining coursework and a thesis.
+                </p>
+              </div>
+              <div>
+                <h3
+                  class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2"
+                >
+                  ပါရဂူဘွဲ့ (Doctoral Degree - 3 Years)
+                </h3>
+                <p class="text-gray-700">
+                  A Ph.D. program is available in Information Technology.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- International Collaboration Section -->
+          <section id="collaboration" class="mb-16">
+            <h2 class="text-3xl font-bold text-blue-900 mb-8 text-center">
+              နိုင်ငံတကာ ပူးပေါင်းဆောင်ရွက်မှု
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8">
+              <div
+                class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6"
+              >
+                <img
+                  src="https://placehold.co/100x100/3b82f6/ffffff?text=ACU"
+                  class="rounded-full"
+                  alt="ACU Logo"
+                />
+                <div>
+                  <h3 class="text-xl font-semibold text-blue-900">
+                    ASEAN-KOREA Cyber University (ACU)
+                  </h3>
+                  <p class="text-gray-600 mt-1">
+                    Engaging in e-Learning projects to enhance digital education
+                    across the region.
+                  </p>
+                </div>
+              </div>
+              <div
+                class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6"
+              >
+                <img
+                  src="https://placehold.co/100x100/16a34a/ffffff?text=MU"
+                  class="rounded-full"
+                  alt="Miyazaki University Logo"
+                />
+                <div>
+                  <h3 class="text-xl font-semibold text-blue-900">
+                    Miyazaki University, Japan
+                  </h3>
+                  <p class="text-gray-600 mt-1">
+                    Offering a Double Master's Degree program, fostering
+                    international academic exchange.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+    </div>
+
+    <!-- This new container will show the details of a selected program -->
+    <div id="program-details-container" class="hidden">
+        <main class="container mx-auto px-6 py-16">
+            <button id="back-to-main" class="mb-8 bg-blue-800 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition shadow-lg">
+                <i class="fas fa-arrow-left mr-2"></i> နောက်သို့
+            </button>
+            <div id="program-details-content" class="bg-white p-8 md:p-12 rounded-lg shadow-lg">
+                <!-- Dynamic content will be injected here by JavaScript -->
+            </div>
+        </main>
+    </div>
+
 
     <!-- Footer -->
     <footer id="contact" class="bg-blue-900 text-white">
@@ -394,13 +419,119 @@
       </div>
     </footer>
 
+    <!-- All JavaScript logic is now here -->
     <script>
-      const mobileMenuButton = document.getElementById("mobile-menu-button");
-      const mobileMenu = document.getElementById("mobile-menu");
+        // --- DOM Elements ---
+        const mainContent = document.getElementById('main-content');
+        const detailsContainer = document.getElementById('program-details-container');
+        const detailsContent = document.getElementById('program-details-content');
+        const backButton = document.getElementById('back-to-main');
+        const programCards = document.querySelectorAll('.program-card');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-      mobileMenuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
-      });
+        // --- Data for Program Details ---
+        const programData = {
+            ist: {
+                title: 'Information Science and Technology (IST)',
+                description: 'IST ဘာသာရပ်သည် သတင်းအချက်အလက်နည်းပညာ၏ အခြေခံသဘောတရားများ၊ ကွန်ပျူတာကွန်ရက်များ၊ ဒေတာဘေ့စ်စီမံခန့်ခွဲမှု နှင့် ဆိုက်ဘာလုံခြုံရေးတို့ကို အဓိကထား သင်ကြားပေးပါသည်။',
+                subjects: ['Data Structures & Algorithms', 'Database Management Systems', 'Computer Networks', 'Cybersecurity Fundamentals', 'Web Development'],
+                careers: ['IT Manager', 'Network Administrator', 'Database Specialist', 'Cybersecurity Analyst', 'System Analyst']
+            },
+            ce: {
+                title: 'Computer Engineering (CE)',
+                description: 'CE ဘာသာရပ်သည် ကွန်ပျူတာ hardware နှင့် software နှစ်ပိုင်းလုံးကို ပေါင်းစပ်သင်ကြားပေးပြီး၊ microprocessor design, embedded systems, နှင့် computer architecture တို့ကို အလေးပေးပါသည်။',
+                subjects: ['Digital Logic Design', 'Microprocessor Systems', 'Computer Architecture', 'Operating Systems', 'Software Engineering'],
+                careers: ['Hardware Engineer', 'Software Developer', 'Embedded Systems Engineer', 'System Architect', 'Firmware Engineer']
+            },
+            ece: {
+                title: 'Electronics Engineering (EcE)',
+                description: 'EcE ဘာသာရပ်သည် electronic circuits, communication systems, နှင့် signal processing တို့ကို အဓိကထား သင်ကြားပြီး၊ ခေတ်မီနည်းပညာများ၏ အီလက်ထရောနစ် အခြေခံများကို နားလည်စေရန် ရည်ရွယ်သည်။',
+                subjects: ['Circuit Theory', 'Analog Electronics', 'Digital Signal Processing', 'Communication Systems', 'Control Systems'],
+                careers: ['Electronics Design Engineer', 'Telecommunication Engineer', 'Control Systems Engineer', 'Test Engineer', 'RF Engineer']
+            },
+            pre: {
+                title: 'Precision Engineering (PrE)',
+                description: 'PrE ဘာသာရပ်သည် အလွန်တိကျသော စက်မှုအစိတ်အပိုင်းများ ထုတ်လုပ်ခြင်း၊ တိုင်းတာခြင်း နှင့် automation နည်းပညာများကို အဓိကထား သင်ကြားပေးပါသည်။',
+                subjects: ['Metrology and Measurement', 'CAD/CAM', 'Robotics and Automation', 'Advanced Manufacturing Processes', 'Mechatronics'],
+                careers: ['Automation Engineer', 'Manufacturing Engineer', 'Quality Control Engineer', 'Robotics Specialist', 'CNC Programmer']
+            },
+            ame: {
+                title: 'Advanced Materials Engineering (AME)',
+                description: 'AME ဘာသာရပ်သည် ပစ္စည်းများ၏ ဂုဏ်သတ္တိများ၊ တည်ဆောက်ပုံ နှင့် အသုံးချမှုများကို လေ့လာပြီး၊ အင်ဂျင်နီယာလုပ်ငန်းများအတွက် သင့်လျော်သော ပစ္စည်းများ ရွေးချယ်ထုတ်လုပ်ခြင်းကို သင်ကြားပေးသည်။',
+                subjects: ['Physical Metallurgy', 'Mechanical Behavior of Materials', 'Polymer Science', 'Ceramic Materials', 'Corrosion Engineering'],
+                careers: ['Materials Engineer', 'Metallurgist', 'Process Engineer', 'Quality Assurance Manager', 'Research Scientist']
+            }
+        };
+
+        // --- Functions ---
+        function showDetails(programKey) {
+            const data = programData[programKey];
+            if (!data) return;
+
+            // Generate HTML for the details page
+            detailsContent.innerHTML = `
+                <h2 class="text-3xl font-bold text-blue-900 mb-4">${data.title}</h2>
+                <p class="text-gray-700 mb-8 leading-relaxed">${data.description}</p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-blue-800 mb-4 border-b pb-2">အဓိက ဘာသာရပ်များ</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                            ${data.subjects.map(subject => `<li>${subject}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-blue-800 mb-4 border-b pb-2">အလုပ်အကိုင် အခွင့်အလမ်းများ</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                             ${data.careers.map(career => `<li>${career}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // Switch views
+            mainContent.classList.add('hidden');
+            detailsContainer.classList.remove('hidden');
+            window.scrollTo(0, 0); // Scroll to top
+        }
+
+        function showMainContent() {
+            detailsContainer.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+        }
+
+        // --- Event Listeners ---
+        programCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const programKey = card.getAttribute('data-program');
+                showDetails(programKey);
+            });
+        });
+
+        backButton.addEventListener('click', showMainContent);
+
+        // Handle nav links to show main content if a detail page is active
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                 if (!mainContent.classList.contains('hidden')) {
+                    // Normal behavior if on main page
+                    return;
+                }
+                e.preventDefault();
+                showMainContent();
+                // Use a timeout to allow the main content to be visible before scrolling
+                setTimeout(() => {
+                    const targetId = link.getAttribute('href');
+                    document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            });
+        });
+
+        mobileMenuButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+        });
     </script>
   </body>
 </html>
