@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+:root {
+    --light-background: #f5f7fa;
+    --dark-text: #333;
+    --accent-color: #2980b9;
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --card-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--dark-text);
+    background-color: var(--light-background);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+body.loaded {
+    opacity: 1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Hero Section */
+.hero, .detail-hero {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    background: url('https://via.placeholder.com/1600x600/2980b9/ffffff?text=University+Hero') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 40px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.hero::before, .detail-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.hero-content, .detail-hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+}
+
+.hero-content h1 {
+    font-size: 3.5em;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.hero-content p {
+    font-size: 1.5em;
+    font-weight: 300;
+}
+
+/* About Section */
+.about-section {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    animation: slideInUp 0.8s ease-in-out;
+}
+
+.about-section h2, .majors-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+
+.about-section p {
+    font-size: 1.1em;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+/* Major Programs Section */
+.majors-section {
+    margin-bottom: 60px;
+}
+
+.majors-section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: slideInUp 0.8s ease-in-out;
+}
+
+.major-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.major-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--dark-text);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.major-card.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.major-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--card-hover-shadow);
+}
+
+.major-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.major-card h3 {
+    font-size: 1.8em;
+    margin: 20px 20px 10px;
+    color: var(--accent-color);
+}
+
+.major-card p {
+    font-size: 1em;
+    padding: 0 20px 20px;
+    flex-grow: 1;
+}
+
+/* CSS Keyframe Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5em;
+    }
+
+    .hero-content p {
+        font-size: 1.2em;
+    }
+
+    .about-section h2, .majors-section h2 {
+        font-size: 1.8em;
+    }
+
+    .major-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .major-card h3 {
+        font-size: 1.5em;
+    }
+
+    .major-card p {
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 2em;
+    }
+
+    .hero-content p {
+        font-size: 1em;
+    }
+
+    .hero {
+        height: 400px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .about-section, .majors-section {
+        padding: 20px;
+    }
+}
