@@ -1,44 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback Form</title>
-    <link rel="stylesheet" href="/CSS/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback with Slow Motion Effect</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* Slow fade-up animation */
+@keyframes slowFadeUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.slow-motion {
+  animation: slowFadeUp 1.2s ease-in-out forwards;
+}
+
+/* Animation for new feedback */
+@keyframes fadeInScale {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.fade-in {
+  animation: fadeInScale 0.8s ease forwards;
+}
+</style>
 </head>
-<body>
+<body class="bg-gray-100">
 
-    <div class="container">
-        <h1>Share Your Feedback</h1>
-        <p>We would love to hear your thoughts!</p>
-        <form id="feedbackForm" method="POST">
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label>Rating:</label>
-                <div class="rating">
-                    <input type="radio" name="rating" id="star5" value="5" required><label for="star5">★</label>
-                    <input type="radio" name="rating" id="star4" value="4"><label for="star4">★</label>
-                    <input type="radio" name="rating" id="star3" value="3"><label for="star3">★</label>
-                    <input type="radio" name="rating" id="star2" value="2"><label for="star2">★</label>
-                    <input type="radio" name="rating" id="star1" value="1"><label for="star1">★</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="comments">Comments:</label>
-                <textarea id="comments" name="comments" rows="5"></textarea>
-            </div>
-            <button type="submit">Submit Feedback</button>
-        </form>
-        <div id="form-message"></div>
-    </div>
+<!-- Feedback Form -->
+<div id="feedbackForm" class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg slow-motion">
+    <h2 class="text-2xl font-bold mb-4">Give Your Feedback</h2>
+    <form id="form" class="space-y-4">
+        <textarea id="feedbackText" class="w-full p-3 border rounded-lg" placeholder="Write your feedback..." required></textarea>
+        <div>
+            <label class="block mb-2">Rating:</label>
+            <select id="ratingSelect" class="p-2 border rounded-lg" required>
+                <option value="">Select rating</option>
+                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                <option value="4">⭐⭐⭐⭐ (4)</option>
+                <option value="3">⭐⭐⭐ (3)</option>
+                <option value="2">⭐⭐ (2)</option>
+                <option value="1">⭐ (1)</option>
+            </select>
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Submit</button>
+    </form>
+</div>
 
-    <script src="JS/script.js"></script>
+<!-- Feedback List -->
+<div id="feedbackList" class="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg slow-motion">
+    <h2 class="text-2xl font-bold mb-4">All Feedback</h2>
+</div>
+
+<script>
+document.getElementById("form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let feedbackText = document.getElementById("feedbackText").value.trim();
+    let rating = document.getElementById("ratingSelect").value;
+
+    if (feedbackText && rating) {
+        // Create feedback container
+        let feedbackDiv = document.createElement("div");
+        feedbackDiv.className = "border-b py-4 fade-in";
+
+        // Create rating stars
+        let stars = "⭐".repeat(rating);
+        feedbackDiv.innerHTML = `
+            <div class="text-yellow-500">${stars}</div>
+            <p class="mt-2 text-gray-700">${feedbackText}</p>
+            <p class="text-sm text-gray-400">Just now</p>
+        `;
+
+        // Add to feedback list
+        document.getElementById("feedbackList").appendChild(feedbackDiv);
+
+        // Clear form
+        document.getElementById("feedbackText").value = "";
+        document.getElementById("ratingSelect").value = "";
+    }
+});
+</script>
+
 </body>
 </html>
