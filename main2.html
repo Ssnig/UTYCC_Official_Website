@@ -328,41 +328,43 @@
   </div>
 
   <!-- Enrollment Section - FINAL VERSION -->
-  <section id="enrollment-card" class="relative bg-cover bg-center py-16 px-4 sm:px-6"
+  <section id="enrollment-card"
+    class="relative bg-cover bg-center h-[500px] flex items-center justify-center p-6 sm:p-12"
     style="background-image: url('./Img/hero-carousel/3.jpg')">
-    <div class="absolute inset-0 bg-black/30"></div>
-    <div class="relative z-10 container mx-auto max-w-5xl">
-      <div class="bg-white/80 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden">
-        <div class="grid md:grid-cols-2">
-          <!-- New Students Section -->
-          <div
-            class="p-8 sm:p-12 flex flex-col items-center justify-center text-center border-b-2 md:border-b-0 md:border-r-2 border-white/50">
-            <h3 class="text-3xl font-bold text-blue-900 mb-4" data-lang-key="enroll_new_title">New Students</h3>
-            <p class="text-lg text-gray-800 mb-6 max-w-sm" data-lang-key="enroll_new_text">
-              Start your journey with us! Click here to enroll for the upcoming academic year.
-            </p>
-            <button
-              class="bg-blue-700 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-600 transition shadow-lg"
-              data-lang-key="enroll_new_button">
-              Enroll as a Fresher
-            </button>
-          </div>
+    <div class="absolute inset-0 bg-white opacity-80 rounded-lg shadow-xl"></div>
 
-          <!-- Current Students Section -->
-          <div class="p-8 sm:p-12 flex flex-col items-center justify-center text-center">
-            <h3 class="text-3xl font-bold text-blue-900 mb-4" data-lang-key="enroll_current_title">
-              Current Students
-            </h3>
-            <p class="text-lg text-gray-800 mb-6 max-w-sm" data-lang-key="enroll_current_text">
-              Welcome back! Continue your studies by enrolling for the next year.
-            </p>
-            <button
-              class="bg-blue-700 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-600 transition shadow-lg"
-              data-lang-key="enroll_current_button">
-              Enroll for Next Year
-            </button>
-          </div>
-        </div>
+    <div
+      class="relative z-10 w-full max-w-5xl h-full bg-white rounded-lg shadow-2xl flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x-2 divide-gray-200"
+      style="
+          background-image: url('./Img/hero-carousel/3.JPG');
+          background-size: cover;
+          background-position: center;
+        ">
+      <div class="absolute inset-0 bg-white opacity-70 rounded-lg"></div>
+
+      <div class="relative z-10 flex-1 p-8 sm:p-12 flex flex-col items-center justify-center text-center">
+        <h3 class="text-3xl font-bold text-blue-900 mb-4" data-lang-key="enroll_new_title">New Students</h3>
+        <p class="text-lg text-gray-700 mb-6 max-w-sm" data-lang-key="enroll_new_text">
+          Start your journey with us! Click here to enroll for the upcoming
+          academic year.
+        </p>
+        <button class="bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg"
+          data-lang-key="enroll_new_button">
+          Enroll as a Fresher
+        </button>
+      </div>
+
+      <div class="relative z-10 flex-1 p-8 sm:p-12 flex flex-col items-center justify-center text-center">
+        <h3 class="text-3xl font-bold text-blue-900 mb-4" data-lang-key="enroll_current_title">
+          Current Students
+        </h3>
+        <p class=" text-lg text-gray-700 mb-6 max-w-sm" data-lang-key="enroll_current_text">
+          Welcome back! Continue your studies by enrolling for the next year.
+        </p>
+        <button class="bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg"
+          data-lang-key="enroll_current_button">
+          Enroll for Next Year
+          </button>
       </div>
     </div>
   </section>
