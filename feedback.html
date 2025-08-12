@@ -1,119 +1,388 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Feedback</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-@keyframes slowFadeUp {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-.slow-motion {
-  animation: slowFadeUp 1.2s ease-in-out forwards;
-}
-@keyframes fadeInScale {
-  0% { opacity: 0; transform: scale(0.95); }
-  100% { opacity: 1; transform: scale(1); }
-}
-.fade-in {
-  animation: fadeInScale 0.8s ease forwards;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Collection System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom CSS */
+        .star-rating {
+            direction: rtl;
+            display: inline-block;
+        }
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+        .star-rating label {
+            color: #ddd;
+            font-size: 2rem;
+            padding: 0 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input[type="radio"]:checked ~ label {
+            color: #f8d64e;
+        }
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+        }
+        .file-upload-input {
+            position: absolute;
+            font-size: 50px;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+        .feedback-card {
+            transition: all 0.3s ease;
+        }
+        .feedback-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .file-preview {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        .fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(10px); }
+        }
+        .submit-pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen opacity-0">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="text-center mb-12 fade-in">
+            <h1 class="text-4xl font-bold text-indigo-800 mb-3">Share Your Feedback</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">We value your opinion! Please share your experience with us.</p>
+        </header>
 
-<!-- Feedback Form -->
-<div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg slow-motion">
-    <h2 class="text-2xl font-bold mb-4">Give Your Feedback</h2>
-    <form id="form" class="space-y-4">
-        <textarea id="feedbackText" class="w-full p-3 border rounded-lg" placeholder="Write your feedback..." required></textarea>
-        <div>
-            <label class="block mb-2">Rating:</label>
-            <select id="ratingSelect" class="p-2 border rounded-lg" required>
-                <option value="">Select rating</option>
-                <option value="5">⭐⭐⭐⭐⭐</option>
-                <option value="4">⭐⭐⭐⭐ </option>
-                <option value="3">⭐⭐⭐ </option>
-                <option value="2">⭐⭐ </option>
-                <option value="1">⭐ </option>
-            </select>
+        <!-- Feedback Form -->
+        <div class="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto mb-16 fade-in" style="animation-delay: 0.2s">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Submit Feedback</h2>
+            
+            <form id="feedbackForm" class="space-y-6">
+                <!-- Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                    <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="John Doe" required>
+                </div>
+                
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email (optional)</label>
+                    <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="john@example.com">
+                </div>
+                
+                <!-- Star Rating -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" />
+                        <label for="star5" title="5 stars">★</label>
+                        <input type="radio" id="star4" name="rating" value="4" />
+                        <label for="star4" title="4 stars">★</label>
+                        <input type="radio" id="star3" name="rating" value="3" />
+                        <label for="star3" title="3 stars">★</label>
+                        <input type="radio" id="star2" name="rating" value="2" />
+                        <label for="star2" title="2 stars">★</label>
+                        <input type="radio" id="star1" name="rating" value="1" required />
+                        <label for="star1" title="1 star">★</label>
+                    </div>
+                </div>
+                
+                <!-- Comments -->
+                <div>
+                    <label for="comments" class="block text-sm font-medium text-gray-700 mb-1">Your Feedback</label>
+                    <textarea id="comments" name="comments" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Share your thoughts..." required></textarea>
+                </div>
+                
+                <!-- File Upload -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Attach Files (optional)</label>
+                    <div class="file-upload bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                        <div class="flex flex-col items-center justify-center py-4">
+                            <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <p class="text-sm text-gray-600 mb-1">Drag and drop files here or click to browse</p>
+                            <p class="text-xs text-gray-500">Supports: images, documents (max 5MB each)</p>
+                        </div>
+                        <input type="file" id="fileInput" name="files" class="file-upload-input" multiple accept="image/*,.pdf,.doc,.docx,.txt">
+                    </div>
+                    <div id="filePreview" class="mt-3 flex flex-wrap"></div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="pt-2">
+                    <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Submit Feedback
+                    </button>
+                </div>
+            </form>
         </div>
-        <div>
-            <label class="block mb-2">Attach File (Optional):</label>
-            <input type="file" id="fileInput" class="p-2 border rounded-lg w-full">
-            <div id="filePreview" class="mt-3"></div>
+
+        <!-- Feedback Display Section -->
+        <div class="max-w-6xl mx-auto fade-in" style="animation-delay: 0.4s">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Recent Feedback</h2>
+            <div id="feedbackContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feedback cards will be dynamically inserted here -->
+            </div>
         </div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Submit</button>
-    </form>
-</div>
+    </div>
 
-<!-- Feedback List -->
-<div id="feedbackList" class="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg slow-motion">
-    <h2 class="text-2xl font-bold mb-4">All Feedback</h2>
-</div>
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md mx-4 text-center transform transition-all duration-300 scale-95">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Thank You!</h3>
+            <p class="text-gray-600 mb-6">Your feedback has been submitted successfully.</p>
+            <button id="closeModal" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition duration-300">
+                Close
+            </button>
+        </div>
+    </div>
 
-<script>
-document.getElementById("fileInput").addEventListener("change", function() {
-    const file = this.files[0];
-    const preview = document.getElementById("filePreview");
-    preview.innerHTML = "";
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fade in entire page on load
+            setTimeout(() => {
+                document.body.classList.remove('opacity-0');
+            }, 100);
+            
+            // File upload preview
+            const fileInput = document.getElementById('fileInput');
+            const filePreview = document.getElementById('filePreview');
+            
+            fileInput.addEventListener('change', function() {
+                filePreview.innerHTML = '';
+                if (this.files.length > 0) {
+                    Array.from(this.files).forEach(file => {
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert(`File ${file.name} is too large (max 5MB)`);
+                            return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            let previewElement;
+                            
+                            if (file.type.startsWith('image/')) {
+                                previewElement = document.createElement('img');
+                                previewElement.src = e.target.result;
+                                previewElement.className = 'file-preview';
+                                previewElement.alt = file.name;
+                            } else {
+                                previewElement = document.createElement('div');
+                                previewElement.className = 'file-preview bg-gray-100 p-2 flex items-center justify-center text-xs text-gray-700';
+                                previewElement.textContent = file.name.length > 15 ? 
+                                    file.name.substring(0, 12) + '...' + file.name.split('.').pop() : 
+                                    file.name;
+                            }
+                            
+                            filePreview.appendChild(previewElement);
+                        }
+                        reader.readAsDataURL(file);
+                    });
+                }
+            });
 
-    if (file) {
-        if (file.type.startsWith("image/")) {
-            const img = document.createElement("img");
-            img.src = URL.createObjectURL(file);
-            img.className = "mt-2 max-h-40 rounded-lg border";
-            preview.appendChild(img);
-        } else {
-            preview.textContent = "📎 " + file.name;
-        }
-    }
-});
-
-document.getElementById("form").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    let feedbackText = document.getElementById("feedbackText").value.trim();
-    let rating = document.getElementById("ratingSelect").value;
-    let file = document.getElementById("fileInput").files[0];
-
-    if (feedbackText && rating) {
-        let feedbackDiv = document.createElement("div");
-        feedbackDiv.className = "border-b py-4 fade-in";
-
-        let stars = "⭐".repeat(rating);
-        feedbackDiv.innerHTML = `
-            <div class="text-yellow-500">${stars}</div>
-            <p class="mt-2 text-gray-700">${feedbackText}</p>
-            <p class="text-sm text-gray-400">Just now</p>
-        `;
-
-        if (file) {
-            if (file.type.startsWith("image/")) {
-                let img = document.createElement("img");
-                img.src = URL.createObjectURL(file);
-                img.className = "mt-2 max-h-40 rounded-lg border";
-                feedbackDiv.appendChild(img);
-            } else {
-                let link = document.createElement("p");
-                link.textContent = "📎 " + file.name;
-                link.className = "text-blue-600 mt-2";
-                feedbackDiv.appendChild(link);
+            // Form submission
+            const feedbackForm = document.getElementById('feedbackForm');
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            const submitBtn = document.getElementById('submitBtn');
+            const successModal = document.getElementById('successModal');
+            const closeModal = document.getElementById('closeModal');
+            
+            // Load saved feedback from localStorage
+            loadFeedback();
+            
+            feedbackForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Add submit animation
+                submitBtn.classList.add('submit-pulse');
+                setTimeout(() => {
+                    submitBtn.classList.remove('submit-pulse');
+                }, 500);
+                
+                const formData = new FormData(this);
+                const feedback = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    rating: formData.get('rating'),
+                    comments: formData.get('comments'),
+                    date: new Date().toISOString(),
+                    files: []
+                };
+                
+                // Process files if any
+                if (fileInput.files.length > 0) {
+                    Array.from(fileInput.files).forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            feedback.files.push({
+                                name: file.name,
+                                type: file.type,
+                                data: e.target.result.split(',')[1] // store base64 without prefix
+                            });
+                            
+                            // When all files are processed, save feedback
+                            if (feedback.files.length === fileInput.files.length) {
+                                saveFeedback(feedback);
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                } else {
+                    saveFeedback(feedback);
+                }
+            });
+            
+            function saveFeedback(feedback) {
+                let feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+                feedbacks.unshift(feedback); // Add new feedback at beginning
+                localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+                
+                // Show success modal
+                successModal.classList.remove('opacity-0', 'pointer-events-none');
+                successModal.querySelector('div').classList.remove('scale-95');
+                
+                // Reset form
+                feedbackForm.reset();
+                filePreview.innerHTML = '';
             }
-        }
-
-        document.getElementById("feedbackList").appendChild(feedbackDiv);
-
-        // Reset form
-        document.getElementById("feedbackText").value = "";
-        document.getElementById("ratingSelect").value = "";
-        document.getElementById("fileInput").value = "";
-        document.getElementById("filePreview").innerHTML = "";
-    }
-});
-</script>
-
+            
+            function loadFeedback() {
+                const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+                feedbackContainer.innerHTML = '';
+                
+                if (feedbacks.length === 0) {
+                    feedbackContainer.innerHTML = `
+                        <div class="col-span-full text-center py-10">
+                            <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                            </svg>
+                            <h3 class="mt-4 text-lg font-medium text-gray-700">No feedback yet</h3>
+                            <p class="mt-1 text-gray-500">Be the first to share your thoughts!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                feedbacks.forEach((feedback, index) => {
+                    const feedbackCard = document.createElement('div');
+                    feedbackCard.className = 'feedback-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg opacity-0';
+                    
+                    setTimeout(() => {
+                        feedbackCard.classList.add('fade-in');
+                    }, index * 100);
+                    
+                    // Rating stars
+                    let stars = '';
+                    for (let i = 1; i <= 5; i++) {
+                        stars += i <= feedback.rating ? 
+                            '<span class="text-yellow-400">★</span>' : 
+                            '<span class="text-gray-300">★</span>';
+                    }
+                    
+                    // File previews if any
+                    let filePreviews = '';
+                    if (feedback.files && feedback.files.length > 0) {
+                        filePreviews = '<div class="mt-3 flex flex-wrap">';
+                        feedback.files.forEach(file => {
+                            if (file.type.startsWith('image/')) {
+                                filePreviews += `
+                                    <img src="data:${file.type};base64,${file.data}" 
+                                         alt="${file.name}" 
+                                         class="file-preview">
+                                `;
+                            } else {
+                                filePreviews += `
+                                    <div class="file-preview bg-gray-100 p-2 flex items-center justify-center text-xs text-gray-700">
+                                        ${file.name.length > 15 ? 
+                                            file.name.substring(0, 12) + '...' + file.name.split('.').pop() : 
+                                            file.name}
+                                    </div>
+                                `;
+                            }
+                        });
+                        filePreviews += '</div>';
+                    }
+                    
+                    // Format date
+                    const date = new Date(feedback.date);
+                    const formattedDate = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    // Display comments properly (with whitespace preserved)
+                    feedbackCard.innerHTML = `
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-lg font-semibold text-gray-800">${feedback.name}</h3>
+                                <span class="text-xs text-gray-500">${formattedDate}</span>
+                            </div>
+                            <div class="mb-3 text-yellow-500 text-lg">${stars}</div>
+                            <p class="text-gray-600 mb-4 whitespace-pre-wrap">${feedback.comments}</p>
+                            ${filePreviews}
+                            ${feedback.email ? `<div class="mt-3 text-sm text-gray-500">${feedback.email}</div>` : ''}
+                        </div>
+                    `;
+                    
+                    feedbackContainer.appendChild(feedbackCard);
+                });
+            }
+            
+            // Close modal handler
+            closeModal.addEventListener('click', function() {
+                successModal.classList.add('opacity-0', 'pointer-events-none');
+                successModal.querySelector('div').classList.add('scale-95');
+                loadFeedback(); // Refresh the feedback display
+            });
+        });
+    </script>
 </body>
 </html>
