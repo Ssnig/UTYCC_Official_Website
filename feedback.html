@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Feedback with Slow Motion Effect</title>
+<title>Feedback</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-/* Slow fade-up animation */
 @keyframes slowFadeUp {
   0% { opacity: 0; transform: translateY(20px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -14,8 +13,6 @@
 .slow-motion {
   animation: slowFadeUp 1.2s ease-in-out forwards;
 }
-
-/* Animation for new feedback */
 @keyframes fadeInScale {
   0% { opacity: 0; transform: scale(0.95); }
   100% { opacity: 1; transform: scale(1); }
@@ -28,7 +25,7 @@
 <body class="bg-gray-100">
 
 <!-- Feedback Form -->
-<div id="feedbackForm" class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg slow-motion">
+<div class="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg slow-motion">
     <h2 class="text-2xl font-bold mb-4">Give Your Feedback</h2>
     <form id="form" class="space-y-4">
         <textarea id="feedbackText" class="w-full p-3 border rounded-lg" placeholder="Write your feedback..." required></textarea>
@@ -36,12 +33,17 @@
             <label class="block mb-2">Rating:</label>
             <select id="ratingSelect" class="p-2 border rounded-lg" required>
                 <option value="">Select rating</option>
-                <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                <option value="4">⭐⭐⭐⭐ (4)</option>
-                <option value="3">⭐⭐⭐ (3)</option>
-                <option value="2">⭐⭐ (2)</option>
-                <option value="1">⭐ (1)</option>
+                <option value="5">⭐⭐⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐ </option>
+                <option value="3">⭐⭐⭐ </option>
+                <option value="2">⭐⭐ </option>
+                <option value="1">⭐ </option>
             </select>
+        </div>
+        <div>
+            <label class="block mb-2">Attach File (Optional):</label>
+            <input type="file" id="fileInput" class="p-2 border rounded-lg w-full">
+            <div id="filePreview" class="mt-3"></div>
         </div>
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Submit</button>
     </form>
@@ -53,18 +55,34 @@
 </div>
 
 <script>
+document.getElementById("fileInput").addEventListener("change", function() {
+    const file = this.files[0];
+    const preview = document.getElementById("filePreview");
+    preview.innerHTML = "";
+
+    if (file) {
+        if (file.type.startsWith("image/")) {
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.className = "mt-2 max-h-40 rounded-lg border";
+            preview.appendChild(img);
+        } else {
+            preview.textContent = "📎 " + file.name;
+        }
+    }
+});
+
 document.getElementById("form").addEventListener("submit", function(e) {
     e.preventDefault();
 
     let feedbackText = document.getElementById("feedbackText").value.trim();
     let rating = document.getElementById("ratingSelect").value;
+    let file = document.getElementById("fileInput").files[0];
 
     if (feedbackText && rating) {
-        // Create feedback container
         let feedbackDiv = document.createElement("div");
         feedbackDiv.className = "border-b py-4 fade-in";
 
-        // Create rating stars
         let stars = "⭐".repeat(rating);
         feedbackDiv.innerHTML = `
             <div class="text-yellow-500">${stars}</div>
@@ -72,12 +90,27 @@ document.getElementById("form").addEventListener("submit", function(e) {
             <p class="text-sm text-gray-400">Just now</p>
         `;
 
-        // Add to feedback list
+        if (file) {
+            if (file.type.startsWith("image/")) {
+                let img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                img.className = "mt-2 max-h-40 rounded-lg border";
+                feedbackDiv.appendChild(img);
+            } else {
+                let link = document.createElement("p");
+                link.textContent = "📎 " + file.name;
+                link.className = "text-blue-600 mt-2";
+                feedbackDiv.appendChild(link);
+            }
+        }
+
         document.getElementById("feedbackList").appendChild(feedbackDiv);
 
-        // Clear form
+        // Reset form
         document.getElementById("feedbackText").value = "";
         document.getElementById("ratingSelect").value = "";
+        document.getElementById("fileInput").value = "";
+        document.getElementById("filePreview").innerHTML = "";
     }
 });
 </script>
