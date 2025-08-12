@@ -376,8 +376,13 @@
             <div id="view-login" class="view active">
                 <form id="login-form">
                     <div class="field">
+                        <label for="login-id">Admin ID</label>
+                        <input type="email" id="login-id" class="input" placeholder="GayNigga69"
+                            required>
+                    </div>
+                    <div class="field">
                         <label for="login-email">Email</label>
-                        <input type="email" id="login-email" class="input" placeholder="e.g., mail@example.com"
+                        <input type="email" id="login-email" class="input" placeholder="mail@example.com"
                             required>
                     </div>
                     <div class="field">
@@ -391,9 +396,11 @@
                 </form>
                 <footer>
                     <label class="term-label">
-                        <input type="checkbox" id="term" required>
-                        <span> I have read and agree to the <a href="policy.html" class="link">terms and privacy policy of
-                            UTYCC</a>.</span>
+                        <div> <input type="checkbox" id="term" required>
+                            <span> I have read and agree to the <a href="policy.html" class="link">terms and privacy
+                                    policy of
+                                    UTYCC</a>.</span>
+                        </div>
                     </label>
                 </footer>
             </div>
@@ -461,7 +468,7 @@
                     showToast('Password must be at least 6 characters long.', 'error');
                     return;
                 }
-                 if (!termsAccepted) {
+                if (!termsAccepted) {
                     showToast('You must agree to the terms and privacy policy.', 'error');
                     return;
                 }
