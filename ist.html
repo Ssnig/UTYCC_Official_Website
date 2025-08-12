@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information Science and Technology (IST) - Our University</title>
+    <link rel="stylesheet" href="about.css">
+    <link rel="stylesheet" href="detail.css">
+</head>
+<body>
+    <header class="detail-hero" style="background-color:#2980b9">
+        <div class="detail-hero-content">
+            <h1>Information Science and Technology (IST)</h1>
+        </div>
+    </header>
+    <main class="container">
+        <section class="overview-section">
+            <h2>Program Overview</h2>
+            <p>
+                The Information Science and Technology (IST) program focuses on the intersection of business and technology. Students learn to analyze business requirements, design and implement information systems, manage databases, and ensure data security. This program prepares graduates to bridge the gap between technical teams and business operations, driving efficiency and innovation within organizations. You'll gain expertise in areas such as system analysis, database management, network administration, and project management.
+            </p>
+        </section>
+        <section class="career-section">
+            <h2>Career Opportunities</h2>
+            <ul>
+                <li><strong>Systems Analyst:</strong> Design and implement information systems.</li>
+                <li><strong>Database Administrator:</strong> Manage and maintain organizational databases.</li>
+                <li><strong>IT Consultant:</strong> Advise businesses on technology solutions.</li>
+                <li><strong>Business Intelligence Analyst:</strong> Analyze data to support business decisions.</li>
+                <li><strong>Network Administrator:</strong> Manage and secure computer networks.</li>
+            </ul>
+        </section>
+        <section class="facilities-section">
+            <h2>Facilities & Resources</h2>
+            <p>
+                Our IST students have access to state-of-the-art computer labs equipped with the latest software for database management, system design, and network simulation. We also provide access to specialized industry tools and platforms, along with dedicated faculty mentors who offer guidance on research projects and career paths. Collaborative workspaces are available for group projects and hands-on learning.
+            </p>
+        </section>
+        <div class="back-button-container">
+            <a href="index.html" class="back-button">← Back to Majors</a>
+        </div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+            const sections = document.querySelectorAll('.overview-section, .career-section, .facilities-section');
+            sections.forEach((section, index) => {
+                setTimeout(() => {
+                    section.classList.add('visible-content');
+                }, index * 200 + 100);
+            });
+            const careerItems = document.querySelectorAll('.career-section ul li');
+            careerItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('visible-content');
+                }, sections.length * 200 + index * 100 + 200);
+            });
+        });
+        window.addEventListener('scroll', () => {
+            const hero = document.querySelector('.detail-hero');
+            let scrollPosition = window.pageYOffset;
+            hero.style.backgroundPositionY = `${scrollPosition * 0.5}px`;
+        });
+    </script>
+</body>
+</html>
