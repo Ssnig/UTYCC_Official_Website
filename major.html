@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="./CSS/star-layout.css">
+    <link rel="stylesheet" href="./CSS/star-layout.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet" href="./CSS/footer.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./CSS/footer.css" />
     <script src="./JS/star-layout.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -55,69 +56,154 @@
   </head>
   <body class="bg-gray-100">
     <header class="bg-white shadow-md sticky top-0 z-50">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="#" class="flex items-center space-x-3">
-        <div class="p-2 rounded-lg">
-          <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+      <nav
+        class="container mx-auto px-6 py-3 flex justify-between items-center"
+      >
+        <a href="#" class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg">
+            <img
+              src="./Img/logo/utycc_logo_favicon/favicon.ico"
+              alt="UTYCC Logo"
+            />
+          </div>
+          <div>
+            <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
+            <span class="text-xs text-gray-500" data-lang-key="utycc_full_name"
+              >University of Technology ( Yatanarpon Cyber City )</span
+            >
+          </div>
+        </a>
+        <div class="hidden md:flex items-center space-x-6">
+          <a
+            href="#about"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+            data-lang-key="nav_about"
+            >ကျွန်ုပ်တို့အကြောင်း</a
+          >
+          <a
+            href="#programs"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+            data-lang-key="nav_programs"
+            >ပညာရေးအစီအစဉ်များ</a
+          >
+          <a
+            href="#collaboration"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+            data-lang-key="nav_collaboration"
+            >ပူးပေါင်းဆောင်ရွက်မှု</a
+          >
+          <a
+            href="#contact"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+            data-lang-key="nav_contact"
+            >ဆက်သွယ်ရန်</a
+          >
+          <!-- Language Switcher Dropdown - Updated Style -->
+          <div class="relative ml-4">
+            <div
+              class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition"
+            >
+              <i
+                class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"
+              ></i>
+              <select
+                id="language-switcher-desktop"
+                class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="my">မြန်မာ</option>
+                <option value="en">English</option>
+              </select>
+              <i
+                class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"
+              ></i>
+            </div>
+          </div>
         </div>
-        <div>
-          <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
-          <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology ( Yatanarpon
-            Cyber City )</span>
-        </div>
-      </a>
-      <div class="hidden md:flex items-center space-x-6">
-        <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
-        <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_programs">ပညာရေးအစီအစဉ်များ</a>
-        <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_collaboration">ပူးပေါင်းဆောင်ရွက်မှု</a>
-        <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_contact">ဆက်သွယ်ရန်</a>
-        <!-- Language Switcher Dropdown - Updated Style -->
-        <div class="relative ml-4">
-          <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-            <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
-            <select id="language-switcher-desktop"
-              class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button id="mobile-menu-button" class="md:hidden text-blue-900">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </nav>
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
+        <a
+          href="#about"
+          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+          data-lang-key="nav_about_mobile"
+          >ကျွန်ုပ်တို့အကြောင်း</a
+        >
+        <a
+          href="#programs"
+          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+          data-lang-key="nav_programs_mobile"
+          >ပညာရေးအစီအစဉ်များ</a
+        >
+        <a
+          href="#collaboration"
+          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+          data-lang-key="nav_collaboration_mobile"
+          >ပူးပေါင်းဆောင်ရွက်မှု</a
+        >
+        <a
+          href="#contact"
+          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+          data-lang-key="nav_contact_mobile"
+          >ဆက်သွယ်ရန်</a
+        >
+        <!-- Mobile Language Switcher - Updated Style -->
+        <div class="relative mt-4 pt-4 border-t">
+          <div
+            class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition"
+          >
+            <i
+              class="fas fa-globe text-gray-500 absolute left-4 z-10 pointer-events-none"
+            ></i>
+            <select
+              id="language-switcher-mobile"
+              class="w-full cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-2 pl-11 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
               <option value="my">မြန်မာ</option>
               <option value="en">English</option>
             </select>
-            <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+            <i
+              class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 z-10 pointer-events-none"
+            ></i>
           </div>
         </div>
       </div>
-      <button id="mobile-menu-button" class="md:hidden text-blue-900">
-        <i class="fas fa-bars text-2xl"></i>
-      </button>
-    </nav>
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-      <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
-      <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_programs_mobile">ပညာရေးအစီအစဉ်များ</a>
-      <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_collaboration_mobile">ပူးပေါင်းဆောင်ရွက်မှု</a>
-      <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_contact_mobile">ဆက်သွယ်ရန်</a>
-      <!-- Mobile Language Switcher - Updated Style -->
-      <div class="relative mt-4 pt-4 border-t">
-        <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-          <i class="fas fa-globe text-gray-500 absolute left-4 z-10 pointer-events-none"></i>
-          <select id="language-switcher-mobile"
-            class="w-full cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-2 pl-11 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
-          </select>
-          <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 z-10 pointer-events-none"></i>
+    </header>
+
+    <!-- ဒီကစရန် -->
+    <div
+      class="w-full max-w-7xl bg-white rounded-2xl shadow-xl overflow-hidden mx-auto mt-8"
+    >
+      <div class="md:flex">
+        <div class="md:shrink-0">
+          <img
+            id="IST"
+            class="h-48 w-full object-cover md:h-full md:w-48"
+            src="./Img/logo/IST.webp"
+            alt="Major Image"
+          />
+        </div>
+        <div class="p-8">
+          <div
+            class="uppercase tracking-wide text-sm text-indigo-500 font-semibold"
+          >
+            University of Technology (Yatanarpon Cyber City)
+          </div>
+          <a
+            id="major-title"
+            href="#"
+            class="block mt-1 text-lg leading-tight font-medium text-black hover:underline"
+            >here</a
+          >
+          <p id="major-description" class="mt-2 text-slate-500">
+            This is a placeholder for the major description. The JavaScript will
+            update this content dynamically.
+          </p>
         </div>
       </div>
     </div>
-  </header>
-
-    <!-- ဒီကစရန် -->
 
     <footer id="contact" class="bg-blue-900 text-white">
       <div class="container mx-auto px-6 py-12">
@@ -180,17 +266,44 @@
     </footer>
 
     <script>
+      // Function to update the major details panel
+      function updateMajorPanel(title, description, imageUrl) {
+        const majorTitle = document.getElementById("major-title");
+        const majorDescription = document.getElementById("major-description");
+        const majorImage = document.getElementById("major-image");
+
+        // Check if elements exist before updating
+        if (majorTitle) {
+          majorTitle.textContent = title;
+        }
+        if (majorDescription) {
+          majorDescription.textContent = description;
+        }
+        if (majorImage) {
+          majorImage.src = imageUrl;
+        }
+      }
+
+      // Example usage:
+      // You would call this function with data from an API or a local data source
+      updateMajorPanel(
+        "Information Science & Technology",
+        "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာဌာန (Department of Information Science and Technology - IST) သည် သတင်းအချက်အလက်စနစ်၊ ကွန်ပျူတာနည်းပညာနှင့် ဆက်သွယ်ရေးနည်းပညာများကို ပေါင်းစပ်လေ့လာသည့် အင်ဂျင်နီယာဘာသာရပ်ဖြစ်ပါတယ်။",
+        
+      );
       // --- DOM Elements ---
-      const navLinks = document.querySelectorAll('.nav-link');
-      const mobileMenuButton = document.getElementById('mobile-menu-button');
-      const mobileMenu = document.getElementById('mobile-menu');
+      const navLinks = document.querySelectorAll(".nav-link");
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
 
       // --- Event Listeners ---
-      navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
+      navLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
           // This ensures the page scrolls smoothly to the target section
-          const targetId = link.getAttribute('href');
-          document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+          const targetId = link.getAttribute("href");
+          document
+            .querySelector(targetId)
+            .scrollIntoView({ behavior: "smooth" });
         });
       });
 
