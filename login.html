@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign In - UTYCC</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="./CSS/loginSignup.css" />
+    <meta name="theme-color" content="#34495e" />
+    <!-- Use a modern, professional font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="shell" role="main" aria-label="Authentication">
+        <header class="g-head">
+            <img src="Img/logo/utycc_logo_favicon/logo.png" alt="UTYCC Logo" class="brand-logo" aria-hidden="true" />
+            <h1 id="auth-heading">Sign in</h1>
+            <p class="sub" id="auth-sub">to continue to UTYCC</p>
+        </header>
+
+        <!-- Login Section -->
+        <section id="view-login" class="view active" role="region" aria-labelledby="auth-heading">
+            <form id="login-form" novalidate>
+                <div class="field">
+                    <label for="login-email">Email</label>
+                    <input class="input" id="login-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="your.name@utycc.edu" required />
+                </div>
+                <div class="field">
+                    <label for="login-password">Password</label>
+                    <input class="input" id="login-password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required minlength="6" />
+                </div>
+                <div class="row">
+                    <!-- Link to the signup page -->
+                    <a class="link" href="signin.html">Create account</a>
+                    <button class="btn" type="submit">Sign in</button>
+                </div>
+            </form>
+        </section>
+
+        <footer>
+
+             <input type="radio" name="term" id="term" checked>I have read and agree to the<a href="policy.html" class="link">terms and privacy policy of UTYCC</a>
+
+            <!-- <label class="term-label">
+               
+            </label> -->
+        </footer>
+    </main>
+
+    <!-- Toast container -->
+    <div class="toast-wrap" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="./JS/loginSign.js"></script>
+</body>
+</html>

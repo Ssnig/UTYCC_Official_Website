@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign Up - UTYCC</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="CSS/loginSignup.css" />
+    <meta name="theme-color" content="#34495e" />
+    <!-- Use a modern, professional font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <main class="shell" role="main" aria-label="Authentication">
+        <header class="g-head">
+            <!-- aria-hidden="true" -->
+            <a href="./home.html">
+                <img src="Img/logo/utycc_logo_favicon/logo.png" alt="UTYCC Logo" class="brand-logo" />
+            </a>
+            <h1 id="auth-heading">Create your account</h1>
+            <p class="sub" id="auth-sub">Join our community!</p>
+        </header>
+
+        <!-- Signup Section -->
+        <section id="view-signup" class="view active" role="region" aria-labelledby="auth-heading">
+            <form id="signup-form" novalidate>
+                <div class="field">
+                    <label for="signup-name">Full name</label>
+                    <input class="input" id="signup-name" name="name" type="text" autocomplete="name"
+                        placeholder="John Doe" required />
+                </div>
+                <div class="field">
+                    <label for="signup-email">Email</label>
+                    <input class="input" id="signup-email" name="email" type="email" inputmode="email"
+                        autocomplete="email" placeholder="your.name@utycc.edu" required />
+                </div>
+                <div class="field">
+                    <label for="signup-password">Password</label>
+                    <input class="input" id="signup-password" name="password" type="password"
+                        autocomplete="new-password" placeholder="At least 8 characters" required minlength="8" />
+                </div>
+                <div class="field">
+                    <label for="signup-confirm">Confirm password</label>
+                    <input class="input" id="signup-confirm" name="confirm" type="password" autocomplete="new-password"
+                        placeholder="Re-type your password" required minlength="8" />
+                </div>
+                <div class="row">
+                    <!-- Link to the login page -->
+                    <a class="link" href="login.html">Sign in instead</a>
+                    <button class="btn" type="submit">Create account</button>
+                </div>
+            </form>
+        </section>
+
+        <footer>
+            <label class="term-label">
+                <input type="radio" name="term" id="term" checked>
+                I have read and agree to the <a href="policy.html" class="link">terms and privacy policy of UTYCC</a>
+            </label>
+        </footer>
+    </main>
+
+    <!-- Toast container -->
+    <div class="toast-wrap" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="JS/loginSign.js"></script>
+</body>
+
+</html>

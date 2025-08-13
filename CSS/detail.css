@@ -1,0 +1,152 @@
+/* Animations for Detail Pages Only */
+.detail-hero {
+    height: 500px;
+    background-attachment: fixed;
+}
+
+.detail-hero-content h1 {
+    font-size: 3em;
+    font-weight: 700;
+}
+
+/* The main content sections */
+.overview-section, .career-section, .facilities-section {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    padding: 30px;
+    margin-bottom: 40px;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.visible-content {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.overview-section h2, .career-section h2, .facilities-section h2 {
+    font-size: 2em;
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.overview-section p, .facilities-section p {
+    font-size: 1.1em;
+    line-height: 1.8;
+}
+
+.career-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.career-section ul li {
+    background-color: var(--light-background);
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 1.05em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.career-section ul li.visible-content {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.career-section ul li strong {
+    color: var(--accent-color);
+    margin-right: 8px;
+}
+
+/* Back Button */
+.back-button-container {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 40px;
+}
+
+.back-button {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1.1em;
+    animation: pulse 2s infinite;
+}
+
+.back-button:hover {
+    background-color: #1e6fa3;
+    transform: translateY(-2px);
+}
+
+/* CSS Keyframe Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(41, 128, 185, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(41, 128, 185, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(41, 128, 185, 0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .detail-hero-content h1 {
+        font-size: 1.8em;
+    }
+
+    .overview-section h2, .career-section h2, .facilities-section h2 {
+        font-size: 1.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .detail-hero {
+        height: 400px;
+    }
+
+    .overview-section, .career-section, .facilities-section {
+        padding: 20px;
+    }
+
+    .back-button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+}
