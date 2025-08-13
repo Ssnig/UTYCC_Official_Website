@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard — Courses</title>
+  <meta name="description" content="Admin dashboard for a student registration system with search, sort, CRUD, and CSV import/export. No frameworks, pure HTML/CSS/JS." />
+  <link rel="canonical" href="/admin.html" />
+
+  <meta property="og:title" content="Admin Dashboard — Student Registration System" />
+  <meta property="og:description" content="Manage students, courses, and registrations. Search, sort, CRUD, CSV import/export. Pure HTML/CSS/JS." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <style>
+    :root {
+      /* Light theme (HSL) */
+      --bg: 0 0% 100%;
+      --fg: 222 47% 11%;
+      --muted: 214 32% 91%;
+      --muted-foreground: 215 17% 47%;
+      --primary: 261 80% 55%; /* violet accent */
+      --primary-foreground: 0 0% 100%;
+      --secondary: 210 40% 96%;
+      --secondary-foreground: 222 47% 11%;
+      --card: 0 0% 100%;
+      --card-foreground: 222 47% 11%;
+      --border: 214 32% 91%;
+      --ring: 262 83% 58%;
+      --success: 153 61% 34%;
+      --warning: 43 96% 56%;
+      --danger: 0 84% 60%;
+      --radius: 12px;
+
+      /* Motion */
+      --ease: cubic-bezier(.2,.8,.2,1);
+      --duration: 220ms;
+
+      /* Layered gradient for header */
+      --gradient: linear-gradient(135deg, hsl(var(--primary)/0.12), hsl(200 100% 50%/0.10)), radial-gradient(1200px 600px at var(--mx, 50%) var(--my, 0%), hsl(var(--primary)/0.15), transparent 60%);
+
+      /* Shadows */
+      --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.25);
+      --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: 222 47% 8%;
+        --fg: 210 40% 96%;
+        --muted: 217 33% 18%;
+        --muted-foreground: 215 20% 65%;
+        --primary: 261 83% 70%;
+        --primary-foreground: 222 47% 11%;
+        --secondary: 220 18% 12%;
+        --secondary-foreground: 210 40% 96%;
+        --card: 222 40% 9%;
+        --card-foreground: 210 40% 96%;
+        --border: 220 14% 20%;
+        --ring: 262 83% 68%;
+        --success: 153 61% 45%;
+        --warning: 43 96% 62%;
+        --danger: 0 84% 66%;
+        --gradient: linear-gradient(135deg, hsl(var(--primary)/0.16), hsl(200 100% 50%/0.12)), radial-gradient(1200px 600px at var(--mx, 50%) var(--my, 0%), hsl(var(--primary)/0.22), transparent 60%);
+        --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.35);
+        --shadow-card: 0 10px 20px -10px hsl(220 40% 5% / 0.6);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: hsl(var(--fg));
+      background: hsl(var(--bg));
+      font: 500 16px/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    /* Layout */
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      grid-template-rows: 72px 1fr;
+      grid-template-areas:
+        "sidebar header"
+        "sidebar main";
+      min-height: 100dvh;
+    }
+    .sidebar {
+      grid-area: sidebar;
+      border-right: 1px solid hsl(var(--border));
+      background: hsl(var(--secondary));
+      padding: 20px 16px;
+      position: sticky; top: 0; height: 100dvh;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px;
+      background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); box-shadow: var(--shadow-soft);
+    }
+    .brand-badge { width: 12px; height: 12px; border-radius: 4px; background: hsl(var(--primary)); box-shadow: 0 0 0 4px hsl(var(--primary)/0.15); }
+    .brand h1 { font-size: 16px; margin: 0; letter-spacing: .2px; }
+    nav { margin-top: 18px; display: grid; gap: 8px; }
+    .nav-link { padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border var(--duration) var(--ease); }
+    .nav-link:hover { background: hsl(var(--bg)); color: hsl(var(--fg)); border-color: hsl(var(--border)); }
+    .nav-link.active { background: hsl(var(--bg)); color: hsl(var(--fg)); border-color: hsl(var(--border)); box-shadow: var(--shadow-card); }
+
+    .header {
+      grid-area: header;
+      position: sticky; top: 0; z-index: 10;
+      background: var(--gradient);
+      border-bottom: 1px solid hsl(var(--border));
+      display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+      backdrop-filter: saturate(1.2) blur(8px);
+    }
+    .search {
+      flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px; box-shadow: var(--shadow-card);
+    }
+    .search input { width: 100%; border: none; outline: none; background: transparent; color: hsl(var(--fg)); }
+
+    .userbar { display: flex; gap: 8px; align-items: center; }
+
+    .btn {
+      --bcol: var(--border);
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 14px; border-radius: 12px; border: 1px solid hsl(var(--bcol));
+      background: hsl(var(--bg)); color: hsl(var(--fg));
+      box-shadow: var(--shadow-card);
+      transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease), background var(--duration) var(--ease), color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+      cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -12px hsl(var(--fg)/0.25); }
+    .btn:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+    .btn.primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--primary)); }
+    .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
+    .btn.ghost { background: transparent; border-color: hsl(var(--border)); }
+
+    .main { grid-area: main; padding: 20px; }
+
+    .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .card { background: hsl(var(--card)); color: hsl(var(--card-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); }
+    .card h3 { margin: 0 0 6px; font-size: 14px; color: hsl(var(--muted-foreground)); font-weight: 600; }
+    .card .value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+
+    .section { margin-top: 24px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .section-header h2 { font-size: 20px; margin: 0; }
+
+    /* Table */
+    .table-wrap { overflow: auto; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); box-shadow: var(--shadow-card); }
+    table { width: 100%; border-collapse: collapse; min-width: 900px; }
+    thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--secondary)); position: sticky; top: 0; z-index: 1; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid hsl(var(--border)); }
+    tbody tr:hover { background: hsl(var(--secondary)); }
+
+    .badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .02em; border: 1px solid hsl(var(--border)); }
+    .badge.success { background: hsl(var(--success)/0.12); color: hsl(var(--success)); border-color: hsl(var(--success)/0.3); }
+    .badge.warning { background: hsl(var(--warning)/0.12); color: hsl(var(--warning)); border-color: hsl(var(--warning)/0.3); }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar .spacer { flex: 1; }
+
+    /* Modal */
+    dialog { border: none; border-radius: 16px; padding: 0; background: hsl(var(--card)); color: hsl(var(--card-foreground)); width: min(640px, 92vw); box-shadow: 0 30px 100px -40px hsl(var(--fg)/0.5); }
+    dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2px); }
+    .modal-header { padding: 16px 18px; border-bottom: 1px solid hsl(var(--border)); display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 18px; display: grid; gap: 12px; }
+    .modal-footer { padding: 14px 18px; border-top: 1px solid hsl(var(--border)); display: flex; justify-content: flex-end; gap: 8px; }
+
+    .field { display: grid; gap: 6px; }
+    .field label { font-size: 13px; color: hsl(var(--muted-foreground)); }
+    .field input, .field select { padding: 10px 12px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--bg)); color: hsl(var(--fg)); outline: none; }
+    .field input:focus, .field select:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 3px hsl(var(--ring)/0.25); }
+
+    .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
+    .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
+
+    /* Responsive */
+    @media (max-width: 1000px) {
+      .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 780px) {
+      .app { grid-template-columns: 1fr; grid-template-areas:
+          "header"
+          "main"; }
+      .sidebar { position: static; height: auto; display: none; }
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Student Registration Admin Dashboard",
+      "url": "/admin.html",
+      "applicationCategory": "EducationApplication",
+      "operatingSystem": "All"
+    }
+  </script>
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="Sidebar navigation">
+      <div class="brand" aria-label="Brand">
+        <div class="brand-badge" aria-hidden="true"></div>
+        <h1>Student Registration</h1>
+      </div>
+      <nav>
+        <a class="nav-link" href="./admin_dashboard.html">Students</a>
+        <a class="nav-link active" href="#courses">Courses</a>
+        <a class="nav-link" href="#registrations">Registrations</a>
+        <a class="nav-link" href="#reports">Reports</a>
+        <a class="nav-link" href="#settings">Settings</a>
+      </nav>
+    </aside>
