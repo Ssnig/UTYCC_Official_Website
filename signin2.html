@@ -394,13 +394,7 @@
                         <button type="submit" class="btn">Sign In</button>
                     </div>
                 </form>
-                <footer>
-                    <label class="term-label">
-                        <input type="checkbox" id="term" checked disabled>
-                        <span> I have read and agree to the <a href="policy.html" class="link">terms and privacy policy of
-                            UTYCC</a>.</span>
-                    </label>
-                </footer>
+                
             </div>
         </div>
 
@@ -412,31 +406,16 @@
     </div>
 
     <script>
-        // External JS is now embedded here
+        // Simplified JS for the Login Form only
         (function () {
+            // Helper function to select elements
             const $ = (sel, root = document) => root.querySelector(sel);
 
-            const heading = $('#auth-heading');
-            const sub = $('#auth-sub');
-            const viewLogin = $('#view-login');
-            const toLogin = $('#to-login');
+            // Get references to DOM elements
             const loginForm = $('#login-form');
             const toastWrap = $('.toast-wrap');
 
-            function setView(mode) {
-                const isLogin = mode === 'login';
-                viewLogin.classList.toggle('active', isLogin);
-                viewSignup.classList.toggle('active', !isLogin);
-                viewSignup.setAttribute('aria-hidden', String(isLogin));
-                heading.textContent = isLogin ? 'Sign in' : 'Create your account';
-                sub.textContent = isLogin ? 'to continue to UTYCC' : 'Join our community!';
-            }
-
-            toLogin.addEventListener('click', (e) => {
-                e.preventDefault();
-                setView('login');
-            });
-
+            // Function to create and display a toast message
             function showToast(message, type = 'success', duration = 4000) {
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
@@ -448,16 +427,25 @@
                 setTimeout(removeToast, duration);
             }
 
+            // Validation helper for email format
             function isValidEmail(email) {
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
             }
 
+            // Login form submission handler
             loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
+                e.preventDefault(); // Prevent actual form submission for the demo
+
+                // Get form values
+                const adminId = $('#login-id', loginForm).value.trim();
                 const email = $('#login-email', loginForm).value.trim();
                 const password = $('#login-password', loginForm).value;
-                const termsAccepted = $('#term').checked;
-
+                
+                // Basic Validation
+                if (!adminId) {
+                    showToast('Please enter your Admin ID.', 'error');
+                    return;
+                }
                 if (!isValidEmail(email)) {
                     showToast('Please enter a valid email address.', 'error');
                     return;
@@ -466,10 +454,9 @@
                     showToast('Password must be at least 6 characters long.', 'error');
                     return;
                 }
-                if (!termsAccepted) {
-                    showToast('You must agree to the terms and privacy policy.', 'error');
-                    return;
-                }
+                
+                // If validation passes, show success message.
+                // In a real application, you would send this to a server.
                 showToast('Sign in successful. Welcome back!', 'success');
             });
         })();
