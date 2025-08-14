@@ -226,7 +226,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <a class="nav-link" href="#registrations">Registrations</a>
         <a class="nav-link" href="#reports">Reports</a>
         <a class="nav-link" href="#settings">Settings</a>
-        <a class="nav-link" href="../signin.php" class="logout-btn">Logout</a>
+        <a class="nav-link" href="../logout.php" class="logout-btn">Logout</a>
       </nav>
     </aside>
 
