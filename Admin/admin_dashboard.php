@@ -1,0 +1,684 @@
+<?php
+// Start the session to check the login state.
+session_start();
+
+// Check if the user is not logged in. If so, redirect to the login page.
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("location: ../signin.php");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard — Student Registration System</title>
+  <meta name="description" content="Admin dashboard for a student registration system with search, sort, CRUD, and CSV import/export. No frameworks, pure HTML/CSS/JS." />
+  <link rel="canonical" href="/admin.html" />
+
+  <meta property="og:title" content="Admin Dashboard — Student Registration System" />
+  <meta property="og:description" content="Manage students, courses, and registrations. Search, sort, CRUD, CSV import/export. Pure HTML/CSS/JS." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <style>
+    :root {
+      /* Light theme (HSL) */
+      --bg: 0 0% 100%;
+      --fg: 222 47% 11%;
+      --muted: 214 32% 91%;
+      --muted-foreground: 215 17% 47%;
+      --primary: 261 80% 55%; /* violet accent */
+      --primary-foreground: 0 0% 100%;
+      --secondary: 210 40% 96%;
+      --secondary-foreground: 222 47% 11%;
+      --card: 0 0% 100%;
+      --card-foreground: 222 47% 11%;
+      --border: 214 32% 91%;
+      --ring: 262 83% 58%;
+      --success: 153 61% 34%;
+      --warning: 43 96% 56%;
+      --danger: 0 84% 60%;
+      --radius: 12px;
+
+      /* Motion */
+      --ease: cubic-bezier(.2,.8,.2,1);
+      --duration: 220ms;
+
+      /* Layered gradient for header */
+      --gradient: linear-gradient(135deg, hsl(var(--primary)/0.12), hsl(200 100% 50%/0.10)), radial-gradient(1200px 600px at var(--mx, 50%) var(--my, 0%), hsl(var(--primary)/0.15), transparent 60%);
+
+      /* Shadows */
+      --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.25);
+      --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: 222 47% 8%;
+        --fg: 210 40% 96%;
+        --muted: 217 33% 18%;
+        --muted-foreground: 215 20% 65%;
+        --primary: 261 83% 70%;
+        --primary-foreground: 222 47% 11%;
+        --secondary: 220 18% 12%;
+        --secondary-foreground: 210 40% 96%;
+        --card: 222 40% 9%;
+        --card-foreground: 210 40% 96%;
+        --border: 220 14% 20%;
+        --ring: 262 83% 68%;
+        --success: 153 61% 45%;
+        --warning: 43 96% 62%;
+        --danger: 0 84% 66%;
+        --gradient: linear-gradient(135deg, hsl(var(--primary)/0.16), hsl(200 100% 50%/0.12)), radial-gradient(1200px 600px at var(--mx, 50%) var(--my, 0%), hsl(var(--primary)/0.22), transparent 60%);
+        --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.35);
+        --shadow-card: 0 10px 20px -10px hsl(220 40% 5% / 0.6);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: hsl(var(--fg));
+      background: hsl(var(--bg));
+      font: 500 16px/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    /* Layout */
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      grid-template-rows: 72px 1fr;
+      grid-template-areas:
+        "sidebar header"
+        "sidebar main";
+      min-height: 100dvh;
+    }
+    .sidebar {
+      grid-area: sidebar;
+      border-right: 1px solid hsl(var(--border));
+      background: hsl(var(--secondary));
+      padding: 20px 16px;
+      position: sticky; top: 0; height: 100dvh;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px;
+      background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); box-shadow: var(--shadow-soft);
+    }
+    .brand-badge { width: 12px; height: 12px; border-radius: 4px; background: hsl(var(--primary)); box-shadow: 0 0 0 4px hsl(var(--primary)/0.15); }
+    .brand h1 { font-size: 16px; margin: 0; letter-spacing: .2px; }
+    nav { margin-top: 18px; display: grid; gap: 8px; }
+    .nav-link { padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border var(--duration) var(--ease); }
+    .nav-link:hover { background: hsl(var(--bg)); color: hsl(var(--fg)); border-color: hsl(var(--border)); }
+    .nav-link.active { background: hsl(var(--bg)); color: hsl(var(--fg)); border-color: hsl(var(--border)); box-shadow: var(--shadow-card); }
+
+    .header {
+      grid-area: header;
+      position: sticky; top: 0; z-index: 10;
+      background: var(--gradient);
+      border-bottom: 1px solid hsl(var(--border));
+      display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+      backdrop-filter: saturate(1.2) blur(8px);
+    }
+    .search {
+      flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px; box-shadow: var(--shadow-card);
+    }
+    .search input { width: 100%; border: none; outline: none; background: transparent; color: hsl(var(--fg)); }
+
+    .userbar { display: flex; gap: 8px; align-items: center; }
+
+    .btn {
+      --bcol: var(--border);
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 14px; border-radius: 12px; border: 1px solid hsl(var(--bcol));
+      background: hsl(var(--bg)); color: hsl(var(--fg));
+      box-shadow: var(--shadow-card);
+      transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease), background var(--duration) var(--ease), color var(--duration) var(--ease), border-color var(--duration) var(--ease);
+      cursor: pointer;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -12px hsl(var(--fg)/0.25); }
+    .btn:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+    .btn.primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--primary)); }
+    .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
+    .btn.ghost { background: transparent; border-color: hsl(var(--border)); }
+
+    .main { grid-area: main; padding: 20px; }
+
+    .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .card { background: hsl(var(--card)); color: hsl(var(--card-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); }
+    .card h3 { margin: 0 0 6px; font-size: 14px; color: hsl(var(--muted-foreground)); font-weight: 600; }
+    .card .value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+
+    .section { margin-top: 24px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .section-header h2 { font-size: 20px; margin: 0; }
+
+    /* Table */
+    .table-wrap { overflow: auto; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); box-shadow: var(--shadow-card); }
+    table { width: 100%; border-collapse: collapse; min-width: 900px; }
+    thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--secondary)); position: sticky; top: 0; z-index: 1; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid hsl(var(--border)); }
+    tbody tr:hover { background: hsl(var(--secondary)); }
+
+    .badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .02em; border: 1px solid hsl(var(--border)); }
+    .badge.success { background: hsl(var(--success)/0.12); color: hsl(var(--success)); border-color: hsl(var(--success)/0.3); }
+    .badge.warning { background: hsl(var(--warning)/0.12); color: hsl(var(--warning)); border-color: hsl(var(--warning)/0.3); }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar .spacer { flex: 1; }
+
+    /* Modal */
+    dialog { border: none; border-radius: 16px; padding: 0; background: hsl(var(--card)); color: hsl(var(--card-foreground)); width: min(640px, 92vw); box-shadow: 0 30px 100px -40px hsl(var(--fg)/0.5); }
+    dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2px); }
+    .modal-header { padding: 16px 18px; border-bottom: 1px solid hsl(var(--border)); display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 18px; display: grid; gap: 12px; }
+    .modal-footer { padding: 14px 18px; border-top: 1px solid hsl(var(--border)); display: flex; justify-content: flex-end; gap: 8px; }
+
+    .field { display: grid; gap: 6px; }
+    .field label { font-size: 13px; color: hsl(var(--muted-foreground)); }
+    .field input, .field select { padding: 10px 12px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--bg)); color: hsl(var(--fg)); outline: none; }
+    .field input:focus, .field select:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 3px hsl(var(--ring)/0.25); }
+
+    .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
+    .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
+
+    /* Responsive */
+    @media (max-width: 1000px) {
+      .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 780px) {
+      .app { grid-template-columns: 1fr; grid-template-areas:
+          "header"
+          "main"; }
+      .sidebar { position: static; height: auto; display: none; }
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Student Registration Admin Dashboard",
+      "url": "/admin.html",
+      "applicationCategory": "EducationApplication",
+      "operatingSystem": "All"
+    }
+  </script>
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="Sidebar navigation">
+      <div class="brand" aria-label="Brand">
+        <div class="brand-badge" aria-hidden="true"></div>
+        <h1>Student Registration</h1>
+      </div>
+      <nav>
+        <a class="nav-link active" href="#students">Students</a>
+        <a class="nav-link" href="./courses.html">Courses</a>
+        <a class="nav-link" href="#registrations">Registrations</a>
+        <a class="nav-link" href="#reports">Reports</a>
+        <a class="nav-link" href="#settings">Settings</a>
+        <a class="nav-link" href="../signin.php" class="logout-btn">Logout</a>
+      </nav>
+    </aside>
+
+    <header class="header" id="header">
+      <form class="search" role="search" aria-label="Search students" onsubmit="event.preventDefault()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/></svg>
+        <input id="search" name="q" placeholder="Search students by name or email..." autocomplete="off" />
+      </form>
+      <div class="userbar">
+        <button class="btn ghost" id="importBtn" title="Import CSV" aria-label="Import CSV">Import</button>
+        <button class="btn ghost" id="exportBtn" title="Export CSV" aria-label="Export CSV">Export</button>
+        <button class="btn primary" id="addBtn" aria-label="Add student">Add Student</button>
+      </div>
+    </header>
+
+    <main class="main" id="main">
+      <section class="cards" aria-label="Overview">
+        <article class="card" aria-live="polite">
+          <h3>Total Students</h3>
+          <div class="value" id="statTotal">0</div>
+        </article>
+        <article class="card">
+          <h3>Active</h3>
+          <div class="value" id="statActive">0</div>
+        </article>
+        <article class="card">
+          <h3>Pending</h3>
+          <div class="value" id="statPending">0</div>
+        </article>
+        <article class="card">
+          <h3>Today</h3>
+          <div class="value" id="statToday">0</div>
+        </article>
+      </section>
+
+      <section class="section" id="students">
+        <div class="section-header">
+          <h2>Students</h2>
+          <div class="toolbar">
+            <select id="statusFilter" aria-label="Filter by status">
+              <option value="">All statuses</option>
+              <option value="active">Active</option>
+              <option value="pending">Pending</option>
+            </select>
+            <div class="spacer"></div>
+            <button class="btn ghost" id="bulkDeleteBtn" disabled>Delete Selected</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-describedby="students table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll" aria-label="Select all" /></th>
+                <th data-sort="name" class="sortable">Name</th>
+                <th data-sort="email" class="sortable">Email</th>
+                <th data-sort="course" class="sortable">Course</th>
+                <th data-sort="status" class="sortable">Status</th>
+                <th data-sort="createdAt" class="sortable">Registered</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div class="info" id="pageInfo">0–0 of 0</div>
+          <button class="btn ghost" id="prevPage">Prev</button>
+          <button class="btn ghost" id="nextPage">Next</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal: Add/Edit Student -->
+  <dialog id="studentModal" aria-modal="true">
+    <form method="dialog" id="studentForm">
+      <div class="modal-header">
+        <strong id="modalTitle">Add Student</strong>
+        <button class="btn ghost" type="button" id="closeModal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="studentId" />
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" required placeholder="Jane Doe" />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" required type="email" placeholder="jane@example.com" />
+        </div>
+        <div class="field">
+          <label for="course">Course</label>
+          <input id="course" required placeholder="Computer Science" />
+        </div>
+        <div class="field">
+          <label for="status">Status</label>
+          <select id="status" required>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn ghost" value="cancel" type="button" id="cancelModal">Cancel</button>
+        <button class="btn primary" value="default" id="saveStudent">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <input type="file" id="fileInput" accept=".csv" hidden />
+
+  <script defer>
+    // Signature interaction: Responsive gradient following the pointer on header
+    const header = document.getElementById('header');
+    header?.addEventListener('pointermove', (e) => {
+      const rect = header.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      document.documentElement.style.setProperty('--mx', x + '%');
+      document.documentElement.style.setProperty('--my', y + '%');
+    });
+
+    // Simple state with localStorage
+    const STORAGE_KEY = 'srs_students_v1';
+    const PAGE_SIZE = 8;
+
+    const state = {
+      students: [],
+      q: '',
+      status: '',
+      page: 1,
+      sort: { key: 'createdAt', dir: 'desc' },
+      selected: new Set(),
+    };
+
+    function uid() { return Math.random().toString(36).slice(2, 10); }
+    function todayStr(d = new Date()) { return d.toISOString(); }
+
+    function load() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      try { return JSON.parse(raw); } catch { return []; }
+    }
+    function save(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function seedIfEmpty() {
+      const cur = load();
+      if (cur.length) return;
+      const samples = [
+        ['Alice Johnson', 'alice@uni.edu', 'Computer Science', 'active'],
+        ['Brian Kim', 'brian@uni.edu', 'Mathematics', 'pending'],
+        ['Carla Gomez', 'carla@uni.edu', 'Physics', 'active'],
+        ['David Chen', 'david@uni.edu', 'Chemistry', 'active'],
+        ['Elena Petrova', 'elena@uni.edu', 'Economics', 'pending'],
+        ['Fatima Zahra', 'fatima@uni.edu', 'Biology', 'active'],
+        ['George Smith', 'george@uni.edu', 'Philosophy', 'pending'],
+        ['Hina Patel', 'hina@uni.edu', 'Data Science', 'active'],
+        ['Ivan Novak', 'ivan@uni.edu', 'Engineering', 'active'],
+        ['Julia Park', 'julia@uni.edu', 'Literature', 'pending']
+      ];
+      const seeded = samples.map(([name, email, course, status], i) => ({
+        id: uid(), name, email, course, status, createdAt: todayStr(new Date(Date.now() - (i*86400000)))
+      }));
+      save(seeded);
+    }
+
+    function formatDate(iso) {
+      try { const d = new Date(iso); return d.toLocaleDateString(); } catch { return iso; }
+    }
+
+    function cmp(a, b, key) {
+      const av = a[key]; const bv = b[key];
+      if (key === 'createdAt') return new Date(av) - new Date(bv);
+      return ('' + av).localeCompare('' + bv);
+    }
+
+    // DOM refs
+    const tbody = document.getElementById('tbody');
+    const search = document.getElementById('search');
+    const statusFilter = document.getElementById('statusFilter');
+    const selectAll = document.getElementById('selectAll');
+    const prevPage = document.getElementById('prevPage');
+    const nextPage = document.getElementById('nextPage');
+    const pageInfo = document.getElementById('pageInfo');
+    const addBtn = document.getElementById('addBtn');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const importBtn = document.getElementById('importBtn');
+    const exportBtn = document.getElementById('exportBtn');
+
+    const statTotal = document.getElementById('statTotal');
+    const statActive = document.getElementById('statActive');
+    const statPending = document.getElementById('statPending');
+    const statToday = document.getElementById('statToday');
+
+    // Modal refs
+    const modal = document.getElementById('studentModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeModal = document.getElementById('closeModal');
+    const cancelModal = document.getElementById('cancelModal');
+    const saveStudent = document.getElementById('saveStudent');
+    const studentId = document.getElementById('studentId');
+    const nameEl = document.getElementById('name');
+    const emailEl = document.getElementById('email');
+    const courseEl = document.getElementById('course');
+    const statusEl = document.getElementById('status');
+
+    function openModal(mode, student = null) {
+      modalTitle.textContent = mode === 'edit' ? 'Edit Student' : 'Add Student';
+      if (mode === 'edit' && student) {
+        studentId.value = student.id; nameEl.value = student.name; emailEl.value = student.email; courseEl.value = student.course; statusEl.value = student.status;
+      } else {
+        studentId.value = ''; nameEl.value = ''; emailEl.value = ''; courseEl.value = ''; statusEl.value = 'active';
+      }
+      modal.showModal();
+      nameEl.focus();
+    }
+    function closeModalSafe() { modal.close(); }
+
+    function getFilteredSorted() {
+      const q = state.q.toLowerCase();
+      const status = state.status;
+      const base = state.students.filter(s =>
+        (!q || s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)) &&
+        (!status || s.status === status)
+      );
+      const { key, dir } = state.sort;
+      base.sort((a,b) => {
+        const res = cmp(a,b,key);
+        return dir === 'asc' ? res : -res;
+      });
+      return base;
+    }
+
+    function renderStats() {
+      const total = state.students.length;
+      const active = state.students.filter(s=>s.status==='active').length;
+      const pending = state.students.filter(s=>s.status==='pending').length;
+      const today = state.students.filter(s=> new Date(s.createdAt).toDateString() === new Date().toDateString()).length;
+      statTotal.textContent = total;
+      statActive.textContent = active;
+      statPending.textContent = pending;
+      statToday.textContent = today;
+    }
+
+    function renderTable() {
+      const rows = getFilteredSorted();
+      const total = rows.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      state.page = Math.min(state.page, totalPages);
+      const start = (state.page - 1) * PAGE_SIZE;
+      const pageRows = rows.slice(start, start + PAGE_SIZE);
+
+      tbody.innerHTML = '';
+      for (const s of pageRows) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="checkbox" data-id="${s.id}" ${state.selected.has(s.id)?'checked':''} /></td>
+          <td>${s.name}</td>
+          <td>${s.email}</td>
+          <td>${s.course}</td>
+          <td>${s.status === 'active' ? '<span class="badge success">Active</span>' : '<span class="badge warning">Pending</span>'}</td>
+          <td>${formatDate(s.createdAt)}</td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn ghost" data-edit="${s.id}">Edit</button>
+              <button class="btn destructive" data-del="${s.id}">Delete</button>
+            </div>
+          </td>`;
+        tbody.appendChild(tr);
+      }
+
+      pageInfo.textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
+      prevPage.disabled = state.page <= 1;
+      nextPage.disabled = state.page >= totalPages;
+
+      // Checkbox handlers
+      tbody.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const id = e.target.getAttribute('data-id');
+          if (e.target.checked) state.selected.add(id); else state.selected.delete(id);
+          bulkDeleteBtn.disabled = state.selected.size === 0;
+        })
+      });
+
+      // Action handlers
+      tbody.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-edit');
+        const s = state.students.find(x => x.id === id);
+        if (s) openModal('edit', s);
+      }));
+      tbody.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-del');
+        if (!confirm('Delete this student?')) return;
+        state.students = state.students.filter(x => x.id !== id);
+        state.selected.delete(id);
+        save(state.students);
+        render();
+      }));
+
+      // Update selectAll based on page
+      const pageIds = new Set(pageRows.map(s=>s.id));
+      const allChecked = pageRows.length > 0 && pageRows.every(s => state.selected.has(s.id));
+      selectAll.checked = allChecked;
+      selectAll.indeterminate = !allChecked && Array.from(state.selected).some(id => pageIds.has(id));
+
+      bulkDeleteBtn.disabled = state.selected.size === 0;
+    }
+
+    function render() {
+      renderStats();
+      renderTable();
+    }
+
+    // Sorting
+    document.querySelectorAll('th.sortable').forEach(th => {
+      th.style.cursor = 'pointer';
+      th.title = 'Sort';
+      th.addEventListener('click', () => {
+        const key = th.getAttribute('data-sort');
+        if (state.sort.key === key) {
+          state.sort.dir = state.sort.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+          state.sort.key = key; state.sort.dir = 'asc';
+        }
+        render();
+      });
+    });
+
+    // Filters
+    search.addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
+    statusFilter.addEventListener('change', (e) => { state.status = e.target.value; state.page = 1; render(); });
+
+    // Pagination
+    prevPage.addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
+    nextPage.addEventListener('click', () => { state.page++; render(); });
+
+    // Select all for current page
+    selectAll.addEventListener('change', () => {
+      const rows = getFilteredSorted();
+      const start = (state.page - 1) * PAGE_SIZE;
+      const pageRows = rows.slice(start, start + PAGE_SIZE);
+      for (const s of pageRows) {
+        if (selectAll.checked) state.selected.add(s.id); else state.selected.delete(s.id);
+      }
+      renderTable();
+    });
+
+    // Bulk delete
+    bulkDeleteBtn.addEventListener('click', () => {
+      if (!state.selected.size) return;
+      if (!confirm(`Delete ${state.selected.size} selected student(s)?`)) return;
+      state.students = state.students.filter(s => !state.selected.has(s.id));
+      state.selected.clear();
+      save(state.students);
+      render();
+    });
+
+    // Modal lifecycle
+    addBtn.addEventListener('click', () => openModal('add'));
+    closeModal.addEventListener('click', closeModalSafe);
+    cancelModal.addEventListener('click', closeModalSafe);
+
+    saveStudent.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!nameEl.value || !emailEl.value || !courseEl.value) return;
+      const id = studentId.value;
+      if (id) {
+        // Update
+        const i = state.students.findIndex(s => s.id === id);
+        if (i !== -1) {
+          state.students[i] = { ...state.students[i], name: nameEl.value, email: emailEl.value, course: courseEl.value, status: statusEl.value };
+        }
+      } else {
+        // Create
+        state.students.unshift({ id: uid(), name: nameEl.value, email: emailEl.value, course: courseEl.value, status: statusEl.value, createdAt: todayStr() });
+      }
+      save(state.students);
+      closeModalSafe();
+      render();
+    });
+
+    // CSV export/import
+    function toCSV(rows) {
+      const header = ['id','name','email','course','status','createdAt'];
+      const lines = [header.join(',')];
+      for (const s of rows) {
+        lines.push(header.map(k => '"' + String(s[k]).replace(/"/g,'""') + '"').join(','));
+      }
+      return lines.join('\n');
+    }
+    function download(filename, text) {
+      const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    exportBtn.addEventListener('click', () => {
+      download('students.csv', toCSV(state.students));
+    });
+
+    const fileInput = document.getElementById('fileInput');
+    importBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const text = reader.result; if (typeof text !== 'string') return;
+          const [headerLine, ...lines] = text.split(/\r?\n/).filter(Boolean);
+          const headers = headerLine.split(',').map(h => h.replace(/^\"|\"$/g,''));
+          const req = ['id','name','email','course','status','createdAt'];
+          if (!req.every(k => headers.includes(k))) { alert('CSV headers must include: ' + req.join(', ')); return; }
+          const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
+          const imported = lines.map(line => {
+            const cells = line.match(/\"(?:[^\"]|\"\")*\"|[^,]+/g)?.map(c => c.replace(/^\"|\"$/g,'').replace(/\"\"/g,'"')) || [];
+            const obj = {};
+            for (const k of req) obj[k] = cells[idx[k]] || '';
+            if (!obj.id) obj.id = uid();
+            if (!obj.createdAt) obj.createdAt = todayStr();
+            return obj;
+          });
+          // Merge by id, prefer imported
+          const map = new Map(state.students.map(s=>[s.id,s]));
+          for (const s of imported) map.set(s.id, { ...map.get(s.id), ...s });
+          state.students = Array.from(map.values());
+          save(state.students);
+          render();
+          alert('Import complete.');
+        } catch (err) {
+          alert('Failed to import CSV.');
+        } finally {
+          fileInput.value = '';
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Init
+    seedIfEmpty();
+    state.students = load();
+    render();
+  </script>
+</body>
+</html>
