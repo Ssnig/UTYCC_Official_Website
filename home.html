@@ -638,6 +638,11 @@
 
 
         }
+
+        mobileMenuButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+        });
+        
         // Language switcher event listeners
         langSwitcherDesktop.addEventListener('change', (e) => setLanguage(e.target.value));
         langSwitcherMobile.addEventListener('change', (e) => setLanguage(e.target.value));
