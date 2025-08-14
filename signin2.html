@@ -281,6 +281,12 @@
         .toast .close-btn:hover {
             opacity: 1;
         }
+        /* Force blue color for disabled checkbox with id='term' */
+        input[type='checkbox'][id='term']:disabled {
+            accent-color: #3498db !important;
+            opacity: 1 !important;
+            filter: none !important;
+        }
 
         /* Animations */
         @keyframes fadeIn {
@@ -394,7 +400,13 @@
                         <button type="submit" class="btn">Sign In</button>
                     </div>
                 </form>
-                
+                <footer>
+                    <label class="term-label">
+                        <input type="checkbox" id="term" checked disabled>
+                        <span> I have read and agree to the <a href="policy.html" class="link">terms and privacy policy of
+                            UTYCC</a>.</span>
+                    </label>
+                </footer>
             </div>
         </div>
 
