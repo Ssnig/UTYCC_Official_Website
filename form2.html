@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ကျောင်းအပ်ဖောင် - ၂</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="form.css">
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="form-header mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)</h1>
+            <p class="text-lg text-gray-600">University of Technology (Yatanarpon Cyber City)</p>
+        </div>
+
+        <!-- Form 2: Parent/Guardian Pledge -->
+        <section class="form-section" id="parent-pledge">
+            <h2 class="form-title">မိဘ/အုပ်ထိန်းသူ၏ ကတိခံဝန်ချက်</h2>
+            <div class="space-y-4 pledge-text">
+                <p>၁။ နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)တွင် ပညာသင်ယူလျက်ရှိသော မောင်/မ <input type="text" class="form-input inline-block w-64"> ခုံအမှတ် <input type="text" class="form-input inline-block w-48"> သည် နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)က ချမှတ်ထားသော စည်းမျဥ်း စည်းကမ်းများကို ရိုသေလေးစားစွာ လိုက်နာပါမည်ဟု ခံဝန်ကတိပြုပါသည်။</p>
+                <p>၂။ တစ်ခုခုကျူးလွန်ဖောက်ဖျက်ပါက အုပ်ချုပ်ရေးအဖွဲ့၏ ချမှတ်ထားသော အပြစ်ဒဏ်စည်းမျဥ်းစည်းကမ်းကို ခံယူပါမည်ဟု လက်မှတ်ရေးထိုးပါသည်။</p>
+            </div>
+            <div class="mt-12 ml-auto w-full md:w-1/2">
+                <div class="input-group flex items-center">
+                    <label class="w-48">မိဘ/ အုပ်ထိန်းသူလက်မှတ်:</label>
+                    <div class="signature-line flex-grow"></div>
+                </div>
+                 <div class="input-group flex items-center">
+                    <label for="parent-name" class="w-48">မိဘ/ အုပ်ထိန်းသူအမည်:</label>
+                    <input type="text" id="parent-name" class="form-input flex-grow">
+                </div>
+                 <div class="input-group flex items-center">
+                    <label for="parent-address" class="w-48">နေရပ်လိပ်စာအပြည့်အစုံ:</label>
+                    <input type="text" id="parent-address" class="form-input flex-grow">
+                </div>
+                <div class="input-group flex items-center">
+                    <label for="parent-phone" class="w-48">ဖုန်းနံပါတ်:</label>
+                    <input type="tel" id="parent-phone" class="form-input flex-grow">
+                </div>
+            </div>
+             <div class="form-footer">UTYCC/ SA/ F-20/ Rev-0/31-10-2022</div>
+        </section>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="form1.html" class="nav-button">Back</a>
+            <a href="form3.html" class="nav-button">Next</a>
+        </div>
+    </div>
+</body>
+</html>

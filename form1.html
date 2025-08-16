@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ကျောင်းအပ်ဖောင် - ၁</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="form.css">
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="form-header mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)</h1>
+            <p class="text-lg text-gray-600">University of Technology (Yatanarpon Cyber City)</p>
+        </div>
+
+        <!-- Form 1: Student Registration -->
+        <section class="form-section" id="student-registration">
+            <div class="flex justify-between items-start mb-4">
+                <span class="font-semibold">Form No. UTYCC-20</span>
+                <input type="text" placeholder="ခုနှစ်" class="form-input w-24 text-center">
+            </div>
+            <h2 class="form-title">ကျောင်းသားအဖြစ်မှ မှတ်ပုံတင်ခွင့်တောင်းခံလွှာ</h2>
+            <h3 class="form-subtitle">နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)</h3>
+
+            <div class="grid md:grid-cols-5 gap-4 mb-6">
+                <input type="text" placeholder="သင်တန်းနှစ်" class="form-input">
+                <input type="text" placeholder="အထူးပြုဘာသာ" class="form-input">
+                <input type="text" placeholder="ခုံအမှတ်" class="form-input">
+                <input type="text" placeholder="တက္ကသိုလ်မှတ်ပုံတင်အမှတ်" class="form-input col-span-2">
+                <input type="text" placeholder="တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်" class="form-input col-span-2">
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="flex-grow">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="w-12">စဉ်</th>
+                                <th>အကြောင်းအရာ</th>
+                                <th>ကျောင်းသား/သူ</th>
+                                <th>အဘ(အရင်း)</th>
+                                <th>အမိ(အရင်း)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2">၁</td>
+                                <td>အမည် (မြန်မာစာဖြင့်)</td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                            </tr>
+                            <tr>
+                                <td>အမည် (အင်္ဂလိပ်စာဖြင့်)</td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                            </tr>
+                            <tr>
+                                <td>၂</td>
+                                <td>လူမျိုး</td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                            </tr>
+                            <tr>
+                                <td>၃</td>
+                                <td>ကိုးကွယ်သည့်ဘာသာ</td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                            </tr>
+                             <tr>
+                                <td>၄</td>
+                                <td>နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                            </tr>
+                            <tr>
+                                <td>၅</td>
+                                <td>အမျိုးသားမှတ်ပုံတင်အမှတ်</td>
+                                <td colspan="3"><input type="text" class="form-input border-0 p-1"></td>
+                            </tr>
+                             <tr>
+                                <td>၆</td>
+                                <td>မွေးသက္ကရာဇ် (တက္ကသိုလ်ဝင်တန်းစာမေးပွဲဖြေဆိုစဉ်က ဖော်ပြသည့် အတိုင်းရေးရန်)</td>
+                                <td colspan="3"><input type="text" class="form-input border-0 p-1"></td>
+                            </tr>
+                             <tr>
+                                <td>၇</td>
+                                <td>မွေးဖွားရာဇာတိမြို့/ပြည်နယ်/ဖုန်းနံပါတ်</td>
+                                <td colspan="3"><input type="text" class="form-input border-0 p-1"></td>
+                            </tr>
+                             <tr>
+                                <td>၈</td>
+                                <td>မိဘအလုပ်အကိုင်နှင့်နေရပ်လိပ်စာအပြည့်အစုံ/ဖုန်းနံပါတ်</td>
+                                <td colspan="3"><textarea class="form-input border-0 p-1" rows="2"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>၉</td>
+                                <td>ကွယ်လွန်ခဲ့လျှင်ကွယ်လွန်ခဲ့သည့်ခုနှစ်</td>
+                                <td></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                                <td><input type="text" class="form-input border-0 p-1"></td>
+                            </tr>
+                            <tr>
+                                <td>၁၀</td>
+                                <td>ကျောင်းသား/သူထံအမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ အပြည့်အစုံ/ဖုန်းနံပါတ်</td>
+                                <td colspan="3"><textarea class="form-input border-0 p-1" rows="2"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="w-full md:w-48 flex-shrink-0 text-center">
+                    <div class="w-40 h-48 border-2 border-dashed bg-gray-50 flex items-center justify-center mx-auto">
+                        <span class="text-gray-500">ဓါတ်ပုံကပ်ရန်</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 pledge-text">
+                <p>၁၁။ ဖော်ပြပါအချက်အလက်များမှန်ကန်ကြောင်း ခံဝန်ကတိပြုပါသည်။ တစ်စုံတစ်ရာမှားယွင်းချက်ရှိပါက ကျွန်တော်/ကျွန်မ တာဝန်သာ ဖြစ်ပါသည်။</p>
+            </div>
+
+            <div class="flex justify-between items-end mt-12">
+                <input type="text" placeholder="ရက်စွဲ" class="form-input w-48">
+                <div class="text-center">
+                    <div class="signature-line w-64"></div>
+                    <p>(ကျောင်းသား/သူ၏ထိုးမြဲလက်မှတ်)</p>
+                </div>
+            </div>
+            <div class="form-footer">UTYCC/ SA/ F-20/ Rev-0/31-10-2022</div>
+        </section>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="#" class="nav-button disabled-button">Back</a>
+            <a href="form2.html" class="nav-button">Next</a>
+        </div>
+    </div>
+</body>
+</html>
