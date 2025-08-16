@@ -1,8 +1,11 @@
 .star-wrapper {
   position: relative;
-  width: 400px;
-  height: 400px;
-  margin: 2rem auto;
+  width: 90vw;
+  height: 90vw;
+  /* Set a max size for larger screens */
+  max-width: 400px;
+  max-height: 400px;
+  margin: 1rem auto;
 }
 
 .star-center {
@@ -17,7 +20,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
 .star-center {
@@ -33,7 +36,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 10;
   animation: star-counter-rotate-2 20s linear infinite;
 }
@@ -46,21 +49,15 @@
   height: 80px;
   margin-left: -40px;
   margin-top: -40px;
-  transform: 
-    rotate(var(--angle))
-    translate(150px)
+  transform: rotate(var(--angle)) translate(150px)
     /* This counter-rotation is the new part.
        It counteracts the parent's rotation. */
-    rotate(calc(-1 * var(--angle))); 
-  
-  /* Add this new transform to counteract the star-wrapper's rotation */
-  transform: 
-    rotate(var(--angle)) 
-    translate(150px) 
     rotate(calc(-1 * var(--angle)));
 
+  /* Add this new transform to counteract the star-wrapper's rotation */
+  transform: rotate(var(--angle)) translate(150px)
+    rotate(calc(-1 * var(--angle)));
 }
-
 
 .logo-badge {
   width: 100%;
@@ -71,7 +68,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   font-size: 12px;
   text-align: center;
   padding: 5px;
@@ -95,14 +92,23 @@
 
 /* Rotation animation for the entire star */
 @keyframes star-rotate {
-  from { transform: rotate(0deg) }
-  to { transform: rotate(360deg) }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Floating animation for individual logos */
 @keyframes logo-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* Apply animations */
@@ -110,16 +116,23 @@
   animation: star-rotate 20s linear infinite;
 }
 
-
 /* .star-point:hover .logo-badge {
   animation: logo-float 2s ease-in-out infinite;
 } */
 @keyframes star-counter-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
 }
 
 @keyframes star-counter-rotate-2 {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(-360deg); }
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
 }
