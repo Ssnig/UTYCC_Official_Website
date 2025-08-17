@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard — Reports</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      /* Light theme (HSL) - White and Blue Theme */
+      --bg: 0 0% 100%; /* White background */
+      --fg: 222 47% 11%; /* Dark text */
+      --muted: 214 32% 91%;
+      --muted-foreground: 215 17% 47%;
+      --primary: 220 70% 55%; /* Professional Blue */
+      --primary-foreground: 0 0% 100%; /* White */
+      --secondary: 0 0% 100%; /* White sidebar background */
+      --secondary-foreground: 222 47% 11%; /* Dark sidebar text */
+      --card: 0 0% 100%; /* White */
+      --card-foreground: 222 47% 11%;
+      --border: 214 32% 91%;
+      --ring: 220 70% 55%;
+      --radius: 12px;
+      --ease: cubic-bezier(.2,.8,.2,1);
+      --duration: 220ms;
+      --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.25);
+      --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: hsl(var(--fg));
+      background: hsl(var(--bg));
+      font: 500 16px/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    a { color: inherit; text-decoration: none; }
+    .app { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 72px 1fr; grid-template-areas: "sidebar header" "sidebar main"; min-height: 100dvh; }
+    .sidebar { grid-area: sidebar; border-right: 1px solid hsl(var(--border)); background: hsl(var(--secondary)); padding: 20px 16px; position: sticky; top: 0; height: 100dvh; }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: transparent; border: 1px solid hsl(var(--border)); }
+    .brand-badge { width: 12px; height: 12px; border-radius: 4px; background: hsl(var(--primary)); box-shadow: 0 0 0 4px hsl(var(--primary)/0.15); }
+    .brand h1 { font-size: 16px; margin: 0; letter-spacing: .2px; color: hsl(var(--secondary-foreground)); }
+    nav { margin-top: 18px; display: grid; gap: 8px; }
+    .nav-link { padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border var(--duration) var(--ease); }
+    .nav-link:hover { background: hsl(210 40% 98%); color: hsl(var(--fg)); }
+    .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: var(--shadow-soft); }
+    .header { grid-area: header; position: sticky; top: 0; z-index: 10; background: hsl(var(--card)); border-bottom: 1px solid hsl(var(--border)); display: flex; align-items: center; gap: 12px; padding: 16px 20px; }
+    .main { grid-area: main; padding: 20px; background: hsl(210 40% 98%);}
+    .chart-container { background: white; padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow-card); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-badge"></div>
+        <h1>Student Registration</h1>
+      </div>
+      <nav>
+        <a class="nav-link" href="./admin.html">Students</a>
+        <a class="nav-link" href="./courses.html">Courses</a>
+        <a class="nav-link" href="./registrations.html">Registrations</a>
+        <a class="nav-link active" href="./reports.html">Reports</a>
+        <a class="nav-link" href="./settings.html">Settings</a>
+      </nav>
+    </aside>
+    <header class="header">
+      <h2>Reports</h2>
+    </header>
+    <main class="main">
+      <div class="chart-container">
+        <canvas id="enrollmentChart"></canvas>
+      </div>
+    </main>
+  </div>
+  <script>
+    const ctx = document.getElementById('enrollmentChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Computer Science', 'Mathematics', 'Physics', 'Chemistry', 'Economics'],
+        datasets: [{
+          label: 'Students Enrolled',
+          data: [65, 59, 80, 81, 56],
+          backgroundColor: 'hsl(220, 70%, 55%, 0.8)',
+          borderColor: 'hsl(220, 70%, 55%)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  </script>
+</body>
+</html>
