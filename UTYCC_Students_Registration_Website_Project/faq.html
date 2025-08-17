@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frequently Asked Questions</title>
+    <style>
+      /* Basic CSS for styling */
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      header {
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+      }
+
+      header h1 {
+        color: #02356a;
+      }
+
+      /* Navigation Menu */
+      nav {
+        display: flex;
+        justify-content: center;
+        background-color: rgba(0, 51, 102, 0.75);
+        padding: 10px 0;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 0 15px;
+        font-weight: bold;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+      }
+
+      /* Search Bar */
+      .search-bar {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .search-bar input[type="text"] {
+        width: 70%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      .search-bar button {
+        padding: 12px 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-left: 10px;
+      }
+
+      .search-bar button:hover {
+        background-color: #218838;
+      }
+
+      /* Featured Articles */
+      .featured-articles {
+        margin-bottom: 40px;
+      }
+
+      .featured-articles h2 {
+        text-align: center;
+        color: #02356a;
+        margin-bottom: 20px;
+      }
+
+      .featured-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+      }
+
+      .article-card {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .article-card h3 {
+        margin-top: 0;
+        color: #025bb9;
+      }
+
+      .article-card p {
+        font-size: 0.9em;
+        color: #555;
+      }
+
+      /* Frequently Asked Questions (Accordion) */
+      .faq-section {
+        margin-bottom: 40px;
+      }
+
+      .faq-section h2 {
+        text-align: center;
+        color: #02356a;
+        margin-bottom: 20px;
+      }
+
+      .accordion .accordion-item {
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .accordion .accordion-header {
+        background-color: #e9ecef;
+        padding: 15px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .accordion .accordion-header:hover {
+        background-color: #dee2e6;
+      }
+
+      .accordion .accordion-content {
+        padding: 15px;
+        background-color: #fdfdfd;
+        border-top: 1px solid #eee;
+        display: none; /* Hidden by default */
+      }
+
+      .accordion .accordion-header::after {
+        content: "+";
+        font-size: 1.2em;
+        transition: transform 0.3s ease;
+      }
+
+      .accordion .accordion-header.active::after {
+        content: "-";
+        transform: rotate(180deg);
+      }
+
+      /* Call to Action (CTA) */
+      .cta-section {
+        text-align: center;
+        padding: 30px;
+        background-color: #d1ecf1;
+        border-radius: 8px;
+        margin-top: 40px;
+        border: 1px solid #bee5eb;
+      }
+
+      .cta-section h2 {
+        color: #0c5460;
+        margin-bottom: 15px;
+      }
+
+      .cta-section p {
+        font-size: 1.1em;
+        color: #0c5460;
+        margin-bottom: 20px;
+      }
+
+      .cta-section .btn {
+        display: inline-block;
+        background-color: #0350a3;
+        color: white;
+        padding: 12px 25px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        transition: background-color 0.3s ease;
+      }
+
+      .cta-section .btn:hover {
+        background-color: #02356a;
+      }
+
+      /* Live Chat Widget (Placeholder) */
+      .live-chat-widget-placeholder {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 15px;
+        border-radius: 50%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        z-index: 1000;
+      }
+
+      .live-chat-widget-placeholder:hover {
+        background-color: #218838;
+      }
+
+      /* Basic responsiveness */
+      @media (max-width: 768px) {
+        .container {
+          margin: 10px;
+          padding: 15px;
+        }
+
+        nav {
+          flex-direction: column;
+          padding: 5px 0;
+        }
+
+        nav a {
+          padding: 8px 15px;
+          text-align: center;
+        }
+
+        .search-bar input[type="text"] {
+          width: 90%;
+        }
+
+        .search-bar button {
+          margin-top: 10px;
+          margin-left: 0;
+          width: 90%;
+        }
+
+        .featured-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Frequently Asked Questions</h1>
+        <p>Find answers to your most common questions below.</p>
+      </header>
+
+      <nav>
+        <a href="#featured">Featured</a>
+        <a href="#general">General</a>
+        <a href="#account">Account</a>
+        <a href="#orders">Orders</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <section class="search-bar">
+        <input type="text" placeholder="Search for a question or keyword..." />
+        <button>Search</button>
+      </a>
+
+      <section id="featured" class="featured-articles">
+        <h2>Featured Articles</h2>
+        <div class="featured-list">
+          <div class="article-card">
+            <h3>How to reset your password?</h3>
+            <p>Learn the steps to securely reset your account password.</p>
+          </div>
+          <div class="article-card">
+            <h3>What are your shipping options?</h3>
+            <p>
+              Explore our various shipping methods, costs, and delivery times.
+            </p>
+          </div>
+          <div class="article-card">
+            <h3>How do I return an item?</h3>
+            <p>Detailed instructions on our return policy and process.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="general" class="faq-section">
+        <h2>General Questions</h2>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header">What is your service about?</div>
+            <div class="accordion-content">
+              <p>
+                Our service provides a comprehensive platform for managing your
+                projects and teams efficiently. We offer tools for task
+                tracking, collaboration, and reporting.
+              </p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Is there a free trial available?</div>
+            <div class="accordion-content">
+              <p>
+                Yes, we offer a 14-day free trial that allows you to explore all
+                premium features without any commitment. No credit card
+                required.
+              </p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">
+              How do I contact customer support?
+            </div>
+            <div class="accordion-content">
+              <p>
+                You can reach our customer support team via email at
+                support@example.com, or by using the live chat widget available
+                on our website during business hours.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="account" class="faq-section">
+        <h2>Account Management</h2>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header">
+              How do I update my profile information?
+            </div>
+            <div class="accordion-content">
+              <p>
+                You can update your profile information by navigating to
+                "Settings" in your dashboard and then selecting "Profile
+                Details."
+              </p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">
+              Can I change my subscription plan?
+            </div>
+            <div class="accordion-content">
+              <p>
+                Yes, you can upgrade or downgrade your subscription plan at any
+                time from the "Billing" section of your account settings.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="orders" class="faq-section">
+        <h2>Orders & Payments</h2>
+        <div class="accordion">
+          <div class="accordion-item">
+            <div class="accordion-header">
+              What payment methods do you accept?
+            </div>
+            <div class="accordion-content">
+              <p>
+                We accept major credit cards (Visa, MasterCard, American
+                Express) and PayPal for all transactions.
+              </p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">How can I view my order history?</div>
+            <div class="accordion-content">
+              <p>
+                Your complete order history is available under the "My Orders"
+                section of your account dashboard.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="cta-section">
+        <h2>Still Can't Find Your Answer?</h2>
+        <p>
+          Our team is here to help! Reach out to us directly for personalized
+          assistance.
+        </p>
+        <a href="contact.html" class="btn">Contact Support</a>
+      </section>
+    </div>
+
+    <!-- <div class="live-chat-widget-placeholder">Chat</div> -->
+
+    <script>
+      // JavaScript for accordion functionality
+      document.querySelectorAll(".accordion-header").forEach((header) => {
+        header.addEventListener("click", () => {
+          const accordionItem = header.closest(".accordion-item");
+          const accordionContent =
+            accordionItem.querySelector(".accordion-content");
+
+          // Toggle active class on header
+          header.classList.toggle("active");
+
+          // Toggle display of content
+          if (accordionContent.style.display === "block") {
+            accordionContent.style.display = "none";
+          } else {
+            accordionContent.style.display = "block";
+          }
+        });
+      });
+
+      // Basic search functionality (client-side, very simple)
+      const searchInput = document.querySelector(
+        '.search-bar input[type="text"]'
+      );
+      const searchButton = document.querySelector(".search-bar button");
+      const faqItems = document.querySelectorAll(".accordion-item");
+      const featuredArticles = document.querySelectorAll(".article-card");
+
+      searchButton.addEventListener("click", performSearch);
+      searchInput.addEventListener("keyup", (event) => {
+        if (event.key === "Enter") {
+          performSearch();
+        }
+      });
+
+      function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        // Search FAQs
+        faqItems.forEach((item) => {
+          const headerText = item
+            .querySelector(".accordion-header")
+            .textContent.toLowerCase();
+          const contentText = item
+            .querySelector(".accordion-content")
+            .textContent.toLowerCase();
+
+          if (
+            headerText.includes(searchTerm) ||
+            contentText.includes(searchTerm)
+          ) {
+            item.style.display = "block"; // Show item
+            // Optionally open the accordion if a match is found in the content
+            if (
+              contentText.includes(searchTerm) &&
+              !headerText.includes(searchTerm)
+            ) {
+              item.querySelector(".accordion-header").classList.add("active");
+              item.querySelector(".accordion-content").style.display = "block";
+            } else {
+              item
+                .querySelector(".accordion-header")
+                .classList.remove("active");
+              item.querySelector(".accordion-content").style.display = "none";
+            }
+          } else {
+            item.style.display = "none"; // Hide item
+          }
+        });
+
+        // Search Featured Articles
+        featuredArticles.forEach((article) => {
+          const titleText = article
+            .querySelector("h3")
+            .textContent.toLowerCase();
+          const descText = article.querySelector("p").textContent.toLowerCase();
+
+          if (titleText.includes(searchTerm) || descText.includes(searchTerm)) {
+            article.style.display = "block";
+          } else {
+            article.style.display = "none";
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
