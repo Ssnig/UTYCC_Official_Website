@@ -31,9 +31,7 @@
     <script src="./JS/hero-carousel.js"></script>
     <link rel="stylesheet" href="CSS/font.css" />
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-      }
+      
       .hero-bg {
         background-image: linear-gradient(
             rgba(0, 51, 102, 0.75),
@@ -181,7 +179,7 @@
     </style>
   </head>
   <body class="bg-gray-100">
-    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="bg-white shadow-md sticky top-0 z-50">
       <nav
         class="container mx-auto px-6 py-3 flex justify-between items-center"
       >
@@ -189,12 +187,12 @@
           <div class="p-2 rounded-lg">
             <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
           </div>
-          <div>
-            <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
-            <span class="text-xs text-gray-500" data-lang-key="utycc_full_name"
-              >University of Technology (Yatanarpon Cyber City)</span
-            >
-          </div>
+         <div>
+                    <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
+                    <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (
+                        Yatanarpon
+                        Cyber City )</span>
+                </div>
         </a>
         <div class="hidden md:flex items-center space-x-6">
           <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_about">About Us</a>
@@ -219,10 +217,10 @@
         <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800" data-lang-key="nav_collaboration_mobile">Collaboration</a>
         <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800" data-lang-key="nav_contact_mobile">Contact</a>
       </div>
-    </header>
+    </div>
     <header class="mb-12 rounded-3xl overflow-hidden shadow-2xl py-4">
         <div class="relative h-96">
-          <!-- ဒီအောက်ကဟာ ကြိုက်တဲ့ပုံထည့်လို့ရတယ် ဥပမာ majorနဲ့ဆိုင်တဲ့ buildingတွေ ပုံတွေက "./Img/utycc_buildings/"ထဲက ဟာတွေယူသုံး srcမှာနော် -->
+          
           <img
             src="../Img/utycc_buildings/Lab3.JPG"
             alt="Hero image of a bustling university campus"
@@ -237,7 +235,7 @@
               >
                 Frequently Asked Questions
               </h1>
-              <!-- mottoက မေဂျာ တစ်ခုချင်းစီရဲ့ ဆောင်ပုဒ် အမ မယမင်း ရဲ့ doc fileတွေမှာသေချာထည့်ပေးထားတယ် အဲ့တာကိုထည့်ပေး -->
+              
               <p>Find answers to your most common questions below.</p>
             </div>
           </div>
@@ -246,7 +244,7 @@
       <br />
 
       <section id="general" class="faq-section">
-        <h1>General Questions</h1>
+        <h1 class="p-8">General Questions</h1>
         <div class="accordion">
           <div class="accordion-item">
             <div class="accordion-header">In which year was UTYCC founded?</div>
@@ -539,7 +537,7 @@
     </script>
     <script src="../js/Des_Major.js"></script>
     <script src="../js/BE_Advantages.js"></script>
-    
+
     <script>
         // --- Translation Script ---
         const translations = {
