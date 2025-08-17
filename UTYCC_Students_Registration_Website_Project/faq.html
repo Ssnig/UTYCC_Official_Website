@@ -2,6 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script src="../JS/star-layout.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Frequently Asked Questions</title>
     <style>
@@ -15,15 +17,6 @@
         color: #333;
       }
 
-      .container {
-        max-width: 900px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-
       header {
         text-align: center;
         padding-bottom: 20px;
@@ -31,103 +24,14 @@
       }
 
       header h1 {
-        color: #044488;
+        color: #e1e8ef;
+        font-family: 'Times New Roman', Times, serif;
+        font-weight: lighter;
+        font-style: italic;
       }
 
-      /* Navigation Menu */
-      nav {
-        display: flex;
-        justify-content: center;
-        background-color: #224bbd;
-        padding: 10px 0;
-        border-radius: 5px;
-        margin-bottom: 20px;
-      }
-
-      nav a {
-        color: white;
-        text-decoration: none;
-        padding: 0 15px;
-        font-weight: bold;
-      }
-
-      nav a:hover {
-        text-decoration: underline;
-      }
-
-      /* Search Bar */
-      .search-bar {
-        text-align: center;
-        margin-bottom: 30px;
-      }
-
-      .search-bar input[type="text"] {
-        width: 70%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-      }
-
-      .search-bar button {
-        padding: 12px 20px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        margin-left: 10px;
-      }
-
-      .search-bar button:hover {
-        background-color: #218838;
-      }
-
-      /* Featured Articles */
-      .featured-articles {
-        margin-bottom: 40px;
-      }
-
-      .featured-articles h2 {
-        text-align: center;
-        color: #0d4d91;
-        margin-bottom: 20px;
-      }
-
-      .featured-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-      }
-
-      .article-card {
-        background-color: #f9f9f9;
-        padding: 15px;
-        border-radius: 8px;
-        border: 1px solid #eee;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-      }
-
-      .article-card h3 {
-        margin-top: 0;
-        color: #025bb9;
-      }
-
-      .article-card p {
-        font-size: 0.9em;
-        color: #555;
-      }
-
-      /* Frequently Asked Questions (Accordion) */
-      .faq-section {
-        margin-bottom: 40px;
-      }
-
-      .faq-section h2 {
-        text-align: center;
-        color: #0d4d91;
-        margin-bottom: 20px;
+      header p {
+        color: #dde2e8;
       }
 
       .accordion .accordion-item {
@@ -206,28 +110,6 @@
         background-color: #02356a;
       }
 
-      /* Live Chat Widget (Placeholder) */
-      .live-chat-widget-placeholder {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background-color: #28a745;
-        color: white;
-        padding: 15px;
-        border-radius: 50%;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        z-index: 1000;
-      }
-
-      .live-chat-widget-placeholder:hover {
-        background-color: #218838;
-      }
-
       /* Basic responsiveness */
       @media (max-width: 768px) {
         .container {
@@ -240,154 +122,162 @@
           padding: 5px 0;
         }
 
-        nav a {
-          padding: 8px 15px;
-          text-align: center;
-        }
-
-        .search-bar input[type="text"] {
-          width: 90%;
-        }
-
-        .search-bar button {
-          margin-top: 10px;
-          margin-left: 0;
-          width: 90%;
-        }
-
         .featured-list {
           grid-template-columns: 1fr;
         }
       }
+      section h1 {
+        color: #053568;
+        font-size: larger;
+        font-weight: bolder;
+      }
+
+      h2{
+        color: rgba(10, 21, 179, 0.536);
+      }
     </style>
   </head>
   <body>
-    <div class="container">
-      <header>
+    <!-- <div class="container"> -->
+      <!-- <header>
         <h1>Frequently Asked Questions</h1>
         <p>Find answers to your most common questions below.</p>
-      </header>
-
-      <nav>
-        <a href="#featured">Featured</a>
-        <a href="#general">General</a>
-        <a href="#account">Account</a>
-        <a href="#orders">Orders</a>
-        <a href="#contact">Contact</a>
-      </nav>
-
-      <section class="search-bar">
-        <input type="text" placeholder="Search for a question or keyword..." />
-        <button>Search</button>
-      </a>
-
-      <section id="featured" class="featured-articles">
-        <h2>Featured Articles</h2>
-        <div class="featured-list">
-          <div class="article-card">
-            <h3>How to reset your password?</h3>
-            <p>Learn the steps to securely reset your account password.</p>
-          </div>
-          <div class="article-card">
-            <h3>What are your shipping options?</h3>
-            <p>
-              Explore our various shipping methods, costs, and delivery times.
-            </p>
-          </div>
-          <div class="article-card">
-            <h3>How do I return an item?</h3>
-            <p>Detailed instructions on our return policy and process.</p>
+      </header> -->
+      <header class="mb-12 rounded-3xl overflow-hidden shadow-2xl py-4">
+        <div class="relative h-96">
+          <!-- ဒီအောက်ကဟာ ကြိုက်တဲ့ပုံထည့်လို့ရတယ် ဥပမာ majorနဲ့ဆိုင်တဲ့ buildingတွေ ပုံတွေက "./Img/utycc_buildings/"ထဲက ဟာတွေယူသုံး srcမှာနော် -->
+          <img
+            src="../Img/utycc_buildings/Lab3.JPG"
+            alt="Hero image of a bustling university campus"
+            class="absolute inset-0 w-full h-full object-cover brightness-75"
+          />
+          <div
+            class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-40"
+          >
+            <div class="text-center text-white p-4">
+              <h1
+                class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4"
+              >
+                Frequently Asked Questions
+              </h1>
+              <!-- mottoက မေဂျာ တစ်ခုချင်းစီရဲ့ ဆောင်ပုဒ် အမ မယမင်း ရဲ့ doc fileတွေမှာသေချာထည့်ပေးထားတယ် အဲ့တာကိုထည့်ပေး -->
+              <p>Find answers to your most common questions below.</p>
+            </div>
           </div>
         </div>
-      </section>
+      </header>
+      <br />
 
       <section id="general" class="faq-section">
-        <h2>General Questions</h2>
+        <h1>General Questions</h1>
         <div class="accordion">
           <div class="accordion-item">
-            <div class="accordion-header">What is your service about?</div>
+            <div class="accordion-header">In which year was UTYCC founded?</div>
             <div class="accordion-content">
-              <p>
-                Our service provides a comprehensive platform for managing your
-                projects and teams efficiently. We offer tools for task
-                tracking, collaboration, and reporting.
-              </p>
+              <p>October 17, 2010</p>
             </div>
           </div>
           <div class="accordion-item">
-            <div class="accordion-header">Is there a free trial available?</div>
+            <div class="accordion-header">
+              What is the address and contact informations of UTYCC?
+            </div>
             <div class="accordion-content">
               <p>
-                Yes, we offer a 14-day free trial that allows you to explore all
-                premium features without any commitment. No credit card
-                required.
+                Address – Yadanapon Cyber City, Pyin Oo Lwin, Mandalay Region<br />
+                Phone – +959445767834<br />
+                Fax – +959445767834<br />
+                Email – hr.admin@utycc.edu.mm
               </p>
             </div>
           </div>
           <div class="accordion-item">
             <div class="accordion-header">
-              How do I contact customer support?
+              How long is the B.E. (Undergraduate) program? What are the
+              requirements for graduation?
             </div>
             <div class="accordion-content">
               <p>
-                You can reach our customer support team via email at
-                support@example.com, or by using the live chat widget available
-                on our website during business hours.
+                Duration <br />
+                G10 – 6 years <br />
+                G12 – 5 years <br /><br />
+                Requirements <br />
+                Mini thesis
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section id="account" class="faq-section">
-        <h2>Account Management</h2>
-        <div class="accordion">
+          <!-- </div> -->
           <div class="accordion-item">
             <div class="accordion-header">
-              How do I update my profile information?
+              How long is the M.E. (Postgraduate) program? What are the
+              requirements for graduation?
             </div>
             <div class="accordion-content">
               <p>
-                You can update your profile information by navigating to
-                "Settings" in your dashboard and then selecting "Profile
-                Details."
+                Duration <br />
+                2 years (1 year coursework + 1 year thesis)<br /><br />
+                Requirements <br />
+                Thesis
               </p>
             </div>
           </div>
           <div class="accordion-item">
             <div class="accordion-header">
-              Can I change my subscription plan?
+              How long is the Ph.D. (IT) program? What are the requirements for
+              graduation?
             </div>
             <div class="accordion-content">
               <p>
-                Yes, you can upgrade or downgrade your subscription plan at any
-                time from the "Billing" section of your account settings.
+                Duration <br />
+                3 years (1 year coursework + 2 years dissertation )<br /><br />
+                Requirements <br />
+                Dissertation
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section id="orders" class="faq-section">
-        <h2>Orders & Payments</h2>
-        <div class="accordion">
           <div class="accordion-item">
             <div class="accordion-header">
-              What payment methods do you accept?
+              What majors are offered at UTYCC?
             </div>
             <div class="accordion-content">
               <p>
-                We accept major credit cards (Visa, MasterCard, American
-                Express) and PayPal for all transactions.
+                B.E. & M.E. <br />
+                Information Science and Technology <br />
+                Computer Engineering <br />
+                Electronics Engineering <br />
+                Mechanical Precision and Automation <br />
+                Materials and Metallurgy Engineering <br /><br />
+                Ph.D. <br />
+                Information Technology (IT) <br />
+                Electronics Engineering
               </p>
             </div>
           </div>
           <div class="accordion-item">
-            <div class="accordion-header">How can I view my order history?</div>
+            <div class="accordion-header">
+              Who is the current Rector of UTYCC?
+            </div>
+            <div class="accordion-content">
+              <p>Dr. Aung Ze Ya (Professor, Rector of UTYCC)</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">
+              What are departments supporting and academic departments UTYCC
+              students?
+            </div>
             <div class="accordion-content">
               <p>
-                Your complete order history is available under the "My Orders"
-                section of your account dashboard.
+                Supporting Departments <br />
+                Maintenance <br />
+                Administration <br />
+                Finance <br />
+                Student Affairs Department <br /><br />
+                Academic Departments <br />
+                Myanmar <br />
+                English <br />
+                Engineering Mathematics <br />
+                Engineering Physics <br />
+                Engineering Chemistry
               </p>
             </div>
           </div>
@@ -491,5 +381,7 @@
         });
       }
     </script>
+    <script src="../js/Des_Major.js"></script>
+    <script src="../js/BE_Advantages.js"></script>
   </body>
 </html>
