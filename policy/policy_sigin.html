@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Agreement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS */
+        .policy-content {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            background-color: #f8fafc;
+        }
+        
+        .policy-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .policy-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .policy-content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        
+        .policy-content::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Fade-in animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-message {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .success-message.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Profile photo styling */
+        .profile-photo-container {
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            background-color: #f1f5f9;
+        }
+
+        .profile-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .policy-box {
+            position: relative;
+            margin-top: 60px;
+        }
+
+        .header-center {
+            text-align: center;
+            margin-left: 50px; /* Compensate for profile photo overlap */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl fade-in policy-box">
+        <!-- Profile Photo in Circle - Now 100x100 -->
+        <div class="profile-photo-container">
+            <img src="/Img/logo/utycc_logo.png" 
+                 alt="Profile Photo" 
+                 class="profile-photo">
+        </div>
+
+        <div id="policy-container">
+            <!-- Centered Header -->
+            <h1 class="text-2xl font-bold text-gray-800 mb-4 header-center">Privacy Policy Agreement</h1>
+            
+            <div class="policy-content mb-6">
+                <h2 class="text-xl font-semibold mb-2">Our Privacy Policy</h2>
+                <p class="mb-4">Last updated: August 17, 2023</p>
+                
+                <p class="mb-3">This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
+                
+                <h3 class="font-semibold mt-4 mb-2">1. Interpretation and Definitions</h3>
+                <p class="mb-3">The words of which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.</p>
+                
+                <h3 class="font-semibold mt-4 mb-2">2. Collecting and Using Your Personal Data</h3>
+                <p class="mb-3">While using Our Service, We may ask You to provide Us with certain personally identifiable information that can be used to contact or identify You. Personally identifiable information may include, but is not limited to:</p>
+                <ul class="list-disc pl-5 mb-3">
+                    <li>Email address</li>
+                    <li>First name and last name</li>
+                    <li>Phone number</li>
+                    <li>Usage Data</li>
+                </ul>
+                
+                <h3 class="font-semibold mt-4 mb-2">3. Use of Your Personal Data</h3>
+                <p class="mb-3">The Company may use Personal Data for the following purposes:</p>
+                <ul class="list-disc pl-5 mb-3">
+                    <li>To provide and maintain our Service</li>
+                    <li>To manage Your Account</li>
+                    <li>For the performance of a contract</li>
+                    <li>To contact You</li>
+                    <li>To provide You with news, special offers and general information</li>
+                    <li>For business transfers</li>
+                    <li>For other purposes</li>
+                </ul>
+                
+                <p class="mb-3">We may share Your personal information in the following situations:</p>
+                <ul class="list-disc pl-5">
+                    <li>With Service Providers</li>
+                    <li>For business transfers</li>
+                    <li>With Affiliates</li>
+                    <li>With business partners</li>
+                    <li>With other users</li>
+                    <li>With Your consent</li>
+                </ul>
+            </div>
+            
+            <div class="flex items-center mb-6">
+                <input type="checkbox" id="agree-checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                <label for="agree-checkbox" class="ml-2 text-sm font-medium text-gray-700">I have read and understand the Privacy Policy</label>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button id="accept-btn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" disabled>
+                    Accept Policy
+                </button>
+                <button id="decline-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+                    Decline
+                </button>
+            </div>
+        </div>
+
+        <div id="success-message" class="success-message text-center py-8">
+            <svg class="mx-auto h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <h2 class="mt-3 text-xl font-semibold text-gray-800">Thank you for accepting our policy!</h2>
+            <p class="mt-2 text-gray-600">You will be redirected shortly.</p>
+            <div class="mt-6">
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const agreeCheckbox = document.getElementById('agree-checkbox');
+            const acceptBtn = document.getElementById('accept-btn');
+            const declineBtn = document.getElementById('decline-btn');
+            const policyContainer = document.getElementById('policy-container');
+            const successMessage = document.getElementById('success-message');
+            const progressBar = document.getElementById('progress-bar');
+            
+            // Initial fade-in for the whole container
+            document.querySelector('.fade-in').style.opacity = '1';
+            
+            // Enable/disable accept button based on checkbox
+            agreeCheckbox.addEventListener('change', function() {
+                acceptBtn.disabled = !this.checked;
+            });
+            
+            // Handle accept button click
+            acceptBtn.addEventListener('click', function() {
+                // Fade out policy container
+                policyContainer.style.opacity = '0';
+                policyContainer.style.transition = 'opacity 0.5s ease-in-out';
+                
+                // After fade out completes, show success message
+                setTimeout(() => {
+                    policyContainer.style.display = 'none';
+                    successMessage.classList.add('show');
+                    
+                    // Animate progress bar
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            // Redirect after completion
+                            window.location.href = '/login.html'; // Change to your actual redirect URL
+                        } else {
+                            width += 2;
+                            progressBar.style.width = width + '%';
+                        }
+                    }, 50);
+                }, 500);
+            });
+            
+            // Handle decline button click
+            declineBtn.addEventListener('click', function() {
+                const confirmed = confirm('Are you sure you want to decline our Privacy Policy? You may not be able to use our services.');
+                if (confirmed) {
+                    // Fade out animation for decline
+                    policyContainer.style.opacity = '0';
+                    policyContainer.style.transition = 'opacity 0.5s ease-in-out';
+                    
+                    setTimeout(() => {
+                        alert('You have declined our Privacy Policy. Redirecting...');
+                        window.location.href = '/login.html';
+                    }, 500);
+                }
+            });
+            
+            // Optional: Track if user has scrolled through the policy
+            const policyContent = document.querySelector('.policy-content');
+            let hasScrolled = false;
+            
+            policyContent.addEventListener('scroll', function() {
+                // Check if user has scrolled to bottom (or near bottom)
+                const bottomReached = this.scrollHeight - this.scrollTop <= this.clientHeight + 50;
+                if (bottomReached && !hasScrolled) {
+                    hasScrolled = true;
+                    // Optional: Pulse animation on checkbox when scrolled to bottom
+                    agreeCheckbox.parentElement.classList.add('animate-pulse');
+                    setTimeout(() => {
+                        agreeCheckbox.parentElement.classList.remove('animate-pulse');
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
