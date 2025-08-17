@@ -15,19 +15,22 @@
 
   <style>
     :root {
-      /* Light theme (HSL) */
-      --bg: 0 0% 100%;
-      --fg: 222 47% 11%;
+      /* Light theme (HSL) - White and Blue Theme */
+      --bg: 0 0% 100%; /* White background */
+      --fg: 222 47% 11%; /* Dark text */
       --muted: 214 32% 91%;
       --muted-foreground: 215 17% 47%;
-      --primary: 261 80% 55%; /* violet accent */
-      --primary-foreground: 0 0% 100%;
-      --secondary: 210 40% 96%;
-      --secondary-foreground: 222 47% 11%;
-      --card: 0 0% 100%;
+      
+      --primary: 220 70% 55%; /* Professional Blue */
+      --primary-foreground: 0 0% 100%; /* White */
+      
+      --secondary: 0 0% 100%; /* White sidebar background */
+      --secondary-foreground: 222 47% 11%; /* Dark sidebar text */
+      
+      --card: 0 0% 100%; /* White */
       --card-foreground: 222 47% 11%;
       --border: 214 32% 91%;
-      --ring: 262 83% 58%;
+      --ring: 220 70% 55%;
       --success: 153 61% 34%;
       --warning: 43 96% 56%;
       --danger: 0 84% 60%;
@@ -37,35 +40,9 @@
       --ease: cubic-bezier(.2,.8,.2,1);
       --duration: 220ms;
 
-      /* Layered gradient for header */
-      --gradient: linear-gradient(135deg, hsl(var(--primary)/0.12), hsl(200 100% 50%/0.10)), radial-gradient(1200px 600px at var(--mx, 50%) var(--my, 0%), hsl(var(--primary)/0.15), transparent 60%);
-
       /* Shadows */
       --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.25);
       --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: 222 47% 8%;
-        --fg: 210 40% 96%;
-        --muted: 217 33% 18%;
-        --muted-foreground: 215 20% 65%;
-        --primary: 261 83% 70%;
-        --primary-foreground: 222 47% 11%;
-        --secondary: 220 18% 12%;
-        --secondary-foreground: 210 40% 96%;
-        --card: 222 40% 9%;
-        --card-foreground: 210 40% 96%;
-        --border: 220 14% 20%;
-        --ring: 262 83% 68%;
-        --success: 153 61% 45%;
-        --warning: 43 96% 62%;
-        --danger: 0 84% 66%;
-        --gradient: linear-gradient(135deg, hsl(var(--primary)/0.16), hsl(200 100% 50%/0.12)), radial-gradient(1200px 600px at var(--mx, 50%) var(--my, 0%), hsl(var(--primary)/0.22), transparent 60%);
-        --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.35);
-        --shadow-card: 0 10px 20px -10px hsl(220 40% 5% / 0.6);
-      }
     }
 
     * { box-sizing: border-box; }
@@ -99,25 +76,24 @@
     }
     .brand {
       display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px;
-      background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); box-shadow: var(--shadow-soft);
+      background: transparent; border: 1px solid hsl(var(--border));
     }
     .brand-badge { width: 12px; height: 12px; border-radius: 4px; background: hsl(var(--primary)); box-shadow: 0 0 0 4px hsl(var(--primary)/0.15); }
-    .brand h1 { font-size: 16px; margin: 0; letter-spacing: .2px; }
+    .brand h1 { font-size: 16px; margin: 0; letter-spacing: .2px; color: hsl(var(--secondary-foreground)); }
     nav { margin-top: 18px; display: grid; gap: 8px; }
     .nav-link { padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border var(--duration) var(--ease); }
-    .nav-link:hover { background: hsl(var(--bg)); color: hsl(var(--fg)); border-color: hsl(var(--border)); }
-    .nav-link.active { background: hsl(var(--bg)); color: hsl(var(--fg)); border-color: hsl(var(--border)); box-shadow: var(--shadow-card); }
+    .nav-link:hover { background: hsl(210 40% 98%); color: hsl(var(--fg)); }
+    .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: var(--shadow-soft); }
 
     .header {
       grid-area: header;
       position: sticky; top: 0; z-index: 10;
-      background: var(--gradient);
+      background: hsl(var(--card));
       border-bottom: 1px solid hsl(var(--border));
       display: flex; align-items: center; gap: 12px; padding: 16px 20px;
-      backdrop-filter: saturate(1.2) blur(8px);
     }
     .search {
-      flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px; box-shadow: var(--shadow-card);
+      flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(210 40% 98%); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px; box-shadow: var(--shadow-card);
     }
     .search input { width: 100%; border: none; outline: none; background: transparent; color: hsl(var(--fg)); }
 
@@ -127,7 +103,7 @@
       --bcol: var(--border);
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 10px 14px; border-radius: 12px; border: 1px solid hsl(var(--bcol));
-      background: hsl(var(--bg)); color: hsl(var(--fg));
+      background: hsl(var(--card)); color: hsl(var(--fg));
       box-shadow: var(--shadow-card);
       transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease), background var(--duration) var(--ease), color var(--duration) var(--ease), border-color var(--duration) var(--ease);
       cursor: pointer;
@@ -138,7 +114,7 @@
     .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
     .btn.ghost { background: transparent; border-color: hsl(var(--border)); }
 
-    .main { grid-area: main; padding: 20px; }
+    .main { grid-area: main; padding: 20px; background: hsl(210 40% 98%);}
 
     .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
     .card { background: hsl(var(--card)); color: hsl(var(--card-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); }
@@ -152,9 +128,9 @@
     /* Table */
     .table-wrap { overflow: auto; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); box-shadow: var(--shadow-card); }
     table { width: 100%; border-collapse: collapse; min-width: 900px; }
-    thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--secondary)); position: sticky; top: 0; z-index: 1; }
+    thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--bg)); position: sticky; top: 0; z-index: 1; }
     th, td { padding: 12px 14px; border-bottom: 1px solid hsl(var(--border)); }
-    tbody tr:hover { background: hsl(var(--secondary)); }
+    tbody tr:hover { background: hsl(210 40% 98%); }
 
     .badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .02em; border: 1px solid hsl(var(--border)); }
     .badge.success { background: hsl(var(--success)/0.12); color: hsl(var(--success)); border-color: hsl(var(--success)/0.3); }
@@ -212,9 +188,9 @@
       <nav>
         <a class="nav-link active" href="#students">Students</a>
         <a class="nav-link" href="./courses.html">Courses</a>
-        <a class="nav-link" href="#registrations">Registrations</a>
-        <a class="nav-link" href="#reports">Reports</a>
-        <a class="nav-link" href="#settings">Settings</a>
+        <a class="nav-link" href="./registrations">Registrations</a>
+        <a class="nav-link" href="./reports">Reports</a>
+        <a class="nav-link" href="./settings">Settings</a>
       </nav>
     </aside>
 
@@ -328,16 +304,6 @@
   <input type="file" id="fileInput" accept=".csv" hidden />
 
   <script defer>
-    // Signature interaction: Responsive gradient following the pointer on header
-    const header = document.getElementById('header');
-    header?.addEventListener('pointermove', (e) => {
-      const rect = header.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      document.documentElement.style.setProperty('--mx', x + '%');
-      document.documentElement.style.setProperty('--my', y + '%');
-    });
-
     // Simple state with localStorage
     const STORAGE_KEY = 'srs_students_v1';
     const PAGE_SIZE = 8;
