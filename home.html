@@ -42,7 +42,7 @@
 
 <body class="bg-gray-100">
     <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="bg-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <a href="#" class="flex items-center space-x-3">
                 <div class="p-2 rounded-lg">
@@ -105,7 +105,7 @@
                 </div>
             </div>
         </div>
-    </header>
+    </div>
 
     <!-- This div will contain all the main content that can be hidden -->
     <div id="main-content">
@@ -143,12 +143,12 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div>
                         <i class="fas fa-calendar-alt text-3xl mb-2 text-blue-300"></i>
-                        <p class="text-xl font-bold">Established 2010</p>
+                        <p class="text-xl font-bold" data-lang-key="est" >Established 2010</p>
                         <p class="text-sm text-blue-200" data-lang-key="stats_since">Serving Since</p>
                     </div>
                     <div>
                         <i class="fas fa-users text-3xl mb-2 text-blue-300"></i>
-                        <p class="text-xl font-bold">~12,000</p>
+                        <p class="text-xl font-bold">~3,000</p>
                         <p class="text-sm text-blue-200" data-lang-key="stats_students">Students</p>
                     </div>
                     <div>
@@ -505,6 +505,7 @@
         // --- Data for Translations ---
         const translations = {
             my: {
+                
                 utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
                 nav_about: "ကျွန်ုပ်တို့အကြောင်း",
                 nav_programs: "ပညာရေးအစီအစဉ်များ",
@@ -626,7 +627,9 @@
                 footer_link_terms: "Terms & Policies",
                 footer_link_faq: "FAQs",
                 footer_link_about: "About Us",
-                footer_link_rules: "Rules & Regulations"
+                footer_link_rules: "Rules & Regulations",
+                
+                
             }
         };
 
