@@ -1,63 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="../CSS/star-layout.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../CSS/footer.css" />
-    <link rel="stylesheet" href="../CSS/BE_Advantages.css" />
-    <script src="../JS/star-layout.js"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
-      rel="stylesheet"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- name ပြောင်းရန် -->
-    <title>Computer Engineering</title>
-    <link
-      rel="shortcut icon"
-      href="../Img/logo/utycc_logo_favicon/favicon.ico"
-      type="image/x-icon"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../CSS/hero-carousel.css" />
-    <script src="../JS/hero-carousel.js"></script>
-    <link rel="stylesheet" href="../CSS/font.css" />
-    <style>
-      body {
-        font-family: "Inter", sans-serif;
-      }
-      .hero-bg {
-        background-image: linear-gradient(
-            rgba(0, 51, 102, 0.75),
-            rgba(0, 51, 102, 0.75)
-          ),
-          url("https://placehold.co/1600x800/003366/FFFFFF?text=UTYCC+Campus");
-        background-size: cover;
-        background-position: center;
-      }
-      .stat-card {
-        background-color: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-      }
-      /* This new style makes the program cards look clickable */
-      .program-card {
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body class="bg-gray-100">
-    <div class="bg-white shadow-md sticky top-0 z-50">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="../CSS/star-layout.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../CSS/footer.css" />
+  <link rel="stylesheet" href="../CSS/BE_Advantages.css" />
+  <script src="../JS/star-layout.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- name ပြောင်းရန် -->
+  <title>Computer Engineering</title>
+  <link rel="shortcut icon" href="../Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../CSS/hero-carousel.css" />
+  <script src="../JS/hero-carousel.js"></script>
+  <link rel="stylesheet" href="../CSS/font.css" />
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+    }
+
+    .hero-bg {
+      background-image: linear-gradient(rgba(0, 51, 102, 0.75),
+          rgba(0, 51, 102, 0.75)),
+        url("https://placehold.co/1600x800/003366/FFFFFF?text=UTYCC+Campus");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .stat-card {
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    /* This new style makes the program cards look clickable */
+    .program-card {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <div class="bg-white shadow-md sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
       <a href="#" class="flex items-center space-x-3">
         <div class="p-2 rounded-lg">
@@ -79,12 +69,16 @@
         <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_contact">Contact</a>
 
-        <div class="ml-4">
-          <select id="language-switcher"
-            class="border border-gray-300 rounded-md py-1 px-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="en">English</option>
-            <option value="my">မြန်မာ</option>
-          </select>
+        <div class="relative ml-4">
+          <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+            <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
+            <select id="language-switcher"
+              class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="my">မြန်မာ</option>
+              <option value="en">English</option>
+            </select>
+            <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+          </div>
         </div>
       </div>
       <button id="mobile-menu-button" class="md:hidden text-blue-900">
@@ -100,416 +94,288 @@
         data-lang-key="nav_collaboration_mobile">Collaboration</a>
       <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
         data-lang-key="nav_contact_mobile">Contact</a>
+      <div class="relative mt-4 pt-4 border-t">
+        <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+          <i class="fas fa-globe text-gray-500 absolute left-4 z-10 pointer-events-none"></i>
+          <select id="language-switcher-mobile"
+            class="w-full cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-2 pl-11 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="my">မြန်မာ</option>
+            <option value="en">English</option>
+          </select>
+          <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 z-10 pointer-events-none"></i>
+        </div>
+      </div>
     </div>
   </div>
 
-    <!-- ဒီကစရန် -->
-    <div
-      class="w-full max-w-7xl bg-white rounded-2xl shadow-xl overflow-hidden mx-auto mt-8"
-    >
-      <div class="md:flex">
-        <div class="md:shrink-0">
-          <!-- ဒီမှာပုံပြောင်းရန် -->
-          <img
-            id="CE"
-            class="h-48 w-full object-cover md:h-full md:w-48"
-            src="../Img/logo/CE.webp"
-            alt="Major Image"
-          />
+  <!-- ဒီကစရန် -->
+  <div class="w-full max-w-7xl bg-white rounded-2xl shadow-xl overflow-hidden mx-auto mt-8">
+    <div class="md:flex">
+      <div class="md:shrink-0">
+        <!-- ဒီမှာပုံပြောင်းရန် -->
+        <img id="CE" class="h-48 w-full object-cover md:h-full md:w-48" src="../Img/logo/CE.webp" alt="Major Image" />
+      </div>
+      <div class="p-8">
+        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+          University of Technology (Yatanarpon Cyber City)
         </div>
-        <div class="p-8">
-          <div
-            class="uppercase tracking-wide text-sm text-indigo-500 font-semibold"
-          >
-            University of Technology (Yatanarpon Cyber City)
-          </div>
-          <a
-            id="major-title"
-            href="#"
-            class="block mt-1 text-lg leading-tight font-medium text-black hover:underline"
-            >here</a
-          >
-          <p id="major-description" class="mt-2 text-slate-500">
-            This is a placeholder for the major description. The JavaScript will
-            update this content dynamically.
+        <a id="major-title" href="#"
+          class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">here</a>
+        <p id="major-description" class="mt-2 text-slate-500">
+          This is a placeholder for the major description. The JavaScript will
+          update this content dynamically.
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- headline -->
+  <!-- Hero Section to start the page with a strong visual -->
+  <header class="mb-12 rounded-3xl overflow-hidden shadow-2xl py-4">
+    <div class="relative h-96">
+      <!-- ဒီအောက်ကဟာ ကြိုက်တဲ့ပုံထည့်လို့ရတယ် ဥပမာ majorနဲ့ဆိုင်တဲ့ buildingတွေ ပုံတွေက "./Img/utycc_buildings/"ထဲက ဟာတွေယူသုံး srcမှာနော် -->
+      <img src="../Img/utycc_buildings/lab2.JPG" alt="Hero image of a bustling university campus"
+        class="absolute inset-0 w-full h-full object-cover brightness-75" />
+      <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-40">
+        <div class="text-center text-white p-4">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4"
+            style="font-family: 'Times New Roman', Times, serif">
+            Our Motto
+          </h1>
+          <!-- mottoက မေဂျာ တစ်ခုချင်းစီရဲ့ ဆောင်ပုဒ် အမ မယမင်း ရဲ့ doc fileတွေမှာသေချာထည့်ပေးထားတယ် အဲ့တာကိုထည့်ပေး -->
+          <p class="text-lg sm:text-xl font-light max-w-2xl mx-auto italic">
+            "Create the Modern World with the outstanding Computer Engineers"
           </p>
         </div>
       </div>
     </div>
-    <!-- headline -->
-    <!-- Hero Section to start the page with a strong visual -->
-    <header class="mb-12 rounded-3xl overflow-hidden shadow-2xl py-4">
-      <div class="relative h-96">
-        <!-- ဒီအောက်ကဟာ ကြိုက်တဲ့ပုံထည့်လို့ရတယ် ဥပမာ majorနဲ့ဆိုင်တဲ့ buildingတွေ ပုံတွေက "./Img/utycc_buildings/"ထဲက ဟာတွေယူသုံး srcမှာနော် -->
-        <img
-          src="../Img/utycc_buildings/lab2.JPG"
-          alt="Hero image of a bustling university campus"
-          class="absolute inset-0 w-full h-full object-cover brightness-75"
-        />
-        <div
-          class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-40"
-        >
-          <div class="text-center text-white p-4">
-            <h1
-              class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4"
-              style="font-family: 'Times New Roman', Times, serif"
-            >
-              Our Motto
-            </h1>
-            <!-- mottoက မေဂျာ တစ်ခုချင်းစီရဲ့ ဆောင်ပုဒ် အမ မယမင်း ရဲ့ doc fileတွေမှာသေချာထည့်ပေးထားတယ် အဲ့တာကိုထည့်ပေး -->
-            <p class="text-lg sm:text-xl font-light max-w-2xl mx-auto italic">
-              "Create the Modern World with the outstanding Computer Engineers"
-            </p>
-          </div>
-        </div>
-      </div>
-    </header>
-    <br />
+  </header>
+  <br />
 
-    <!-- Main content container with a grid of cards -->
-    <div class="container mx-auto">
-      <!-- အောက်ကဟာတွေက ရည်ရွယ်ချက် တာဝန်တွေ ခေါင်းစဥ်နဲ့ စာကိုယ်ခွဲထည့်  -->
-      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
-        CE ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များမှာ
-      </h2>
-      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl px-2 mx-auto">
-        ICT နယ်ပယ်တွင် ကျွမ်းကျင်ပြီး စွမ်းဆောင်ရည်ပြည့်ဝသည့်
-        တီထွင်ဆန်းသစ်နိုင်သော အင်ဂျင်နီယာများ ဖော်ဆောင်ပေးရန်။<br />
-        ခက်ခဲသည့် ပြဿနာများကို ဖြေရှင်းနိုင်သော သင်ယူမှု
-        အဆက်မပြတ်ဆောင်ရွက်နိုင်သော လူ့စွမ်းအားများ ဖန်တီးပေးရန်။<br />
-        စက်မှုလုပ်ငန်းနှင့် လူမှုအသိုင်းအဝိုင်း၏ လိုအပ်ချက်များ ဖြေရှင်းနိုင်ရန်
-        ကွန်ပျူတာအင်ဂျင်နီယာနယ်ပယ်တွင် နည်းပညာသစ်များနှင့် ပစ္စည်းကိရိယာများ
-        ပံ့ပိုးပေးရန်။<br />
-        ICT ကို အသုံးချသည့် သင်ယူမှုပတ်ဝန်းကျင် တွင် အခွင့်အလမ်းများ ပေးရန်။
-        စသည်တို့ ဖြစ်ပါသည်။<br />
-        ထို့အပြင် တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုသည့်
-        ဘာသာရပ်များတွင် ကျွမ်းကျင်စေရန် နှင့် တီထွင်ဆန်းသစ်သော သိပ္ပံသုတေသနများ
-        ဆောင်ရွက်ခြင်းတို့ကို လုပ်ဆောင်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးမည်
-        ဖြစ်ပါသည်။<br />
-        CE ဘာသာရပ်သင်တန်းသည် ကျောင်းသား/သူများကို နည်းပညာပိုင်းတွင် အခြေခံပညာမှ
-        စ၍ သုတေသနနှင့် လက်တွေ့ကျကျ အဆင့်မြင့်ပညာရရှိစေရန် ရည်ရွယ်ထားပြီး
-        အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ အောက်ပါအတိုင်းဖြစ်ပါသည်။
-      </p>
+  <!-- Main content container with a grid of cards -->
+  <div class="container mx-auto">
+    <!-- အောက်ကဟာတွေက ရည်ရွယ်ချက် တာဝန်တွေ ခေါင်းစဥ်နဲ့ စာကိုယ်ခွဲထည့်  -->
+    <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
+      CE ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များမှာ
+    </h2>
+    <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl px-2 mx-auto">
+      ICT နယ်ပယ်တွင် ကျွမ်းကျင်ပြီး စွမ်းဆောင်ရည်ပြည့်ဝသည့်
+      တီထွင်ဆန်းသစ်နိုင်သော အင်ဂျင်နီယာများ ဖော်ဆောင်ပေးရန်။<br />
+      ခက်ခဲသည့် ပြဿနာများကို ဖြေရှင်းနိုင်သော သင်ယူမှု
+      အဆက်မပြတ်ဆောင်ရွက်နိုင်သော လူ့စွမ်းအားများ ဖန်တီးပေးရန်။<br />
+      စက်မှုလုပ်ငန်းနှင့် လူမှုအသိုင်းအဝိုင်း၏ လိုအပ်ချက်များ ဖြေရှင်းနိုင်ရန်
+      ကွန်ပျူတာအင်ဂျင်နီယာနယ်ပယ်တွင် နည်းပညာသစ်များနှင့် ပစ္စည်းကိရိယာများ
+      ပံ့ပိုးပေးရန်။<br />
+      ICT ကို အသုံးချသည့် သင်ယူမှုပတ်ဝန်းကျင် တွင် အခွင့်အလမ်းများ ပေးရန်။
+      စသည်တို့ ဖြစ်ပါသည်။<br />
+      ထို့အပြင် တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုသည့်
+      ဘာသာရပ်များတွင် ကျွမ်းကျင်စေရန် နှင့် တီထွင်ဆန်းသစ်သော သိပ္ပံသုတေသနများ
+      ဆောင်ရွက်ခြင်းတို့ကို လုပ်ဆောင်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးမည်
+      ဖြစ်ပါသည်။<br />
+      CE ဘာသာရပ်သင်တန်းသည် ကျောင်းသား/သူများကို နည်းပညာပိုင်းတွင် အခြေခံပညာမှ
+      စ၍ သုတေသနနှင့် လက်တွေ့ကျကျ အဆင့်မြင့်ပညာရရှိစေရန် ရည်ရွယ်ထားပြီး
+      အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ အောက်ပါအတိုင်းဖြစ်ပါသည်။
+    </p>
 
-      <!-- Grid to hold the cards -->
+    <!-- Grid to hold the cards -->
+    <div id="majorsGrid" class="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-4">
+      <!-- cardတွေမှာက ခေါင်းစဥ်တွေ နံပါတ်တွေကို အစဥ်လိုက်ထည့်ပေး တစ်ခုချင်းစီတွက် card တစ်ခုစီ အမယမင်းရေးထားတဲ့ IST docက ပုံစံနဲ့ အောက်ဟာကိုယှဥ်ကြည့် h3မှာခေါင်းစဥ် li မှာအောက်ကအချက် အချက်လိုရင်liထည့်ထပ်ရေး cardလိုရင် cardတစ်ခုကို copy paste သုံးလို့ရ -->
+      <!-- Card 1  -->
       <div
-        id="majorsGrid"
-        class="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-4"
-      >
-        <!-- cardတွေမှာက ခေါင်းစဥ်တွေ နံပါတ်တွေကို အစဥ်လိုက်ထည့်ပေး တစ်ခုချင်းစီတွက် card တစ်ခုစီ အမယမင်းရေးထားတဲ့ IST docက ပုံစံနဲ့ အောက်ဟာကိုယှဥ်ကြည့် h3မှာခေါင်းစဥ် li မှာအောက်ကအချက် အချက်လိုရင်liထည့်ထပ်ရေး cardလိုရင် cardတစ်ခုကို copy paste သုံးလို့ရ -->
-        <!-- Card 1  -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div class="bg-indigo-500 text-white rounded-full p-3 mb-4">
-            <!-- Icon for the card - using a simple SVG or emoji is great -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9.75 17L9 20l-1 1h8l-1-1-6.75-3"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 14v1a3 3 0 00-3 3h6a3 3 0 00-3-3v-1"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 14h.01M12 14h.01M12 14h.01M12 14h.01M12 14h.01"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">
-            Programming & Software Development
-          </h3>
-          <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg">
-              Programming Languages (C, C++, Java, Python စသည်)
-            </li>
-            <li class="font-medium text-lg">Data Structures & Algorithms</li>
-            <li class="font-medium text-lg">Software Engineering</li>
-            <li class="font-medium text-lg">Web Development</li>
-            <li class="font-medium text-lg">Mobile Application Development</li>
-            <li class="font-medium text-lg">
-              Software Testing & Quality Assurance
-            </li>
-          
-          </ol>
+        class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+        <div class="bg-indigo-500 text-white rounded-full p-3 mb-4">
+          <!-- Icon for the card - using a simple SVG or emoji is great -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9.75 17L9 20l-1 1h8l-1-1-6.75-3" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 14v1a3 3 0 00-3 3h6a3 3 0 00-3-3v-1" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 14h.01M12 14h.01M12 14h.01M12 14h.01M12 14h.01" />
+          </svg>
         </div>
+        <h3 class="text-xl font-bold mb-2">
+          Programming & Software Development
+        </h3>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+          <li class="font-medium text-lg">
+            Programming Languages (C, C++, Java, Python စသည်)
+          </li>
+          <li class="font-medium text-lg">Data Structures & Algorithms</li>
+          <li class="font-medium text-lg">Software Engineering</li>
+          <li class="font-medium text-lg">Web Development</li>
+          <li class="font-medium text-lg">Mobile Application Development</li>
+          <li class="font-medium text-lg">
+            Software Testing & Quality Assurance
+          </li>
 
-        <!-- Card 2 -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div class="bg-green-500 text-white rounded-full p-3 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 7v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H7a3 3 0 00-3 3z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4v4m0 4v4m0 4v4"
-              />
-              <ellipse cx="12" cy="7" rx="8" ry="3" />
-              <ellipse cx="12" cy="17" rx="8" ry="3" />
-              <path d="M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3" />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">
-            Computer Hardware & Architecture
-          </h3>
-          <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg">Digital Logic Design</li>
-            <li class="font-medium text-lg">Computer Organization</li>
-            <li class="font-medium text-lg">Computer Architecture</li>
-            <li class="font-medium text-lg">
-              Microprocessor & Microcontroller Systems
-            </li>
-            <li class="font-medium text-lg">Embedded Systems Design</li>
-          </ol>
-        </div>
+        </ol>
+      </div>
 
-        <!-- Card 3   -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div class="bg-red-500 text-white rounded-full p-3 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.21a12.004 12.004 0 00-15.618 15.618A12.004 12.004 0 0021.618 5.618z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">Networking & Communication</h3>
-          <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg">Computer Networks</li>
-            <li class="font-medium text-lg">Network Administration</li>
-            <li class="font-medium text-lg">Network Security</li>
-            <li class="font-medium text-lg">Internet & Web Technologies</li>
-          </ol>
+      <!-- Card 2 -->
+      <div
+        class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+        <div class="bg-green-500 text-white rounded-full p-3 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 7v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H7a3 3 0 00-3 3z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v4m0 4v4m0 4v4" />
+            <ellipse cx="12" cy="7" rx="8" ry="3" />
+            <ellipse cx="12" cy="17" rx="8" ry="3" />
+            <path d="M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3" />
+          </svg>
         </div>
+        <h3 class="text-xl font-bold mb-2">
+          Computer Hardware & Architecture
+        </h3>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+          <li class="font-medium text-lg">Digital Logic Design</li>
+          <li class="font-medium text-lg">Computer Organization</li>
+          <li class="font-medium text-lg">Computer Architecture</li>
+          <li class="font-medium text-lg">
+            Microprocessor & Microcontroller Systems
+          </li>
+          <li class="font-medium text-lg">Embedded Systems Design</li>
+        </ol>
+      </div>
 
-        <!-- card 4 -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div class="bg-orange-500 text-white rounded-full p-3 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 20l4-16m4 4l4 4m0 0l-4 4m-4-4H8m0-4h4m-4 8h4"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">Security & Systems</h3>
-          <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg">Operating Systems</li>
-            <li class="font-medium text-lg">Information Security</li>
-            <li class="font-medium text-lg">Cryptography & Network Security</li>
-            <li class="font-medium text-lg">System Programming</li>
-          </ol>
+      <!-- Card 3   -->
+      <div
+        class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+        <div class="bg-red-500 text-white rounded-full p-3 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.21a12.004 12.004 0 00-15.618 15.618A12.004 12.004 0 0021.618 5.618z" />
+          </svg>
         </div>
+        <h3 class="text-xl font-bold mb-2">Networking & Communication</h3>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+          <li class="font-medium text-lg">Computer Networks</li>
+          <li class="font-medium text-lg">Network Administration</li>
+          <li class="font-medium text-lg">Network Security</li>
+          <li class="font-medium text-lg">Internet & Web Technologies</li>
+        </ol>
+      </div>
 
-        <!-- card 5 -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div class="bg-amber-500 text-white rounded-full p-3 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13.5 4.5l-3 3m0 0l-3-3m3 3l-3 3m-3-3l3-3m-3 3l-3 3m3-3l3 3M7 10.5v3.5a3 3 0 003 3h4a3 3 0 003-3v-3.5"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 21a9 9 0 100-18 9 9 0 000 18z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">
-            Advanced & Emerging Technologies
-          </h3>
-          <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg">Artificial Intelligence</li>
-            <li class="font-medium text-lg">Machine Learning</li>
-            <li class="font-medium text-lg">Cloud Computing</li>
-            <li class="font-medium text-lg">Internet of Things (IoT)</li>
-            <li class="font-medium text-lg">
-              Parallel & Distributed Computing
-            </li>
-            <li class="font-medium text-lg">Data Mining</li>
-          </ol>
+      <!-- card 4 -->
+      <div
+        class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+        <div class="bg-orange-500 text-white rounded-full p-3 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10 20l4-16m4 4l4 4m0 0l-4 4m-4-4H8m0-4h4m-4 8h4" />
+          </svg>
         </div>
+        <h3 class="text-xl font-bold mb-2">Security & Systems</h3>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+          <li class="font-medium text-lg">Operating Systems</li>
+          <li class="font-medium text-lg">Information Security</li>
+          <li class="font-medium text-lg">Cryptography & Network Security</li>
+          <li class="font-medium text-lg">System Programming</li>
+        </ol>
+      </div>
 
-        <!-- card 6 -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div class="bg-yellow-500 text-white rounded-full p-3 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.21a12.004 12.004 0 00-15.618 15.618A12.004 12.004 0 0021.618 5.618z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">ICT & Tools</h3>
-          <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg">Computer Applications</li>
-            <li class="font-medium text-lg">Database Systems</li>
-            <li class="font-medium text-lg">Human-Computer Interaction</li>
-            <li class="font-medium text-lg">ICT Ethics & Laws</li>
-          </ol>
+      <!-- card 5 -->
+      <div
+        class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+        <div class="bg-amber-500 text-white rounded-full p-3 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13.5 4.5l-3 3m0 0l-3-3m3 3l-3 3m-3-3l3-3m-3 3l-3 3m3-3l3 3M7 10.5v3.5a3 3 0 003 3h4a3 3 0 003-3v-3.5" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+          </svg>
         </div>
+        <h3 class="text-xl font-bold mb-2">
+          Advanced & Emerging Technologies
+        </h3>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+          <li class="font-medium text-lg">Artificial Intelligence</li>
+          <li class="font-medium text-lg">Machine Learning</li>
+          <li class="font-medium text-lg">Cloud Computing</li>
+          <li class="font-medium text-lg">Internet of Things (IoT)</li>
+          <li class="font-medium text-lg">
+            Parallel & Distributed Computing
+          </li>
+          <li class="font-medium text-lg">Data Mining</li>
+        </ol>
+      </div>
 
-        <!-- card 7 -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div class="bg-emerald-500 text-white rounded-full p-3 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 21h4"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15a3 3 0 100-6 3 3 0 000 6z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">Project & Research</h3>
-          <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg">ICT Project Management</li>
-            <li class="font-medium text-lg">Research Methodology</li>
-            <li class="font-medium text-lg">Final Year Project (B.E Thesis)</li>
-            <li class="font-medium text-lg">
-              Industrial Attachment / Internship
-            </li>
-            <li class="font-medium text-lg">Teamwork & Communication Skills</li>
-          </ol>
+      <!-- card 6 -->
+      <div
+        class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+        <div class="bg-yellow-500 text-white rounded-full p-3 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.21a12.004 12.004 0 00-15.618 15.618A12.004 12.004 0 0021.618 5.618z" />
+          </svg>
         </div>
+        <h3 class="text-xl font-bold mb-2">ICT & Tools</h3>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+          <li class="font-medium text-lg">Computer Applications</li>
+          <li class="font-medium text-lg">Database Systems</li>
+          <li class="font-medium text-lg">Human-Computer Interaction</li>
+          <li class="font-medium text-lg">ICT Ethics & Laws</li>
+        </ol>
+      </div>
+
+      <!-- card 7 -->
+      <div
+        class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+        <div class="bg-emerald-500 text-white rounded-full p-3 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h4" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Project & Research</h3>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+          <li class="font-medium text-lg">ICT Project Management</li>
+          <li class="font-medium text-lg">Research Methodology</li>
+          <li class="font-medium text-lg">Final Year Project (B.E Thesis)</li>
+          <li class="font-medium text-lg">
+            Industrial Attachment / Internship
+          </li>
+          <li class="font-medium text-lg">Teamwork & Communication Skills</li>
+        </ol>
       </div>
     </div>
+  </div>
 
-    <!-- anoter description panel -->
-    <!-- ဒီမှာကတစ်မျိုး -->
-    <!-- New section for "What You Can Learn" -->
-    <div class="container mx-auto mt-16 p-12">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
-        What You Can Learn
-      </h2>
-      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
-        CE major တွင် သီအိုရီနဲ့ လက်တွေ့ကျကျ လေ့လာမှုများမှတစ်ဆင့်
-        နည်းပညာများကို ကျွမ်းကျင်စေရန် —
-      </p>
+  <!-- anoter description panel -->
+  <!-- ဒီမှာကတစ်မျိုး -->
+  <!-- New section for "What You Can Learn" -->
+  <div class="container mx-auto mt-16 p-12">
+    <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
+      What You Can Learn
+    </h2>
+    <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
+      CE major တွင် သီအိုရီနဲ့ လက်တွေ့ကျကျ လေ့လာမှုများမှတစ်ဆင့်
+      နည်းပညာများကို ကျွမ်းကျင်စေရန် —
+    </p>
 
-      <!-- Description box above the cards -->
-      <div
-        id="descriptionBox"
-        class="w-full h-24 bg-white rounded-xl shadow-lg flex items-center justify-center p-4 mb-8 text-center text-gray-600 italic transition-opacity duration-300 opacity-0"
-      >
-        Hover over a skill to see a brief description.
+    <!-- Description box above the cards -->
+    <div id="skillCardContainer">
+      <!-- Description box - Its position in HTML does not matter as much now -->
+      <div id="descriptionBox"
+        class="transition-opacity duration-200 opacity-100 ease-in-out w-full h-24 bg-white rounded-xl shadow-lg flex mb-8 italic items-center justify-center p-4 text-center text-gray-700">
+        <p id="descriptionText">Hover over or tap a skill to see a brief description.</p>
       </div>
 
       <!-- Grid to display the skills -->
-      <div
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-      >
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         <!-- Skill Card 1: Software Development -->
         <!-- ဒီထဲက data descriptionဆိုတာမှာက -နောက်က အချက်ကို copy paste ထည့် -->
         <div
-          class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          data-description="Digital circuits နှင့် logic gates ကို ဒီဇိုင်းဆွဲခြင်း၊ စမ်းသပ်ခြင်းများ ပြုလုပ်ရန်။"
-        >
+          class="skill-card group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          data-description="Digital circuits နှင့် logic gates ကို ဒီဇိုင်းဆွဲခြင်း၊ စမ်းသပ်ခြင်းများ ပြုလုပ်ရန်။">
           <div class="bg-blue-500 text-white rounded-full p-4 mb-4">
             <!-- SVG for Software Development -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 20l4-16m4 4l4 4m0 0l-4 4m-4-4H8m0-4h4m-4 8h4"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10 20l4-16m4 4l4 4m0 0l-4 4m-4-4H8m0-4h4m-4 8h4" />
             </svg>
           </div>
           <h3 class="text-lg font-bold text-sm p-1">
@@ -520,24 +386,14 @@
 
         <!-- Skill Card 2: Networking & Security -->
         <div
-          class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          data-description=" Microprocessor နှင့် microcontroller programming နှင့် စနစ်များကို လေ့လာရန်။"
-        >
+          class="skill-card group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          data-description=" Microprocessor နှင့် microcontroller programming နှင့် စနစ်များကို လေ့လာရန်။">
           <div class="bg-green-500 text-white rounded-full p-4 mb-4">
             <!-- SVG for Networking & Security -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.21a12.004 12.004 0 00-15.618 15.618A12.004 12.004 0 0021.618 5.618z"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.21a12.004 12.004 0 00-15.618 15.618A12.004 12.004 0 0021.618 5.618z" />
             </svg>
           </div>
           <h3 class="text-lg font-bold text-sm p-1">
@@ -547,30 +403,16 @@
 
         <!-- Skill Card 3: Emerging Technology -->
         <div
-          class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          data-description="Embedded system design နှင့် IoT စက်ပစ္စည်းများ ဖန်တီးခြင်း၊ စမ်းသပ်ရန်။"
-        >
+          class="skill-card group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          data-description="Embedded system design နှင့် IoT စက်ပစ္စည်းများ ဖန်တီးခြင်း၊ စမ်းသပ်ရန်။">
           <div class="bg-yellow-500 text-white rounded-full p-4 mb-4">
             <!-- SVG for Emerging Technology -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13.5 4.5l-3 3m0 0l-3-3m3 3l-3 3m-3-3l3-3m-3 3l-3 3m3-3l3 3M7 10.5v3.5a3 3 0 003 3h4a3 3 0 003-3v-3.5"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 21a9 9 0 100-18 9 9 0 000 18z"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13.5 4.5l-3 3m0 0l-3-3m3 3l-3 3m-3-3l3-3m-3 3l-3 3m3-3l3 3M7 10.5v3.5a3 3 0 003 3h4a3 3 0 003-3v-3.5" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
             </svg>
           </div>
           <h3 class="text-lg font-bold text-sm p-1">Embedded Systems Lab</h3>
@@ -578,24 +420,14 @@
 
         <!-- Skill Card 4: Professional & Ethical Practices -->
         <div
-          class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          data-description="Telecommunication နှင့် data communication စနစ်များ လေ့လာရန်။"
-        >
+          class="skill-card group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          data-description="Telecommunication နှင့် data communication စနစ်များ လေ့လာရန်။">
           <div class="bg-purple-500 text-white rounded-full p-4 mb-4">
             <!-- SVG for Professional & Ethical Practices -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m5.618-4.21a12.004 12.004 0 00-15.618 15.618A12.004 12.004 0 0021.618 5.618z"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.21a12.004 12.004 0 00-15.618 15.618A12.004 12.004 0 0021.618 5.618z" />
             </svg>
           </div>
           <h3 class="text-lg font-bold text-sm p-1">
@@ -605,36 +437,17 @@
 
         <!-- Skill Card 5: Project & Research Skills -->
         <div
-          class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          data-description=" Automation နှင့် control theory ကို လေ့လာ၍ practical experiments ပြုလုပ်ရန်။"
-        >
+          class="skill-card group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          data-description=" Automation နှင့် control theory ကို လေ့လာ၍ practical experiments ပြုလုပ်ရန်။">
           <div class="bg-red-500 text-white rounded-full p-4 mb-4">
             <!-- SVG for Project & Research Skills -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 21h4"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15a3 3 0 100-6 3 3 0 000 6z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h4" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <h3 class="text-lg font-bold text-sm p-1">Control Systems Lab</h3>
@@ -642,23 +455,12 @@
 
         <!-- Skill Card 6: Critical Thinking -->
         <div
-          class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          data-description="Semiconductor device များ၊ electronic circuits နှင့် testing လုပ်ငန်းများ လက်တွေ့စမ်းသပ်ရန်။"
-        >
+          class="skill-card group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          data-description="Semiconductor device များ၊ electronic circuits နှင့် testing လုပ်ငန်းများ လက်တွေ့စမ်းသပ်ရန်။">
           <div class="bg-indigo-500 text-white rounded-full p-4 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
           <h3 class="text-lg font-bold text-sm p-1">
@@ -719,222 +521,198 @@
             </div> -->
       </div>
     </div>
+  </div>
 
-    <!-- it's end here -->
+  <!-- it's end here -->
 
-    <!-- what you will learn here tab -->
-    <div class="container mx-auto mt-16 p-12">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
-        What You Will Learn After BE Course
-      </h2>
-      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
-        Our Bachelor of Engineering curriculum is designed to prepare you for
-        the real world with these key advantages.
-      </p>
+  <!-- what you will learn here tab -->
+  <div class="container mx-auto mt-16 p-12">
+    <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
+      What You Will Learn After BE Course
+    </h2>
+    <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
+      Our Bachelor of Engineering curriculum is designed to prepare you for
+      the real world with these key advantages.
+    </p>
 
-      <div
-        class="slider-container w-full max-w-6xl mx-auto rounded-2xl shadow-xl overflow-hidden group"
-      >
-        <div id="slides" class="slides">
-          <!-- Slide 1 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">
-                <!-- ဒီထဲမှာက BEရပြီးရင်သိမယ့်ဟာတွေ sliderမို့လို့ slide divကို copy pasteလုပ်လို့ရတယ် ပိုနေရင်ဖျက် လိုနေရင်ထည့် -->
-                Hardware & Software Integration
-              </h3>
-              <!-- <p class="text-gray-700">Gain practical experience by working on real-world projects and case studies throughout your studies.</p> -->
-            </div>
-          </div>
-          <!-- Slide 2 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">
-                Computer Systems Knowledge
-              </h3>
-              <!-- <p class="text-gray-700">Our curriculum is continuously updated to align with the latest industry demands and technologies.</p> -->
-            </div>
-          </div>
-          <!-- Slide 3 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">Networking & Security</h3>
-              <!-- <p class="text-gray-700">Connect with peers, professors, and industry professionals from around the globe.</p> -->
-            </div>
-          </div>
-          <!-- Slide 4 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">
-                Embedded & IoT Development
-              </h3>
-              <!-- <p class="text-gray-700">Receive personalized support for internships, job searches, and career development.</p> -->
-            </div>
-          </div>
-          <!-- Slide 5 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">
-                Programming & Circuit Design
-              </h3>
-              <!-- <p class="text-gray-700">Build a solid base in engineering principles that will last throughout your career.</p> -->
-            </div>
-          </div>
-          <!-- Slide 6 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">IoT Device Development</h3>
-              <!-- <p class="text-gray-700">Tailor your education to your interests with specialized tracks in various engineering fields.</p> -->
-            </div>
-          </div>
-          <!-- Slide 7 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">
-                Security Awareness (Hardware & Firmware)
-              </h3>
-              <!-- <p class="text-gray-700">Participate in leadership programs and team-based projects to hone your soft skills.</p> -->
-            </div>
-          </div>
-          <!-- Slide 8 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">Advanced Technologies</h3>
-              <!-- <p class="text-gray-700">Work alongside faculty on cutting-edge research projects and contribute to new discoveries.</p> -->
-            </div>
-          </div>
-          <!-- Slide 9 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">
-                Problem Solving & Logical Thinking
-              </h3>
-              <!-- <p class="text-gray-700">Learn to identify opportunities and develop your own ventures with our dedicated support.</p> -->
-            </div>
-          </div>
-          <!-- Slide 10 -->
-          <div class="slide bg-white rounded-xl">
-            <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4">
-                Engineering Problem-Solving
-              </h3>
-              <!-- <p class="text-gray-700">Understand the societal impact of your work and practice engineering with integrity.</p> -->
-            </div>
+    <div class="slider-container w-full max-w-6xl mx-auto rounded-2xl shadow-xl overflow-hidden group">
+      <div id="slides" class="slides">
+        <!-- Slide 1 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">
+              <!-- ဒီထဲမှာက BEရပြီးရင်သိမယ့်ဟာတွေ sliderမို့လို့ slide divကို copy pasteလုပ်လို့ရတယ် ပိုနေရင်ဖျက် လိုနေရင်ထည့် -->
+              Hardware & Software Integration
+            </h3>
+            <!-- <p class="text-gray-700">Gain practical experience by working on real-world projects and case studies throughout your studies.</p> -->
           </div>
         </div>
-
-        <!-- Navigation Buttons -->
-        <button id="left-button" class="nav-button left-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
-        <button id="right-button" class="nav-button right-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
+        <!-- Slide 2 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">
+              Computer Systems Knowledge
+            </h3>
+            <!-- <p class="text-gray-700">Our curriculum is continuously updated to align with the latest industry demands and technologies.</p> -->
+          </div>
+        </div>
+        <!-- Slide 3 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">Networking & Security</h3>
+            <!-- <p class="text-gray-700">Connect with peers, professors, and industry professionals from around the globe.</p> -->
+          </div>
+        </div>
+        <!-- Slide 4 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">
+              Embedded & IoT Development
+            </h3>
+            <!-- <p class="text-gray-700">Receive personalized support for internships, job searches, and career development.</p> -->
+          </div>
+        </div>
+        <!-- Slide 5 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">
+              Programming & Circuit Design
+            </h3>
+            <!-- <p class="text-gray-700">Build a solid base in engineering principles that will last throughout your career.</p> -->
+          </div>
+        </div>
+        <!-- Slide 6 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">IoT Device Development</h3>
+            <!-- <p class="text-gray-700">Tailor your education to your interests with specialized tracks in various engineering fields.</p> -->
+          </div>
+        </div>
+        <!-- Slide 7 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">
+              Security Awareness (Hardware & Firmware)
+            </h3>
+            <!-- <p class="text-gray-700">Participate in leadership programs and team-based projects to hone your soft skills.</p> -->
+          </div>
+        </div>
+        <!-- Slide 8 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">Advanced Technologies</h3>
+            <!-- <p class="text-gray-700">Work alongside faculty on cutting-edge research projects and contribute to new discoveries.</p> -->
+          </div>
+        </div>
+        <!-- Slide 9 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">
+              Problem Solving & Logical Thinking
+            </h3>
+            <!-- <p class="text-gray-700">Learn to identify opportunities and develop your own ventures with our dedicated support.</p> -->
+          </div>
+        </div>
+        <!-- Slide 10 -->
+        <div class="slide bg-white rounded-xl">
+          <div class="slide-content">
+            <h3 class="text-2xl font-bold mb-4">
+              Engineering Problem-Solving
+            </h3>
+            <!-- <p class="text-gray-700">Understand the societal impact of your work and practice engineering with integrity.</p> -->
+          </div>
+        </div>
       </div>
 
-      <!-- Dots Container -->
-      <div id="dots-container" class="dots-container"></div>
+      <!-- Navigation Buttons -->
+      <button id="left-button" class="nav-button left-button">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button id="right-button" class="nav-button right-button">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
 
-    <!-- job opportunities -->
-    <!-- Section for Job Opportunities -->
-    <div class="container mx-auto job-opportunities-section p-8">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
-        Career Paths & Job Opportunities
-      </h2>
-      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
-        <!-- ဒီမှာက စာလေးပြင် -->
-        B.E. Computer Engineering ဘွဲ့ရရှိသူများသည် IT & Telecom Companies,
-        Hardware Manufacturing Companies, Robotics & Automation Firms, Embedded
-        Systems Startups, Government Technology Departments, Telecommunications
-        စသည်တို့တွင် —
-      </p>
+    <!-- Dots Container -->
+    <div id="dots-container" class="dots-container"></div>
+  </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- h3 job-cardတွေမှာ စာတွေပြောင်း cardလည်း လိုတိုးပိုလျှော့  -->
-        <!-- Job Card 1 -->
-        <div class="job-card">
-          <h3 class="job-title">Hardware Engineer</h3>
-        </div>
-        <!-- Job Card 2 -->
-        <div class="job-card">
-          <h3 class="job-title">Embedded Systems Developer</h3>
-        </div>
-        <!-- Job Card 3 -->
-        <div class="job-card">
-          <h3 class="job-title">Network Engineer</h3>
-        </div>
-        <!-- Job Card 4 -->
-        <div class="job-card">
-          <h3 class="job-title">Systems Architect</h3>
-        </div>
-        <!-- Job Card 5 -->
-        <div class="job-card">
-          <h3 class="job-title">IoT Solutions Engineer</h3>
-        </div>
-        <!-- Job Card 6 -->
-        <div class="job-card">
-          <h3 class="job-title">Control Systems Engineer</h3>
-        </div>
-        <!-- Job Card 7 -->
-        <div class="job-card">
-          <h3 class="job-title">Telecommunication Engineer</h3>
-        </div>
-        <!-- Job Card 8 -->
-        <div class="job-card">
-          <h3 class="job-title">Automation Engineer</h3>
-        </div>
-        <!-- Job Card 9 -->
-        <div class="job-card">
-          <h3 class="job-title">Robotics Engineer</h3>
-        </div>
-        <!-- Job Card 10 -->
-        <div class="job-card">
-          <h3 class="job-title">Research and Development Engineer</h3>
-        </div>
+  <!-- job opportunities -->
+  <!-- Section for Job Opportunities -->
+  <div class="container mx-auto job-opportunities-section p-8">
+    <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
+      Career Paths & Job Opportunities
+    </h2>
+    <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
+      <!-- ဒီမှာက စာလေးပြင် -->
+      B.E. Computer Engineering ဘွဲ့ရရှိသူများသည် IT & Telecom Companies,
+      Hardware Manufacturing Companies, Robotics & Automation Firms, Embedded
+      Systems Startups, Government Technology Departments, Telecommunications
+      စသည်တို့တွင် —
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- h3 job-cardတွေမှာ စာတွေပြောင်း cardလည်း လိုတိုးပိုလျှော့  -->
+      <!-- Job Card 1 -->
+      <div class="job-card">
+        <h3 class="job-title">Hardware Engineer</h3>
+      </div>
+      <!-- Job Card 2 -->
+      <div class="job-card">
+        <h3 class="job-title">Embedded Systems Developer</h3>
+      </div>
+      <!-- Job Card 3 -->
+      <div class="job-card">
+        <h3 class="job-title">Network Engineer</h3>
+      </div>
+      <!-- Job Card 4 -->
+      <div class="job-card">
+        <h3 class="job-title">Systems Architect</h3>
+      </div>
+      <!-- Job Card 5 -->
+      <div class="job-card">
+        <h3 class="job-title">IoT Solutions Engineer</h3>
+      </div>
+      <!-- Job Card 6 -->
+      <div class="job-card">
+        <h3 class="job-title">Control Systems Engineer</h3>
+      </div>
+      <!-- Job Card 7 -->
+      <div class="job-card">
+        <h3 class="job-title">Telecommunication Engineer</h3>
+      </div>
+      <!-- Job Card 8 -->
+      <div class="job-card">
+        <h3 class="job-title">Automation Engineer</h3>
+      </div>
+      <!-- Job Card 9 -->
+      <div class="job-card">
+        <h3 class="job-title">Robotics Engineer</h3>
+      </div>
+      <!-- Job Card 10 -->
+      <div class="job-card">
+        <h3 class="job-title">Research and Development Engineer</h3>
       </div>
     </div>
-    <!-- footer region -->
+  </div>
+  <!-- footer region -->
 
-    <footer id="contact" class="bg-blue-900 text-white">
+  <footer id="contact" class="bg-blue-900 text-white">
     <div class="container mx-auto px-6 py-12">
       <div class="grid md:grid-cols-4 gap-8">
         <div>
           <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
           <h3 class="text-lg font-bold">UTYCC</h3>
           <p class="text-blue-200 text-sm mt-4">
-                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address"
-                            target="_blank">
-                            Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
-                            Region, Myanmar
-                        </a>
-                    </p>
+            <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
+              Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
+              Region, Myanmar
+            </a>
+          </p>
           <div class="mt-4 text-sm text-blue-200">
             <p>Email: info@utycc.edu.mm (example)</p>
             <p>Phone: +95 (XX) XXX XXX (example)</p>
@@ -1008,54 +786,54 @@
     </div>
   </footer>
 
-    <script>
-      // ပြင်စရာရှိတယ်
-      // Function to update the major details panel
-      function updateMajorPanel(title, description, imageUrl) {
-        const majorTitle = document.getElementById("major-title");
-        const majorDescription = document.getElementById("major-description");
-        const majorImage = document.getElementById("major-image");
+  <script>
+    // ပြင်စရာရှိတယ်
+    // Function to update the major details panel
+    function updateMajorPanel(title, description, imageUrl) {
+      const majorTitle = document.getElementById("major-title");
+      const majorDescription = document.getElementById("major-description");
+      const majorImage = document.getElementById("major-image");
 
-        // Check if elements exist before updating
-        if (majorTitle) {
-          majorTitle.textContent = title;
-        }
-        if (majorDescription) {
-          majorDescription.textContent = description;
-        }
-        if (majorImage) {
-          majorImage.src = imageUrl;
-        }
+      // Check if elements exist before updating
+      if (majorTitle) {
+        majorTitle.textContent = title;
       }
+      if (majorDescription) {
+        majorDescription.textContent = description;
+      }
+      if (majorImage) {
+        majorImage.src = imageUrl;
+      }
+    }
 
-      // major name change ပြီးတော့ descriptionရော change
-      updateMajorPanel(
-        "Computer Engineering",
-        "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ ကွန်ပျူတာအင်ဂျင်နီယာဌာန (Department of Computer Engineering - CE) သည် ကွန်ပျူတာ hardware (ကွန်ပျူတာစနစ်များ၊ အင်တာနက်ကွန်ယက်များ) နှင့် software (Embedded Systems နှင့် AI/Robotics) နှစ်မျိုးစလုံးကို ပေါင်းစပ်လေ့လာသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။"
-      );
-      // --- DOM Elements ---
-      const navLinks = document.querySelectorAll(".nav-link");
-      const mobileMenuButton = document.getElementById("mobile-menu-button");
-      const mobileMenu = document.getElementById("mobile-menu");
+    // major name change ပြီးတော့ descriptionရော change
+    updateMajorPanel(
+      "Computer Engineering",
+      "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ ကွန်ပျူတာအင်ဂျင်နီယာဌာန (Department of Computer Engineering - CE) သည် ကွန်ပျူတာ hardware (ကွန်ပျူတာစနစ်များ၊ အင်တာနက်ကွန်ယက်များ) နှင့် software (Embedded Systems နှင့် AI/Robotics) နှစ်မျိုးစလုံးကို ပေါင်းစပ်လေ့လာသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။"
+    );
+    // --- DOM Elements ---
+    const navLinks = document.querySelectorAll(".nav-link");
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
 
-      // --- Event Listeners ---
-      navLinks.forEach((link) => {
-        link.addEventListener("click", (e) => {
-          // This ensures the page scrolls smoothly to the target section
-          const targetId = link.getAttribute("href");
-          document
-            .querySelector(targetId)
-            .scrollIntoView({ behavior: "smooth" });
-        });
+    // --- Event Listeners ---
+    navLinks.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        // This ensures the page scrolls smoothly to the target section
+        const targetId = link.getAttribute("href");
+        document
+          .querySelector(targetId)
+          .scrollIntoView({ behavior: "smooth" });
       });
+    });
 
-      mobileMenuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
-      });
-    </script>
-    <script src="../js/Des_Major.js"></script>
-    <script src="../js/BE_Advantages.js"></script>
-    <script>
+    mobileMenuButton.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+    });
+  </script>
+  <script src="../js/Des_Major.js"></script>
+  <script src="../js/BE_Advantages.js"></script>
+  <script>
     // --- Translation Script ---
     const translations = {
       my: {
@@ -1117,6 +895,7 @@
     };
 
     const languageSwitcher = document.getElementById("language-switcher");
+    const languageSwitcherMobile = document.getElementById("language-switcher-mobile");
 
     const changeLanguage = (lang) => {
       // Store the selected language
@@ -1124,6 +903,7 @@
 
       // Set the dropdown to the correct value
       languageSwitcher.value = lang;
+      languageSwitcherMobile.value = lang;
 
       // Translate all elements with the data-lang-key attribute
       document.querySelectorAll("[data-lang-key]").forEach((element) => {
@@ -1140,6 +920,10 @@
       changeLanguage(event.target.value);
     });
 
+    languageSwitcherMobile.addEventListener('change', (event) => {
+            changeLanguage(event.target.value);
+        });
+
     // Function to run when the page loads
     document.addEventListener("DOMContentLoaded", () => {
       // Check for a saved language in localStorage, otherwise default to 'en'
@@ -1147,5 +931,6 @@
       changeLanguage(savedLang);
     });
   </script>
-  </body>
+</body>
+
 </html>
