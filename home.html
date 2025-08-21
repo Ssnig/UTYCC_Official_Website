@@ -19,9 +19,7 @@
     <script src="./JS/hero-carousel.js"></script>
     <link rel="stylesheet" href="CSS/font.css" />
     <style>
-        body {
-            font-family: "Inter", sans-serif;
-        }
+        
 
         .hero-bg {
             background-image: linear-gradient(rgba(0, 51, 102, 0.75),
@@ -44,7 +42,7 @@
 
 <body class="bg-gray-100">
     <!-- Header -->
-       <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="bg-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <a href="#" class="flex items-center space-x-3">
                 <div class="p-2 rounded-lg">
@@ -107,7 +105,7 @@
                 </div>
             </div>
         </div>
-    </header>
+    </div>
 
     <!-- This div will contain all the main content that can be hidden -->
     <div id="main-content">
@@ -117,11 +115,13 @@
                 <div class="hero-slide active" style="background-image: url(./Img/hero-carousel/2.jpg)"></div>
                 <div class="hero-slide" style="background-image: url(./Img/hero-carousel/5.JPG)"></div>
                 <div class="hero-slide active" style="background-image: url(./Img/hero-carousel/7.jpg)"></div>
-                <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/front_view2.JPG)"></div>
+                <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/front_view2.JPG)">
+                </div>
                 <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/lab.JPG)"></div>
                 <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/lab3.JPG)"></div>
                 <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/lecture.JPG)"></div>
-                <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/workshop\ \(2\).JPG)"></div>
+                <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/workshop\ \(2\).JPG)">
+                </div>
             </div>
             <div class="hero-overlay bg-gradient-to-br from-blue-50/80 to-white/40"></div>
             <div class="hero-content container mx-auto px-6 py-24 md:py-32 text-center">
@@ -143,12 +143,12 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div>
                         <i class="fas fa-calendar-alt text-3xl mb-2 text-blue-300"></i>
-                        <p class="text-xl font-bold">Established 2010</p>
+                        <p class="text-xl font-bold" data-lang-key="est" >Established 2010</p>
                         <p class="text-sm text-blue-200" data-lang-key="stats_since">Serving Since</p>
                     </div>
                     <div>
                         <i class="fas fa-users text-3xl mb-2 text-blue-300"></i>
-                        <p class="text-xl font-bold">~12,000</p>
+                        <p class="text-xl font-bold">~3,000</p>
                         <p class="text-sm text-blue-200" data-lang-key="stats_students">Students</p>
                     </div>
                     <div>
@@ -377,7 +377,7 @@
         style="background-image: url('./Img/utycc_buildings/front_view.JPG')">
         <div class="absolute inset-0 bg-black opacity-50"></div>
         <div
-            class="relative container mx-auto max-w-5xl bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl overflow-hidden" >
+            class="relative container mx-auto max-w-5xl bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl overflow-hidden">
             <!-- FIX: Changed to flex-col on all screens, added padding and gap for better mobile layout -->
             <div class="flex flex-col md:flex-row">
                 <!-- New Students Card -->
@@ -418,247 +418,261 @@
 
     <!-- Footer -->
     <footer id="contact" class="bg-blue-900 text-white">
-    <div class="container mx-auto px-6 py-12">
-        <div class="grid md:grid-cols-4 gap-8">
-            <div>
-                <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" href="Home.html">
-                <h3 class="text-lg font-bold">UTYCC</h3>
-                <p class="text-blue-200 text-sm mt-4" data-lang-key="footer_address">
-                    Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
-                    Region, Myanmar
-                </p>
-                <div class="mt-4 text-sm text-blue-200">
-                    <p>Email: info@utycc.edu.mm (example)</p>
-                    <p>Phone: +95 (XX) XXX XXX (example)</p>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">Faculties</h3>
-                <ul class="space-y-2 text-sm text-blue-200">
-                    <li data-lang-key="footer_faculty_ist" href="./Majors/ist.html">Information Science Technology</li>
-                    <li data-lang-key="footer_faculty_ce" href="./Majors/ce.html">Computer Engineering</li>
-                    <li data-lang-key="footer_faculty_ece" href="./Majors/ece.html">Electronics Engineering</li>
-                    <li data-lang-key="footer_faculty_ame" href="./Majors/pre.html">Advanced Materials Engineering</li>
-                    <li data-lang-key="footer_faculty_pre" href="./Majors/ame.html">Precision Engineering</li>
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">Quick Links</h3>
-                <ul class="space-y-2 text-sm text-blue-200">
-                    <li><a href="#" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a></li>
-                    <li><a href="#" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a></li>
-                    <li><a href="About.html" class="hover:text-white" data-lang-key="footer_link_about" >About Us</a></li>
-                    <li><a href="#" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">Follow Us</h3>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
-                    <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
-                </div>
-                <br>
-                <br>
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
                 <div>
-                    <div class="newtons-cradle">
-                        <div class="newtons-cradle__dot"></div>
-                        <div class="newtons-cradle__dot"></div>
-                        <div class="newtons-cradle__dot"></div>
-                        <div class="newtons-cradle__dot"></div>
+                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4"
+                        href="Home.html">
+                    <h3 class="text-lg font-bold" href="">UTYCC</h3>
+                    <p class="text-blue-200 text-sm mt-4">
+                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address"
+                            target="_blank">
+                            Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
+                            Region, Myanmar
+                        </a>
+                    </p>
+                    <div class="mt-4 text-sm text-blue-200">
+                        <p>Email: info@utycc.edu.mm (example)</p>
+                        <p>Phone: +95 (XX) XXX XXX (example)</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">Faculties</h3>
+                    <ul class="space-y-2 text-sm text-blue-200">
+                        <li data-lang-key="footer_faculty_ist" href="./Majors/ist.html">Information Science Technology
+                        </li>
+                        <li data-lang-key="footer_faculty_ce" href="./Majors/ce.html">Computer Engineering</li>
+                        <li data-lang-key="footer_faculty_ece" href="./Majors/ece.html">Electronics Engineering</li>
+                        <li data-lang-key="footer_faculty_ame" href="./Majors/pre.html">Advanced Materials Engineering
+                        </li>
+                        <li data-lang-key="footer_faculty_pre" href="./Majors/ame.html">Precision Engineering</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">Quick Links</h3>
+                    <ul class="space-y-2 text-sm text-blue-200">
+                        <li><a href="#" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+                        </li>
+                        <li><a href="FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a></li>
+                        <li><a href="About.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+                        </li>
+                        <li><a href="#" class="hover:text-white" data-lang-key="footer_link_rules">Rules &
+                                Regulations</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">Follow Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i
+                                class="fab fa-linkedin-in text-xl"></i></a>
+                    </div>
+                    <br>
+                    <br>
+                    <div>
+                        <div class="newtons-cradle">
+                            <div class="newtons-cradle__dot"></div>
+                            <div class="newtons-cradle__dot"></div>
+                            <div class="newtons-cradle__dot"></div>
+                            <div class="newtons-cradle__dot"></div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="mt-10 border-t border-blue-800  pt-6 text-center text-sm text-blue-300"
+                data-lang-key="footer_copyright">
+                &copy; 2025 University of Technology - Yatanarpon Cyber City. All
+                Rights Reserved.
+            </div>
         </div>
-        <div class="mt-10 border-t border-blue-800  pt-6 text-center text-sm text-blue-300" data-lang-key="footer_copyright">
-            &copy; 2025 University of Technology - Yatanarpon Cyber City. All
-            Rights Reserved.
-        </div>
-    </div>
-</footer>
+    </footer>
 
     <!-- All JavaScript logic is now here -->
     <script>
-    // --- DOM Elements ---
-    const mainContent = document.getElementById("main-content");
-    const mobileMenuButton = document.getElementById("mobile-menu-button");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const langSwitcherDesktop = document.getElementById('language-switcher-desktop');
-    const langSwitcherMobile = document.getElementById('language-switcher-mobile');
+        // --- DOM Elements ---
+        const mainContent = document.getElementById("main-content");
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const langSwitcherDesktop = document.getElementById('language-switcher-desktop');
+        const langSwitcherMobile = document.getElementById('language-switcher-mobile');
 
-    // --- State ---
-    let currentLang = 'my'; // 'my' for Myanmar, 'en' for English
+        // --- State ---
+        let currentLang = 'my'; // 'my' for Myanmar, 'en' for English
 
-    // --- Data for Translations ---
-    const translations = {
-    my: {
-        utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
-        nav_about: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_programs: "ပညာရေးအစီအစဉ်များ",
-        nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
-        nav_contact: "ဆက်သွယ်ရန်",
-        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
-        nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
-        nav_contact_mobile: "ဆက်သွယ်ရန်",
-        hero_title: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
-        hero_subtitle: "စဉ်ဆက်မပြတ် ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ဦးဆောင်အင်ဂျင်နီယာကျောင်း",
-        hero_button: "ကျောင်းအပ်ရန်",
-        stats_since: "တည်ထောင်ခဲ့သောနှစ်",
-        stats_students: "ကျောင်းသား/သူများ",
-        stats_acceptance: "ဝင်ခွင့်ရရှိနှုန်း",
-        stats_quality: "အရည်အသွေး အသိအမှတ်ပြု",
-        about_title: "ကျွန်ုပ်တို့၏ မျှော်မှန်းချက်နှင့် ရည်မှန်းချက်",
-        about_p1: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ကို ၂၀၁၀ ခုနှစ်၊ အောက်တိုဘာလ ၁၇ ရက်နေ့တွင် သိပ္ပံနှင့်နည်းပညာဝန်ကြီးဌာန လက်အောက်၌ တည်ထောင်ခဲ့ပါသည်။ တက္ကသိုလ်သည် ပြင်ဦးလွင်မြို့အနီး၊ ရတနာပုံဆိုင်ဘာစီးတီးတွင် တည်ရှိသည်။",
-        vision_title: "မျှော်မှန်းချက်",
-        vision_text: "စဉ်ဆက်မပြတ် ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ဦးဆောင်အင်ဂျင်နီယာကျောင်းတစ်ကျောင်း ဖြစ်လာစေရန်။",
-        mission_title: "ရည်မှန်းချက်",
-        mission_text: "အရည်အသွေးမြင့်မားသော သင်ကြားရေး၊ သုတေသနနှင့် လူမှုရေးအရ တာဝန်ယူမှုရှိသော အင်ဂျင်နီယာပညာရေးကို ပံ့ပိုးပေးရန်။",
-        programs_title: "ပညာရေးအစီအစဉ်များ",
-        bachelor_title: "ဘွဲ့ကြိုသင်တန်းများ (၆ နှစ်)",
-        program_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
-        program_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
-        program_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-        program_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
-        program_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
-        masters_title: "ဘွဲ့လွန်သင်တန်းများ (၂ နှစ်)",
-        masters_text: "IST, CE, ECE, AME, နှင့် PrE ဘာသာရပ်များတွင် မဟာဘွဲ့သင်တန်းများကို သင်ကြားလျက်ရှိပြီး သင်တန်း coursework နှင့် ကျမ်းတစ်စောင် ပြုစုရန် လိုအပ်ပါသည်။",
-        phd_title: "ပါရဂူဘွဲ့ (၃ နှစ်)",
-        phd_text: "သတင်းအချက်အလက်နည်းပညာဘာသာရပ်တွင် ပါရဂူဘွဲ့ (Ph.D.) သင်တန်းကို တက်ရောက်နိုင်သည်။",
-        collab_title: "နိုင်ငံတကာ ပူးပေါင်းဆောင်ရွက်မှု",
-        collab_acu_title: "အာဆီယံ-ကိုရီးယား ဆိုက်ဘာတက္ကသိုလ် (ACU)",
-        collab_acu_text: "ဒေသတွင်း ဒစ်ဂျစ်တယ်ပညာရေး မြှင့်တင်ရန်အတွက် e-Learning ပရောဂျက်များတွင် ပါဝင်ဆောင်ရွက်လျက်ရှိသည်။",
-        collab_mu_title: "မီယာဇာကီ တက္ကသိုလ်၊ ဂျပန်",
-        collab_mu_text: "နိုင်ငံတကာ ပညာရေးဖလှယ်မှုကို အားပေးသည့် နှစ်နိုင်ငံ မဟာဘွဲ့ ပရိုဂရမ်ကို ဖွင့်လှစ်ထားသည်။",
-        back_button: "နောက်သို့",
-        enroll_new_title: "ကျောင်းသား/သူအသစ်များ",
-        enroll_new_text: "သင်၏ ပညာရေးခရီးကို ကျွန်ုပ်တို့နှင့်အတူ စတင်လိုက်ပါ။ လာမည့် ပညာသင်နှစ်အတွက် ကျောင်းအပ်ရန် ဤနေရာကို နှိပ်ပါ။",
-        enroll_new_button: "ကျောင်းသား/သူအသစ်အဖြစ် စာရင်းသွင်းရန်",
-        enroll_current_title: "လက်ရှိကျောင်းသား/သူများ",
-        enroll_current_text: "ပြန်လည်ကြိုဆိုပါသည်။ နောက်နှစ်အတွက် ကျောင်းအပ်ခြင်းဖြင့် သင်၏ပညာရေးကို ဆက်လက်သင်ယူပါ။",
-        enroll_current_button: "နောက်နှစ်အတွက် စာရင်းသွင်းရန်",
-        footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
-        footer_faculties_title: "မဟာဌာနများ",
-        footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
-        footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
-        footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
-        footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
-        footer_contact_title: "ဆက်သွယ်ရန်",
-        footer_follow_title: "Follow Us",
-        footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
-        footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
-        footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
-        footer_link_faq: "အမေးများသော မေးခွန်းများ",
-        footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
-        footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ"
-    },
-    en: {
-        utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
-        nav_about: "About Us",
-        nav_programs: "Academic Programs",
-        nav_collaboration: "Collaboration",
-        nav_contact: "Contact",
-        nav_about_mobile: "About Us",
-        nav_programs_mobile: "Academic Programs",
-        nav_collaboration_mobile: "Collaboration",
-        nav_contact_mobile: "Contact",
-        hero_title: "University of Technology - Yatanarpon Cyber City",
-        hero_subtitle: "A Leading Engineering Institution for Sustainable Development",
-        hero_button: "TO ENROLL",
-        stats_since: "Serving Since",
-        stats_students: "Students",
-        stats_acceptance: "Acceptance Rate",
-        stats_quality: "Certified Quality",
-        about_title: "Our Vision & Mission",
-        about_p1: "Established on 17 October 2010, UTYCC is a public university under the Ministry of Science and Technology, located in Yatanarpon Cyber City, near Pyin Oo Lwin.",
-        vision_title: "Vision",
-        vision_text: "To be a leading engineering institution for sustainable development.",
-        mission_title: "Mission",
-        mission_text: "To provide high-quality teaching, research, and socially responsible engineering education.",
-        programs_title: "Academic Programs",
-        bachelor_title: "Bachelor's Degrees (6 Years)",
-        program_ist: "Information Science and Technology (IST)",
-        program_ce: "Computer Engineering (CE)",
-        program_ece: "Electronics Engineering (EcE)",
-        program_pre: "Precision Engineering (PrE)",
-        program_ame: "Advanced Materials Engineering (AME)",
-        masters_title: "Master's Degrees (2 Years)",
-        masters_text: "Master's degrees are offered in IST, CE, ECE, AME, and PrE, combining coursework and a thesis.",
-        phd_title: "Doctoral Degree (3 Years)",
-        phd_text: "A Ph.D. program is available in Information Technology.",
-        collab_title: "International Collaboration",
-        collab_acu_title: "ASEAN-KOREA Cyber University (ACU)",
-        collab_acu_text: "Engaging in e-Learning projects to enhance digital education across the region.",
-        collab_mu_title: "Miyazaki University, Japan",
-        collab_mu_text: "Offering a Double Master's Degree program, fostering international academic exchange.",
-        back_button: "Back",
-        enroll_new_title: "New Students",
-        enroll_new_text: "Start your journey with us! Click here to enroll for the upcoming academic year.",
-        enroll_new_button: "Enroll as a Fresher",
-        enroll_current_title: "Current Students",
-        enroll_current_text: "Welcome back! Continue your studies by enrolling for the next year.",
-        enroll_current_button: "Enroll for Next Year",
-        footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
-        footer_faculties_title: "Faculties",
-        footer_faculty_ist: "Information Science Technology",
-        footer_faculty_ce: "Computer Engineering",
-        footer_faculty_ece: "Electronics Engineering",
-        footer_faculty_ame: "Advanced Materials Engineering",
-        footer_faculty_pre: "Precision Engineering",
-        footer_contact_title: "Contact Us",
-        footer_follow_title: "Follow Us",
-        footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
-        footer_quick_links_title: "Quick Links",
-        footer_link_terms: "Terms & Policies",
-        footer_link_faq: "FAQs",
-        footer_link_about: "About Us",
-        footer_link_rules: "Rules & Regulations"
-    }
-};
-
-    // --- Functions ---
-    function setLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem('selectedLanguage', lang); // <-- ပြင်ဆင်ချက် ၁: ရွေးချယ်လိုက်သော language ကို localStorage တွင် သိမ်းဆည်းပါ။
-
-        const elements = document.querySelectorAll('[data-lang-key]');
-        elements.forEach(el => {
-            const key = el.getAttribute('data-lang-key');
-            if (translations[lang] && translations[lang][key]) {
-                el.innerHTML = translations[lang][key];
+        // --- Data for Translations ---
+        const translations = {
+            my: {
+                
+                utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+                nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+                nav_programs: "ပညာရေးအစီအစဉ်များ",
+                nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
+                nav_contact: "ဆက်သွယ်ရန်",
+                nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+                nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
+                nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
+                nav_contact_mobile: "ဆက်သွယ်ရန်",
+                hero_title: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+                hero_subtitle: "စဉ်ဆက်မပြတ် ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ဦးဆောင်အင်ဂျင်နီယာကျောင်း",
+                hero_button: "ကျောင်းအပ်ရန်",
+                stats_since: "တည်ထောင်ခဲ့သောနှစ်",
+                stats_students: "ကျောင်းသား/သူများ",
+                stats_acceptance: "ဝင်ခွင့်ရရှိနှုန်း",
+                stats_quality: "အရည်အသွေး အသိအမှတ်ပြု",
+                about_title: "ကျွန်ုပ်တို့၏ မျှော်မှန်းချက်နှင့် ရည်မှန်းချက်",
+                about_p1: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ကို ၂၀၁၀ ခုနှစ်၊ အောက်တိုဘာလ ၁၇ ရက်နေ့တွင် သိပ္ပံနှင့်နည်းပညာဝန်ကြီးဌာန လက်အောက်၌ တည်ထောင်ခဲ့ပါသည်။ တက္ကသိုလ်သည် ပြင်ဦးလွင်မြို့အနီး၊ ရတနာပုံဆိုင်ဘာစီးတီးတွင် တည်ရှိသည်။",
+                vision_title: "မျှော်မှန်းချက်",
+                vision_text: "စဉ်ဆက်မပြတ် ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ဦးဆောင်အင်ဂျင်နီယာကျောင်းတစ်ကျောင်း ဖြစ်လာစေရန်။",
+                mission_title: "ရည်မှန်းချက်",
+                mission_text: "အရည်အသွေးမြင့်မားသော သင်ကြားရေး၊ သုတေသနနှင့် လူမှုရေးအရ တာဝန်ယူမှုရှိသော အင်ဂျင်နီယာပညာရေးကို ပံ့ပိုးပေးရန်။",
+                programs_title: "ပညာရေးအစီအစဉ်များ",
+                bachelor_title: "ဘွဲ့ကြိုသင်တန်းများ (၆ နှစ်)",
+                program_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+                program_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+                program_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+                program_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+                program_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+                masters_title: "ဘွဲ့လွန်သင်တန်းများ (၂ နှစ်)",
+                masters_text: "IST, CE, ECE, AME, နှင့် PrE ဘာသာရပ်များတွင် မဟာဘွဲ့သင်တန်းများကို သင်ကြားလျက်ရှိပြီး သင်တန်း coursework နှင့် ကျမ်းတစ်စောင် ပြုစုရန် လိုအပ်ပါသည်။",
+                phd_title: "ပါရဂူဘွဲ့ (၃ နှစ်)",
+                phd_text: "သတင်းအချက်အလက်နည်းပညာဘာသာရပ်တွင် ပါရဂူဘွဲ့ (Ph.D.) သင်တန်းကို တက်ရောက်နိုင်သည်။",
+                collab_title: "နိုင်ငံတကာ ပူးပေါင်းဆောင်ရွက်မှု",
+                collab_acu_title: "အာဆီယံ-ကိုရီးယား ဆိုက်ဘာတက္ကသိုလ် (ACU)",
+                collab_acu_text: "ဒေသတွင်း ဒစ်ဂျစ်တယ်ပညာရေး မြှင့်တင်ရန်အတွက် e-Learning ပရောဂျက်များတွင် ပါဝင်ဆောင်ရွက်လျက်ရှိသည်။",
+                collab_mu_title: "မီယာဇာကီ တက္ကသိုလ်၊ ဂျပန်",
+                collab_mu_text: "နိုင်ငံတကာ ပညာရေးဖလှယ်မှုကို အားပေးသည့် နှစ်နိုင်ငံ မဟာဘွဲ့ ပရိုဂရမ်ကို ဖွင့်လှစ်ထားသည်။",
+                back_button: "နောက်သို့",
+                enroll_new_title: "ကျောင်းသား/သူအသစ်များ",
+                enroll_new_text: "သင်၏ ပညာရေးခရီးကို ကျွန်ုပ်တို့နှင့်အတူ စတင်လိုက်ပါ။ လာမည့် ပညာသင်နှစ်အတွက် ကျောင်းအပ်ရန် ဤနေရာကို နှိပ်ပါ။",
+                enroll_new_button: "ကျောင်းသား/သူအသစ်အဖြစ် စာရင်းသွင်းရန်",
+                enroll_current_title: "လက်ရှိကျောင်းသား/သူများ",
+                enroll_current_text: "ပြန်လည်ကြိုဆိုပါသည်။ နောက်နှစ်အတွက် ကျောင်းအပ်ခြင်းဖြင့် သင်၏ပညာရေးကို ဆက်လက်သင်ယူပါ။",
+                enroll_current_button: "နောက်နှစ်အတွက် စာရင်းသွင်းရန်",
+                footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+                footer_faculties_title: "မဟာဌာနများ",
+                footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+                footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+                footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+                footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+                footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+                footer_contact_title: "ဆက်သွယ်ရန်",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+                footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+                footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+                footer_link_faq: "အမေးများသော မေးခွန်းများ",
+                footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
+                footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ"
+            },
+            en: {
+                utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+                nav_about: "About Us",
+                nav_programs: "Academic Programs",
+                nav_collaboration: "Collaboration",
+                nav_contact: "Contact",
+                nav_about_mobile: "About Us",
+                nav_programs_mobile: "Academic Programs",
+                nav_collaboration_mobile: "Collaboration",
+                nav_contact_mobile: "Contact",
+                hero_title: "University of Technology - Yatanarpon Cyber City",
+                hero_subtitle: "A Leading Engineering Institution for Sustainable Development",
+                hero_button: "TO ENROLL",
+                stats_since: "Serving Since",
+                stats_students: "Students",
+                stats_acceptance: "Acceptance Rate",
+                stats_quality: "Certified Quality",
+                about_title: "Our Vision & Mission",
+                about_p1: "Established on 17 October 2010, UTYCC is a public university under the Ministry of Science and Technology, located in Yatanarpon Cyber City, near Pyin Oo Lwin.",
+                vision_title: "Vision",
+                vision_text: "To be a leading engineering institution for sustainable development.",
+                mission_title: "Mission",
+                mission_text: "To provide high-quality teaching, research, and socially responsible engineering education.",
+                programs_title: "Academic Programs",
+                bachelor_title: "Bachelor's Degrees (6 Years)",
+                program_ist: "Information Science and Technology (IST)",
+                program_ce: "Computer Engineering (CE)",
+                program_ece: "Electronics Engineering (EcE)",
+                program_pre: "Precision Engineering (PrE)",
+                program_ame: "Advanced Materials Engineering (AME)",
+                masters_title: "Master's Degrees (2 Years)",
+                masters_text: "Master's degrees are offered in IST, CE, ECE, AME, and PrE, combining coursework and a thesis.",
+                phd_title: "Doctoral Degree (3 Years)",
+                phd_text: "A Ph.D. program is available in Information Technology.",
+                collab_title: "International Collaboration",
+                collab_acu_title: "ASEAN-KOREA Cyber University (ACU)",
+                collab_acu_text: "Engaging in e-Learning projects to enhance digital education across the region.",
+                collab_mu_title: "Miyazaki University, Japan",
+                collab_mu_text: "Offering a Double Master's Degree program, fostering international academic exchange.",
+                back_button: "Back",
+                enroll_new_title: "New Students",
+                enroll_new_text: "Start your journey with us! Click here to enroll for the upcoming academic year.",
+                enroll_new_button: "Enroll as a Fresher",
+                enroll_current_title: "Current Students",
+                enroll_current_text: "Welcome back! Continue your studies by enrolling for the next year.",
+                enroll_current_button: "Enroll for Next Year",
+                footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+                footer_faculties_title: "Faculties",
+                footer_faculty_ist: "Information Science Technology",
+                footer_faculty_ce: "Computer Engineering",
+                footer_faculty_ece: "Electronics Engineering",
+                footer_faculty_ame: "Advanced Materials Engineering",
+                footer_faculty_pre: "Precision Engineering",
+                footer_contact_title: "Contact Us",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+                footer_quick_links_title: "Quick Links",
+                footer_link_terms: "Terms & Policies",
+                footer_link_faq: "FAQs",
+                footer_link_about: "About Us",
+                footer_link_rules: "Rules & Regulations",
+                
+                
             }
+        };
+
+        // --- Functions ---
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('selectedLanguage', lang); // <-- ပြင်ဆင်ချက် ၁: ရွေးချယ်လိုက်သော language ကို localStorage တွင် သိမ်းဆည်းပါ။
+
+            const elements = document.querySelectorAll('[data-lang-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            langSwitcherDesktop.value = lang;
+            langSwitcherMobile.value = lang;
+        }
+
+        mobileMenuButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
         });
-        langSwitcherDesktop.value = lang;
-        langSwitcherMobile.value = lang;
-    }
 
-    mobileMenuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
-    });
+        langSwitcherDesktop.addEventListener('change', (e) => setLanguage(e.target.value));
+        langSwitcherMobile.addEventListener('change', (e) => setLanguage(e.target.value));
 
-    langSwitcherDesktop.addEventListener('change', (e) => setLanguage(e.target.value));
-    langSwitcherMobile.addEventListener('change', (e) => setLanguage(e.target.value));
+        // --- Initial Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // <-- ပြင်ဆင်ချက် ၂: စာမျက်နှာ စဖွင့်သည့်အခါ localStorage ကိုစစ်ပြီး language ကို သတ်မှတ်ပါ။
+            const savedLang = localStorage.getItem('selectedLanguage') || 'my'; // သိမ်းထားတာမရှိရင် 'my' ကို default အဖြစ်သုံးပါ။
+            setLanguage(savedLang);
 
-    // --- Initial Page Load ---
-    document.addEventListener('DOMContentLoaded', () => {
-        // <-- ပြင်ဆင်ချက် ၂: စာမျက်နှာ စဖွင့်သည့်အခါ localStorage ကိုစစ်ပြီး language ကို သတ်မှတ်ပါ။
-        const savedLang = localStorage.getItem('selectedLanguage') || 'my'; // သိမ်းထားတာမရှိရင် 'my' ကို default အဖြစ်သုံးပါ။
-        setLanguage(savedLang);
-
-        // --- (မူရင်း code ထဲက image loading အပိုင်းကို ဒီအတိုင်းဆက်ထားပါ) ---
-        const images = document.querySelectorAll('img');
-        images.forEach(img => {
-            if (img.src.includes('placehold.co')) {
-                img.onerror = function () {
-                    this.src = 'https://placehold.co/80x80/cccccc/ffffff?text=Error';
-                };
-            }
+            // --- (မူရင်း code ထဲက image loading အပိုင်းကို ဒီအတိုင်းဆက်ထားပါ) ---
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (img.src.includes('placehold.co')) {
+                    img.onerror = function () {
+                        this.src = 'https://placehold.co/80x80/cccccc/ffffff?text=Error';
+                    };
+                }
+            });
         });
-    });
-</script>
+    </script>
 </body>
 
 </html>
