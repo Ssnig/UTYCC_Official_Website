@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="../CSS/star-layout.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -9,133 +10,127 @@
     <link rel="stylesheet" href="../CSS/BE_Advantages.css" />
     <script src="../JS/star-layout.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- name ပြောင်းရန် -->
     <title>Information Science & Technology</title>
-    <link
-      rel="shortcut icon"
-      href="../Img/logo/utycc_logo_favicon/favicon.ico"
-      type="image/x-icon"
-    />
+    <link rel="shortcut icon" href="../Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../CSS/hero-carousel.css" />
     <script src="../JS/hero-carousel.js"></script>
     <link rel="stylesheet" href="../CSS/font.css" />
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-      }
-      .hero-bg {
-        background-image: linear-gradient(
-            rgba(0, 51, 102, 0.75),
-            rgba(0, 51, 102, 0.75)
-          ),
-          url("https://placehold.co/1600x800/003366/FFFFFF?text=UTYCC+Campus");
-        background-size: cover;
-        background-position: center;
-      }
-      .stat-card {
-        background-color: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-      }
-      /* This new style makes the program cards look clickable */
-      .program-card {
-        cursor: pointer;
-      }
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 51, 102, 0.75),
+                    rgba(0, 51, 102, 0.75)),
+                url("https://placehold.co/1600x800/003366/FFFFFF?text=UTYCC+Campus");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .stat-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* This new style makes the program cards look clickable */
+        .program-card {
+            cursor: pointer;
+        }
     </style>
-  </head>
-  <body class="bg-gray-100">
+</head>
+
+<body class="bg-gray-100">
 
     <div class="bg-white shadow-md sticky top-0 z-50">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="#" class="flex items-center space-x-3">
-        <div class="p-2 rounded-lg">
-          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
-        </div>
-        <div>
-          <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
-          <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
-            City)</span>
-        </div>
-      </a>
-      <div class="hidden md:flex items-center space-x-6">
-        <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">About Us</a>
-        <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_programs">Academic Programs</a>
-        <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_collaboration">Collaboration</a>
-        <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_contact">Contact</a>
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-3">
+                <div class="p-2 rounded-lg">
+                    <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+                </div>
+                <div>
+                    <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
+                    <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology
+                        (Yatanarpon Cyber
+                        City)</span>
+                </div>
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                    data-lang-key="nav_about">About Us</a>
+                <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                    data-lang-key="nav_programs">Academic Programs</a>
+                <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                    data-lang-key="nav_collaboration">Collaboration</a>
+                <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                    data-lang-key="nav_contact">Contact</a>
 
-        <div class="ml-4">
-          <select id="language-switcher"
-            class="border border-gray-300 rounded-md py-1 px-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="en">English</option>
-            <option value="my">မြန်မာ</option>
-          </select>
+                <div class="relative ml-4">
+                    <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+                        <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
+                        <select id="language-switcher"
+                            class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="my">မြန်မာ</option>
+                            <option value="en">English</option>
+                        </select>
+                        <i
+                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+                    </div>
+                </div>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-blue-900">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
+            <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+                data-lang-key="nav_about_mobile">About Us</a>
+            <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+                data-lang-key="nav_programs_mobile">Academic Programs</a>
+            <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+                data-lang-key="nav_collaboration_mobile">Collaboration</a>
+            <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+                data-lang-key="nav_contact_mobile">Contact</a>
+            <div class="relative mt-4 pt-4 border-t">
+                <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+                    <i class="fas fa-globe text-gray-500 absolute left-4 z-10 pointer-events-none"></i>
+                    <select id="language-switcher-mobile"
+                        class="w-full cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-2 pl-11 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="my">မြန်မာ</option>
+                        <option value="en">English</option>
+                    </select>
+                    <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 z-10 pointer-events-none"></i>
+                </div>
+            </div>
         </div>
-      </div>
-      <button id="mobile-menu-button" class="md:hidden text-blue-900">
-        <i class="fas fa-bars text-2xl"></i>
-      </button>
-    </nav>
-    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-      <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_about_mobile">About Us</a>
-      <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_programs_mobile">Academic Programs</a>
-      <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_collaboration_mobile">Collaboration</a>
-      <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_contact_mobile">Contact</a>
     </div>
-  </div>
 
     <!-- ဒီကစရန် -->
-    <div
-      class="w-full max-w-7xl bg-white rounded-2xl shadow-xl overflow-hidden mx-auto mt-8"
-    >
-      <div class="md:flex">
-        <div class="md:shrink-0">
-          <!-- ဒီမှာပုံပြောင်းရန် -->
-          <img
-            id="IST"
-            class="h-48 w-full object-cover md:h-full md:w-48"
-            src="../Img/logo/IST.webp"
-            alt="Major Image"
-          />
+    <div class="w-full max-w-7xl bg-white rounded-2xl shadow-xl overflow-hidden mx-auto mt-8">
+        <div class="md:flex">
+            <div class="md:shrink-0">
+                <!-- ဒီမှာပုံပြောင်းရန် -->
+                <img id="IST" class="h-48 w-full object-cover md:h-full md:w-48" src="../Img/logo/IST.webp"
+                    alt="Major Image" />
+            </div>
+            <div class="p-8">
+                <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold" data-lang-key="uni_name">
+                    University of Technology (Yatanarpon Cyber City)
+                </div>
+                <a id="major-title" href="#"
+                    class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">here</a>
+                <p id="major-description" class="mt-2 text-slate-500">
+                    This is a placeholder for the major description. The JavaScript will
+                    update this content dynamically.
+                </p>
+            </div>
         </div>
-        <div class="p-8">
-          <div
-            class="uppercase tracking-wide text-sm text-indigo-500 font-semibold" data-lang-key="uni_name"
-          >
-            University of Technology (Yatanarpon Cyber City)
-          </div>
-          <a
-            id="major-title"
-            href="#"
-            class="block mt-1 text-lg leading-tight font-medium text-black hover:underline"
-            >here</a
-          >
-          <p id="major-description" class="mt-2 text-slate-500">
-            This is a placeholder for the major description. The JavaScript will
-            update this content dynamically.
-          </p>
-        </div>
-      </div>
     </div>
     <!-- headline -->
     <!-- Hero Section to start the page with a strong visual -->
@@ -154,12 +149,11 @@
             <h1
               class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4"
               style="font-family: 'Times New Roman', Times, serif"
-              data-lang-key="motto_H"
             >
               Our Motto
             </h1>
             <!-- mottoက မေဂျာ တစ်ခုချင်းစီရဲ့ ဆောင်ပုဒ် အမ မယမင်း ရဲ့ doc fileတွေမှာသေချာထည့်ပေးထားတယ် အဲ့တာကိုထည့်ပေး -->
-            <p class="text-lg sm:text-xl font-light max-w-2xl mx-auto italic" data-lang-key="motto">
+            <p class="text-lg sm:text-xl font-light max-w-2xl mx-auto italic">
               "To build a better society through ICT"
             </p>
           </div>
@@ -170,84 +164,63 @@
 
     <!-- Main content container with a grid of cards -->
     <div class="container mx-auto">
-      <!-- အောက်ကဟာတွေက ရည်ရွယ်ချက် တာဝန်တွေ ခေါင်းစဥ်နဲ့ စာကိုယ်ခွဲထည့်  -->
-      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="objectives_heading">
-        IST ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များ
-      </h2>
-      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl px-2 mx-auto" data-lang-key="objectives">
-        ပေါ်ထွန်းလာသည့် အချက်အလက်နည်းပညာများနှင့်
-        အသုံးပြုသူအသိုင်းအဝိုင်းဆိုင်ရာ ဆန်းသစ်တီထွင်နိုင်သော ကျောင်းသားများ
-        ဖြစ်စေရန် သီအိုရီနှင့် လက်တွေ့ အရည်အသွေးအမြင့်ဆုံး ဖြင့်
-        သင်တန်းပေးသင်ကြားရန်။ နည်းပညာအသစ်များကို ထိရောက်စွာ
-        အသုံးပြုခြင်းအားဖြင့် ကမ္ဘာပေါ်ရှိ အခက်အခဲပြဿနာများကို အမှန်တကယ်
-        ဖြေရှင်းနိုင်ရန် ပံ့ပိုးပေးရန်။ ICT ကို အသုံးချသည့် သင်ယူပတ်ဝန်းကျင်
-        အခွင့်အလမ်းများကို ကျယ်ကျယ်ပြန့်ပြန့် ဖန်တီးပေးရန်။ နည်းပညာလောကတွင်
-        လိုအပ်သော ပညာဉာဏ်နှင့်အတူ စွမ်းရည်ပြည့်ဝမှုများ၊
-        လက်တွေ့ကျွမ်းကျင်မှုများနှင့် ပေါ်ထွန်းလာသော အချက်အလက်နည်းပညာများ၏
-        အနာဂတ်ခေါင်းဆောင်များ ဖြစ်လာစေရန်။ စသည်တို့ ဖြစ်ပါသည်။ ထို့အပြင်
-        တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုသည့်
-        ဘာသာရပ်များတွင် ကျွမ်းကျင်စေရန် နှင့် တီထွင်ဆန်းသစ်သော သိပ္ပံသုတေသနများ
-        ဆောင်ရွက်ခြင်းတို့ကို လုပ်ဆောင်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးမည် ဖြစ်ပါသည်။
-        IST ဘာသာရပ်သင်တန်းသည် ကျောင်းသား/သူများကို နည်းပညာပိုင်းတွင် အခြေခံပညာမှ
-        စ၍ သုတေသနနှင့် လက်တွေ့ကျကျ အဆင့်မြင့်ပညာရရှိစေရန် ရည်ရွယ်ထားပြီး
-        အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ အောက်ပါအတိုင်းဖြစ်ပါသည်။
-      </p>
+        <!-- အောက်ကဟာတွေက ရည်ရွယ်ချက် တာဝန်တွေ ခေါင်းစဥ်နဲ့ စာကိုယ်ခွဲထည့်  -->
+        <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="objectives_heading">
+            IST ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များ
+        </h2>
+        <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl px-2 mx-auto" data-lang-key="objectives">
+            ပေါ်ထွန်းလာသည့် အချက်အလက်နည်းပညာများနှင့်
+            အသုံးပြုသူအသိုင်းအဝိုင်းဆိုင်ရာ ဆန်းသစ်တီထွင်နိုင်သော ကျောင်းသားများ
+            ဖြစ်စေရန် သီအိုရီနှင့် လက်တွေ့ အရည်အသွေးအမြင့်ဆုံး ဖြင့်
+            သင်တန်းပေးသင်ကြားရန်။ နည်းပညာအသစ်များကို ထိရောက်စွာ
+            အသုံးပြုခြင်းအားဖြင့် ကမ္ဘာပေါ်ရှိ အခက်အခဲပြဿနာများကို အမှန်တကယ်
+            ဖြေရှင်းနိုင်ရန် ပံ့ပိုးပေးရန်။ ICT ကို အသုံးချသည့် သင်ယူပတ်ဝန်းကျင်
+            အခွင့်အလမ်းများကို ကျယ်ကျယ်ပြန့်ပြန့် ဖန်တီးပေးရန်။ နည်းပညာလောကတွင်
+            လိုအပ်သော ပညာဉာဏ်နှင့်အတူ စွမ်းရည်ပြည့်ဝမှုများ၊
+            လက်တွေ့ကျွမ်းကျင်မှုများနှင့် ပေါ်ထွန်းလာသော အချက်အလက်နည်းပညာများ၏
+            အနာဂတ်ခေါင်းဆောင်များ ဖြစ်လာစေရန်။ စသည်တို့ ဖြစ်ပါသည်။ ထို့အပြင်
+            တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုသည့်
+            ဘာသာရပ်များတွင် ကျွမ်းကျင်စေရန် နှင့် တီထွင်ဆန်းသစ်သော သိပ္ပံသုတေသနများ
+            ဆောင်ရွက်ခြင်းတို့ကို လုပ်ဆောင်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးမည် ဖြစ်ပါသည်။
+            IST ဘာသာရပ်သင်တန်းသည် ကျောင်းသား/သူများကို နည်းပညာပိုင်းတွင် အခြေခံပညာမှ
+            စ၍ သုတေသနနှင့် လက်တွေ့ကျကျ အဆင့်မြင့်ပညာရရှိစေရန် ရည်ရွယ်ထားပြီး
+            အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ အောက်ပါအတိုင်းဖြစ်ပါသည်။
+        </p>
 
-      <!-- Grid to hold the cards -->
-      <div
-        id="majorsGrid"
-        class="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-4"
-      >
-        <!-- cardတွေမှာက ခေါင်းစဥ်တွေ နံပါတ်တွေကို အစဥ်လိုက်ထည့်ပေး တစ်ခုချင်းစီတွက် card တစ်ခုစီ အမယမင်းရေးထားတဲ့ IST docက ပုံစံနဲ့ အောက်ဟာကိုယှဥ်ကြည့် h3မှာခေါင်းစဥ် li မှာအောက်ကအချက် အချက်လိုရင်liထည့်ထပ်ရေး cardလိုရင် cardတစ်ခုကို copy paste သုံးလို့ရ -->
-        <!-- Card 1  -->
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div class="bg-indigo-500 text-white rounded-full p-3 mb-4">
-            <!-- Icon for the card - using a simple SVG or emoji is great -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9.75 17L9 20l-1 1h8l-1-1-6.75-3"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 14v1a3 3 0 00-3 3h6a3 3 0 00-3-3v-1"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 14h.01M12 14h.01M12 14h.01M12 14h.01M12 14h.01"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2" data-lang-key="basic_tech">Basic IT Technologies</h3>
-          <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg" data-lang-key="tech_1">
-              Programming Languages (C, C++, Java, Python,...)
-            </li>
-            <li class="font-medium text-lg" data-lang-key="tech_2">
-              Data Structures & Algorithms
-            </li>
-            <li class="font-medium text-lg" data-lang-key="tech_3">
-              Computer Organization & Architecture
-            </li>
-            <li class="font-medium text-lg" data-lang-key="tech_4">
-              Operating Systems
-            </li>
-          </ol>
-        </div>
+        <!-- Grid to hold the cards -->
+        <div id="majorsGrid" class="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-4">
+            <!-- cardတွေမှာက ခေါင်းစဥ်တွေ နံပါတ်တွေကို အစဥ်လိုက်ထည့်ပေး တစ်ခုချင်းစီတွက် card တစ်ခုစီ အမယမင်းရေးထားတဲ့ IST docက ပုံစံနဲ့ အောက်ဟာကိုယှဥ်ကြည့် h3မှာခေါင်းစဥ် li မှာအောက်ကအချက် အချက်လိုရင်liထည့်ထပ်ရေး cardလိုရင် cardတစ်ခုကို copy paste သုံးလို့ရ -->
+            <!-- Card 1  -->
+            <div
+                class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+                <div class="bg-indigo-500 text-white rounded-full p-3 mb-4">
+                    <!-- Icon for the card - using a simple SVG or emoji is great -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9.75 17L9 20l-1 1h8l-1-1-6.75-3" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 14v1a3 3 0 00-3 3h6a3 3 0 00-3-3v-1" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 14h.01M12 14h.01M12 14h.01M12 14h.01M12 14h.01" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2" data-lang-key="basic_tech">Basic IT Technologies</h3>
+                <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                    <li class="font-medium text-lg" data-lang-key="tech_1">
+                        Programming Languages (C, C++, Java, Python,...)
+                    </li>
+                    <li class="font-medium text-lg" data-lang-key="tech_2">
+                        Data Structures & Algorithms
+                    </li>
+                    <li class="font-medium text-lg" data-lang-key="tech_3">
+                        Computer Organization & Architecture
+                    </li>
+                    <li class="font-medium text-lg" data-lang-key="tech_4">
+                        Operating Systems
+                    </li>
+                </ol>
+            </div>
 
         <!-- Card 2 -->
         <div
@@ -278,15 +251,16 @@
               <path d="M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3" />
             </svg>
           </div>
-          <h3 class="text-xl font-bold mb-2" data-lang-key="data_db">Data and Database</h3>
+          <h3 class="text-xl font-bold mb-2">Data and Database</h3>
           <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg" data-lang-key="data_1">
-              Database Management Systems MS
+            <li class="font-medium text-lg">
+              Database Management Systems (DBMS)
             </li>
-            <li class="font-medium text-lg" data-lang-key="data_2">Data Modeling & SQLs</li>
-            <li class="font-medium text-lg" data-lang-key="data_3">Big Data Concepts</li>
-            <li class="font-medium text-" data-lang-key="data_4">Data Analytics & Visualization</li>
-          </ol>       </div>
+            <li class="font-medium text-lg">Data Modeling & SQLs</li>
+            <li class="font-medium text-lg">Big Data Concepts</li>
+            <li class="font-medium text-lg">Data Analytics & Visualization</li>
+          </ol>
+        </div>
 
         <!-- Card 3   -->
         <div
@@ -308,12 +282,12 @@
               />
             </svg>
           </div>
-          <h3 class="text-xl font-bold mb-2" data-lang-key="net_sec">Networking & Security</h3>
+          <h3 class="text-xl font-bold mb-2">Networking & Security</h3>
           <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg" data-lang-key="net_1">Computer Networks</li>
-            <li class="font-medium text-lg" data-lang-key="net_2">Internet Protocols</li>
-            <li class="font-medium text-lg" data-lang-key="net_3">Cybersecurity Fundamentals</li>
-            <li class="font-medium text-lg" data-lang-key="net_4">Network Administration</li>
+            <li class="font-medium text-lg">Computer Networks</li>
+            <li class="font-medium text-lg">Internet Protocols</li>
+            <li class="font-medium text-lg">Cybersecurity Fundamentals</li>
+            <li class="font-medium text-lg">Network Administration</li>
           </ol>
         </div>
 
@@ -337,16 +311,16 @@
               />
             </svg>
           </div>
-          <h3 class="text-xl font-bold mb-2" data-lang-key="soft_dev">Software Development</h3>
+          <h3 class="text-xl font-bold mb-2">Software Development</h3>
           <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg" data-lang-key="dev_1">
+            <li class="font-medium text-lg">
               Software Engineering & Methodologies
             </li>
-            <li class="font-medium text-lg" data-lang-key="dev_2">
+            <li class="font-medium text-lg">
               Web Development(Frontend & Backend)
             </li>
-            <li class="font-medium text-lg" data-lang-key="dev_3">Mobile Application Development</li>
-            <li class="font-medium text-lg" data-lang-key="dev_4">Software Testing & Development</li>
+            <li class="font-medium text-lg">Mobile Application Development</li>
+            <li class="font-medium text-lg">Software Testing & Development</li>
           </ol>
         </div>
 
@@ -376,14 +350,14 @@
               />
             </svg>
           </div>
-          <h3 class="text-xl font-bold mb-2" data-lang-key="em_tech">Emerging Technologies</h3>
+          <h3 class="text-xl font-bold mb-2">Emerging Technologies</h3>
           <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg" data-lang-key="em_tech1">
+            <li class="font-medium text-lg">
               Artificial Intelligence (AI) & Machine Learning (ML)
             </li>
-            <li class="font-medium text-lg" data-lang-key="em_tech2">Cloud Computing</li>
-            <li class="font-medium text-lg" data-lang-key="em_tech3">Internet of Things (IoT) </li>
-            <li class="font-medium text-lg" data-lang-key="em_tech4">Blockchain Basics</li>
+            <li class="font-medium text-lg">Cloud Computing</li>
+            <li class="font-medium text-lg"></li>
+            <li class="font-medium text-lg">Software Testing & Development</li>
           </ol>
         </div>
 
@@ -407,13 +381,13 @@
               />
             </svg>
           </div>
-          <h3 class="text-xl font-bold mb-2" data-lang-key="pro_ethics">
+          <h3 class="text-xl font-bold mb-2">
             Professional & Ethical Practices
           </h3>
           <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg" data-lang-key="ethic_1">ICT Laws & Ethics</li>
-            <li class="font-medium text-lg" data-lang-key="ethic_2">Intellectual Property Rights</li>
-            <li class="font-medium text-lg" data-lang-key="ethic_3">Sustainable Technology Use</li>
+            <li class="font-medium text-lg">ICT Laws & Ethics</li>
+            <li class="font-medium text-lg">Intellectual Property Rights</li>
+            <li class="font-medium text-lg">Sustainable Technology Use</li>
           </ol>
         </div>
 
@@ -449,14 +423,14 @@
               />
             </svg>
           </div>
-          <h3 class="text-xl font-bold mb-2" data-lang-key="pj_skills">Project & Research Skills</h3>
+          <h3 class="text-xl font-bold mb-2">Project & Research Skills</h3>
           <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg" data-lang-key="skill_1">ICT Project Management</li>
-            <li class="font-medium text-lg" data-lang-key="skill_2">Research Methodology</li>
-            <li class="font-medium text-lg" data-lang-key="skill_3">
+            <li class="font-medium text-lg">ICT Project Management</li>
+            <li class="font-medium text-lg">Research Methodology</li>
+            <li class="font-medium text-lg">
               Final Year Project (Capstone Project)
             </li>
-            <li class="font-medium text-lg" data-lang-key="skill_4">Teamwork & Communication Skills</li>
+            <li class="font-medium text-lg">Teamwork & Communication Skills</li>
           </ol>
         </div>
       </div>
@@ -466,21 +440,20 @@
     <!-- ဒီမှာကတစ်မျိုး -->
     <!-- New section for "What You Can Learn" -->
     <div class="container mx-auto mt-16 p-12">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="lab_header">
-        Where You Can Learn
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
+        What You Can Learn
       </h2>
-      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="lab_intro">
+      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
         IST major တွင် သီအိုရီနဲ့ လက်တွေ့ကျကျ လေ့လာမှုများမှတစ်ဆင့်
         နည်းပညာများကို ကျွမ်းကျင်စေရန် —
       </p>
 
-      <!-- Description box above the cards -->
-      <div
-        id="descriptionBox"
-        class="w-full h-24 bg-white rounded-xl shadow-lg flex items-center justify-center p-4 mb-8 text-center text-gray-600 italic transition-opacity duration-300 opacity-0"
-      >
-        Hover over a skill to see a brief description.
-      </div>
+        <div id="skillCardContainer">
+            <!-- Description box - Its position in HTML does not matter as much now -->
+            <div id="descriptionBox"
+                class="transition-opacity duration-200 opacity-100 ease-in-out w-full h-24 bg-white rounded-xl shadow-lg flex mb-8 italic items-center justify-center p-4 text-center text-gray-700">
+                <p id="descriptionText">Hover over or tap a skill to see a brief description.</p>
+            </div>
 
       <!-- Grid to display the skills -->
       <div
@@ -509,7 +482,7 @@
               />
             </svg>
           </div>
-          <h3 class="text-lg font-bold text-sm p-1" data-lang-key="lab_1">
+          <h3 class="text-lg font-bold text-sm p-1">
             <!-- ဒီမှာ - ရှေ့ကဟာကိုရေး -->
             Programming & Software Development Lab
           </h3>
@@ -537,7 +510,7 @@
               />
             </svg>
           </div>
-          <h3 class="text-lg font-bold text-sm p-1" data-lang-key="lab_2">
+          <h3 class="text-lg font-bold text-sm p-1">
             Database & Data Analytics Lab
           </h3>
         </div>
@@ -572,7 +545,7 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
               />
             </svg>
           </div>
-          <h3 class="text-lg font-bold text-sm p-1" data-lang-key="lab_3">
+          <h3 class="text-lg font-bold text-sm p-1">
             Networking & Security Lab
           </h3>
         </div>
@@ -600,7 +573,7 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
               />
             </svg>
           </div>
-          <h3 class="text-lg font-bold text-sm p-1" data-lang-key="lab_4">
+          <h3 class="text-lg font-bold text-sm p-1">
             Web & Mobile Development Lab
           </h3>
         </div>
@@ -639,7 +612,7 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
               />
             </svg>
           </div>
-          <h3 class="text-lg font-bold text-sm p-1" data-lang-key="lab_5">
+          <h3 class="text-lg font-bold text-sm p-1">
             AI & Machine Learning Lab
           </h3>
         </div>
@@ -665,7 +638,7 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
               />
             </svg>
           </div>
-          <h3 class="text-lg font-bold text-sm p-1" data-lang-key="lab_6">
+          <h3 class="text-lg font-bold text-sm p-1">
             Cloud Computing & IoT Lab
           </h3>
         </div>
@@ -721,17 +694,17 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
                 </div>
                 <h3 class="text-lg font-bold">Global Collaboration</h3>
             </div> -->
-      </div>
+    </div>
     </div>
 
     <!-- it's end here -->
 
     <!-- what you will learn here tab -->
     <div class="container mx-auto mt-16 p-12">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="advantages">
-        What You Will Learn After B.E. Course
+      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6">
+        What You Will Learn After BE Course
       </h2>
-      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="advan_intro">
+      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto">
         Our Bachelor of Engineering curriculum is designed to prepare you for
         the real world with these key advantages.
       </p>
@@ -743,7 +716,7 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
           <!-- Slide 1 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_1">
+              <h3 class="text-2xl font-bold mb-4">
                 <!-- ဒီထဲမှာက BEရပြီးရင်သိမယ့်ဟာတွေ sliderမို့လို့ slide divကို copy pasteလုပ်လို့ရတယ် ပိုနေရင်ဖျက် လိုနေရင်ထည့် -->
                 Fundamental and Advanced ICT Skills
               </h3>
@@ -753,28 +726,28 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
           <!-- Slide 2 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_2">Data-related Technologies</h3>
+              <h3 class="text-2xl font-bold mb-4">Data-related Technologies</h3>
               <!-- <p class="text-gray-700">Our curriculum is continuously updated to align with the latest industry demands and technologies.</p> -->
             </div>
           </div>
           <!-- Slide 3 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_3">Emerging Technologies</h3>
+              <h3 class="text-2xl font-bold mb-4">Emerging Technologies</h3>
               <!-- <p class="text-gray-700">Connect with peers, professors, and industry professionals from around the globe.</p> -->
             </div>
           </div>
           <!-- Slide 4 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_4">Cybersecurity Awareness</h3>
+              <h3 class="text-2xl font-bold mb-4">Cybersecurity Awareness</h3>
               <!-- <p class="text-gray-700">Receive personalized support for internships, job searches, and career development.</p> -->
             </div>
           </div>
           <!-- Slide 5 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_5">
+              <h3 class="text-2xl font-bold mb-4">
                 Project Management & Teamwork
               </h3>
               <!-- <p class="text-gray-700">Build a solid base in engineering principles that will last throughout your career.</p> -->
@@ -783,14 +756,14 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
           <!-- Slide 6 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_6">Problem-Solving with ICT</h3>
+              <h3 class="text-2xl font-bold mb-4">Problem-Solving with ICT</h3>
               <!-- <p class="text-gray-700">Tailor your education to your interests with specialized tracks in various engineering fields.</p> -->
             </div>
           </div>
           <!-- Slide 7 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_7">
+              <h3 class="text-2xl font-bold mb-4">
                 Logical & Analytical Thinking
               </h3>
               <!-- <p class="text-gray-700">Participate in leadership programs and team-based projects to hone your soft skills.</p> -->
@@ -799,21 +772,21 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
           <!-- Slide 8 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_8">Problem-Solving Skills</h3>
+              <h3 class="text-2xl font-bold mb-4">Problem-Solving Skills</h3>
               <!-- <p class="text-gray-700">Work alongside faculty on cutting-edge research projects and contribute to new discoveries.</p> -->
             </div>
           </div>
           <!-- Slide 9 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_9">Coding & System Design</h3>
+              <h3 class="text-2xl font-bold mb-4">Coding & System Design</h3>
               <!-- <p class="text-gray-700">Learn to identify opportunities and develop your own ventures with our dedicated support.</p> -->
             </div>
           </div>
           <!-- Slide 10 -->
           <div class="slide bg-white rounded-xl">
             <div class="slide-content">
-              <h3 class="text-2xl font-bold mb-4" data-lang-key="advan_10">
+              <h3 class="text-2xl font-bold mb-4">
                 Research & Innovation Skills
               </h3>
               <!-- <p class="text-gray-700">Understand the societal impact of your work and practice engineering with integrity.</p> -->
@@ -821,235 +794,217 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
           </div>
         </div>
 
-        <!-- Navigation Buttons -->
-        <button id="left-button" class="nav-button left-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
-        <button id="right-button" class="nav-button right-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
-      </div>
+            <!-- Navigation Buttons -->
+            <button id="left-button" class="nav-button left-button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <button id="right-button" class="nav-button right-button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
 
-      <!-- Dots Container -->
-      <div id="dots-container" class="dots-container"></div>
+        <!-- Dots Container -->
+        <div id="dots-container" class="dots-container"></div>
     </div>
 
     <!-- job opportunities -->
     <!-- Section for Job Opportunities -->
     <div class="container mx-auto job-opportunities-section p-8">
-      <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="job_header">
-        Career Paths & Job Opportunities
-      </h2>
-      <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="job_info">
-        <!-- ဒီမှာက စာလေးပြင် -->
-        B.E. Information Science and Technology ဘွဲ့ရရှိသူများသည် IT Companies,
-        Banking & Financial Institutions, Telecom, Software Houses, E-commerce
-        Companies, Startups, Government Digital Projects စသည်တို့တွင်
-      </p>
+        <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="job_header">
+            Career Paths & Job Opportunities
+        </h2>
+        <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="job_info">
+            <!-- ဒီမှာက စာလေးပြင် -->
+            B.E. Information Science and Technology ဘွဲ့ရရှိသူများသည် IT Companies,
+            Banking & Financial Institutions, Telecom, Software Houses, E-commerce
+            Companies, Startups, Government Digital Projects စသည်တို့တွင်
+        </p>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- h3 job-cardတွေမှာ စာတွေပြောင်း cardလည်း လိုတိုးပိုလျှော့  -->
-        <!-- Job Card 1 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_1">Software Developer / Engineer</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- h3 job-cardတွေမှာ စာတွေပြောင်း cardလည်း လိုတိုးပိုလျှော့  -->
+            <!-- Job Card 1 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_1">Software Developer / Engineer</h3>
+            </div>
+            <!-- Job Card 2 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_2">Data Analyst / Data Scientist</h3>
+            </div>
+            <!-- Job Card 3 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_3">Database Administrator</h3>
+            </div>
+            <!-- Job Card 4 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_4">Network Administrator</h3>
+            </div>
+            <!-- Job Card 5 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_5">Cybersecurity Specialist</h3>
+            </div>
+            <!-- Job Card 6 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_6">Web & Mobile Application Developer</h3>
+            </div>
+            <!-- Job Card 7 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_7">Cloud Solutions Architect</h3>
+            </div>
+            <!-- Job Card 8 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_8">IT Project Manager</h3>
+            </div>
+            <!-- Job Card 9 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_9">AI/Machine Learning Engineer</h3>
+            </div>
+            <!-- Job Card 10 -->
+            <div class="job-card">
+                <h3 class="job-title" data-lang-key="job_10">Business Intelligence Analyst</h3>
+            </div>
         </div>
-        <!-- Job Card 2 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_2">Data Analyst / Data Scientist</h3>
-        </div>
-        <!-- Job Card 3 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_3">Database Administrator</h3>
-        </div>
-        <!-- Job Card 4 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_4">Network Administrator</h3>
-        </div>
-        <!-- Job Card 5 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_5">Cybersecurity Specialist</h3>
-        </div>
-        <!-- Job Card 6 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_6">Web & Mobile Application Developer</h3>
-        </div>
-        <!-- Job Card 7 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_7">Cloud Solutions Architect</h3>
-        </div>
-        <!-- Job Card 8 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_8">IT Project Manager</h3>
-        </div>
-        <!-- Job Card 9 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_9">AI/Machine Learning Engineer</h3>
-        </div>
-        <!-- Job Card 10 -->
-        <div class="job-card">
-          <h3 class="job-title" data-lang-key="job_10">Business Intelligence Analyst</h3>
-        </div>
-      </div>
     </div>
     <!-- footer region -->
 
     <footer id="contact" class="bg-blue-900 text-white">
-    <div class="container mx-auto px-6 py-12">
-      <div class="grid md:grid-cols-4 gap-8">
-        <div>
-          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
-          <h3 class="text-lg font-bold">UTYCC</h3>
-          <p class="text-blue-200 text-sm mt-4">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
+                    <h3 class="text-lg font-bold">UTYCC</h3>
+                    <p class="text-blue-200 text-sm mt-4">
                         <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address"
                             target="_blank">
                             Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
                             Region, Myanmar
                         </a>
                     </p>
-          <div class="mt-4 text-sm text-blue-200">
-            <p>Email: info@utycc.edu.mm (example)</p>
-            <p>Phone: +95 (XX) XXX XXX (example)</p>
-          </div>
-        </div>
+                    <div class="mt-4 text-sm text-blue-200">
+                        <p>Email: info@utycc.edu.mm (example)</p>
+                        <p>Phone: +95 (XX) XXX XXX (example)</p>
+                    </div>
+                </div>
 
-        <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
-            Faculties
-          </h3>
-          <ul class="space-y-2 text-sm text-blue-200">
-            <li data-lang-key="footer_faculty_ist">
-              Information Science Technology
-            </li>
-            <li data-lang-key="footer_faculty_ce">Computer Engineering</li>
-            <li data-lang-key="footer_faculty_ece">
-              Electronics Engineering
-            </li>
-            <li data-lang-key="footer_faculty_ame">
-              Advanced Materials Engineering
-            </li>
-            <li data-lang-key="footer_faculty_pre">Precision Engineering</li>
-          </ul>
-        </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
+                        Faculties
+                    </h3>
+                    <ul class="space-y-2 text-sm text-blue-200">
+                        <li data-lang-key="footer_faculty_ist">
+                            Information Science Technology
+                        </li>
+                        <li data-lang-key="footer_faculty_ce">Computer Engineering</li>
+                        <li data-lang-key="footer_faculty_ece">
+                            Electronics Engineering
+                        </li>
+                        <li data-lang-key="footer_faculty_ame">
+                            Advanced Materials Engineering
+                        </li>
+                        <li data-lang-key="footer_faculty_pre">Precision Engineering</li>
+                    </ul>
+                </div>
 
-        <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
-            Quick Links
-          </h3>
-          <ul class="space-y-2 text-sm text-blue-200">
-            <li>
-              <a href="#" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
-            </li>
-            <li>
-              <a href="#" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
-            </li>
-            <li>
-              <a href="#" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
-            </li>
-            <li>
-              <a href="#" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
-            </li>
-          </ul>
-        </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
+                        Quick Links
+                    </h3>
+                    <ul class="space-y-2 text-sm text-blue-200">
+                        <li>
+                            <a href="#" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-white" data-lang-key="footer_link_rules">Rules &
+                                Regulations</a>
+                        </li>
+                    </ul>
+                </div>
 
-        <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
-            Follow Us
-          </h3>
-          <div class="flex space-x-4">
-            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
-            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
-          </div>
-          <br />
-          <br />
-          <div>
-            <div class="newtons-cradle">
-              <div class="newtons-cradle__dot"></div>
-              <div class="newtons-cradle__dot"></div>
-              <div class="newtons-cradle__dot"></div>
-              <div class="newtons-cradle__dot"></div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
+                        Follow Us
+                    </h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i
+                                class="fab fa-linkedin-in text-xl"></i></a>
+                    </div>
+                    <br />
+                    <br />
+                    <div>
+                        <div class="newtons-cradle">
+                            <div class="newtons-cradle__dot"></div>
+                            <div class="newtons-cradle__dot"></div>
+                            <div class="newtons-cradle__dot"></div>
+                            <div class="newtons-cradle__dot"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
+                data-lang-key="footer_copyright">
+                &copy; 2025 University of Technology - Yatanarpon Cyber City. All
+                Rights Reserved.
+            </div>
         </div>
-      </div>
-      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
-        data-lang-key="footer_copyright">
-        &copy; 2025 University of Technology - Yatanarpon Cyber City. All
-        Rights Reserved.
-      </div>
-    </div>
-  </footer>
+    </footer>
 
 
     <script>
-      // ပြင်စရာရှိတယ်
-      // Function to update the major details panel
-      function updateMajorPanel(title, description, imageUrl) {
-        const majorTitle = document.getElementById("major-title");
-        const majorDescription = document.getElementById("major-description");
-        const majorImage = document.getElementById("major-image");
+        // ပြင်စရာရှိတယ်
+        // Function to update the major details panel
+        function updateMajorPanel(title, description, imageUrl) {
+            const majorTitle = document.getElementById("major-title");
+            const majorDescription = document.getElementById("major-description");
+            const majorImage = document.getElementById("major-image");
 
-        // Check if elements exist before updating
-        if (majorTitle) {
-          majorTitle.textContent = title;
+            // Check if elements exist before updating
+            if (majorTitle) {
+                majorTitle.textContent = title;
+            }
+            if (majorDescription) {
+                majorDescription.textContent = description;
+            }
+            if (majorImage) {
+                majorImage.src = imageUrl;
+            }
         }
-        if (majorDescription) {
-          majorDescription.textContent = description;
-        }
-        if (majorImage) {
-          majorImage.src = imageUrl;
-        }
-      }
 
-      // major name change ပြီးတော့ descriptionရော change
-      updateMajorPanel(
-        "Information Science & Technology",
-        "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာဌာန (Department of Information Science and Technology - IST) သည် သတင်းအချက်အလက်စနစ်၊ ကွန်ပျူတာနည်းပညာနှင့် ဆက်သွယ်ရေးနည်းပညာများကို ပေါင်းစပ်လေ့လာသည့် အင်ဂျင်နီယာဘာသာရပ်ဖြစ်ပါသည်။"
-      );
-      // --- DOM Elements ---
-      const navLinks = document.querySelectorAll(".nav-link");
-      const mobileMenuButton = document.getElementById("mobile-menu-button");
-      const mobileMenu = document.getElementById("mobile-menu");
+        // major name change ပြီးတော့ descriptionရော change
+        updateMajorPanel(
+            "Information Science & Technology",
+            "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာဌာန (Department of Information Science and Technology - IST) သည် သတင်းအချက်အလက်စနစ်၊ ကွန်ပျူတာနည်းပညာနှင့် ဆက်သွယ်ရေးနည်းပညာများကို ပေါင်းစပ်လေ့လာသည့် အင်ဂျင်နီယာဘာသာရပ်ဖြစ်ပါသည်။"
+        );
+        // --- DOM Elements ---
+        const navLinks = document.querySelectorAll(".nav-link");
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
 
-      // --- Event Listeners ---
-      navLinks.forEach((link) => {
-        link.addEventListener("click", (e) => {
-          // This ensures the page scrolls smoothly to the target section
-          const targetId = link.getAttribute("href");
-          document
-            .querySelector(targetId)
-            .scrollIntoView({ behavior: "smooth" });
+        // --- Event Listeners ---
+        navLinks.forEach((link) => {
+            link.addEventListener("click", (e) => {
+                // This ensures the page scrolls smoothly to the target section
+                const targetId = link.getAttribute("href");
+                document
+                    .querySelector(targetId)
+                    .scrollIntoView({ behavior: "smooth" });
+            });
         });
-      });
 
-      mobileMenuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
-      });
+        mobileMenuButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+        });
     </script>
     <script src="../js/Des_Major.js"></script>
     <script src="../js/BE_Advantages.js"></script>
@@ -1087,62 +1042,11 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
         major_name: "သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာ",
         objectives_heading: "IST ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များ",
         objectives: "ပေါ်ထွန်းလာသည့် အချက်အလက်နည်းပညာများနှင့် အသုံးပြုသူအသိုင်းအဝိုင်းဆိုင်ရာ ဆန်းသစ်တီထွင်နိုင်သော ကျောင်းသားများဖြစ်စေရန် သီအိုရီနှင့် လက်တွေ့ အရည်အသွေးအမြင့်ဆုံး ဖြင့် သင်တန်းပေးသင်ကြားရန်။ နည်းပညာအသစ်များကို ထိရောက်စွာ, အသုံးပြုခြင်းအားဖြင့် ကမ္ဘာပေါ်ရှိ အခက်အခဲပြဿနာများကို အမှန်တကယ်, ဖြေရှင်းနိုင်ရန် ပံ့ပိုးပေးရန်။ ICT ကို အသုံးချသည့် သင်ယူပတ်ဝန်းကျင် အခွင့်အလမ်းများကို ကျယ်ကျယ်ပြန့်ပြန့် ဖန်တီးပေးရန်။ နည်းပညာလောကတွင် လိုအပ်သော ပညာဉာဏ်နှင့်အတူ စွမ်းရည်ပြည့်ဝမှုများ၊ လက်တွေ့ကျွမ်းကျင်မှုများနှင့် ပေါ်ထွန်းလာသော အချက်အလက်နည်းပညာများ၏ အနာဂတ်ခေါင်းဆောင်များ ဖြစ်လာစေရန်။ စသည်တို့ ဖြစ်ပါသည်။ ထို့အပြင် တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုသည့် ဘာသာရပ်များတွင် ကျွမ်းကျင်စေရန် နှင့် တီထွင်ဆန်းသစ်သော သိပ္ပံသုတေသနများ ဆောင်ရွက်ခြင်းတို့ကို လုပ်ဆောင်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးမည် ဖြစ်ပါသည်။ IST ဘာသာရပ်သင်တန်းသည် ကျောင်းသား/သူများကို နည်းပညာပိုင်းတွင် အခြေခံပညာမှစ၍ သုတေသနနှင့် လက်တွေ့ကျကျ အဆင့်မြင့်ပညာရရှိစေရန် ရည်ရွယ်ထားပြီး အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ အောက်ပါအတိုင်းဖြစ်ပါသည်။",
-        motto_H: "Motto",
-        motto: "ICT မှတစ်ဆင့် ပိုမိုကောင်းမွန်သော လူမှုအသိုင်းအဝိုင်းတစ်ခု တည်ဆောက်ရန်။",
         basic_tech: "အခြေခံ IT နည်းပညာများ",
         tech_1: "ပရိုဂရမ်မင်းဘာသာရပ်များ (C, C++, Java, Python, …)",
         tech_2: "ဒေတာဖွဲ့စည်းမှုများနှင့် အယ်လဂေါရစ်သမ်များ",
         tech_3: "ကွန်ပျူတာအဖွဲ့အစည်းနှင့် ဖွဲ့စည်းပုံ",
         tech_4: "စက်ပစ္စည်း စီမံခန့်ခွဲမှု စနစ်",
-        data_db: "ဒေတာနှင့် ဒေတာသိုလှောင်မှုစနစ်",
-        data_1: "ဒေတာစနစ်စီမံမှုနည်းပညာ",
-        data_2: "ဒေတာမော်ဒယ်ရေးဆွဲခြင်းနှင့် SQL ကုဒ်များ",
-        data_3: "ကြီးမားသောဒေတာနည်းပညာသဘောတရား",
-        data_4: "ဒေတာဆန်းစစ်မှုနှင့် ရုပ်ပုံမြင်သာအောင်ဖော်ပြခြင်း",
-        net_sec: "အင်တာနက်ကွန်ယက်နှင့် လုံခြုံမှုစနစ်",
-        net_1: "ကွန်ပျူတာကွန်ယက်များ",
-        net_2: "အင်တာနက်ဆက်သွယ်မှုစနစ်များ",
-        net_3: "အွန်လိုင်းလုံခြုံဘေးကင်းရေး အခြေခံနည်းများ",
-        net_4: "အင်တာနက်ကွန်ယက် ပြုပြင်ထိန်းသိမ်းရေး",
-        soft_dev: "ဆော့ဖ်ဝဲလ်ဖန်တီးခြင်း",
-        dev_1: "ဆော့ဖ်ဝဲလ်အင်ဂျင်နီယာနည်းပညာနှင့် လုပ်ဆောင်မှုနည်းလမ်းများ",
-        dev_2: "ဝဘ်ဆိုက်ဖွံ့ဖြိုးတိုးတက်မှု (Frontend နှင့် Backend)",
-        dev_3: "မိုဘိုင်းအက်ပ်များ တီထွင်ဖန်တီးခြင်း",
-        dev_4: "ဆော့ဖ်ဝဲအရည်အသွေးစစ်ဆေးမှုနှင့် ဖွံ့ဖြိုးတိုးတက်မှု",
-        em_tech: "နောက်ဆုံးပေါ်နည်းပညာများ",
-        em_tech1: "AI နည်းပညာနှင့် စက်လေ့လာရေး နည်းပညာ",
-        em_tech2: "Cloud အခြေခံတွက်ချက်ခြင်း နည်းပညာ",
-        em_tech3: "IoT နည်းပညာ (အရာဝတ္ထုများဆက်သွယ်ရေး)",
-        em_tech4: "အချက်အလက်များ သိမ်းဆည်းနိုင်သော နည်းပညာ၏ အခြေခံသဘောတရားများ",
-        pro_ethics: "အတတ်ပညာ နှင့် အသက်မွေးမှုဆိုင်ရာ ကျင့်ဝတ်များ",
-        ethic_1: "နည်းပညာအသုံးပြုမှုအတွက် ဥပဒေနှင့်ကျင့်ဝတ်",
-        ethic_2: "ဖန်တီးမှုဉာဏ်ရည် ပိုင်ဆိုင်မှု အခွင့်အရေးများ",
-        ethic_3: "သက်တမ်းရှည်နည်းပညာ အသုံးချမှု",
-        pj_skills: "စီမံကိန်း နှင့် သုတေသနဆိုင်ရာ ကျွမ်းကျင်မှုများ",
-        skill_1: "သတင်းအချက်အလက်နည်းပညာစီမံကိန်းစီမံခန့်ခွဲမှု",
-        skill_2: "သုတေသနသဘောတရားနှင့် လုပ်ဆောင်မှုနည်းလမ်းများ",
-        skill_3: "နောက်ဆုံးနှစ်အင်ဂျင်နီယာ အောင်မြင်ရေး သုတေသနစီမံကိန်း",
-        skill_4: "အဖွဲ့လိုက်ပူးပေါင်းလုပ်ဆောင်မှု နှင့် ဆက်သွယ်ပြောဆိုနိုင်မှုစွမ်းရည်",
-        lab_header: "သင်ယူလေ့လာနိုင်မည့် နေရာများ",
-        lab_intro: "သတင်းအချက်အလက်နှင့် ဆက်သွယ်ရေးနည်းပညာ မေဂျာတွင် သီအိုရီနဲ့ လက်တွေ့ကျကျ လေ့လာမှုများမှတစ်ဆင့် နည်းပညာများကို ကျွမ်းကျင်စေရန် စမ်းသပ်လေ့လာခန်း (Laboratories) များ တည်ဆောက်ထားပါသည်။",
-        lab_1: "ပရိုဂရမ်ရေးခြင်းနှင့် ဆော့ဖ်ဝဲဖန်တီးရေး စမ်းသပ်လေ့လာခန်း",
-        lab_2: "ဒေတာစနစ်နှင့် ဒေတာခန့်မှန်းစစ်ဆေးခြင်း စမ်းသပ်လေ့လာခန်း",
-        lab_3: "ကွန်ယက်ဆက်သွယ်ရေးနှင့် လုံခြုံရေး စမ်းသပ်လေ့လာခန်း",
-        lab_4: "ဝဘ်ဆိုက်နှင့် မိုဘိုင်းအက်ပ်ဖန်တီးရေး စမ်းသပ်လေ့လာခန်း",
-        lab_5: "AI / စက်ပစ္စည်း သင်ယူမှု စမ်းသပ်လေ့လာခန်း",
-        lab_6: "Cloud တွက်ချက်ခြင်းနှင့် အင်တာနက်အရာဝတ္ထုများ (IoT) စမ်းသပ်လေ့လာခန်း",
-        advantages: "ဘွဲ့ကြိုသင်တန်းပြီးနောက် သိရှိလာမည့် နည်းပညာများနှင့် ကျွမ်းကျင်မှုများ",
-        advan_intro: "ကျွန်ုပ်တို့၏ ဘွဲ့ကြိုအင်ဂျင်နီယာသင်တန်းအစီအစဉ်မှာ လုပ်ငန်းသုံးလောကအတွက် လိုအပ်သော အတတ်ပညာများနှင့် အတည်ပြုကျွမ်းကျင်မှုများကို ရရှိနိုင်စေရန် အဓိကအားသာချက်များဖြင့် စနစ်ကျဖန်တီးထားပါသည်။",
-        advan_1: "နည်းပညာအခြေခံနှင့် သတင်းအချက်အလက်နှင့် ဆက်သွယ်ရေးနည်းပညာဆိုင်ရာ အဆင့်မြင့်ကျွမ်းကျင်မှုများ",
-        advan_2: "ဒေတာနှင့်သက်ဆိုင်သော နည်းပညာများ",
-        advan_3: "ပေါ်ထွန်းလာသည့် နောက်ဆုံးပေါ်နည်းပညာများ",
-        advan_4: "ဆိုက်ဘာလုံခြုံရေး သိမြင်မှု",
-        advan_5: "စီမံခန့်ခွဲမှုနှင့် အဖွဲ့လိုက်ပူးပေါင်းဆောင်ရွက်မှု",
-        advan_6: "သတင်းအချက်အလက်နှင့် ဆက်သွယ်ရေးနည်းပညာ ဖြင့်ပြဿနာများကိုဖြေရှင်းခြင်",
-        advan_7: "ယုတ္တိနှင့် ခန့်မှန်းဆန်းစစ်နိုင်မှု စွမ်းရည်",
-        advan_8: "ပြဿနာဖြေရှင်းစွမ်းရည်",
-        advan_9: "ပရိုဂရမ်ရေးခြင်းနှင့် စနစ်ဒီဇိုင်းဆွဲခြင်း",
-        advan_10: "သုတေသနနှင့် ဆန်းသစ်တီထွင်ခြင်း စွမ်းရည်",
         job_header: "အလုပ်အကိုင် လမ်းကြောင်းများနှင့် အခွင့်အလမ်းများ",
         job_info: "အချက်အလက် သိပ္ပံနှင့် နည်းပညာ ဘွဲ့ရရှိသူများသည် IT ကုမ္ပဏီများ၊ ဘဏ်နှင့် ငွေကြေးအဖွဲ့အစည်းများ၊ ဆက်သွယ်ရေးလုပ်ငန်းများ၊ ဆော့ဖ်ဝဲလုပ်ငန်းများ၊ အီလက်ထရောနစ် ကုန်သွယ်လုပ်ငန်းများ၊ စတင်တည်ထောင်သည့် စီးပွားရေးလုပ်ငန်းအသစ်များ၊ အစိုးရ ဒစ်ဂျစ်တယ် ပရောဂျက်များ စသဖြင့် အောက်ပါ အလုပ်ရာထူးများတွင် အလုပ်လုပ်နိုင်ပါသည်။",
         job_1: "ဆော့ဖ်ဝဲ အင်ဂျင်နီယာ",
@@ -1186,62 +1090,11 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
         uni_name: "University of Technology (Yatanarpon Cyber City)",
         objectives_heading: "The objectives and responsibilities",
         objectives: "To deliver high-quality theoretical and practical training so that students can become innovative creators in emerging information technologies and user communities. To support the effective use of new technologies in order to genuinely solve the problems and challenges facing the world. To widely create learning environments and opportunities that utilize ICT. To enable students to become future leaders in information technology by equipping them with the necessary knowledge, competencies, practical skills, and emerging information technologies. Additionally, to train students to become proficient in their specialized subjects and to engage in innovative scientific research. The IST course aims to provide students with fundamental knowledge in technology, progressing to advanced research and practical expertise. The main topics to be studied are as follows:",
-        motto_H: "Our Motto",
-        motto: "To build a better society through ICT",
         basic_tech: "Basic IT Technologies",
         tech_1: "Programming Languages (C, C++, Java, Python, ...)",
         tech_2: "Data Structures & Algorithms",
         tech_3: "Computer Organization & Architecture",
         tech_4: "Operating Systems",
-        data_db: "Data and Database",
-        data_1: "Database Management Systems (DBMS)",
-        data_2: "Data Modeling & SQLs",
-        data_3: "Big Data Concepts",
-        data_4: "Data Analytics & Visualization",
-        net_sec: "Networking & Security",
-        net_1: "Computer Networks",
-        net_2: "Internet Protocols",
-        net_3: "Cybersecurity Fundamentals",
-        net_4: "Network Administration",
-        soft_dev: "Software Development",
-        dev_1: "Software Engineering & Methodologies",
-        dev_2: "Web Development(Frontend & Backend)",
-        dev_3: "Mobile Application Development",
-        dev_4: "Software Testing & Development",
-        em_tech: "Emerging Technologies",
-        em_tech1: "Artificial Intelligence (AI) & Machine Learning (ML)",
-        em_tech2: "Cloud Computing",
-        em_tech3: "Internet of Things (IoT)",
-        em_tech4: "Blockchain Basics",
-        pro_ethics: "Professional & Ethical Practices",
-        ethic_1: "ICT Laws & Ethics",
-        ethic_2: "Intellectual Property Rights",
-        ethic_3: "Sustainable Technology Use",
-        pj_skills: "Project & Research Skills",
-        skill_1: "ICT Project Management",
-        skill_2: "Research Methodology",
-        skill_3: "Final Year Project (Capstone Project)",
-        skill_4: "Teamwork & Communication Skills",
-        lab_header: "Where You Can Learn",
-        lab_intro: "In the IST major, students are trained to master technologies through both theoretical and practical learning",
-        lab_1: "Programming & Software Development Lab",
-        lab_2: "Database & Data Analytics Lab",
-        lab_3: "Networking & Security Lab",
-        lab_4: "Web & Mobile Development Lab",
-        lab_5: "AI & Machine Learning Lab",
-        lab_6: "Cloud Computing & IoT Lab",
-        advantages: "What You Will Learn After B.E. Course",
-        advan_intro: "Our Bachelor of Engineering curriculum is designed to prepare you for the real world with these key advantages.",
-        advan_1: "Fundamental and Advanced ICT Skills",
-        advan_2: "Data-related Technologies",
-        advan_3: "Emerging Technologies",
-        advan_4: "Cybersecurity Awareness",
-        advan_5: "Project Management & Teamwork",
-        advan_6: "Problem-Solving with ICT",
-        advan_7: "Logical & Analytical Thinking",
-        advan_8: "Problem-Solving Skills",
-        advan_9: "Coding & System Design",
-        advan_10: "Research & Innovation Skills",
         job_header: "Career Paths & Job Opportunities",
         job_info: "Graduates with a B.E. in Information Science and Technology can work in IT companies, banking and financial institutions, telecom, software houses, e-commerce companies, startups, government digital projects, and so on, as the following job positions:",
         job_1: "Software Developer / Engineer",
@@ -1257,36 +1110,44 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
       },
     };
 
-    const languageSwitcher = document.getElementById("language-switcher");
+        const languageSwitcher = document.getElementById("language-switcher");
+        const languageSwitcherMobile = document.getElementById('language-switcher-mobile');
 
-    const changeLanguage = (lang) => {
-      // Store the selected language
-      localStorage.setItem("language", lang);
 
-      // Set the dropdown to the correct value
-      languageSwitcher.value = lang;
+        const changeLanguage = (lang) => {
+            // Store the selected language
+            localStorage.setItem("language", lang);
 
-      // Translate all elements with the data-lang-key attribute
-      document.querySelectorAll("[data-lang-key]").forEach((element) => {
-        const key = element.dataset.langKey;
-        const translation = translations[lang][key];
-        if (translation) {
-          element.innerHTML = translation.replace(/\\n/g, "<br>");
-        }
-      });
-    };
+            // Set the dropdown to the correct value
+            languageSwitcher.value = lang;
+            languageSwitcherMobile.value = lang;
 
-    // Event listener for the language switcher
-    languageSwitcher.addEventListener("change", (event) => {
-      changeLanguage(event.target.value);
-    });
+            // Translate all elements with the data-lang-key attribute
+            document.querySelectorAll("[data-lang-key]").forEach((element) => {
+                const key = element.dataset.langKey;
+                const translation = translations[lang][key];
+                if (translation) {
+                    element.innerHTML = translation.replace(/\\n/g, "<br>");
+                }
+            });
+        };
 
-    // Function to run when the page loads
-    document.addEventListener("DOMContentLoaded", () => {
-      // Check for a saved language in localStorage, otherwise default to 'en'
-      const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
-    });
-  </script>
-  </body>
+        // Event listener for the language switcher
+        languageSwitcher.addEventListener("change", (event) => {
+            changeLanguage(event.target.value);
+        });
+
+        languageSwitcherMobile.addEventListener('change', (event) => {
+            changeLanguage(event.target.value);
+        });
+
+        // Function to run when the page loads
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check for a saved language in localStorage, otherwise default to 'en'
+            const savedLang = localStorage.getItem("language") || "en";
+            changeLanguage(savedLang);
+        });
+    </script>
+</body>
+
 </html>
