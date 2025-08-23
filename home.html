@@ -35,7 +35,6 @@
         .program-card {
             cursor: pointer;
         }
-        
     </style>
 </head>
 
@@ -82,7 +81,9 @@
             </button>
         </nav>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
+        <div id="mobile-menu" class="hidden px-6 pb-4 border-t md:hidden">
+
+            <!-- <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t"> -->
             <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
                 data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
             <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
@@ -423,7 +424,7 @@
                     <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4"
                         href="Home.html">
                     <h3 class="text-lg font-bold" href="#">UTYCC</h3>
-                    <p class="text-blue-200 text-sm mt-4"> 
+                    <p class="text-blue-200 text-sm mt-4">
                         <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address"
                             target="_blank">
                             Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
@@ -440,19 +441,29 @@
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">Faculties</h3>
                     <ul class="space-y-2 text-sm text-blue-200">
                         <li>
-                            <a href="Majors/ist.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_ist">Information Science Technology</a>
+                            <a href="Majors/ist.html"
+                                class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block"
+                                data-lang-key="footer_faculty_ist">Information Science Technology</a>
                         </li>
                         <li>
-                            <a href="Majors/ce.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+                            <a href="Majors/ce.html"
+                                class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block"
+                                data-lang-key="footer_faculty_ce">Computer Engineering</a>
                         </li>
                         <li>
-                            <a href="Majors/ece.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+                            <a href="Majors/ece.html"
+                                class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block"
+                                data-lang-key="footer_faculty_ece">Electronics Engineering</a>
                         </li>
                         <li>
-                            <a href="Majors/pre.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_pre">Precision Engineering</a>
+                            <a href="Majors/pre.html"
+                                class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block"
+                                data-lang-key="footer_faculty_pre">Precision Engineering</a>
                         </li>
                         <li>
-                            <a href="Majors/ame.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_ame">Advanced Materials Engineering</a>
+                            <a href="Majors/ame.html"
+                                class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block"
+                                data-lang-key="footer_faculty_ame">Advanced Materials Engineering</a>
                         </li>
                     </ul>
                 </div>
@@ -500,6 +511,7 @@
 
     <!-- All JavaScript logic is now here -->
     <script>
+        
         // --- DOM Elements ---
         const mainContent = document.getElementById("main-content");
         const mobileMenuButton = document.getElementById("mobile-menu-button");

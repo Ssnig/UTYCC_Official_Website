@@ -58,8 +58,8 @@
                 </div>
       </div>
       <button id="mobile-menu-button" class="md:hidden text-blue-900">
-        <i class="fas fa-bars text-2xl"></i>
-      </button>
+  <i class="fas fa-bars text-2xl" id="menu-icon"></i>
+</button>
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
@@ -187,96 +187,108 @@
     </div>
   </footer>
   <script>
-    // --- Translation Script ---
-    const translations = {
-      my: {
-        utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
-        nav_about: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_programs: "ပညာရေးအစီအစဉ်များ",
-        nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
-        nav_contact: "ဆက်သွယ်ရန်",
-        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
-        nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
-        nav_contact_mobile: "ဆက်သွယ်ရန်",
-        footer_address:
-          "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
-        footer_faculties_title: "မဟာဌာနများ",
-        footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
-        footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
-        footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
-        footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
-        footer_contact_title: "ဆက်သွယ်ရန်",
-        footer_follow_title: "Follow Us",
-        footer_copyright:
-          "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
-        footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
-        footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
-        footer_link_faq: "အမေးများသော မေးခွန်းများ",
-        footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
-        footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
-      },
-      en: {
-        utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
-        nav_about: "About Us",
-        nav_programs: "Academic Programs",
-        nav_collaboration: "Collaboration",
-        nav_contact: "Contact",
-        nav_about_mobile: "About Us",
-        nav_programs_mobile: "Academic Programs",
-        nav_collaboration_mobile: "Collaboration",
-        nav_contact_mobile: "Contact",
-        footer_address:
-          "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
-        footer_faculties_title: "Faculties",
-        footer_faculty_ist: "Information Science Technology",
-        footer_faculty_ce: "Computer Engineering",
-        footer_faculty_ece: "Electronics Engineering",
-        footer_faculty_ame: "Advanced Materials Engineering",
-        footer_faculty_pre: "Precision Engineering",
-        footer_contact_title: "Contact Us",
-        footer_follow_title: "Follow Us",
-        footer_copyright:
-          "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
-        footer_quick_links_title: "Quick Links",
-        footer_link_terms: "Terms & Policies",
-        footer_link_faq: "FAQs",
-        footer_link_about: "About Us",
-        footer_link_rules: "Rules & Regulations",
-      },
-    };
+  // --- Menu toggle ---
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const menuIcon = document.getElementById("menu-icon");
 
-    const languageSwitcher = document.getElementById("language-switcher");
-
-    const changeLanguage = (lang) => {
-      // Store the selected language
-      localStorage.setItem("language", lang);
-
-      // Set the dropdown to the correct value
-      languageSwitcher.value = lang;
-
-      // Translate all elements with the data-lang-key attribute
-      document.querySelectorAll("[data-lang-key]").forEach((element) => {
-        const key = element.dataset.langKey;
-        const translation = translations[lang][key];
-        if (translation) {
-          element.innerHTML = translation.replace(/\\n/g, "<br>");
-        }
-      });
-    };
-
-    // Event listener for the language switcher
-    languageSwitcher.addEventListener("change", (event) => {
-      changeLanguage(event.target.value);
+  if (mobileMenuButton && mobileMenu && menuIcon) {
+    mobileMenuButton.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+      if (mobileMenu.classList.contains("hidden")) {
+        menuIcon.classList.remove("fa-times");
+        menuIcon.classList.add("fa-bars");
+      } else {
+        menuIcon.classList.remove("fa-bars");
+        menuIcon.classList.add("fa-times");
+      }
     });
+  }
 
-    // Function to run when the page loads
-    document.addEventListener("DOMContentLoaded", () => {
-      // Check for a saved language in localStorage, otherwise default to 'en'
-      const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+  // --- Translation Script ---
+  const translations = {
+    my: {
+      utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+      nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+      nav_programs: "ပညာရေးအစီအစဉ်များ",
+      nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
+      nav_contact: "ဆက်သွယ်ရန်",
+      nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+      nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
+      nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
+      nav_contact_mobile: "ဆက်သွယ်ရန်",
+      footer_address:
+        "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+      footer_faculties_title: "မဟာဌာနများ",
+      footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+      footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+      footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+      footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+      footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+      footer_contact_title: "ဆက်သွယ်ရန်",
+      footer_follow_title: "Follow Us",
+      footer_copyright:
+        "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+      footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+      footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+      footer_link_faq: "အမေးများသော မေးခွန်းများ",
+      footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
+      footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+    },
+    en: {
+      utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+      nav_about: "About Us",
+      nav_programs: "Academic Programs",
+      nav_collaboration: "Collaboration",
+      nav_contact: "Contact",
+      nav_about_mobile: "About Us",
+      nav_programs_mobile: "Academic Programs",
+      nav_collaboration_mobile: "Collaboration",
+      nav_contact_mobile: "Contact",
+      footer_address:
+        "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+      footer_faculties_title: "Faculties",
+      footer_faculty_ist: "Information Science Technology",
+      footer_faculty_ce: "Computer Engineering",
+      footer_faculty_ece: "Electronics Engineering",
+      footer_faculty_ame: "Advanced Materials Engineering",
+      footer_faculty_pre: "Precision Engineering",
+      footer_contact_title: "Contact Us",
+      footer_follow_title: "Follow Us",
+      footer_copyright:
+        "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+      footer_quick_links_title: "Quick Links",
+      footer_link_terms: "Terms & Policies",
+      footer_link_faq: "FAQs",
+      footer_link_about: "About Us",
+      footer_link_rules: "Rules & Regulations",
+    },
+  };
+
+  const languageSwitcher = document.getElementById("language-switcher");
+
+  const changeLanguage = (lang) => {
+    localStorage.setItem("language", lang);
+    languageSwitcher.value = lang;
+
+    document.querySelectorAll("[data-lang-key]").forEach((element) => {
+      const key = element.dataset.langKey;
+      const translation = translations[lang][key];
+      if (translation) {
+        element.innerHTML = translation.replace(/\n/g, "<br>");
+      }
     });
-  </script>
+  };
+
+  languageSwitcher.addEventListener("change", (event) => {
+    changeLanguage(event.target.value);
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem("language") || "en";
+    changeLanguage(savedLang);
+  });
+</script>
+
 </body>
 </html>
