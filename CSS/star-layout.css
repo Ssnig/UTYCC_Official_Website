@@ -1,11 +1,17 @@
+/* === Responsive Star Layout CSS (Clamp Fix) === */
+/* This final version uses the CSS clamp() function for a smoother, more reliable responsive behavior without media queries. */
+/* UPDATED: Reduced overall size for better mobile compatibility. */
+
 .star-wrapper {
   position: relative;
-  width: 90vw;
-  height: 90vw;
-  /* Set a max size for larger screens */
-  max-width: 400px;
-  max-height: 400px;
+  /* Reduced size from 90vw to 75vw */
+  width: 69vw;
+  height: 69vw;
+  /* Reduced max size from 400px to 350px */
+  max-width: 330px;
+  max-height: 330px;
   margin: 1rem auto;
+  animation: star-rotate 20s linear infinite;
 }
 
 .star-center {
@@ -45,18 +51,15 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 80px;
-  height: 80px;
-  margin-left: -40px;
-  margin-top: -40px;
-  transform: rotate(var(--angle)) translate(150px)
-    /* This counter-rotation is the new part.
-       It counteracts the parent's rotation. */
-    rotate(calc(-1 * var(--angle)));
-
-  /* Add this new transform to counteract the star-wrapper's rotation */
-  transform: rotate(var(--angle)) translate(150px)
-    rotate(calc(-1 * var(--angle)));
+  width: 20%;
+  height: 20%;
+  margin-left: -10%;
+  margin-top: -10%;
+  /*
+    UPDATED clamp() values to match the new smaller size.
+    The translation distance is now smaller to keep logos within the new bounds.
+  */
+  transform: rotate(var(--angle)) translate(clamp(90px, 28.9vw, 135px)) rotate(calc(-1 * var(--angle)));
 }
 
 .logo-badge {
@@ -72,25 +75,24 @@
   font-size: 12px;
   text-align: center;
   padding: 5px;
+  animation: star-counter-rotate 20s linear infinite;
 }
+
 .star-wrapper::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 300px;
-  height: 300px;
+  width: 75%;
+  height: 75%;
   transform: translate(-50%, -50%);
-  /* background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,0 61,35 98,35 68,57 79,92 50,72 21,92 32,57 2,35 39,35" fill="none" stroke="%23000" stroke-width="0.5"/></svg>') center/contain no-repeat; */
   opacity: 0.2;
   z-index: 0;
 }
-.star-point .logo-badge {
-  /* All existing styles */
-  animation: star-counter-rotate 20s linear infinite; /* Add this animation */
-}
 
-/* Rotation animation for the entire star */
+
+/* === Keyframe Animations === */
+
 @keyframes star-rotate {
   from {
     transform: rotate(0deg);
@@ -100,39 +102,11 @@
   }
 }
 
-/* Floating animation for individual logos */
-@keyframes logo-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* Apply animations */
-.star-wrapper {
-  animation: star-rotate 20s linear infinite;
-}
-
-/* .star-point:hover .logo-badge {
-  animation: logo-float 2s ease-in-out infinite;
-} */
 @keyframes star-counter-rotate {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(-360deg);
-  }
-}
-
-@keyframes star-counter-rotate-2 {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(-360deg);
   }
 }

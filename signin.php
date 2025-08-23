@@ -378,8 +378,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="password" id="login-password" name="password" class="input" placeholder="Your password" required>
                 </div>
                 <div class="row">
-                    <a href="#" class="link">Forgot password?</a>
-                    <button type="submit" class="btn">Sign In</button>
+                    <button type="submit" class="btn w-full">Sign In</button>
                 </div>
             </form>
         </div>
