@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stick Man Walking Animation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Container for the stick man */
+        .stick-man-container {
+            position: relative;
+            transform: scale(2); /* Scale up for better visibility */
+        }
+
+        /* General styling for all body parts */
+        .body-part {
+            background-color: #333;
+            position: absolute;
+            transform-origin: center;
+            border-radius: 9999px; /* Rounded corners */
+        }
+
+        /* Head */
+        .head {
+            width: 30px;
+            height: 30px;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Torso */
+        .torso {
+            width: 5px;
+            height: 50px;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Limb base styles */
+        .arm, .leg {
+            width: 5px;
+            height: 40px;
+            top: 30px;
+            left: 50%;
+            transform-origin: top;
+            /* Animation properties will be set by JS */
+        }
+
+        /* Arm specific positions */
+        .left-arm {
+            left: calc(50% - 7px);
+        }
+        .right-arm {
+            left: calc(50% + 7px);
+        }
+
+        /* Leg specific positions */
+        .leg {
+            top: 80px;
+        }
+        .left-leg {
+            left: calc(50% - 5px);
+        }
+        .right-leg {
+            left: calc(50% + 5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="stick-man-container">
+        <div class="body-part head"></div>
+        <div class="body-part torso"></div>
+
+        <div class="body-part arm left-arm"></div>
+        <div class="body-part arm right-arm"></div>
+        
+        <div class="body-part leg left-leg"></div>
+        <div class="body-part leg right-leg"></div>
+    </div>
+
+    <script>
+        // Get all the body parts by their class name
+        const leftArm = document.querySelector('.left-arm');
+        const rightArm = document.querySelector('.right-arm');
+        const leftLeg = document.querySelector('.left-leg');
+        const rightLeg = document.querySelector('.right-leg');
+        const stickManContainer = document.querySelector('.stick-man-container');
+
+        // Animation state variables
+        let animationTime = 0;
+        const speed = 0.05; // Animation speed
+        const armAngle = 45; // Max angle for arm swing
+        const legAngle = 45; // Max angle for leg swing
+        const bounceHeight = 5; // Max height for body bounce
+
+        // The main animation loop
+        function animate(timestamp) {
+            // Update the animation time based on the timestamp
+            animationTime += speed;
+
+            // Calculate the rotation for the arms and legs using sine wave for smooth motion
+            const armRotation = Math.sin(animationTime) * armAngle;
+            const legRotation = Math.sin(animationTime) * legAngle;
+
+            // Calculate the vertical bounce for the whole stick man
+            const bounce = -Math.abs(Math.sin(animationTime * 2)) * bounceHeight;
+
+            // Apply rotations to the limbs, offsetting the left and right sides
+            leftArm.style.transform = `rotate(${armRotation}deg)`;
+            rightArm.style.transform = `rotate(${-armRotation}deg)`;
+            
+            // Note: The legs swing in opposition to the arms
+            leftLeg.style.transform = `rotate(${-legRotation}deg)`;
+            rightLeg.style.transform = `rotate(${legRotation}deg)`;
+
+            // Apply the bounce to the entire container
+            stickManContainer.style.transform = `translateY(${bounce}px) scale(2)`;
+
+            // Request the next animation frame
+            requestAnimationFrame(animate);
+        }
+
+        // Start the animation loop when the window loads
+        window.onload = function () {
+            requestAnimationFrame(animate);
+        };
+    </script>
+</body>
+</html>
