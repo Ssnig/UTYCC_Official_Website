@@ -19,7 +19,9 @@
   <script src="./JS/hero-carousel.js"></script>
   <link rel="stylesheet" href="CSS/font.css" />
   <style>
-    
+    body {
+      font-family: "Inter", sans-serif;
+    }
 
     .hero-bg {
       background-image: linear-gradient(rgba(0, 51, 102, 0.75),
@@ -37,8 +39,11 @@
     .program-card {
       cursor: pointer;
     }
+     body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6;
+    }
 
-    /* Activity Slide Animations */
     .activity-container {
       position: relative;
       height: 500px;
@@ -95,7 +100,6 @@
       animation: float 3s ease-in-out infinite;
     }
 
-    /* Card hover effects */
     .activity-card {
       transition: all 0.3s ease;
       transform-origin: top center;
@@ -104,6 +108,92 @@
     .activity-card:hover {
       transform: translateY(-5px) scale(1.02);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .club-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+    }
+
+    .club-card:hover {
+      transform: translateX(5px);
+      border-left-color: #3b82f6;
+    }
+
+    .language-selector {
+      position: relative;
+      display: inline-block;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .language-selector select {
+      appearance: none;
+      padding: 10px 40px 10px 15px;
+      font-size: 16px;
+      border: 2px solid #3b82f6;
+      border-radius: 6px;
+      background-color: white;
+      cursor: pointer;
+      outline: none;
+      min-width: 140px;
+    }
+
+    .language-selector::after {
+      content: "▼";
+      font-size: 12px;
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #3b82f6;
+    }
+
+    .header-container {
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+      color: white;
+      padding: 2rem 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    /* Navigation buttons */
+    .slide-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .slide-nav-btn:hover {
+      background: white;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .slide-nav-btn.prev {
+      left: 15px;
+    }
+
+    .slide-nav-btn.next {
+      right: 15px;
+    }
+
+    .slide-nav-btn i {
+      font-size: 1.5rem;
+      color: #3b82f6;
     }
 
     /* Modal styles */
@@ -143,15 +233,19 @@
       transform: translateY(0);
     }
 
-    /* Club card styles */
-    .club-card {
-      transition: all 0.3s ease;
-      border-left: 4px solid transparent;
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #6b7280;
     }
 
-    .club-card:hover {
-      transform: translateX(5px);
-      border-left-color: #3b82f6;
+    .close-modal:hover {
+      color: #374151;
     }
 
     /* Animation Classes */
@@ -184,11 +278,11 @@
     .animate-slide-in {
       animation: slideIn 0.5s ease-out forwards;
     }
+
   </style>
 </head>
 
 <body class="bg-gray-100">
-
   <div class="bg-white shadow-md sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
       <a href="#" class="flex items-center space-x-3">
@@ -211,18 +305,13 @@
         <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_contact">Contact</a>
 
-        <div class="relative ml-4">
-                    <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-                        <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
-                        <select id="language-switcher"
-                            class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="my">မြန်မာ</option>
-                            <option value="en">English</option>
-                        </select>
-                        <i
-                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
-                    </div>
-                </div>
+        <div class="ml-4">
+          <select id="language-switcher"
+            class="border border-gray-300 rounded-md py-1 px-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="en">English</option>
+            <option value="my">မြန်မာ</option>
+          </select>
+        </div>
       </div>
       <button id="mobile-menu-button" class="md:hidden text-blue-900">
         <i class="fas fa-bars text-2xl"></i>
@@ -239,20 +328,30 @@
         data-lang-key="nav_contact_mobile">Contact</a>
     </div>
   </div>
-  <div class="container mx-auto px-4 py-12">
+  <!-- ဒီအောက်စရေး -->
+ <div class="container mx-auto px-4 py-12">
     <!-- Activities Slideshow -->
     <section class="mb-16" id="about">
-      <h1 class="text-4xl font-bold text-center text-blue-800 mb-2">University Activities</h1>
-      <p class="text-xl text-center text-gray-600 mb-8">Explore our vibrant campus life</p>
-
-      <div class="activity-container mb-12">
+      <h1 class="text-4xl font-bold text-center text-blue-800 mb-2" data-lang-key="activities_title">University Activities</h1>
+      <p class="text-xl text-center text-gray-600 mb-8" data-lang-key="activities_subtitle">Explore our vibrant campus life</p>
+      <!-- Activities Slideshow -->
+    <section class="mb-16">
+      <div class="activity-container mb-12 relative">
+        <!-- Navigation Buttons -->
+        <button class="slide-nav-btn prev">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="slide-nav-btn next">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        
         <!-- Slides will be inserted here by JavaScript -->
       </div>
     </section>
 
     <!-- Activities Grid -->
     <section id="programs">
-      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Academic Programs</h2>
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12" data-lang-key="academic_programs">Academic Programs</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Academic Activities -->
@@ -268,7 +367,7 @@
           <p class="text-gray-600 text-center" data-lang-key="research">Research symposiums, hackathons, and
             interdisciplinary projects that challenge minds.</p>
           <div class="mt-4 text-center">
-            <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="academic">Learn
+            <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="academic" data-lang-key="learn_more">Learn
               more →</button>
           </div>
         </div>
@@ -282,11 +381,11 @@
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 class="text-xl font-semibold text-center mb-3">Cultural Events</h3>
-          <p class="text-gray-600 text-center">Celebrate diversity with our international festivals, performances, and
+          <h3 class="text-xl font-semibold text-center mb-3" data-lang-key="cultural_events">Cultural Events</h3>
+          <p class="text-gray-600 text-center" data-lang-key="cultural_desc">Celebrate diversity with our international festivals, performances, and
             exhibitions.</p>
           <div class="mt-4 text-center">
-            <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="cultural">Learn
+            <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="cultural" data-lang-key="learn_more">Learn
               more →</button>
           </div>
         </div>
@@ -300,11 +399,11 @@
                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
-          <h3 class="text-xl font-semibold text-center mb-3">Athletics & Sports</h3>
-          <p class="text-gray-600 text-center">Join our competitive teams or recreational leagues to stay active and
+          <h3 class="text-xl font-semibold text-center mb-3" data-lang-key="sports">Athletics & Sports</h3>
+          <p class="text-gray-600 text-center" data-lang-key="sports_desc">Join our competitive teams or recreational leagues to stay active and
             build teamwork.</p>
           <div class="mt-4 text-center">
-            <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="sports">Learn
+            <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="sports" data-lang-key="learn_more">Learn
               more →</button>
           </div>
         </div>
@@ -312,112 +411,257 @@
     </section>
   </div>
 
-   <!-- Footer -->
-    <footer id="contact" class="bg-blue-900 text-white">
-        <div class="container mx-auto px-6 py-12">
-            <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4"
-                        href="Home.html">
-                    <h3 class="text-lg font-bold" href="#">UTYCC</h3>
-                    <p class="text-blue-200 text-sm mt-4"> 
-                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address"
-                            target="_blank">
-                            Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
-                            Region, Myanmar
-                        </a>
-                    </p>
-                    <div class="mt-4 text-sm text-blue-200">
-                        <p>Email: info@utycc.edu.mm (example)</p>
-                        <p>Phone: +95 (XX) XXX XXX (example)</p>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">Faculties</h3>
-                    <ul class="space-y-2 text-sm text-blue-200">
-                        <li>
-                            <a href="Majors/ist.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_ist">Information Science Technology</a>
-                        </li>
-                        <li>
-                            <a href="Majors/ce.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_ce">Computer Engineering</a>
-                        </li>
-                        <li>
-                            <a href="Majors/ece.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
-                        </li>
-                        <li>
-                            <a href="Majors/pre.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_pre">Precision Engineering</a>
-                        </li>
-                        <li>
-                            <a href="Majors/ame.html" class="hover:text-white hover:bg-blue-700 px-2 py-1 rounded transition-colors duration-200 block" data-lang-key="footer_faculty_ame">Advanced Materials Engineering</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">Quick Links</h3>
-                    <ul class="space-y-2 text-sm text-blue-200">
-                        <li><a href="term.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms &
-                                Policies</a>
-                        </li>
-                        <li><a href="FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a></li>
-                        <li><a href="About.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
-                        </li>
-                        <li><a href="#" class="hover:text-white" data-lang-key="footer_link_rules">Rules &
-                                Regulations</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">Follow Us</h3>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
-                        <a href="#" class="text-blue-200 hover:text-white"><i
-                                class="fab fa-linkedin-in text-xl"></i></a>
-                    </div>
-                    <br>
-                    <br>
-                    <div>
-                        <div class="newtons-cradle">
-                            <div class="newtons-cradle__dot"></div>
-                            <div class="newtons-cradle__dot"></div>
-                            <div class="newtons-cradle__dot"></div>
-                            <div class="newtons-cradle__dot"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-10 border-t border-blue-800  pt-6 text-center text-sm text-blue-300"
-                data-lang-key="footer_copyright">
-                &copy; 2025 University of Technology - Yatanarpon Cyber City. All
-                Rights Reserved.
-            </div>
+  <!-- Modal -->
+  <div class="modal-overlay" id="clubsModal">
+    <div class="modal-content">
+      <button class="close-modal">&times;</button>
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold text-gray-800" id="modalTitle">Academic Clubs</h3>
         </div>
-    </footer>
 
-
-  <script>
-    // --- Mobile Menu and Smooth Scroll Script ---
-    const navLinks = document.querySelectorAll(".nav-link");
-    const mobileMenuButton = document.getElementById("mobile-menu-button");
-    const mobileMenu = document.getElementById("mobile-menu");
-
-    navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        const targetId = link.getAttribute("href");
-        document
-          .querySelector(targetId)
-          .scrollIntoView({ behavior: "smooth" });
-      });
-    });
-
-    mobileMenuButton.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden");
-    });
-  </script>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="clubsContainer">
+          <!-- Clubs will be inserted here by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // --- Translation Script ---
+    const activities = [
+      {
+        image: './Img/activity/football.jpg',
+        titles: {
+          en: 'Football Champion',
+          my: 'ဘောလုံးချန်ပီယံ'
+        },
+        descriptions: {
+          en: 'IST beat EcE in an exciting championship match.',
+          my: 'IST က EcE ကို စိတ် လှုပ်ရှားဖွယ်ချန်ပီယံပွဲတွင် အနိုင်ရခဲ့သည်။'
+        },
+        date: 'Aug 1, 2025'
+      },
+      {
+        image: './Img/activity/htamanay.jpg',
+        titles: {
+          en: 'Htamanè Festival',
+          my: 'ထမနဲပွဲတော်'
+        },
+        descriptions: {
+          en: 'Htamanè is a traditional Myanmar snack made with glutinous rice, often celebrated and prepared together at school festivals in Tabodwe.',
+          my: 'ထမနဲသည် ကြက်သွန်ဖြူနှင့် ဆန်ကြမ်းဖြင့် ပြုလုပ်ထားသော ရိုးရာမြန်မာရေစာဖြစ်ပြီး တန်ခူးလတွင် ကျောင်းပွဲတော်များတွင် အတူတကွ ကျင်းပပြုလုပ်လေ့ရှိသည်။'
+        },
+        date: 'Feb 10, 2025'
+      },
+      {
+        image: './Img/activity/trip.jpg',
+        titles: {
+          en: '7 Mile Trip',
+          my: '၇မိုင် ခရီးစဉ်'
+        },
+        descriptions: {
+          en: 'A university trip is an educational and fun journey where students travel together outside the classroom to learn, explore, and create memorable experiences.',
+          my: 'တက္ကသိုလ်ခရီးစဉ်သည် ကျောင်းသားများ  စာသင်ခန်းအပြင်ဘက်တွင် အတူတကွ ခရီးထွက်၍ သင်ယူရန်၊ စူးစမ်းရှာဖွေရန်နှင့် မမေ့နိုင်သော အတွေ့အကြုံများ ဖန်တီးရန် ပညာရေးနှင့် ပျော်ရွှင်ဖွယ် ခရီးစဉ်တစ်ခုဖြစ်သည်။'
+        },
+        date: 'November 5, 2023'
+      },
+      {
+        image: './Img/activity/badminton.jpg',
+        titles: {
+          en: 'Badminton Days',
+          my: 'တင်း နစ်နေ့များ'
+        },
+        descriptions: {
+          en: 'There are several categories of clubs at Ycc. This is one of them',
+          my: 'Ycc တွင် ကလပ်များစွာ ရှိပါသည်။ ၎င်းတို့ထဲမှ တစ်ခုဖြစ်သည်။'
+        },
+        date: 'September 12, 2024'
+      }
+    ];
+
+    // Clubs and activities data with multilingual support
+    const clubsData = {
+      academic: {
+        title: {
+          en: "Academic Clubs & Activities",
+          my: "ပညာရေး ကလပ်များနှင့် လှုပ်ရှားမှုများ"
+        },
+        clubs: [
+          {
+            name: {
+              en: "Computer Science Club",
+              my: "ကွန်ပျူတာသိပ္ပံ ကလပ်"
+            },
+            description: {
+              en: "For students interested in programming, algorithms, and software development.",
+              my: "ပရိုဂရမ်ရေးသားခြင်း၊ အယ်လ်ဂိုရီသမ်းများနှင့် ဆော့ဖ်ဝဲဖွံ့ဖြိုးရေးတို့ကို စိတ်ဝင်စားသော ကျောင်းသားများအတွက်"
+            },
+            meeting: {
+              en: "Every Tuesday, 4pm, Main Building Room",
+              my: "အင်္ဂါနေ့တိုင်း ညနေ ၄နာရီ၊ အဓိကအဆောက်အဦး အခန်း"
+            }
+          },
+          {
+            name: {
+              en: "Engineering Society",
+              my: "အင်ဂျင်နီယာအသင်း"
+            },
+            description: {
+              en: "Open to all engineering students with workshops and guest lectures.",
+              my: "အင်ဂျင်နီယာကျောင်းသားအားလုံးအတွက် ပွဲဦးထွက်သင်တန်းများနှင့် အထူးဟောပြောပွဲများဖြင့် ဖွင့်လှစ်ထားသည်။"
+            },
+            meeting: {
+              en: "Every Wednesday, 5pm, Engineering Hall",
+              my: "ဗုဒ္ဓဟူးနေ့တိုင်း ညနေ ၅နာရီ၊ အင်ဂျင်နီယာခန်းမ"
+            }
+          },
+          {
+            name: {
+              en: "Math Circle",
+              my: "သင်္ချာအသင်း"
+            },
+            description: {
+              en: "Explore advanced mathematical concepts beyond the classroom.",
+              my: "စာသင်ခန်းပြင်ပမှ အဆင့်မြင့်သင်္ချာအယူအဆများကို စူးစမ်း လေ့လာပါ။"
+            },
+            meeting: {
+              en: "Every Friday, 4pm, Main Building Room",
+              my: "သောကြာနေ့တိုင်း ညနေ ၄နာရီ၊ အဓိကအဆောက်အဦး အခန်း"
+            }
+          },
+        ]
+      },
+      cultural: {
+        title: {
+          en: "Cultural Clubs & Events",
+          my: "ယဉ်ကျေးမှု ကလပ်များနှင့် ပွဲများ"
+        },
+        clubs: [
+          {
+            name: {
+              en: "International Students Association",
+              my: "နိုင်ငံတကာကျောင်းသားအသင်း"
+            },
+            description: {
+              en: "Celebrating cultural diversity with events and food festivals.",
+              my: "ပွဲများနှင့် အစားအသောက်ပွဲတော်များဖြင့် ယဉ်ကျေးမှုကွဲပြားမှုကို ဂုဏ်ပြုခြင်း။"
+            },
+            meeting: {
+              en: "First Friday of each month, 5pm, Student Hall",
+              my: "လအစသောကြာနေ့တိုင်း ညနေ ၅နာရီ၊ ကျောင်းသားခန်းမ"
+            }
+          },
+          {
+            name: {
+              en: "Film Society",
+              my: "ရုပ်ရှင်အသင်း"
+            },
+            description: {
+              en: "Weekly screenings and discussions of international cinema.",
+              my: "နိုင်ငံတကာရုပ်ရှင်များ၏ အပတ်စဉ်ပြသခြင်းနှင့် ဆွေးနွေးပွဲများ။"
+            },
+            meeting: {
+              en: "Every Thursday, 7pm, Arts Building Theater",
+              my: "ကြာသပတေးနေ့တိုင်း ည ၇နာရီ၊ အနုပညာအဆောက်အဦး ရုံး"
+            }
+          },
+          {
+            name: {
+              en: "Music Club",
+              my: "ဂီတကလပ်"
+            },
+            description: {
+              en: "To reduce stress and to keep happy at University life",
+              my: "တက္ကသိုလ်ဘဝတွင် စိတ်ဖိစီးမှုလျှော့ချရန်နှင့် ပျော်ရွှင်စေရန်"
+            },
+            meeting: {
+              en: "Every Wednesday, 4pm, Lecture Hall 4",
+              my: "ဗုဒ္ဓဟူးနေ့တိုင်း ညနေ ၄နာရီ၊ ပို့ချခန်း ၄"
+            }
+          },
+          {
+            name: {
+              en: "Dance Troupe",
+              my: "အကအဖွဲ့"
+            },
+            description: {
+              en: "Learn and perform traditional dances from around the world.",
+              my: "ကမ္ဘာတစ်ဝှမ်းမှ ရိုးရာအကများကို လေ့လာခြင်းနှင့် ဖျော်ဖြေခြင်း။"
+            },
+            meeting: {
+              en: "Every Tuesday & Thursday, 4:30pm, Lecture Hall 4",
+              my: "အင်္ဂါနှင့် ကြာသပတေးနေ့တိုင်း ညနေ ၄:၃၀နာရီ၊ ပို့ချခန်း ၄"
+            }
+          }
+        ]
+      },
+      sports: {
+        title: {
+          en: "Sports Teams & Activities",
+          my: "အားကစားအသင်းများနှင့် လှုပ်ရှားမှုများ"
+        },
+        clubs: [
+          {
+            name: {
+              en: "Basketball Team",
+              my: "ဘတ်စကက်ဘောအသင်း"
+            },
+            description: {
+              en: "Competitive team playing in inter-university leagues.",
+              my: "တက္ကသိုလ်ချင်းဆိုင်ရာ လိဂ်များတွင် ပြိုင်ပွဲဝင်အသင်း။"
+            },
+            meeting: {
+              en: "Monday/Wednesday/Friday, 6:30am, Beside Hall",
+              my: "တနင်္လာ/ဗုဒ္ဓဟူး/သောကြာနေ့တိုင်း မနက် ၆:၃၀နာရီ၊ ခန်�းမဘေး"
+            }
+          },
+          {
+            name: {
+              en: "Badminton Club",
+              my: "တင်းနစ်ကလပ်"
+            },
+            description: {
+              en: "Beginner to advanced Badminton for all students.",
+              my: "ကျောင်းသားအားလုံးအတွက် အခြေခံမှ အဆင့်မြင့်အထိ တင်းနစ်။"
+            },
+            meeting: {
+              en: "Daily, 7am and 5pm, Wellness Center",
+              my: "နေ့တိုင်း မနက် ၇နာရီနှင့် ညနေ ၅နာရီ၊ ကျန်းမာရေးစင်တာ"
+            }
+          },
+          {
+            name: {
+              en: "Football Club",
+              my: "ဘောလုံးကလပ်"
+            },
+            description: {
+              en: "Group runs and training for football.",
+              my: "ဘောလုံးအတွက် အသုတ်လိုက်ပြေးခြင်းနှင့် လေ့ကျင့်ခြင်း။"
+            },
+            meeting: {
+              en: "Tuesday/Thursday, 6am, Main Gate",
+              my: "အင်္ဂါ/ကြာသပတေးနေ့တိုင်း မနက် ၆နာရီ၊ အဓိကတံခါး"
+            }
+          },
+          {
+            name: {
+              en: "E-sport Club",
+              my: "အီးစပို့ကလပ်"
+            },
+            description: {
+              en: "To improve team work and skill and more friendly",
+              my: "အသင်းအဖွဲ့လုပ်ဆောင်မှုနှင့် ကျွမ်းကျင်မှုတိုးတက်စေ ရန် နှင့် ပိုမိုခင်မင်ရင်း နှီးစေ ရန်"
+            },
+            meeting: {
+              en: "Saturday mornings, 9am, At Hall",
+              my: "စနေနေ့မနက်ပိုင်းတိုင်း မနက် ၉နာရီ၊ ခန်းမ၌"
+            }
+          }
+        ]
+      }
+    };
+
+    // Combined translations object with all keys
     const translations = {
       my: {
         utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
@@ -429,23 +673,31 @@
         nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
         nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
         nav_contact_mobile: "ဆက်သွယ်ရန်",
-        footer_address:
-          "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+        footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
         footer_faculties_title: "မဟာဌာနများ",
         footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
         footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
         footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစင့်ည်း အင်ဂျင်နီယာ",
         footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
         footer_contact_title: "ဆက်သွယ်ရန်",
         footer_follow_title: "Follow Us",
-        footer_copyright:
-          "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+        footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
         footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
         footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
         footer_link_faq: "အမေးများသော မေးခွန်းများ",
         footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
         footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+        activities_title: "တက္ကသိုလ် လှုပ်ရှားမှုများ",
+        activities_subtitle: "ကျွန်ုပ်တို့၏ စိတ်လှုပ်ရှားဖွယ် ကမ့်ပပ်ဘဝကို စူးစမ်း လေ့လာပါ",
+        academic_programs: "ပညာရေး အစီအစဉ်များ",
+        academic: "ပညာရေး ထူးချွန်မှု",
+        research: "စိတ်ကိုစိန်ခေါ်သော သုတေသနဆွေးနွေးပွဲများ၊ ဟက်ကာသွန်များနှင့် ဘာသာရပ်စုံ ပရောဂျက်များ",
+        cultural_events: "ယဉ်ကျေးမှုပွဲများ",
+        cultural_desc: "ကျွန်ုပ်တို့၏ နိုင်ငံတကာပွဲတော်များ၊ ဖျော်ဖြေပွဲများနှင့် ပြပွဲများဖြင့် ကွဲပြားမှုများကို ဂုဏ်ပြုပါ",
+        sports: "အားကစားနှင့် ကစားကွင်းများ",
+        sports_desc: "တက်ကြွစွာနေထိုင်ရန်နှင့် အသင်းအဖွဲ့ငယ်များ တည်ဆောက်ရန် ကျွန်ုပ်တို့၏ ပြိုင်ပွဲအသင်းများ သို့မဟုတ် ပျော်ပွဲစားလိဂ်များတွင် ပါဝင်ပါ",
+        learn_more: "ပိုမိုလေ့လာရန် →"
       },
       en: {
         utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -457,8 +709,7 @@
         nav_programs_mobile: "Academic Programs",
         nav_collaboration_mobile: "Collaboration",
         nav_contact_mobile: "Contact",
-        footer_address:
-          "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+        footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
         footer_faculties_title: "Faculties",
         footer_faculty_ist: "Information Science Technology",
         footer_faculty_ce: "Computer Engineering",
@@ -467,275 +718,330 @@
         footer_faculty_pre: "Precision Engineering",
         footer_contact_title: "Contact Us",
         footer_follow_title: "Follow Us",
-        footer_copyright:
-          "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+        footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
         footer_quick_links_title: "Quick Links",
         footer_link_terms: "Terms & Policies",
         footer_link_faq: "FAQs",
         footer_link_about: "About Us",
         footer_link_rules: "Rules & Regulations",
-      },
+        activities_title: "University Activities",
+        activities_subtitle: "Explore our vibrant campus life",
+        academic_programs: "Academic Programs",
+        academic: "Academic Excellence",
+        research: "Research symposiums, hackathons, and interdisciplinary projects that challenge minds.",
+        cultural_events: "Cultural Events",
+        cultural_desc: "Celebrate diversity with our international festivals, performances, and exhibitions.",
+        sports: "Athletics & Sports",
+        sports_desc: "Join our competitive teams or recreational leagues to stay active and build teamwork.",
+        learn_more: "Learn more →"
+      }
     };
 
-    const languageSwitcher = document.getElementById("language-switcher");
+    let currentLanguage = 'en';
+    let currentSlide = 0;
+    let slideshowInterval;
 
-    const changeLanguage = (lang) => {
+    // Function to change language for the entire page
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      
       // Store the selected language
       localStorage.setItem("language", lang);
-
-      // Set the dropdown to the correct value
-      languageSwitcher.value = lang;
-
-      // Translate all elements with the data-lang-key attribute
+      
+      // Update dropdown selection
+      document.getElementById('language-switcher').value = lang;
+      
+      // Update UI translations for all elements
       document.querySelectorAll("[data-lang-key]").forEach((element) => {
         const key = element.dataset.langKey;
-        const translation = translations[lang][key];
-        if (translation) {
-          element.innerHTML = translation.replace(/\\n/g, "<br>");
+        if (translations[lang] && translations[lang][key]) {
+          element.innerHTML = translations[lang][key].replace(/\\n/g, "<br>");
         }
       });
-    };
+      
+      // Update activities display
+      updateActivitiesDisplay();
+    }
 
-    // Event listener for the language switcher
-    languageSwitcher.addEventListener("change", (event) => {
-      changeLanguage(event.target.value);
-    });
-
-    // Function to run when the page loads
-    document.addEventListener("DOMContentLoaded", () => {
-      // Check for a saved language in localStorage, otherwise default to 'en'
-      const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
-    });
-  </script>
-
-  <!-- Clubs and Activities Modal -->
-  <div class="modal-overlay" id="clubsModal">
-    <div class="modal-content">
-      <div class="p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="text-2xl font-bold text-gray-800" id="modalTitle">Academic Clubs</h3>
-          <button class="close-modal text-gray-500 hover:text-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="clubsContainer">
-          <!-- Clubs will be inserted here by JavaScript -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Activity data
-      const activities = [
-        {
-          image: '/Img/activity/football.jpg',
-          title: 'Football Champion',
-          description: 'IST beat EcE.',
-          date: 'Aug 1, 2025'
-        },
-        {
-          image: './Img/activity/htamanay.jpg',
-          title: 'Htamanè',
-          description: 'Htamanè is a traditional Myanmar snack made with glutinous rice, often celebrated and prepared together at school festivals in Tabodwe.',
-          date: 'Feb 10, 2025'
-        },
-        {
-          image: '/Img/activity/trip.jpg',
-          title: '7mile trip',
-          description: 'A university trip is an educational and fun journey where students travel together outside the classroom to learn, explore, and create memorable experiences. ',
-          date: 'November 5, 2023'
-        },
-        {
-          image: './Img/activity/badminton.jpg',
-          title: 'Badminton Days',
-          description: 'There are several cathegories of clubs at Ycc.This is one of them',
-          date: 'September 12, 2024'
-        }
-      ];
-
-      // Clubs and activities data
-      const clubsData = {
-        academic: [
-          {
-            name: "Computer Science Club",
-            description: "For students interested in programming, algorithms, and software development.",
-            meeting: "Every Tuesday, 4pm, Main Building Room"
-          },
-          {
-            name: "Engineering Society",
-            description: "Open to all engineering students with workshops and guest lectures.",
-            meeting: "Every Wednesday, 5pm, Engineering Hall"
-          },
-          {
-            name: "Math Circle",
-            description: "Explore advanced mathematical concepts beyond the classroom.",
-            meeting: "Every Friday, 4pm, Main Building Room"
-          },
-        ],
-        cultural: [
-          {
-            name: "International Students Association",
-            description: "Celebrating cultural diversity with events and food festivals.",
-            meeting: "First Friday of each month, 5pm,Hall"
-          },
-          {
-            name: "Film Society",
-            description: "Weekly screenings and discussions of international cinema.",
-            meeting: "Every Thursday, 7pm, Arts Building Theater"
-          },
-          {
-            name: "Music Club",
-            description: "To reduce stress and to keep happy at University life",
-            meeting: "Every Wednesday, 4pm, lecture 4"
-          },
-          {
-            name: "Dance Troupe",
-            description: "Learn and perform traditional dances from around the world.",
-            meeting: "Every Tuesday & Thursday, 4:30pm, Lec 4"
-          }
-        ],
-        sports: [
-          {
-            name: "Basketball Team",
-            description: "Competitive team playing in inter-university leagues.",
-            meeting: "Monday/Wednesday/Friday, 6:30am, Beside hall"
-          },
-          {
-            name: "Badminton",
-            description: "Beginner to advanced Badminton for all students.",
-            meeting: "Daily, 7am and 5pm, Wellness Center"
-          },
-          {
-            name: "Football Club",
-            description: "Group runs and training for football.",
-            meeting: "Tuesday/Thursday, 6am, Main Gate"
-          },
-          {
-            name: "E-sport Club",
-            description: "To improve team work and skill and more friendly",
-            meeting: "Saturday mornings, 9am,At hall "
-          }
-        ]
-      };
-
-      // Get container
+    // Function to update activities display based on current language
+    function updateActivitiesDisplay() {
       const container = document.querySelector('.activity-container');
-
-      // Create slides
+      // Keep navigation buttons but remove slides
+      const buttons = container.querySelectorAll('.slide-nav-btn');
+      container.querySelectorAll('.activity-slide').forEach(slide => slide.remove());
+      
       activities.forEach((activity, index) => {
         const slide = document.createElement('div');
         slide.className = `activity-slide ${index === 0 ? 'active' : ''}`;
         slide.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url(${activity.image})`;
 
+        // Get the title and description for the selected language
+        const title = activity.titles[currentLanguage] || activity.titles['en'];
+        const description = activity.descriptions[currentLanguage] || activity.descriptions['en'];
+
         slide.innerHTML = `
-                    <div class="activity-info">
-                        <h2 class="text-3xl font-bold mb-2">${activity.title}</h2>
-                        <p class="text-lg mb-2">${activity.description}</p>
-                        <p class="text-blue-300 font-medium">${activity.date}</p>
-                    </div>
-                `;
+          <div class="activity-info">
+            <h2 class="text-3xl font-bold mb-2">${title}</h2>
+            <p class="text-lg mb-2">${description}</p>
+            <p class="text-blue-300 font-medium">${activity.date}</p>
+          </div>
+        `;
 
         container.appendChild(slide);
       });
 
-      // Slide animation logic
-      let currentSlide = 0;
+      // Reset slideshow
+      currentSlide = 0;
       const slides = document.querySelectorAll('.activity-slide');
-
-      function nextSlide() {
-        // Fade out current slide
-        slides[currentSlide].classList.remove('active');
-
-        // Move to next slide
-        currentSlide = (currentSlide + 1) % slides.length;
-
-        // Fade in next slide
-        slides[currentSlide].classList.add('active');
-      }
-
-      // Change slide every 5 seconds
-      setInterval(nextSlide, 5000);
-
-      // Modal functionality
-      const modal = document.getElementById('clubsModal');
-      const modalTitle = document.getElementById('modalTitle');
-      const clubsContainer = document.getElementById('clubsContainer');
-      const closeModalBtn = document.querySelector('.close-modal');
-      const learnMoreBtns = document.querySelectorAll('.learn-more-btn');
-
-      // Show modal with clubs
-      learnMoreBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
-          const category = this.getAttribute('data-category');
-          showClubsModal(category);
+      if (slides.length > 0) {
+        slides.forEach((slide, idx) => {
+          slide.classList.remove('active');
+          if (idx === 0) slide.classList.add('active');
         });
-      });
-
-      // Close modal
-      closeModalBtn.addEventListener('click', closeModal);
-      modal.addEventListener('click', function (e) {
-        if (e.target === modal) {
-          closeModal();
-        }
-      });
-
-      function showClubsModal(category) {
-        // Set modal title based on category
-        let title = '';
-        switch (category) {
-          case 'academic':
-            title = 'Academic Clubs & Activities';
-            break;
-          case 'cultural':
-            title = 'Cultural Clubs & Events';
-            break;
-          case 'sports':
-            title = 'Sports Teams & Activities';
-            break;
-        }
-        modalTitle.textContent = title;
-
-        // Clear previous clubs
-        clubsContainer.innerHTML = '';
-
-        // Add clubs to modal
-        clubsData[category].forEach((club, index) => {
-          const clubCard = document.createElement('div');
-          clubCard.className = 'club-card bg-white p-4 rounded-lg shadow-md opacity-0';
-          clubCard.style.animationDelay = `${index * 0.1}s`;
-
-          clubCard.innerHTML = `
-                        <h4 class="text-lg font-semibold text-blue-700 mb-1">${club.name}</h4>
-                        <p class="text-gray-600 text-sm mb-2">${club.description}</p>
-                        <p class="text-gray-500 text-xs"><strong>Meeting:</strong> ${club.meeting}</p>
-                    `;
-
-          // Add animation class after a small delay to allow DOM update
-          setTimeout(() => {
-            clubCard.classList.add('animate-slide-in');
-          }, 10);
-
-          clubsContainer.appendChild(clubCard);
-        });
-
-        // Show modal
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
       }
+      
+      // Restart slideshow
+      startSlideshow();
+    }
 
-      function closeModal() {
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
+    // Function to start slideshow
+    function startSlideshow() {
+      // Clear existing interval if any
+      if (slideshowInterval) {
+        clearInterval(slideshowInterval);
+      }
+      
+      // Start new interval
+      slideshowInterval = setInterval(() => {
+        nextSlide();
+      }, 5000);
+    }
+
+    // Function to move to next slide
+    function nextSlide() {
+      const slides = document.querySelectorAll('.activity-slide');
+      if (slides.length === 0) return;
+      
+      // Fade out current slide
+      slides[currentSlide].classList.remove('active');
+
+      // Move to next slide
+      currentSlide = (currentSlide + 1) % slides.length;
+
+      // Fade in next slide
+      slides[currentSlide].classList.add('active');
+    }
+
+    // Function to move to previous slide
+    function prevSlide() {
+      const slides = document.querySelectorAll('.activity-slide');
+      if (slides.length === 0) return;
+      
+      // Fade out current slide
+      slides[currentSlide].classList.remove('active');
+
+      // Move to previous slide
+      currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+
+      // Fade in previous slide
+      slides[currentSlide].classList.add('active');
+    }
+
+    // Modal functionality
+    const modal = document.getElementById('clubsModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const clubsContainer = document.getElementById('clubsContainer');
+    const closeModalBtn = document.querySelector('.close-modal');
+    const learnMoreBtns = document.querySelectorAll('.learn-more-btn');
+
+    // Show modal with clubs
+    learnMoreBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        const category = this.getAttribute('data-category');
+        showClubsModal(category);
+      });
+    });
+
+    // Close modal
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) {
+        closeModal();
       }
     });
+
+    function showClubsModal(category) {
+      // Set modal title based on category and language
+      const title = clubsData[category].title[currentLanguage] || clubsData[category].title['en'];
+      modalTitle.textContent = title;
+
+      // Clear previous clubs
+      clubsContainer.innerHTML = '';
+
+      // Add clubs to modal
+      clubsData[category].clubs.forEach((club, index) => {
+        const clubCard = document.createElement('div');
+        clubCard.className = 'club-card bg-white p-4 rounded-lg shadow-md opacity-0';
+        clubCard.style.animationDelay = `${index * 0.1}s`;
+
+        // Get club info for current language
+        const name = club.name[currentLanguage] || club.name['en'];
+        const description = club.description[currentLanguage] || club.description['en'];
+        const meeting = club.meeting[currentLanguage] || club.meeting['en'];
+
+        clubCard.innerHTML = `
+          <h4 class="text-lg font-semibold text-blue-700 mb-1">${name}</h4>
+          <p class="text-gray-600 text-sm mb-2">${description}</p>
+          <p class="text-gray-500 text-xs"><strong>Meeting:</strong> ${meeting}</p>
+        `;
+
+        // Add animation class after a small delay to allow DOM update
+        setTimeout(() => {
+          clubCard.classList.add('animate-slide-in');
+        }, 10);
+
+        clubsContainer.appendChild(clubCard);
+      });
+
+      // Show modal
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set up language selector event listener
+      document.getElementById('language-switcher').addEventListener('change', function() {
+        changeLanguage(this.value);
+      });
+      
+      // Set up navigation buttons
+      document.querySelector('.slide-nav-btn.prev').addEventListener('click', function() {
+        prevSlide();
+        // Reset the auto slideshow timer
+        startSlideshow();
+      });
+      
+      document.querySelector('.slide-nav-btn.next').addEventListener('click', function() {
+        nextSlide();
+        // Reset the auto slideshow timer
+        startSlideshow();
+      });
+      
+      // Check for saved language preference
+      const savedLang = localStorage.getItem("language") || "en";
+      changeLanguage(savedLang);
+      
+      // Initialize mobile menu
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+      
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+      
+      // Initialize smooth scrolling for navigation links
+      const navLinks = document.querySelectorAll(".nav-link");
+      navLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute("href");
+          document.querySelector(targetId).scrollIntoView({ behavior: "smooth" });
+          mobileMenu.classList.add("hidden");
+        });
+      });
+    });
   </script>
+  <footer id="contact" class="bg-blue-900 text-white">
+    <div class="container mx-auto px-6 py-12">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
+          <h3 class="text-lg font-bold">UTYCC</h3>
+          <p class="text-blue-200 text-sm mt-4">
+                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address"
+                            target="_blank">
+                            Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
+                            Region, Myanmar
+                        </a>
+                    </p>
+          <div class="mt-4 text-sm text-blue-200">
+            <p>Email: info@utycc.edu.mm (example)</p>
+            <p>Phone: +95 (XX) XXX XXX (example)</p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
+            Faculties
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li data-lang-key="footer_faculty_ist">
+              Information Science Technology
+            </li>
+            <li data-lang-key="footer_faculty_ce">Computer Engineering</li>
+            <li data-lang-key="footer_faculty_ece">
+              Electronics Engineering
+            </li>
+            <li data-lang-key="footer_faculty_ame">
+              Advanced Materials Engineering
+            </li>
+            <li data-lang-key="footer_faculty_pre">Precision Engineering</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
+            Quick Links
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li>
+              <a href="#" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
+            Follow Us
+          </h3>
+          <div class="flex space-x-4">
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+          </div>
+          <br />
+          <br />
+          <div>
+            <div class="newtons-cradle">
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
+        data-lang-key="footer_copyright">
+        &copy; 2025 University of Technology - Yatanarpon Cyber City. All
+        Rights Reserved.
+      </div>
+    </div>
+  </footer>
 </body>
 
 </html>
