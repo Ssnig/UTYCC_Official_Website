@@ -1,49 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <link rel="stylesheet" href="./CSS/star-layout.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="./CSS/footer.css" />
-  <script src="./JS/star-layout.js"></script>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>University of Technology - Yatanarpon Cyber City (UTYCC)</title>
-  <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="./CSS/hero-carousel.css" />
-  <script src="./JS/hero-carousel.js"></script>
-  <link rel="stylesheet" href="CSS/font.css" />
-  <style>
-    body {
-      font-family: "Inter", sans-serif;
-    }
+    <link
+      rel="shortcut icon"
+      href="../Img/logo/utycc_logo_favicon/favicon.ico"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./CSS/footer.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rules & Regulations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Animation Classes */
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        .animate-fade-up {
+            animation: fadeUp 0.6s ease-out forwards;
+        }
+        .animate-fade-down {
+            animation: fadeDown 0.4s ease-out forwards;
+        }
+        .animate-scale-in {
+            animation: scaleIn 0.4s ease-out forwards;
+        }
+        .animate-pulse {
+            animation: pulse 1s ease infinite;
+        }
+        .animate-ripple {
+            animation: ripple 0.6s linear forwards;
+        }
 
-    .hero-bg {
-      background-image: linear-gradient(rgba(0, 51, 102, 0.75),
-          rgba(0, 51, 102, 0.75)),
-        url("https://placehold.co/1600x800/003366/FFFFFF?text=UTYCC+Campus");
-      background-size: cover;
-      background-position: center;
-    }
+        /* Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
 
-    .stat-card {
-      background-color: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-    }
-
-    .program-card {
-      cursor: pointer;
-    }
-  </style>
+        /* Custom Components */
+        .star-rating {
+            direction: rtl;
+            display: inline-block;
+        }
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+        .star-rating label {
+            color: #ddd;
+            font-size: 2rem;
+            padding: 0 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input[type="radio"]:checked ~ label {
+            color: #f8d64e;
+            transform: scale(1.1);
+        }
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .file-upload:hover {
+            border-color: #818cf8;
+            transform: translateY(-2px);
+        }
+        .file-upload-input {
+            position: absolute;
+            font-size: 50px;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+        .feedback-card {
+            transition: all 0.3s ease;
+            transform-origin: top center;
+        }
+        .feedback-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .file-preview {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        .file-preview:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
 </head>
-
-<body class="bg-gray-100">
-  <div class="bg-white shadow-md sticky top-0 z-50">
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen opacity-0 animate-fade-in">
+    <div class="bg-white shadow-md sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
       <a href="#" class="flex items-center space-x-3">
         <div class="p-2 rounded-lg">
@@ -65,13 +142,18 @@
         <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_contact">Contact</a>
 
-        <div class="ml-4">
-          <select id="language-switcher"
-            class="border border-gray-300 rounded-md py-1 px-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="en">English</option>
-            <option value="my">မြန်မာ</option>
-          </select>
-        </div>
+        <div class="relative ml-4">
+                    <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+                        <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
+                        <select id="language-switcher"
+                            class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="my">မြန်မာ</option>
+                            <option value="en">English</option>
+                        </select>
+                        <i
+                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+                    </div>
+                </div>
       </div>
       <button id="mobile-menu-button" class="md:hidden text-blue-900">
         <i class="fas fa-bars text-2xl"></i>
@@ -88,10 +170,9 @@
         data-lang-key="nav_contact_mobile">Contact</a>
     </div>
   </div>
-  <!-- ဒီအောက်စရေး -->
-
-  <!-- ဒီအပေါ်မှာဆုံး -->
- <footer id="contact" class="bg-blue-900 text-white ">
+    
+    <!-- Footer -->
+    <footer id="contact" class="bg-blue-900 text-white ">
     <div class="container mx-auto px-6 py-12">
       <div class="grid md:grid-cols-4 gap-8">
         <div>
@@ -180,27 +261,8 @@
     </div>
   </footer>
 
-  <script>
-    // --- Mobile Menu and Smooth Scroll Script ---
-    const navLinks = document.querySelectorAll(".nav-link");
-    const mobileMenuButton = document.getElementById("mobile-menu-button");
-    const mobileMenu = document.getElementById("mobile-menu");
-
-    navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        const targetId = link.getAttribute("href");
-        document
-          .querySelector(targetId)
-          .scrollIntoView({ behavior: "smooth" });
-      });
-    });
-
-    mobileMenuButton.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden");
-    });
-  </script>
-
-  <script>
+    
+    <script>
     // --- Translation Script ---
     const translations = {
       my: {
@@ -293,5 +355,4 @@
     });
   </script>
 </body>
-
 </html>
