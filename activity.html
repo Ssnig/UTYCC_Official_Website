@@ -279,6 +279,82 @@
       animation: slideIn 0.5s ease-out forwards;
     }
 
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+      .activity-container {
+        height: 350px;
+      }
+      
+      .activity-info h2 {
+        font-size: 1.5rem;
+      }
+      
+      .activity-info p {
+        font-size: 0.9rem;
+      }
+      
+      .slide-nav-btn {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .slide-nav-btn i {
+        font-size: 1rem;
+      }
+      
+      .grid.grid-cols-1.md\:grid-cols-3 {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .activity-card {
+        padding: 1.5rem;
+      }
+      
+      .floating-icon svg {
+        height: 40px;
+        width: 40px;
+      }
+      
+      .header-container {
+        padding: 1.5rem 1rem;
+      }
+      
+      .container.mx-auto.px-6.py-12 {
+        padding: 1.5rem;
+      }
+      
+      .grid.md\:grid-cols-4 {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      footer .grid.md\:grid-cols-4 {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .language-selector-mobile {
+        width: 100%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .language-selector-mobile select {
+        width: 100%;
+      }
+    }
+    
+    /* Space between content and footer */
+    .content-before-footer {
+      padding-bottom: 5rem; /* Added space between content and footer */
+    }
+
+    @media (max-width: 768px) {
+      .content-before-footer {
+        padding-bottom: 3rem;
+      }
+    }
   </style>
 </head>
 
@@ -295,7 +371,7 @@
             City)</span>
         </div>
       </a>
-      <div class="hidden md:flex items-center space-x-6">
+       <div class="hidden md:flex items-center space-x-6">
         <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_about">About Us</a>
         <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
@@ -305,12 +381,16 @@
         <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_contact">Contact</a>
 
-        <div class="ml-4">
-          <select id="language-switcher"
-            class="border border-gray-300 rounded-md py-1 px-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="en">English</option>
-            <option value="my">မြန်မာ</option>
-          </select>
+        <div class="relative ml-4">
+          <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+            <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
+            <select id="language-switcher"
+              class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="my">မြန်မာ</option>
+              <option value="en">English</option>
+            </select>
+            <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+          </div>
         </div>
       </div>
       <button id="mobile-menu-button" class="md:hidden text-blue-900">
@@ -326,88 +406,101 @@
         data-lang-key="nav_collaboration_mobile">Collaboration</a>
       <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
         data-lang-key="nav_contact_mobile">Contact</a>
+      <div class="relative mt-4 pt-4 border-t">
+        <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+          <i class="fas fa-globe text-gray-500 absolute left-4 z-10 pointer-events-none"></i>
+          <select id="language-switcher-mobile"
+            class="w-full cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-2 pl-11 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="my">မြန်မာ</option>
+            <option value="en">English</option>
+          </select>
+          <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 z-10 pointer-events-none"></i>
+        </div>
+      </div>
     </div>
   </div>
-  <!-- ဒီအောက်စရေး -->
- <div class="container mx-auto px-4 py-12">
+  
+  <!-- Main content container with added space at the bottom -->
+  <div class="content-before-footer">
     <!-- Activities Slideshow -->
     <section class="mb-16" id="about">
       <h1 class="text-4xl font-bold text-center text-blue-800 mb-2" data-lang-key="activities_title">University Activities</h1>
       <p class="text-xl text-center text-gray-600 mb-8" data-lang-key="activities_subtitle">Explore our vibrant campus life</p>
       <!-- Activities Slideshow -->
-    <section class="mb-16">
-      <div class="activity-container mb-12 relative">
-        <!-- Navigation Buttons -->
-        <button class="slide-nav-btn prev">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="slide-nav-btn next">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-        
-        <!-- Slides will be inserted here by JavaScript -->
-      </div>
-    </section>
+      <section class="mb-16">
+        <div class="activity-container mb-12 relative">
+          <!-- Navigation Buttons -->
+          <button class="slide-nav-btn prev">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="slide-nav-btn next">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          
+          <!-- Slides will be inserted here by JavaScript -->
+        </div>
+      </section>
 
-    <!-- Activities Grid -->
-    <section id="programs">
-      <h2 class="text-3xl font-bold text-center text-gray-800 mb-12" data-lang-key="academic_programs">Academic Programs</h2>
+      <!-- Activities Grid -->
+      <section id="programs">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-12" data-lang-key="academic_programs">Academic Programs</h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Academic Activities -->
-        <div class="activity-card bg-white p-6 rounded-lg shadow-lg">
-          <div class="text-blue-600 mb-4 floating-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Academic Activities -->
+          <div class="activity-card bg-white p-6 rounded-lg shadow-lg">
+            <div class="text-blue-600 mb-4 floating-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-center mb-3" data-lang-key="academic">Academic Excellence</h3>
+            <p class="text-gray-600 text-center" data-lang-key="research">Research symposiums, hackathons, and
+              interdisciplinary projects that challenge minds.</p>
+            <div class="mt-4 text-center">
+              <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="academic" data-lang-key="learn_more">Learn
+                more →</button>
+            </div>
           </div>
-          <h3 class="text-xl font-semibold text-center mb-3" data-lang-key="academic">Academic Excellence</h3>
-          <p class="text-gray-600 text-center" data-lang-key="research">Research symposiums, hackathons, and
-            interdisciplinary projects that challenge minds.</p>
-          <div class="mt-4 text-center">
-            <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="academic" data-lang-key="learn_more">Learn
-              more →</button>
+
+          <!-- Cultural Activities -->
+          <div class="activity-card bg-white p-6 rounded-lg shadow-lg">
+            <div class="text-blue-600 mb-4 floating-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-center mb-3" data-lang-key="cultural_events">Cultural Events</h3>
+            <p class="text-gray-600 text-center" data-lang-key="cultural_desc">Celebrate diversity with our international festivals, performances, and
+              exhibitions.</p>
+            <div class="mt-4 text-center">
+              <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="cultural" data-lang-key="learn_more">Learn
+                more →</button>
+            </div>
+          </div>
+
+          <!-- Sports Activities -->
+          <div class="activity-card bg-white p-6 rounded-lg shadow-lg">
+            <div class="text-blue-600 mb-4 floating-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-center mb-3" data-lang-key="sports">Athletics & Sports</h3>
+            <p class="text-gray-600 text-center" data-lang-key="sports_desc">Join our competitive teams or recreational leagues to stay active and
+              build teamwork.</p>
+            <div class="mt-4 text-center">
+              <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="sports" data-lang-key="learn_more">Learn
+                more →</button>
+            </div>
           </div>
         </div>
-
-        <!-- Cultural Activities -->
-        <div class="activity-card bg-white p-6 rounded-lg shadow-lg">
-          <div class="text-blue-600 mb-4 floating-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold text-center mb-3" data-lang-key="cultural_events">Cultural Events</h3>
-          <p class="text-gray-600 text-center" data-lang-key="cultural_desc">Celebrate diversity with our international festivals, performances, and
-            exhibitions.</p>
-          <div class="mt-4 text-center">
-            <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="cultural" data-lang-key="learn_more">Learn
-              more →</button>
-          </div>
-        </div>
-
-        <!-- Sports Activities -->
-        <div class="activity-card bg-white p-6 rounded-lg shadow-lg">
-          <div class="text-blue-600 mb-4 floating-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold text-center mb-3" data-lang-key="sports">Athletics & Sports</h3>
-          <p class="text-gray-600 text-center" data-lang-key="sports_desc">Join our competitive teams or recreational leagues to stay active and
-            build teamwork.</p>
-          <div class="mt-4 text-center">
-            <button class="learn-more-btn text-blue-600 hover:text-blue-800 font-medium" data-category="sports" data-lang-key="learn_more">Learn
-              more →</button>
-          </div>
-        </div>
-      </div>
+      </section>
     </section>
   </div>
 
@@ -450,7 +543,7 @@
         },
         descriptions: {
           en: 'Htamanè is a traditional Myanmar snack made with glutinous rice, often celebrated and prepared together at school festivals in Tabodwe.',
-          my: 'ထမနဲသည် ကြက်သွန်ဖြူနှင့် ဆန်ကြမ်းဖြင့် ပြုလုပ်ထားသော ရိုးရာမြန်မာရေစာဖြစ်ပြီး တန်ခူးလတွင် ကျောင်းပွဲတော်များတွင် အတူတကွ ကျင်းပပြုလုပ်လေ့ရှိသည်။'
+          my: 'ထမနဲသည် ကြက်သွန်ဖြူနှင့် ဆန်ကြမ်းဖြင့် ပြုလုပ်ထားသော ရိုးရာမြန်မာရေစာဖြစ်ပြီး တန်ခူးလတွင် ကျောင်းပွဲတော်များတွင် အတူတကွ ကျင်းပြုလုပ်လေ့ရှိသည်။'
         },
         date: 'Feb 10, 2025'
       },
@@ -749,8 +842,9 @@
       // Store the selected language
       localStorage.setItem("language", lang);
       
-      // Update dropdown selection
+      // Update dropdown selection for both desktop and mobile
       document.getElementById('language-switcher').value = lang;
+      document.getElementById('language-switcher-mobile').value = lang;
       
       // Update UI translations for all elements
       document.querySelectorAll("[data-lang-key]").forEach((element) => {
@@ -916,8 +1010,13 @@
 
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', function() {
-      // Set up language selector event listener
+      // Set up language selector event listeners
       document.getElementById('language-switcher').addEventListener('change', function() {
+        changeLanguage(this.value);
+      });
+      
+      // Set up mobile language selector event listener
+      document.getElementById('language-switcher-mobile').addEventListener('change', function() {
         changeLanguage(this.value);
       });
       
@@ -959,8 +1058,8 @@
     });
   </script>
 
-  <!-- ဒီအပေါ်မှာဆုံး -->
-  <footer id="contact" class="bg-blue-900 text-white ">
+  <!-- Footer Section -->
+  <footer id="contact" class="bg-blue-900 text-white">
     <div class="container mx-auto px-6 py-12">
       <div class="grid md:grid-cols-4 gap-8">
         <div>
@@ -984,16 +1083,16 @@
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
             <li>
-              <a href="./Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
+              <a href="../Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
             </li>
             <li>
-              <a href="./Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+              <a href="../Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
             </li>
             <li>
-              <a href="./Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+              <a href="../Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
             </li>
-            <li><a data-lang-key="footer_faculty_pre" href="./Majors/pre.html">Precision Engineering</a></li>
-            <li><a data-lang-key="footer_faculty_ame" href="./Majors/ame.html">
+            <li><a data-lang-key="footer_faculty_pre" href="../Majors/pre.html">Precision Engineering</a></li>
+            <li><a data-lang-key="footer_faculty_ame" href="../Majors/ame.html">
               Advanced Materials Engineering
             </a></li>
           </ul>
@@ -1005,16 +1104,16 @@
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
             <li>
-              <a href="./term.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+              <a href="../term.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
             </li>
             <li>
-              <a href="./FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+              <a href="../FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
             </li>
             <li>
-              <a href="./about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+              <a href="../about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
             </li>
             <li>
-              <a href="./r&r.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+              <a href="../r&r.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
             </li>
           </ul>
         </div>
@@ -1048,6 +1147,7 @@
       </div>
     </div>
   </footer>
+
 </body>
 
 </html>
