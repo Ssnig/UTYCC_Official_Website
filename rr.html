@@ -1,358 +1,748 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <link
       rel="shortcut icon"
       href="../Img/logo/utycc_logo_favicon/favicon.ico"
       type="image/x-icon"
     />
-    <link rel="stylesheet" href="./CSS/footer.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/footer.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rules & Regulations</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        /* Animation Classes */
-        .animate-fade-in {
-            animation: fadeIn 0.6s ease-out forwards;
-        }
-        .animate-fade-up {
-            animation: fadeUp 0.6s ease-out forwards;
-        }
-        .animate-fade-down {
-            animation: fadeDown 0.4s ease-out forwards;
-        }
-        .animate-scale-in {
-            animation: scaleIn 0.4s ease-out forwards;
-        }
-        .animate-pulse {
-            animation: pulse 1s ease infinite;
-        }
-        .animate-ripple {
-            animation: ripple 0.6s linear forwards;
-        }
+      /* Animation Classes */
+      .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+      }
+      .animate-fade-up {
+        animation: fadeUp 0.6s ease-out forwards;
+      }
+      .animate-fade-down {
+        animation: fadeDown 0.4s ease-out forwards;
+      }
+      .animate-scale-in {
+        animation: scaleIn 0.4s ease-out forwards;
+      }
+      .animate-pulse {
+        animation: pulse 1s ease infinite;
+      }
+      .animate-ripple {
+        animation: ripple 0.6s linear forwards;
+      }
 
-        /* Keyframes */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+      /* Keyframes */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
         }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        to {
+          opacity: 1;
         }
-        @keyframes fadeDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+      }
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
         }
-        @keyframes ripple {
-            to { transform: scale(4); opacity: 0; }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
 
-        /* Custom Components */
-        .star-rating {
-            direction: rtl;
-            display: inline-block;
-        }
-        .star-rating input[type="radio"] {
-            display: none;
-        }
-        .star-rating label {
-            color: #ddd;
-            font-size: 2rem;
-            padding: 0 5px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .star-rating label:hover,
-        .star-rating label:hover ~ label,
-        .star-rating input[type="radio"]:checked ~ label {
-            color: #f8d64e;
-            transform: scale(1.1);
-        }
-        .file-upload {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        .file-upload:hover {
-            border-color: #818cf8;
-            transform: translateY(-2px);
-        }
-        .file-upload-input {
-            position: absolute;
-            font-size: 50px;
-            opacity: 0;
-            right: 0;
-            top: 0;
-            cursor: pointer;
-        }
-        .feedback-card {
-            transition: all 0.3s ease;
-            transform-origin: top center;
-        }
-        .feedback-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .file-preview {
-            max-width: 100px;
-            max-height: 100px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            object-fit: cover;
-            transition: all 0.3s ease;
-        }
-        .file-preview:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
+      /* Custom Components */
+      .star-rating {
+        direction: rtl;
+        display: inline-block;
+      }
+      .star-rating input[type="radio"] {
+        display: none;
+      }
+      .star-rating label {
+        color: #ddd;
+        font-size: 2rem;
+        padding: 0 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .star-rating label:hover,
+      .star-rating label:hover ~ label,
+      .star-rating input[type="radio"]:checked ~ label {
+        color: #f8d64e;
+        transform: scale(1.1);
+      }
+      .file-upload {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      .file-upload:hover {
+        border-color: #818cf8;
+        transform: translateY(-2px);
+      }
+      .file-upload-input {
+        position: absolute;
+        font-size: 50px;
+        opacity: 0;
+        right: 0;
+        top: 0;
+        cursor: pointer;
+      }
+      .feedback-card {
+        transition: all 0.3s ease;
+        transform-origin: top center;
+      }
+      .feedback-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .file-preview {
+        max-width: 100px;
+        max-height: 100px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        object-fit: cover;
+        transition: all 0.3s ease;
+      }
+      .file-preview:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 200px;
+        font-size: xx-large;
+        color: black;
+        font-weight: bold;
+      }
+
+      .tide h1 {
+        text-align: center;
+        margin-top: 30px;
+        color: black;
+        font-weight: bolder;
+        font-size: xx-large;
+        margin-bottom: 30px;
+      }
+
+      .alpha-list li {
+        margin-top: 20px;
+        margin-left: 40px;
+        text-align: justify;
+      }
+
+      .tide span {
+        font-weight: bolder;
+        color: black;
+        font-size: larger;
+        font-weight: bolder;
+        margin-left: 10px;
+      }
+
+      .alpha-list h6 {
+        font-weight: bold;
+        color: black;
+        font-size: larger;
+        margin-top: 5px;
+        margin-right: 1px;
+        display: initial;
+      }
+
+      .mb-10 h4 {
+        margin-top: 30px;
+        color: black;
+        font-weight: bolder;
+        font-size: x-large;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+
+      .nn li {
+        margin-top: 20px;
+        text-align: center;
+      }
+      body {
+        background-color: snow;
+      }
     </style>
-</head>
-<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen opacity-0 animate-fade-in">
+  </head>
+  <body
+    class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen opacity-0 animate-fade-in"
+  >
     <div class="bg-white shadow-md sticky top-0 z-50">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="#" class="flex items-center space-x-3">
-        <div class="p-2 rounded-lg">
-          <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
-        </div>
-        <div>
-          <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
-          <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
-            City)</span>
-        </div>
-      </a>
-      <div class="hidden md:flex items-center space-x-6">
-        <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">About Us</a>
-        <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_programs">Academic Programs</a>
-        <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_collaboration">Collaboration</a>
-        <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_contact">Contact</a>
-
-        <div class="relative ml-4">
-                    <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-                        <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
-                        <select id="language-switcher"
-                            class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="my">မြန်မာ</option>
-                            <option value="en">English</option>
-                        </select>
-                        <i
-                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
-                    </div>
-                </div>
-      </div>
-      <button id="mobile-menu-button" class="md:hidden text-blue-900">
-        <i class="fas fa-bars text-2xl"></i>
-      </button>
-    </nav>
-    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-      <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_about_mobile">About Us</a>
-      <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_programs_mobile">Academic Programs</a>
-      <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_collaboration_mobile">Collaboration</a>
-      <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_contact_mobile">Contact</a>
-    </div>
-  </div>
-    
-    <!-- Footer -->
-    <footer id="contact" class="bg-blue-900 text-white ">
-    <div class="container mx-auto px-6 py-12">
-      <div class="grid md:grid-cols-4 gap-8">
-        <div>
-          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
-          <h3 class="text-lg font-bold">UTYCC</h3>
-          <p class="text-blue-200 text-sm mt-4">
-            <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
-              Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
-              Region, Myanmar
-            </a>
-          </p>
-          <div class="mt-4 text-sm text-blue-200">
-            <p>Email: info@utycc.edu.mm (example)</p>
-            <p>Phone: +95 (XX) XXX XXX (example)</p>
+      <nav
+        class="container mx-auto px-6 py-3 flex justify-between items-center"
+      >
+        <a href="#" class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg">
+            <img
+              src="./Img/logo/utycc_logo_favicon/favicon.ico"
+              alt="UTYCC Logo"
+            />
           </div>
-        </div>
-
-        <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
-            Faculties
-          </h3>
-          <ul class="space-y-2 text-sm text-blue-200">
-            <li>
-              <a href="./Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
-            </li>
-            <li>
-              <a href="./Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
-            </li>
-            <li>
-              <a href="./Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
-            </li>
-            <li><a data-lang-key="footer_faculty_pre" href="./Majors/pre.html">Precision Engineering</a></li>
-            <li><a data-lang-key="footer_faculty_ame" href="./Majors/ame.html">
-              Advanced Materials Engineering
-            </a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
-            Quick Links
-          </h3>
-          <ul class="space-y-2 text-sm text-blue-200">
-            <li>
-              <a href="./term.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
-            </li>
-            <li>
-              <a href="./FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
-            </li>
-            <li>
-              <a href="./about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
-            </li>
-            <li>
-              <a href="./r&r.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
-            Follow Us
-          </h3>
-          <div class="flex space-x-4">
-            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
-            <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
-             <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
-            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
-          </div>
-          <br />
-          <br />
           <div>
-            <div class="newtons-cradle">
-              <div class="newtons-cradle__dot"></div>
-              <div class="newtons-cradle__dot"></div>
-              <div class="newtons-cradle__dot"></div>
-              <div class="newtons-cradle__dot"></div>
+            <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
+            <span class="text-xs text-gray-500" data-lang-key="utycc_full_name"
+              >University of Technology (Yatanarpon Cyber City)</span
+            >
+          </div>
+        </a>
+        <div class="hidden md:flex items-center space-x-6">
+          <a
+            href="#about"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+            data-lang-key="nav_about"
+            >About Us</a
+          >
+          <a
+            href="#programs"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+            data-lang-key="nav_programs"
+            >Academic Programs</a
+          >
+          <a
+            href="#collaboration"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+            data-lang-key="nav_collaboration"
+            >Collaboration</a
+          >
+          <a
+            href="#contact"
+            class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+            data-lang-key="nav_contact"
+            >Contact</a
+          >
+
+          <div class="relative ml-4">
+            <div
+              class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition"
+            >
+              <i
+                class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"
+              ></i>
+              <select
+                id="language-switcher"
+                class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="my">မြန်မာ</option>
+                <option value="en">English</option>
+              </select>
+              <i
+                class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"
+              ></i>
             </div>
           </div>
         </div>
-      </div>
-      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
-        data-lang-key="footer_copyright">
-        &copy; 2025 University of Technology - Yatanarpon Cyber City. All
-        Rights Reserved.
+        <button id="mobile-menu-button" class="md:hidden text-blue-900">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </nav>
+      <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
+        <a
+          href="#about"
+          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+          data-lang-key="nav_about_mobile"
+          >About Us</a
+        >
+        <a
+          href="#programs"
+          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+          data-lang-key="nav_programs_mobile"
+          >Academic Programs</a
+        >
+        <a
+          href="#collaboration"
+          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+          data-lang-key="nav_collaboration_mobile"
+          >Collaboration</a
+        >
+        <a
+          href="#contact"
+          class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+          data-lang-key="nav_contact_mobile"
+          >Contact</a
+        >
       </div>
     </div>
-  </footer>
+    <div class="tide">
+      <!-- <h2>University of Technology (Yadanabon Cyber City)</h2> -->
+      <h1 data-lang-key="T">Rules and Regulations</h1>
 
-    
+      <ul class="numbered-list">
+        <li>
+          <span data-lang-key="t1">1. Peaceful Learning Environment</span>
+          <ul class="alpha-list">
+            <li data-lang-key="p1">
+              (1)Students must not directly or indirectly disrupt or cause harm
+              to the peaceful learning environment.
+            </li>
+          </ul>
+        </li>
+        <br />
+        <li>
+          <span data-lang-key="t2">2. Prohibition of Moral Misconduct</span>
+          <!-- <p>အကျင့်စာရိတ္တပျက်ပြားမှုဆိုင်ရာ ပြစ်မှုများမကျူးလွန်ရ။</p> -->
+          <ul class="alpha-list">
+            <li data-lang-key="p2">
+              (1)Students are strictly prohibited from using, possessing,
+              buying, selling, or distributing narcotics. Smoking cigarettes or
+              chewing betel nut in classrooms, workshops, and within the campus
+              premises is also strictly forbidden.
+            </li>
+            <li data-lang-key="p3">
+              (2)Students must not say or do anything that could harm the
+              Rector, Pro-Rector, teachers, or staff.
+            </li>
+            <li data-lang-key="p4">
+              (3)Students must not speak, joke, or act in a way that could harm
+              or harass female students or other women, whether on or off
+              campus.
+            </li>
+
+            <li data-lang-key="p5">
+              (4)Gambling, drinking alcohol, or using intoxicants are absolutely
+              prohibited, both on and off campus.
+            </li>
+            <li data-lang-key="p6">
+              (5)Students must obey the instructions and guidance of their
+              teachers.
+            </li>
+            <li data-lang-key="p7">
+              (6)Students must not destroy, steal, or forcibly take the property
+              of others, whether on or off campus.
+            </li>
+            <li data-lang-key="p8">
+              (7)Fighting among students or with any outside individual is not
+              permitted, on or off campus.
+            </li>
+            <li data-lang-key="p9">
+              (8)Students must adhere to the rules and regulations set by the
+              university/college/institute. This includes their behavior and
+              speech, even outside of school hours.
+            </li>
+            <li data-lang-key="p10">
+              (9)Students are not allowed to bring any dangerous weapons into
+              the school.
+            </li>
+          </ul>
+        </li>
+        <br />
+        <li>
+          <span data-lang-key="t3"
+            >3. Strict Adherence to School Discipline</span
+          >
+          <!-- <p>ကျောင်းစည်းကမ်းဖောက်ဖျက်မှုများ လုံးဝမပြုလုပ်ရ။</p> -->
+          <ul class="alpha-list">
+            <li data-lang-key="p11">
+              (1)All students must attend classes regularly.
+            </li>
+            <li data-lang-key="p12">
+              (2)To be eligible to take the final exam, a student must have a
+              minimum of 75% class attendance throughout the academic year.
+              Students with less than 75% attendance will not be allowed to take
+              the final exam.
+            </li>
+            <li data-lang-key="p13">
+              (3)Students must abide by the rules and regulations set by the
+              school and for their specific courses.
+            </li>
+          </ul>
+        </li>
+        <br />
+        <li>
+          <span data-lang-key="t4">4. Compliance with Exam Regulations</span>
+          <!-- <p>စာမေးပွဲနှင့် ပတ်သက်သော စည်းမျဥ်းများကို လိုက်နာရမည်။</p> -->
+          <ul class="alpha-list">
+            <li data-lang-key="p14">
+              (1)All students must take the mid-term exam without fail. If a
+              student misses the mid-term exam, they will not be allowed to take
+              the final exam.
+            </li>
+            <li data-lang-key="p15">
+              (2)Cheating or using any dishonest means during an exam will
+              result in severe action. Students must not engage in any form of
+              academic misconduct.
+            </li>
+          </ul>
+        </li>
+        <br />
+        <li>
+          <span data-lang-key="t5">5. Dress Code and Conduct</span>
+
+          <ul class="alpha-list">
+            <li data-lang-key="p16">
+              (1)Students must wear the designated uniform and behave and speak
+              in a manner appropriate for a student.
+            </li>
+          </ul>
+        </li>
+        <br />
+        <li>
+          <span data-lang-key="t6">6. Simultaneous Enrollment</span>
+
+          <ul class="alpha-list">
+            <li data-lang-key="p17">
+              (1)While attending this university of technology, students are not
+              permitted to be simultaneously enrolled in any other university,
+              college, or institute. If a student is found to be in violation of
+              this rule, their name will be removed from the student roster.
+            </li>
+          </ul>
+        </li>
+        <br /><br />
+        <div class="mb-10">
+          <h4 data-lang-key="N">Penalties for Violation</h4>
+          <ul class="nn">
+            <li data-lang-key="p18">
+              Upon a thorough reading and understanding of the above-mentioned
+              points, any failure to comply with or violation of these rules
+              will result in disciplinary action appropriate to the severity of
+              the offense.
+            </li>
+          </ul>
+        </div>
+      </ul>
+    </div>
+    <br />
+    <!-- Footer -->
+    <footer id="contact" class="bg-blue-900 text-white">
+      <div class="container mx-auto px-6 py-12">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div>
+            <img
+              src="../Img/logo/utycc_logo_favicon/favicon.ico"
+              alt="UTYCC Logo"
+              class="h-12 mb-4"
+            />
+            <h3 class="text-lg font-bold">UTYCC</h3>
+            <p class="text-blue-200 text-sm mt-4">
+              <a
+                href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA"
+                data-lang-key="footer_address"
+                target="_blank"
+              >
+                Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay
+                Region, Myanmar
+              </a>
+            </p>
+            <div class="mt-4 text-sm text-blue-200">
+              <p>Email: info@utycc.edu.mm (example)</p>
+              <p>Phone: +95 (XX) XXX XXX (example)</p>
+            </div>
+          </div>
+
+          <div>
+            <h3
+              class="text-lg font-bold mb-4"
+              data-lang-key="footer_faculties_title"
+            >
+              Faculties
+            </h3>
+            <ul class="space-y-2 text-sm text-blue-200">
+              <li>
+                <a href="./Majors/ist.html" data-lang-key="footer_faculty_ist"
+                  >Information Science Technology</a
+                >
+              </li>
+              <li>
+                <a href="./Majors/ce.html" data-lang-key="footer_faculty_ce"
+                  >Computer Engineering</a
+                >
+              </li>
+              <li>
+                <a href="./Majors/ece.html" data-lang-key="footer_faculty_ece"
+                  >Electronics Engineering</a
+                >
+              </li>
+              <li>
+                <a data-lang-key="footer_faculty_pre" href="./Majors/pre.html"
+                  >Precision Engineering</a
+                >
+              </li>
+              <li>
+                <a data-lang-key="footer_faculty_ame" href="./Majors/ame.html">
+                  Advanced Materials Engineering
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3
+              class="text-lg font-bold mb-4"
+              data-lang-key="footer_quick_links_title"
+            >
+              Quick Links
+            </h3>
+            <ul class="space-y-2 text-sm text-blue-200">
+              <li>
+                <a
+                  href="./term.html"
+                  class="hover:text-white"
+                  data-lang-key="footer_link_terms"
+                  >Terms & Policies</a
+                >
+              </li>
+              <li>
+                <a
+                  href="./FAQs.html"
+                  class="hover:text-white"
+                  data-lang-key="footer_link_faq"
+                  >FAQs</a
+                >
+              </li>
+              <li>
+                <a
+                  href="./about.html"
+                  class="hover:text-white"
+                  data-lang-key="footer_link_about"
+                  >About Us</a
+                >
+              </li>
+              <li>
+                <a
+                  href="./r&r.html"
+                  class="hover:text-white"
+                  data-lang-key="footer_link_rules"
+                  >Rules & Regulations</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3
+              class="text-lg font-bold mb-4"
+              data-lang-key="footer_follow_title"
+            >
+              Follow Us
+            </h3>
+            <div class="flex space-x-4">
+              <a href="#" class="text-blue-200 hover:text-white"
+                ><i class="fab fa-facebook-f text-xl"></i
+              ></a>
+              <a
+                href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/"
+                class="text-blue-200 hover:text-white"
+                ><i class="fab fa-linkedin-in text-xl"></i
+              ></a>
+              <a href="#" class="text-blue-200 hover:text-white"
+                ><i class="fa-brands fa-youtube"></i
+              ></a>
+              <a href="#" class="text-blue-200 hover:text-white"
+                ><i class="fa-brands fa-tiktok"></i
+              ></a>
+            </div>
+            <br />
+            <br />
+            <div>
+              <div class="newtons-cradle">
+                <div class="newtons-cradle__dot"></div>
+                <div class="newtons-cradle__dot"></div>
+                <div class="newtons-cradle__dot"></div>
+                <div class="newtons-cradle__dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
+          data-lang-key="footer_copyright"
+        >
+          &copy; 2025 University of Technology - Yatanarpon Cyber City. All
+          Rights Reserved.
+        </div>
+      </div>
+    </footer>
+
     <script>
-    // --- Translation Script ---
-    const translations = {
-      my: {
-        utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
-        nav_about: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_programs: "ပညာရေးအစီအစဉ်များ",
-        nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
-        nav_contact: "ဆက်သွယ်ရန်",
-        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
-        nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
-        nav_contact_mobile: "ဆက်သွယ်ရန်",
-        footer_address:
-          "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
-        footer_faculties_title: "မဟာဌာနများ",
-        footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
-        footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
-        footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
-        footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
-        footer_contact_title: "ဆက်သွယ်ရန်",
-        footer_follow_title: "Follow Us",
-        footer_copyright:
-          "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
-        footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
-        footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
-        footer_link_faq: "အမေးများသော မေးခွန်းများ",
-        footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
-        footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
-      },
-      en: {
-        utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
-        nav_about: "About Us",
-        nav_programs: "Academic Programs",
-        nav_collaboration: "Collaboration",
-        nav_contact: "Contact",
-        nav_about_mobile: "About Us",
-        nav_programs_mobile: "Academic Programs",
-        nav_collaboration_mobile: "Collaboration",
-        nav_contact_mobile: "Contact",
-        footer_address:
-          "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
-        footer_faculties_title: "Faculties",
-        footer_faculty_ist: "Information Science Technology",
-        footer_faculty_ce: "Computer Engineering",
-        footer_faculty_ece: "Electronics Engineering",
-        footer_faculty_ame: "Advanced Materials Engineering",
-        footer_faculty_pre: "Precision Engineering",
-        footer_contact_title: "Contact Us",
-        footer_follow_title: "Follow Us",
-        footer_copyright:
-          "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
-        footer_quick_links_title: "Quick Links",
-        footer_link_terms: "Terms & Policies",
-        footer_link_faq: "FAQs",
-        footer_link_about: "About Us",
-        footer_link_rules: "Rules & Regulations",
-      },
-    };
+      // --- Translation Script ---
+      const translations = {
+        my: {
+          utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+          nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+          nav_programs: "ပညာရေးအစီအစဉ်များ",
+          nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
+          nav_contact: "ဆက်သွယ်ရန်",
+          nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+          nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
+          nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
+          nav_contact_mobile: "ဆက်သွယ်ရန်",
+          footer_address:
+            "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+          footer_faculties_title: "မဟာဌာနများ",
+          footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+          footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+          footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+          footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+          footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+          footer_contact_title: "ဆက်သွယ်ရန်",
+          footer_follow_title: "Follow Us",
+          footer_copyright:
+            "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+          footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+          footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+          footer_link_faq: "အမေးများသော မေးခွန်းများ",
+          footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
+          footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+          T: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+          t1: "၁။ ငြိမ်းချမ်းသော သင်ယူမှု ပတ်ဝန်းကျင်",
+          t2: "၂။ အကျင့်စာရိတ္တပျက်ပြားမှု တားမြစ်ခြင်း",
+          t3: " ၃။ ကျောင်းစည်းကမ်းများကို တင်းကြပ်စွာ လိုက်နာခြင်း",
+          t4: "၄။ စာမေးပွဲ စည်းမျဉ်းများကို လိုက်နာခြင်း",
+          t5: "၅။ အဝတ်အစားနှင့် အပြုအမူ စည်းကမ်း",
+          t6: "၆။ တပြိုင်နက် တက်ရောက်ခြင်း",
+          N: " ချိုးဖောက်မှုအတွက် ပြစ်ဒဏ်များ",
+          p1: "(၁) ကျောင်းသားများသည် ငြိမ်းချမ်းသော သင်ယူမှု ပတ်ဝန်းကျင်ကို တိုက်ရိုက် သို့မဟုတ် အတိုက်အခံ ပျက်စီးခြင်း သို့မဟုတ် ထိခိုက်စေခြင်း မပြုလုပ်ရ။",
+          p2: "(၁) ကျောင်းသားများသည် မူးယစ်ဆေးဝါးများကို အသုံးပြုခြင်း၊ ပိုင်ဆိုင်ခြင်း၊ ဝယ်ယူခြင်း၊ ရောင်းချခြင်း သို့မဟုတ် ဖြန့်ဝေခြင်းကို တင်းကျပ်စွာ တားမြစ်ထားသည်။ အတန်းခန်းများ၊ လက်မှုရုံများနှင့် ကျောင်းပတ်ဝန်းကျင်အတွင်း ဆေးလိပ်သောက်ခြင်း သို့မဟုတ် ကြက်သွန်နီ စားသုံးခြင်းလည်း တင်းကျပ်စွာ တားမြစ်ထားသည်။",
+          p3: "(၂) ကျောင်းသားများသည် တက္ကသိုလ်ဆရာကြီး၊ ဒုတိယတက္ကသိုလ်ဆရာကြီး၊ ဆရာများ သို့မဟုတ် ဝန်ထမ်းများကို ထိခိုက်စေမည့် အရာများကို မပြောဆိုရ၊ မဟာဗျူဟာ မပြုလုပ်ရ။",
+          p4: "(၃) ကျောင်းသားများသည် ကျောင်းအတွင်း သို့မဟုတ် ကျောင်းအပြင် မဆို မိန်းကလေးကျောင်းသားများ သို့မဟုတ် အခြားမိန်းခလေးများကို ထိခိုက်စေမည့် သို့မဟုတ် အနှောင့်အယှက်ဖြစ်စေမည့် နည်းလမ်းဖြင့် မပြောဆိုရ၊ မဟာဗျူဟာ မပြုလုပ်ရ။",
+          p5: "(၄) လောင်းကစားခြင်း၊ အရက်သောက်ခြင်း သို့မဟုတ် မူးယစ်ဆေးဝါးများကို အသုံးပြုခြင်းသည် ကျောင်းအတွင်း သို့မဟုတ် ကျောင်းအပြင် မဆို လုံးဝ တားမြစ်ထားသည်။",
+          p6: "(၅) ကျောင်းသားများသည် သူတို့၏ ဆရာများ၏ ညွှန်ကြားချက်များနှင့် လမ်းညွှန်ချက်များကို လိုက်နာရမည်။",
+          p7: "(၆) ကျောင်းသားများသည် အခြားသူများ၏ ပစ္စည်းများကို ဖျက်ဆီးခြင်း၊ ခိုးယူခြင်း သို့မဟုတ် အကြမ်းဖက်နည်းဖြင့် ယူဆောင်ခြင်း မပြုလုပ်ရ၊ ကျောင်းအတွင်း သို့မဟုတ် ကျောင်းအပြင် မဆို။",
+          p8: "(၇) ကျောင်းသားများအကြား သို့မဟုတ် အပြင်ဘက်ရှိ မည်သည့်ပုဂ္ဂိုလ်နှင့်မဆို ရန်ဖြစ်စေ၊ မဖြစ်စေ တိုက်ခိုက်မှု မပြုလုပ်ရ၊ ကျောင်းအတွင်း သို့မဟုတ် ကျောင်းအပြင် မဆို။",
+          p9: "(၈) ကျောင်းသားများသည် တက္ကသိုလ်/ကောလိပ်/အင်စတီကျူးမှ သတ်မှတ်ထားသော စည်းကမ်းများနှင့် စည်းမျဉ်းများကို လိုက်နာရမည်။ ၎င်းတို့၏ အပြုအမူနှင့် စကားပြောဆိုမှုတို့ကိုလည်း ကျောင်းအချိန်ပြည့်အပြင် အချိန်အပြင်တွင်ပါ လိုက်နာရမည်။",
+          p10: "(၉) ကျောင်းသားများသည် အန္တရာယ်ရှိသော လက်နက်များကို ကျောင်းသို့ မယူဆောင်ရ။",
+          p11: "(၁) ကျောင်းသားများအားလုံးသည် အတန်းများကို ပုံမှန်တက်ရောက်ရမည်။",
+          p12: "(၂) နောက်ဆုံးစာမေးပွဲကို တက်ရောက်ခွင့်ရရန်အတွက် ကျောင်းသားသည် ပညာသင်နှစ်တစ်နှစ်လုံးအတွင်း အတန်းတက်ရောက်မှု ၇၅% အနည်းဆုံးရှိရမည်။ ၇၅% ထက်နည်းသော ကျောင်းသားများအား နောက်ဆုံးစာမေးပွဲကို မတက်ခွင့်ပြုပါ။",
+          p13: "(၃) ကျောင်းသားများသည် ကျောင်းနှင့် သတ်မှတ်ထားသော စည်းကမ်းများနှင့် စည်းမျဉ်းများကို လိုက်နာရမည်။ ၎င်းတို့၏ သင်ကြားသည့်ဘာသာရပ်များအတွက်ပါ။",
+          p14: "(၁) ကျောင်းသားများအားလုံးသည် အလယ်တန်းစာမေးပွဲကို မဖြစ်မနေ တက်ရောက်ရမည်။ အလယ်တန်းစာမေးပွဲကို ကျောင်းသားတစ်ဦး မတက်ရောက်ပါက နောက်ဆုံးစာမေးပွဲကို မတက်ခွင့်ပြုပါ။",
+          p15: "(၂) စာမေးပွဲအတွင်း မည်သည့်လိမ်လည်မှု သို့မဟုတ် မည်သည့်မမှန်ကန်သော နည်းလမ်းကို မဆို အသုံးပြုခြင်းသည် ပြင်းထန်သော အရေးယူမှုများကို ဖြစ်စေမည်။ ကျောင်းသားများသည် မည်သည့်ပုံစံဖြင့် မဆို ပညာရေးဆိုင်ရာ မမှန်ကန်မှုများတွင် ပါဝင်ရမည်မဟုတ်။",
+          p16: "(၁) ကျောင်းသားများသည် သတ်မှတ်ထားသော အဝတ်အစားကို ဝတ်ဆင်ရမည်နှင့် ကျောင်းသားတစ်ဦးအဖြစ် သင့်တော်သော အပြုအမူနှင့် စကားပြောဆိုမှုကို ပြုလုပ်ရမည်။",
+          p17: "(၁) ဤနည်းပညာတက္ကသိုလ်တွင် တက်ရောက်နေစဉ်အတွင်း ကျောင်းသားများသည် အခြားတက္ကသိုလ်၊ ကောလိပ် သို့မဟုတ် အင်စတီကျူးတစ်ခုခုတွင် တပြိုင်နက် တက်ရောက်ခွင့်မရှိပါ။ ဤစည်းကမ်းကို ချိုးဖောက်နေသည်ကို တွေ့ရှိပါက ၎င်းတို့၏ နာမည်ကို ကျောင်းသားစာရင်းမှ ဖယ်ရှားမည်ဖြစ်သည်။",
+          p18: "အထက်ဖော်ပြပါ အချက်များကို သေချာစွာ ဖတ်ရှု နားလည်ပြီးနောက် ဤစည်းကမ်းများကို မလိုက်နာခြင်း သို့မဟုတ် ချိုးဖောက်ခြင်းသည် ပြစ်ဒဏ်များကို ဖြစ်စေမည်ဖြစ်သည်။ ပြစ်မှု၏ ပြင်းထန်မှုအပေါ် မူတည်၍ သင့်တော်သော စည်းကမ်းချက်များကို ချမှတ်မည်ဖြစ်သည်။",
+        },
+        en: {
+          utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+          nav_about: "About Us",
+          nav_programs: "Academic Programs",
+          nav_collaboration: "Collaboration",
+          nav_contact: "Contact",
+          nav_about_mobile: "About Us",
+          nav_programs_mobile: "Academic Programs",
+          nav_collaboration_mobile: "Collaboration",
+          nav_contact_mobile: "Contact",
+          footer_address:
+            "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+          footer_faculties_title: "Faculties",
+          footer_faculty_ist: "Information Science Technology",
+          footer_faculty_ce: "Computer Engineering",
+          footer_faculty_ece: "Electronics Engineering",
+          footer_faculty_ame: "Advanced Materials Engineering",
+          footer_faculty_pre: "Precision Engineering",
+          footer_contact_title: "Contact Us",
+          footer_follow_title: "Follow Us",
+          footer_copyright:
+            "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+          footer_quick_links_title: "Quick Links",
+          footer_link_terms: "Terms & Policies",
+          footer_link_faq: "FAQs",
+          footer_link_about: "About Us",
+          footer_link_rules: "Rules & Regulations",
+          T: "Rules and Regulations",
+          t1: "1. Peaceful Learning Environment",
+          t2: "2. Prohibition of Moral Misconduct",
+          t3: "3. Strict Adherence to School Discipline",
+          t4: "4. Compliance with Exam Regulations",
+          t5: "5. Dress Code and Conduct",
+          t6: "6. Simultaneous Enrollment",
+          N: " Penalties for Violation",
+          p1: "(1) Students must not directly or indirectly disrupt or cause harm to the peaceful learning environment.",
+          p2: "(1) Students are strictly prohibited from using, possessing, buying, selling, or distributing narcotics. Smoking cigarettes or chewing betel nut in classrooms, workshops, and within the campus premises is also strictly forbidden.",
+          p3: "(2) Students must not say or do anything that could harm the Rector, Pro-Rector, teachers, or staff.",
+          p4: "(3) Students must not speak, joke, or act in a way that could harm harass female students or other women, whether on or off campus.",
+          p5: "(4) Gambling, drinking alcohol, or using intoxicants are absolutely prohibited, both on and off campus.",
+          p6: "(5) Students must obey the instructions and guidance of their teachers.",
+          p7: "(6) Students must not destroy, steal, or forcibly take the property of others, whether on or off campus.",
+          p8: "(7) Fighting among students or with any outside individual is not permitted, on or off campus.",
+          p9: "(8)Students must adhere to the rules and regulations set by the university/college/institute. This includes their behavior and speech, even outside of school hours.",
+          p10: "(9) Students are not allowed to bring any dangerous weapons into the school.",
+          p11: "(1) All students must attend classes regularly.",
+          p12: "(2) To be eligible to take the final exam, a student must have a minimum of 75% class attendance throughout the academic year. Students with less than 75% attendance will not be allowed to take the final exam.",
+          p13: "(3) Students must abide by the rules and regulations set by the school and for their specific courses.",
+          p14: "(1) All students must take the mid-term exam without fail. If a student misses the mid-term exam, they will not be allowed to take the final exam.",
+          p15: "(2) Cheating or using any dishonest means during an exam will result in severe action. Students must not engage in any form of academic misconduct.",
+          p16: "(1) Students must wear the designated uniform and behave and speak in a manner appropriate for a student.",
+          p17: "(1) While attending this university of technology, students are not permitted to be simultaneously enrolled in any other university, college, or institute. If a student is found to be in violation of this rule, their name will be removed from the student roster.",
+          p18: "Upon a thorough reading and understanding of the above-mentioned points, any failure to comply with or violation of these rules will result in disciplinary action appropriate to the severity of the offense.",
+        },
+      };
 
-    const languageSwitcher = document.getElementById("language-switcher");
+      const languageSwitcher = document.getElementById("language-switcher");
 
-    const changeLanguage = (lang) => {
-      // Store the selected language
-      localStorage.setItem("language", lang);
+      const changeLanguage = (lang) => {
+        // Store the selected language
+        localStorage.setItem("language", lang);
 
-      // Set the dropdown to the correct value
-      languageSwitcher.value = lang;
+        // Set the dropdown to the correct value
+        languageSwitcher.value = lang;
 
-      // Translate all elements with the data-lang-key attribute
-      document.querySelectorAll("[data-lang-key]").forEach((element) => {
-        const key = element.dataset.langKey;
-        const translation = translations[lang][key];
-        if (translation) {
-          element.innerHTML = translation.replace(/\\n/g, "<br>");
-        }
+        // Translate all elements with the data-lang-key attribute
+        document.querySelectorAll("[data-lang-key]").forEach((element) => {
+          const key = element.dataset.langKey;
+          const translation = translations[lang][key];
+          if (translation) {
+            element.innerHTML = translation.replace(/\\n/g, "<br>");
+          }
+        });
+      };
+
+      // Event listener for the language switcher
+      languageSwitcher.addEventListener("change", (event) => {
+        changeLanguage(event.target.value);
       });
-    };
 
-    // Event listener for the language switcher
-    languageSwitcher.addEventListener("change", (event) => {
-      changeLanguage(event.target.value);
-    });
-
-    // Function to run when the page loads
-    document.addEventListener("DOMContentLoaded", () => {
-      // Check for a saved language in localStorage, otherwise default to 'en'
-      const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
-    });
-  </script>
-</body>
+      // Function to run when the page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        // Check for a saved language in localStorage, otherwise default to 'en'
+        const savedLang = localStorage.getItem("language") || "en";
+        changeLanguage(savedLang);
+      });
+    </script>
+  </body>
 </html>
