@@ -582,22 +582,14 @@
                 <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
                     <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4" data-lang-key="enroll_new_title">New
                         Students</h3>
-                    <p id="new-student-text" class="text-base sm:text-lg text-gray-700 mb-6 max-w-sm transition-opacity duration-500" data-lang-key="enroll_new_text">
+                    <p class="text-base sm:text-lg text-gray-700 mb-6 max-w-sm" data-lang-key="enroll_new_text">
                         Start your journey with us! Click here to enroll for the upcoming academic year.
                     </p>
                     <button id="new-student-enroll-trigger"
-                        class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-opacity duration-500 shadow-lg"
+                        class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg"
                         data-lang-key="enroll_new_button">
                         Enroll as a Fresher
                     </button>
-                    <div id="new-student-options" class="hidden w-full sm:w-auto space-y-4 transition-opacity duration-500 opacity-0">
-                        <button class="enroll-option-btn w-full bg-green-600 text-white font-bold py-3 px-8 rounded-full hover:bg-green-500 transition shadow-lg">
-                            Hostel Enroll
-                        </button>
-                        <button class="enroll-option-btn w-full bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition shadow-lg">
-                            University Enroll
-                        </button>
-                    </div>
                 </div>
 
                 <!-- Divider -->
@@ -608,22 +600,14 @@
                     <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4" data-lang-key="enroll_current_title">
                         Current Students
                     </h3>
-                    <p id="current-student-text" class="text-base sm:text-lg text-gray-700 mb-6 max-w-sm transition-opacity duration-500" data-lang-key="enroll_current_text">
+                    <p class="text-base sm:text-lg text-gray-700 mb-6 max-w-sm" data-lang-key="enroll_current_text">
                         Welcome back! Continue your studies by enrolling for the next year.
                     </p>
                     <button id="current-student-enroll-trigger"
-                        class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-opacity duration-500 shadow-lg"
+                        class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg"
                         data-lang-key="enroll_current_button">
                         Enroll for Next Year
                     </button>
-                     <div id="current-student-options" class="hidden w-full sm:w-auto space-y-4 transition-opacity duration-500 opacity-0">
-                        <button class="enroll-option-btn w-full bg-green-600 text-white font-bold py-3 px-8 rounded-full hover:bg-green-500 transition shadow-lg">
-                            Hostel Enroll
-                        </button>
-                        <button class="enroll-option-btn w-full bg-indigo-600 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-500 transition shadow-lg">
-                            University Enroll
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -727,7 +711,7 @@
                         <button type="submit" id="signup-submit-btn" class="btn" disabled data-lang-key="signup_button">Create Account</button>
                     </form>
                     <p class="auth-toggle" data-lang-key="signup_toggle">
-                        Already have an account? <a id="toggle-to-login">Sign In</a>
+                        Already have an account? <a id="toggle-to-login-btn">Sign In</a>
                     </p>
                 </div>
                 
@@ -745,7 +729,7 @@
                         <button type="submit" class="btn" data-lang-key="login_button">Sign In</button>
                     </form>
                     <p class="auth-toggle" data-lang-key="login_toggle">
-                        Don't have an account? <a id="toggle-to-signup">Create one</a>
+                        Don't have an account? <a id="toggle-to-signup-btn">Create one</a>
                     </p>
                 </div>
 
@@ -766,16 +750,11 @@
         const langSwitcherMobile = document.getElementById('language-switcher-mobile');
         
         const newStudentEnrollTrigger = document.getElementById('new-student-enroll-trigger');
-        const newStudentOptions = document.getElementById('new-student-options');
-        const newStudentText = document.getElementById('new-student-text');
         const currentStudentEnrollTrigger = document.getElementById('current-student-enroll-trigger');
-        const currentStudentOptions = document.getElementById('current-student-options');
-        const currentStudentText = document.getElementById('current-student-text');
         
         // --- Modal Elements ---
         const verificationModal = document.getElementById('verification-modal');
         const closeModalBtn = document.getElementById('modal-close-btn');
-        const enrollOptionBtns = document.querySelectorAll('.enroll-option-btn');
         const toastWrap = document.querySelector('.toast-wrap');
         const modalTitle = document.getElementById('modal-title');
         const modalSubtitle = document.getElementById('modal-subtitle');
@@ -784,10 +763,6 @@
         const viewSignup = document.getElementById('view-signup');
         const viewLogin = document.getElementById('view-login');
         
-        // Toggles
-        const toggleToLogin = document.getElementById('toggle-to-login');
-        const toggleToSignup = document.getElementById('toggle-to-signup');
-
         // Signup Form
         const signupForm = document.getElementById('signup-form');
         const signupTerms = document.getElementById('signup-terms');
@@ -866,15 +841,15 @@
                 signup_email_label: "အီးမေးလ်",
                 signup_phone_label: "ဖုန်းနံပါတ်",
                 signup_terms_agree: "ကျွန်ုပ်သည်",
-                signup_terms_link: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+                signup_terms_link: "စည်းမျဉ်းများနှင့် မူဝါဒများ ကိုသဘောတူပါသည်။",
                 signup_button: "အကောင့်ပြုလုပ်မည်",
-                signup_toggle: "အကောင့်ရှိပြီးသားလား? <a id='toggle-to-login'>ဝင်ရောက်ရန်</a>",
+                signup_toggle: "အကောင့်ရှိပြီးသားလား? <a id='toggle-to-login-btn'>ဝင်ရောက်ရန်</a>",
                 login_title: "ဝင်ရောက်ရန်",
                 login_subtitle: "သင်၏အကောင့်သို့",
                 login_id_label: "ကျောင်းသား ID",
                 login_password_label: "စကားဝှက်",
                 login_button: "ဝင်ရောက်မည်",
-                login_toggle: "အကောင့်မရှိသေးဘူးလား? <a id='toggle-to-signup'>အသစ်ပြုလုပ်ရန်</a>",
+                login_toggle: "အကောင့်မရှိသေးဘူးလား? <a id='toggle-to-signup-btn'>အသစ်ပြုလုပ်ရန်</a>",
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -943,13 +918,13 @@
                 signup_terms_agree: "I agree to the",
                 signup_terms_link: "Terms & Policy",
                 signup_button: "Create Account",
-                signup_toggle: "Already have an account? <a id='toggle-to-login'>Sign In</a>",
+                signup_toggle: "Already have an account? <a id='toggle-to-login-btn'>Sign In</a>",
                 login_title: "Sign In",
                 login_subtitle: "to your account",
                 login_id_label: "Student ID",
                 login_password_label: "Password",
                 login_button: "Sign In",
-                login_toggle: "Don't have an account? <a id='toggle-to-signup'>Create one</a>",
+                login_toggle: "Don't have an account? <a id='toggle-to-signup-btn'>Create one</a>",
             }
         };
 
@@ -964,8 +939,8 @@
                 }
             });
             // Re-add event listeners for toggles after innerHTML is changed
-            document.getElementById('toggle-to-login').addEventListener('click', () => switchView('login'));
-            document.getElementById('toggle-to-signup').addEventListener('click', () => switchView('signup'));
+            document.getElementById('toggle-to-login-btn').addEventListener('click', () => switchView('login'));
+            document.getElementById('toggle-to-signup-btn').addEventListener('click', () => switchView('signup'));
 
             langSwitcherDesktop.value = lang;
             langSwitcherMobile.value = lang;
@@ -1008,34 +983,15 @@
         langSwitcherDesktop.addEventListener('change', (e) => setLanguage(e.target.value));
         langSwitcherMobile.addEventListener('change', (e) => setLanguage(e.target.value));
         
+        // --- Modal Logic ---
         newStudentEnrollTrigger.addEventListener('click', () => {
-            newStudentEnrollTrigger.classList.add('opacity-0');
-            newStudentText.classList.add('opacity-0');
-            setTimeout(() => {
-                newStudentEnrollTrigger.classList.add('hidden');
-                newStudentText.classList.add('hidden');
-                newStudentOptions.classList.remove('hidden');
-                setTimeout(() => newStudentOptions.classList.remove('opacity-0'), 20);
-            }, 500);
-        });
-
-        currentStudentEnrollTrigger.addEventListener('click', () => {
-            currentStudentEnrollTrigger.classList.add('opacity-0');
-            currentStudentText.classList.add('opacity-0');
-            setTimeout(() => {
-                currentStudentEnrollTrigger.classList.add('hidden');
-                currentStudentText.classList.add('hidden');
-                currentStudentOptions.classList.remove('hidden');
-                setTimeout(() => currentStudentOptions.classList.remove('opacity-0'), 20);
-            }, 500);
+            verificationModal.classList.remove('hidden');
+            switchView('signup');
         });
         
-        // --- Modal Logic ---
-        enrollOptionBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                verificationModal.classList.remove('hidden');
-                switchView('signup'); // Default to signup view
-            });
+        currentStudentEnrollTrigger.addEventListener('click', () => {
+            verificationModal.classList.remove('hidden');
+            switchView('login');
         });
 
         closeModalBtn.addEventListener('click', () => {
@@ -1048,8 +1004,8 @@
             }
         });
         
-        toggleToLogin.addEventListener('click', () => switchView('login'));
-        toggleToSignup.addEventListener('click', () => switchView('signup'));
+        document.getElementById('toggle-to-login-btn').addEventListener('click', () => switchView('login'));
+        document.getElementById('toggle-to-signup-btn').addEventListener('click', () => switchView('signup'));
 
         signupTerms.addEventListener('input', () => {
             signupSubmitBtn.disabled = !signupTerms.checked;
