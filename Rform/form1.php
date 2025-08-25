@@ -1,80 +1,128 @@
 <?php
-// Start the session to carry data across pages
+// Start a new session or resume an existing one
 session_start();
 
 // Define variables and initialize with empty values
+$year = $academic_year = $major = $seat_no = $uni_reg_no = $entry_year = "";
+$student_name_mm = $father_name_mm = $mother_name_mm = "";
+$student_name_en = $father_name_en = $mother_name_en = "";
+$student_race = $father_race = $mother_race = "";
+$student_religion = $father_religion = $mother_religion = "";
+$student_nrc = $father_nrc = $mother_nrc = "";
+$student_nat_reg = $father_nat_reg = $mother_nat_reg = "";
+$student_dob = $student_birthplace = "";
+$father_info = $mother_info = "";
+$father_deceased_year = $mother_deceased_year = "";
+$student_address = $date = "";
 $errors = [];
-$form_data = [];
-$target_dir = "uploads/";
 
-// Processing form data when form is submitted
+// Processing form data when the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // --- Collect and Sanitize all data from form1.html ---
-    $form_data['form_no'] = htmlspecialchars(trim($_POST['form_no'] ?? ''));
-    $form_data['academic_year'] = htmlspecialchars(trim($_POST['academic_year'] ?? ''));
-    $form_data['major'] = htmlspecialchars(trim($_POST['major'] ?? ''));
-    $form_data['seat_no'] = htmlspecialchars(trim($_POST['seat_no'] ?? ''));
-    $form_data['uni_reg_no'] = htmlspecialchars(trim($_POST['uni_reg_no'] ?? ''));
-    $form_data['entry_year'] = htmlspecialchars(trim($_POST['entry_year'] ?? ''));
-    $form_data['student_name_mm'] = htmlspecialchars(trim($_POST['student_name_mm'] ?? ''));
-    $form_data['father_name_mm'] = htmlspecialchars(trim($_POST['father_name_mm'] ?? ''));
-    $form_data['mother_name_mm'] = htmlspecialchars(trim($_POST['mother_name_mm'] ?? ''));
-    $form_data['student_name_en'] = htmlspecialchars(trim($_POST['student_name_en'] ?? ''));
-    $form_data['father_name_en'] = htmlspecialchars(trim($_POST['father_name_en'] ?? ''));
-    $form_data['mother_name_en'] = htmlspecialchars(trim($_POST['mother_name_en'] ?? ''));
-    $form_data['student_race'] = htmlspecialchars(trim($_POST['student_race'] ?? ''));
-    $form_data['father_race'] = htmlspecialchars(trim($_POST['father_race'] ?? ''));
-    $form_data['mother_race'] = htmlspecialchars(trim($_POST['mother_race'] ?? ''));
-    $form_data['student_religion'] = htmlspecialchars(trim($_POST['student_religion'] ?? ''));
-    $form_data['father_religion'] = htmlspecialchars(trim($_POST['father_religion'] ?? ''));
-    $form_data['mother_religion'] = htmlspecialchars(trim($_POST['mother_religion'] ?? ''));
-    $form_data['student_nrc'] = htmlspecialchars(trim($_POST['student_nrc'] ?? ''));
-    $form_data['father_nrc'] = htmlspecialchars(trim($_POST['father_nrc'] ?? ''));
-    $form_data['mother_nrc'] = htmlspecialchars(trim($_POST['mother_nrc'] ?? ''));
-    $form_data['student_nat_reg'] = htmlspecialchars(trim($_POST['student_nat_reg'] ?? ''));
-    $form_data['father_nat_reg'] = htmlspecialchars(trim($_POST['father_nat_reg'] ?? ''));
-    $form_data['mother_nat_reg'] = htmlspecialchars(trim($_POST['mother_nat_reg'] ?? ''));
-    $form_data['student_dob'] = htmlspecialchars(trim($_POST['student_dob'] ?? ''));
-    $form_data['student_birthplace'] = htmlspecialchars(trim($_POST['student_birthplace'] ?? ''));
-    $form_data['father_info'] = htmlspecialchars(trim($_POST['father_info'] ?? ''));
-    $form_data['mother_info'] = htmlspecialchars(trim($_POST['mother_info'] ?? ''));
-    $form_data['father_deceased_year'] = htmlspecialchars(trim($_POST['father_deceased_year'] ?? ''));
-    $form_data['mother_deceased_year'] = htmlspecialchars(trim($_POST['mother_deceased_year'] ?? ''));
-    $form_data['student_address'] = htmlspecialchars(trim($_POST['student_address'] ?? ''));
-    $form_data['date'] = htmlspecialchars(trim($_POST['date'] ?? ''));
+    // --- Validate and sanitize input fields ---
 
-    // --- Handle photo upload and store temporary path in session ---
-    $photo_path = null;
-    // Check if the uploads directory exists, if not, create it
-    if (!is_dir($target_dir)) {
-        mkdir($target_dir, 0755, true);
+    // Validate Academic Year
+    if (empty(trim($_POST["academic_year"]))) {
+        $errors['academic_year'] = "သင်တန်းနှစ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+    } else {
+        $academic_year = htmlspecialchars(trim($_POST["academic_year"]));
     }
     
-    if (isset($_FILES["photo_upload"]) && $_FILES["photo_upload"]["error"] === UPLOAD_ERR_OK) {
-        $unique_filename = uniqid('photo_') . '.' . strtolower(pathinfo($_FILES["photo_upload"]["name"], PATHINFO_EXTENSION));
-        $target_file = $target_dir . $unique_filename;
-        
-        // Move the file to a temporary location
-        if (move_uploaded_file($_FILES["photo_upload"]["tmp_name"], $target_file)) {
-            $photo_path = $target_file;
-            $form_data['photo_path'] = $photo_path; // Store the temporary path
-        } else {
-            $errors['photo_upload'] = "Sorry, there was an error uploading your file.";
-        }
+    // Validate Major
+    if (empty(trim($_POST["major"]))) {
+        $errors['major'] = "အထူးပြုဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+    } else {
+        $major = htmlspecialchars(trim($_POST["major"]));
+    }
+    
+    // Validate Seat Number
+    if (empty(trim($_POST["seat_no"]))) {
+        $errors['seat_no'] = "ခုံအမှတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+    } else {
+        $seat_no = htmlspecialchars(trim($_POST["seat_no"]));
+    }
+    
+    // Validate University Registration Number
+    if (empty(trim($_POST["uni_reg_no"]))) {
+        $errors['uni_reg_no'] = "မှတ်ပုံတင်အမှတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+    } else {
+        $uni_reg_no = htmlspecialchars(trim($_POST["uni_reg_no"]));
     }
 
-    // --- Validate Required Fields (add your own as needed) ---
-    if (empty($form_data['student_name_mm'])) {
-        $errors['student_name_mm'] = "Student's name in Myanmar is required.";
+    // Validate Student's Name (Myanmar)
+    if (empty(trim($_POST["student_name_mm"]))) {
+        $errors['student_name_mm'] = "အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+    } else {
+        $student_name_mm = htmlspecialchars(trim($_POST["student_name_mm"]));
     }
-    // Add more validation checks here for other important fields
 
-    // If there are no errors, store data in session and redirect
+    // Sanitize all other fields (no required validation for them, but it's good practice to clean the data)
+    $year = htmlspecialchars(trim($_POST["year"] ?? ''));
+    $entry_year = htmlspecialchars(trim($_POST["entry_year"] ?? ''));
+    $father_name_mm = htmlspecialchars(trim($_POST["father_name_mm"] ?? ''));
+    $mother_name_mm = htmlspecialchars(trim($_POST["mother_name_mm"] ?? ''));
+    $student_name_en = htmlspecialchars(trim($_POST["student_name_en"] ?? ''));
+    $father_name_en = htmlspecialchars(trim($_POST["father_name_en"] ?? ''));
+    $mother_name_en = htmlspecialchars(trim($_POST["mother_name_en"] ?? ''));
+    $student_race = htmlspecialchars(trim($_POST["student_race"] ?? ''));
+    $father_race = htmlspecialchars(trim($_POST["father_race"] ?? ''));
+    $mother_race = htmlspecialchars(trim($_POST["mother_race"] ?? ''));
+    $student_religion = htmlspecialchars(trim($_POST["student_religion"] ?? ''));
+    $father_religion = htmlspecialchars(trim($_POST["father_religion"] ?? ''));
+    $mother_religion = htmlspecialchars(trim($_POST["mother_religion"] ?? ''));
+    $student_nrc = htmlspecialchars(trim($_POST["student_nrc"] ?? ''));
+    $father_nrc = htmlspecialchars(trim($_POST["father_nrc"] ?? ''));
+    $mother_nrc = htmlspecialchars(trim($_POST["mother_nrc"] ?? ''));
+    $student_nat_reg = htmlspecialchars(trim($_POST["student_nat_reg"] ?? ''));
+    $father_nat_reg = htmlspecialchars(trim($_POST["father_nat_reg"] ?? ''));
+    $mother_nat_reg = htmlspecialchars(trim($_POST["mother_nat_reg"] ?? ''));
+    $student_dob = htmlspecialchars(trim($_POST["student_dob"] ?? ''));
+    $student_birthplace = htmlspecialchars(trim($_POST["student_birthplace"] ?? ''));
+    $father_info = htmlspecialchars(trim($_POST["father_info"] ?? ''));
+    $mother_info = htmlspecialchars(trim($_POST["mother_info"] ?? ''));
+    $father_deceased_year = htmlspecialchars(trim($_POST["father_deceased_year"] ?? ''));
+    $mother_deceased_year = htmlspecialchars(trim($_POST["mother_deceased_year"] ?? ''));
+    $student_address = htmlspecialchars(trim($_POST["student_address"] ?? ''));
+    $date = htmlspecialchars(trim($_POST["date"] ?? ''));
+
+    // If no errors, store all data in the session and redirect
     if (empty($errors)) {
-        $_SESSION['form1_data'] = $form_data;
-        header("Location: form2.php"); // Redirect to the next form
-        exit();
+        $_SESSION['form1_data'] = [
+            'year' => $year,
+            'academic_year' => $academic_year,
+            'major' => $major,
+            'seat_no' => $seat_no,
+            'uni_reg_no' => $uni_reg_no,
+            'entry_year' => $entry_year,
+            'student_name_mm' => $student_name_mm,
+            'father_name_mm' => $father_name_mm,
+            'mother_name_mm' => $mother_name_mm,
+            'student_name_en' => $student_name_en,
+            'father_name_en' => $father_name_en,
+            'mother_name_en' => $mother_name_en,
+            'student_race' => $student_race,
+            'father_race' => $father_race,
+            'mother_race' => $mother_race,
+            'student_religion' => $student_religion,
+            'father_religion' => $father_religion,
+            'mother_religion' => $mother_religion,
+            'student_nrc' => $student_nrc,
+            'father_nrc' => $father_nrc,
+            'mother_nrc' => $mother_nrc,
+            'student_nat_reg' => $student_nat_reg,
+            'father_nat_reg' => $father_nat_reg,
+            'mother_nat_reg' => $mother_nat_reg,
+            'student_dob' => $student_dob,
+            'student_birthplace' => $student_birthplace,
+            'father_info' => $father_info,
+            'mother_info' => $mother_info,
+            'father_deceased_year' => $father_deceased_year,
+            'mother_deceased_year' => $mother_deceased_year,
+            'student_address' => $student_address,
+            'date' => $date
+        ];
+        header("location: form2.php");
+        exit;
     }
 }
 ?>
@@ -108,25 +156,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-family: 'Padauk', 'Inter', sans-serif;
         }
 
+        /* Custom styles for better table borders */
         table,
         th,
         td {
             border: 1px solid #e5e7eb;
+            /* gray-200 */
         }
 
         th,
         td {
             padding: 0.75rem;
+            /* p-3 */
             text-align: left;
             white-space: nowrap;
+            /* Prevent text wrapping in table cells */
         }
 
         input,
         textarea {
             width: 100%;
             border: 1px solid #d1d5db;
+            /* gray-300 */
             border-radius: 0.375rem;
+            /* rounded-md */
             padding: 0.5rem;
+            /* p-2 */
             transition: border-color 0.2s;
         }
 
@@ -134,6 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         textarea:focus {
             outline: none;
             border-color: #3b82f6;
+            /* blue-500 */
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
 
@@ -165,10 +221,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             cursor: pointer;
             font-weight: bold;
         }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 
-<body class="bg-gray-100 ">
+<body class="bg-gray-100">
     <div class="bg-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <a href="#" class="flex items-center space-x-3">
@@ -190,6 +251,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     data-lang-key="nav_collaboration">Collaboration</a>
                 <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_contact">Contact</a>
+
                 <div class="relative ml-4">
                     <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
                         <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
@@ -198,7 +260,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <option value="my">မြန်မာ</option>
                             <option value="en">English</option>
                         </select>
-                        <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+                        <i
+                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
                     </div>
                 </div>
             </div>
@@ -217,15 +280,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 data-lang-key="nav_contact_mobile">Contact</a>
         </div>
     </div>
+
     <br>
 
-    <div class="max-w-4xl mx-auto bg-white p-3 py-3 sm:p-6 md:p-8 rounded-lg shadow-lg">
-        <form action="form1.php" method="POST" enctype="multipart/form-data">
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" enctype="multipart/form-data" novalidate>
+        <div class="max-w-4xl mx-auto bg-white p-3 py-3 sm:p-6 md:p-8 rounded-lg shadow-lg">
+
             <div class="flex justify-between items-start mb-4 ">
                 <p class="text-sm">Form No. UTYCC-20</p>
                 <div class="text-right">
-                    <label for="form_no" class="block text-sm font-medium text-gray-700">ခုနှစ်</label>
-                    <input type="text" id="form_no" name="form_no" class="mt-1 w-24 text-center">
+                    <label for="year" class="block text-sm font-medium text-gray-700">ခုနှစ်</label>
+                    <input type="text" id="year" name="year" class="mt-1 w-24 text-center" value="<?php echo $year; ?>">
                 </div>
             </div>
 
@@ -239,25 +304,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
-                        <input type="text" id="academic_year" name="academic_year" class="mt-1">
+                        <input type="text" id="academic_year" name="academic_year" class="mt-1" value="<?php echo $academic_year; ?>">
+                        <?php if (isset($errors['academic_year'])): ?>
+                            <p class="error-message"><?php echo $errors['academic_year']; ?></p>
+                        <?php endif; ?>
                     </div>
                     <div>
                         <label for="major" class="block text-sm font-medium text-gray-700">အထူးပြုဘာသာ</label>
-                        <input type="text" id="major" name="major" class="mt-1">
+                        <input type="text" id="major" name="major" class="mt-1" value="<?php echo $major; ?>">
+                        <?php if (isset($errors['major'])): ?>
+                            <p class="error-message"><?php echo $errors['major']; ?></p>
+                        <?php endif; ?>
                     </div>
                     <div>
                         <label for="seat_no" class="block text-sm font-medium text-gray-700">ခုံအမှတ်</label>
-                        <input type="text" id="seat_no" name="seat_no" class="mt-1">
+                        <input type="text" id="seat_no" name="seat_no" class="mt-1" value="<?php echo $seat_no; ?>">
+                        <?php if (isset($errors['seat_no'])): ?>
+                            <p class="error-message"><?php echo $errors['seat_no']; ?></p>
+                        <?php endif; ?>
                     </div>
                     <div>
-                        <label for="uni_reg_no"
-                            class="block text-sm font-medium text-gray-700">တက္ကသိုလ်မှတ်ပုံတင်အမှတ်</label>
-                        <input type="text" id="uni_reg_no" name="uni_reg_no" class="mt-1">
+                        <label for="uni_reg_no" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်မှတ်ပုံတင်အမှတ်</label>
+                        <input type="text" id="uni_reg_no" name="uni_reg_no" class="mt-1" value="<?php echo $uni_reg_no; ?>">
+                        <?php if (isset($errors['uni_reg_no'])): ?>
+                            <p class="error-message"><?php echo $errors['uni_reg_no']; ?></p>
+                        <?php endif; ?>
                     </div>
                     <div class="sm:col-span-2">
-                        <label for="entry_year"
-                            class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
-                        <input type="text" id="entry_year" name="entry_year" class="mt-1">
+                        <label for="entry_year" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
+                        <input type="text" id="entry_year" name="entry_year" class="mt-1" value="<?php echo $entry_year; ?>">
                     </div>
                 </div>
                 <div id="photo-upload-area"
@@ -290,56 +365,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <tr>
                             <td rowspan="2" class="text-center align-middle">၁</td>
                             <td>အမည် (မြန်မာစာဖြင့်)</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_mm"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_mm"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_mm"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_mm" value="<?php echo $student_name_mm; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_mm" value="<?php echo $father_name_mm; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_mm" value="<?php echo $mother_name_mm; ?>"></td>
                         </tr>
                         <tr>
                             <td>အမည် (အင်္ဂလိပ်စာဖြင့်)</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_en"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_en"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_en"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_en" value="<?php echo $student_name_en; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_en" value="<?php echo $father_name_en; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_en" value="<?php echo $mother_name_en; ?>"></td>
                         </tr>
                         <tr>
                             <td class="text-center">၂</td>
                             <td>လူမျိုး</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_race"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_race"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_race"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_race" value="<?php echo $student_race; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_race" value="<?php echo $father_race; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_race" value="<?php echo $mother_race; ?>"></td>
                         </tr>
                         <tr>
                             <td class="text-center">၃</td>
                             <td>ကိုးကွယ်သည့်ဘာသာ</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_religion"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_religion"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_religion"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_religion" value="<?php echo $student_religion; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_religion" value="<?php echo $father_religion; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_religion" value="<?php echo $mother_religion; ?>"></td>
                         </tr>
                         <tr>
                             <td class="text-center">၄</td>
                             <td>နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_nrc"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_nrc"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_nrc"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_nrc" value="<?php echo $student_nrc; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_nrc" value="<?php echo $father_nrc; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_nrc" value="<?php echo $mother_nrc; ?>"></td>
                         </tr>
                         <tr>
                             <td class="text-center">၅</td>
                             <td>အမျိုးသားမှတ်ပုံတင်အမှတ်</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_nat_reg"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_nat_reg"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_nat_reg"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_nat_reg" value="<?php echo $student_nat_reg; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_nat_reg" value="<?php echo $father_nat_reg; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_nat_reg" value="<?php echo $mother_nat_reg; ?>"></td>
                         </tr>
                         <tr>
                             <td class="text-center">၆</td>
                             <td colspan="4" style="white-space: normal;">
-                                <label for="student_dob" class="font-medium">ကျောင်းသား/သူ၏ မွေးသက္ကရာဇ် (တက္ကသိုလ်ဝင်တန်းစာမေးပွဲဖြေဆိုစဉ်က ဖော်ပြသည့် အတိုင်းရေးရန်)</label>
-                                <input type="text" id="student_dob" name="student_dob" class="mt-1" placeholder="ဥပမာ - 01-01-2000">
+                                <label for="student_dob" class="font-medium">ကျောင်းသား/သူ၏ မွေးသက္ကရာဇ်
+                                    (တက္ကသိုလ်ဝင်တန်းစာမေးပွဲဖြေဆိုစဉ်က ဖော်ပြသည့် အတိုင်းရေးရန်)</label>
+                                <input type="text" id="student_dob" name="student_dob" class="mt-1"
+                                    placeholder="ဥပမာ - 01-01-2000" value="<?php echo $student_dob; ?>">
                             </td>
                         </tr>
                         <tr>
                             <td class="text-center">၇</td>
                             <td colspan="4" style="white-space: normal;">
-                                <label for="student_birthplace" class="font-medium">မွေးဖွားရာဇာတိမြို့/ပြည်နယ်/ဖုန်းနံပါတ်</label>
-                                <input type="text" id="student_birthplace" name="student_birthplace" class="mt-1">
+                                <label for="student_birthplace"
+                                    class="font-medium">မွေးဖွားရာဇာတိမြို့/ပြည်နယ်/ဖုန်းနံပါတ်</label>
+                                <input type="text" id="student_birthplace" name="student_birthplace" class="mt-1" value="<?php echo $student_birthplace; ?>">
                             </td>
                         </tr>
                         <tr>
@@ -347,21 +425,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <td class="align-top font-medium" style="white-space: normal;">
                                 မိဘအလုပ်အကိုင်နှင့်<br>နေရပ်လိပ်စာအပြည့်အစုံ/<br>ဖုန်းနံပါတ်</td>
                             <td></td>
-                            <td><textarea name="father_info" rows="3" placeholder="အဘ(အရင်း)၏ အချက်အလက်များ_________________" class="border-0" style="white-space: normal;"></textarea></td>
-                            <td><textarea name="mother_info" rows="3" placeholder="အမိ(အရင်း)၏ အချက်အလက်များ___________________" class="border-0" style="white-space: normal;"></textarea></td>
+                            <td><textarea name="father_info" rows="3"
+                                    placeholder="အဘ(အရင်း)၏ အချက်အလက်များ_________________" class="border-0"
+                                    style="white-space: normal;"><?php echo $father_info; ?></textarea></td>
+                            <td><textarea name="mother_info" rows="3"
+                                    placeholder="အမိ(အရင်း)၏ အချက်အလက်များ___________________" class="border-0"
+                                    style="white-space: normal;"><?php echo $mother_info; ?></textarea></td>
                         </tr>
                         <tr>
                             <td class="text-center">၉</td>
                             <td>ကွယ်လွန်ခဲ့လျှင်ကွယ်လွန်ခဲ့သည့်ခုနှစ်</td>
                             <td></td>
-                            <td><input type="text" placeholder="_______________________" class="border-0" name="father_deceased_year"></td>
-                            <td><input type="text" placeholder="_______________________" class="border-0" name="mother_deceased_year"></td>
+                            <td><input type="text" placeholder="_______________________" class="border-0"
+                                    name="father_deceased_year" value="<?php echo $father_deceased_year; ?>"></td>
+                            <td><input type="text" placeholder="_______________________" class="border-0"
+                                    name="mother_deceased_year" value="<?php echo $mother_deceased_year; ?>"></td>
                         </tr>
                         <tr>
                             <td class="text-center">၁၀</td>
                             <td colspan="4" style="white-space: normal;">
-                                <label for="student_address" class="font-medium">ကျောင်းသား/သူထံအမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ အပြည့်အစုံ/ဖုန်းနံပါတ်</label>
-                                <textarea id="student_address" name="student_address" rows="3" class="mt-1" style="white-space: normal;"></textarea>
+                                <label for="student_address" class="font-medium">ကျောင်းသား/သူထံအမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ
+                                    အပြည့်အစုံ/ဖုန်းနံပါတ်</label>
+                                <textarea id="student_address" name="student_address" rows="3" class="mt-1"
+                                    style="white-space: normal;"><?php echo $student_address; ?></textarea>
                             </td>
                         </tr>
                     </tbody>
@@ -369,11 +455,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="mt-8">
-                <p class="text-sm">ဖော်ပြပါအချက်အလက်များမှန်ကန်ကြောင်း ခံဝန်ကတိပြုပါသည်။ တစ်စုံတစ်ရာမှားယွင်းချက်ရှိပါက ကျွန်တော်/ကျွန်မ တာဝန်သာ ဖြစ်ပါသည်။</p>
+                <p class="text-sm">ဖော်ပြပါအချက်အလက်များမှန်ကန်ကြောင်း ခံဝန်ကတိပြုပါသည်။ တစ်စုံတစ်ရာမှားယွင်းချက်ရှိပါက
+                    ကျွန်တော်/ကျွန်မ တာဝန်သာ ဖြစ်ပါသည်။</p>
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mt-12 gap-8 sm:gap-4">
                     <div class="w-full sm:w-auto">
                         <label for="date" class="block text-sm">ရက်စွဲ</label>
-                        <input type="text" id="date" name="date" class="mt-1" placeholder="ဥပမာ - 16-08-2024">
+                        <input type="text" id="date" name="date" class="mt-1" placeholder="ဥပမာ - 16-08-2024" value="<?php echo $date; ?>">
                     </div>
                     <div class="w-full sm:w-1/3">
                         <div class="border-t border-gray-400 pt-1 text-center text-sm">(ကျောင်းသား/သူ၏ထိုးမြဲလက်မှတ်)</div>
@@ -382,15 +469,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="nav-buttons">
-                <a href="index.html" class="nav-button">Back</a>
+                <a href="#" class="nav-button disabled-button">Back</a>
                 <button type="submit" class="nav-button">Next</button>
             </div>
 
             <div class="text-right text-xs text-gray-400 mt-6">
                 <p>UTYCC/ SA/ F-20/ Rev-0/31-10-2022</p>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
     <br>
 
     <footer id="contact" class="bg-blue-900 text-white ">
@@ -400,8 +487,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
                     <h3 class="text-lg font-bold">UTYCC</h3>
                     <p class="text-blue-200 text-sm mt-4">
-                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address"
-                            target="_blank">
+                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
                             Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
                             Region, Myanmar
                         </a>
@@ -459,8 +545,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </h3>
                     <div class="flex space-x-4">
                         <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
-                        <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/"
-                            class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+                        <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
                         <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
                         <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
                     </div>
@@ -511,7 +596,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             photoPreviewContainer.classList.add('hidden');
         });
     </script>
-    
+
     <script>
         // --- Menu toggle ---
         const mobileMenuButton = document.getElementById("mobile-menu-button");
