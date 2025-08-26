@@ -794,19 +794,10 @@
             </div>
         </div>
     </footer>
-    <div id="gameContainer" class="game-container hidden text-center mt-10">
-                <iframe src="https://chromedino.com/" frameborder="0" scrolling="no" width="100%" height="100%"
-                    loading="lazy"></iframe>
-                <style type="text/css">
-                    iframe {
-                        position: absolute;
-                        width: 100%;
-                        height: 100%;
-                        z-index: 999;
-                    }
-                </style>
-
-            </div>
+     <div id="gameContainer" class="game-container hidden bg-white py-16 flex justify-center">
+    <iframe class="w-11/12 max-w-4xl h-[500px] rounded-lg border border-slate-200 shadow-lg" style="padding-right: 500px;" src="https://chromedino.com/" frameborder="0" scrolling="no" loading="lazy"></iframe>
+</div>
+    
 
     <!-- Verification Modal -->
     <div id="verification-modal" class="modal-overlay hidden">
@@ -887,7 +878,7 @@
     </div>
 
     <div class="toast-wrap"></div>
-
+   
     <script>
         // --- DOM Elements ---
         const mobileMenuButton = document.getElementById("mobile-menu-button");
@@ -1312,20 +1303,20 @@
 
     </script>
     <script>
-    // Make sure the DOM is fully loaded before running the script
-    document.addEventListener('DOMContentLoaded', function() {
-        const gamesLink = document.getElementById("gamesLink");
-        const gameContainer = document.getElementById("gameContainer");
+        // Make sure the DOM is fully loaded before running the script
+        document.addEventListener('DOMContentLoaded', function () {
+            const gamesLink = document.getElementById("gamesLink");
+            const gameContainer = document.getElementById("gameContainer");
 
-        gamesLink.addEventListener("click", (event) => {
-            // 1. Prevent the default link behavior (like jumping to the top of the page)
-            event.preventDefault();
+            gamesLink.addEventListener("click", (event) => {
+                // 1. Prevent the default link behavior (like jumping to the top of the page)
+                event.preventDefault();
 
-            // 2. Toggle the 'hidden' class to show/hide the game container
-            gameContainer.classList.toggle("hidden");
+                // 2. Toggle the 'hidden' class to show/hide the game container
+                gameContainer.classList.toggle("hidden");
+            });
         });
-    });
-</script>
+    </script>
 </body>
 
 </html>
