@@ -404,7 +404,7 @@
         </section>
 
         <!-- Stats Section -->
-        <section class="bg-blue-800 text-white">
+        <section id="stats-section" class="bg-blue-800 text-white">
             <div class="container mx-auto px-6 py-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div>
@@ -418,14 +418,14 @@
                     </div>
                     <div>
                         <i class="fas fa-users text-3xl mb-2 text-blue-300"></i>
-                        <p class="text-xl font-bold">~3,000</p>
+                        <p class="text-xl font-bold" id="students-stat">~0</p>
                         <p class="text-sm text-blue-200" data-lang-key="stats_students">
                             Students
                         </p>
                     </div>
                     <div>
                         <i class="fas fa-check-circle text-3xl mb-2 text-blue-300"></i>
-                        <p class="text-xl font-bold">~21%</p>
+                        <p class="text-xl font-bold" id="acceptance-rate-stat">~0%</p>
                         <p class="text-sm text-blue-200" data-lang-key="stats_acceptance">
                             Acceptance Rate
                         </p>
@@ -795,18 +795,18 @@
         </div>
     </footer>
     <div id="gameContainer" class="game-container hidden text-center mt-10">
-                <iframe src="https://chromedino.com/" frameborder="0" scrolling="no" width="100%" height="100%"
-                    loading="lazy"></iframe>
-                <style type="text/css">
-                    iframe {
-                        position: absolute;
-                        width: 100%;
-                        height: 100%;
-                        z-index: 999;
-                    }
-                </style>
+        <iframe src="https://chromedino.com/" frameborder="0" scrolling="no" width="100%" height="100%"
+            loading="lazy"></iframe>
+        <style type="text/css">
+            iframe {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                z-index: 999;
+            }
+        </style>
 
-            </div>
+    </div>
 
     <!-- Verification Modal -->
     <div id="verification-modal" class="modal-overlay hidden">
@@ -1245,6 +1245,38 @@
             showToast("Login successful! Welcome back.", "success");
             setTimeout(() => verificationModal.classList.add("hidden"), 2000);
         });
+        
+        // --- GSAP Animation for Stats ---
+        const statsSection = document.getElementById('stats-section');
+        const studentsStat = document.getElementById('students-stat');
+        const acceptanceRateStat = document.getElementById('acceptance-rate-stat');
+
+        const animateStat = (element, endValue, prefix = '', suffix = '', decimals = 0) => {
+            const counter = { value: 0 };
+            gsap.to(counter, {
+                value: endValue,
+                duration: 2,
+                ease: "power1.out",
+                onUpdate: () => {
+                    element.textContent = `${prefix}${Math.round(counter.value).toLocaleString()}${suffix}`;
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStat(studentsStat, 3000, '~');
+                    animateStat(acceptanceRateStat, 21, '~', '%');
+                    observer.unobserve(statsSection); // Animate only once
+                }
+            });
+        }, {
+            threshold: 0.5 // Trigger when 50% of the element is visible
+        });
+
+        observer.observe(statsSection);
+
 
         // --- Initial Page Load ---
         document.addEventListener("DOMContentLoaded", () => {
@@ -1293,23 +1325,6 @@
                 gsap.to(logo, { scale: 1, duration: 0.3, ease: "power1.out" });
             });
         });
-
-        // shine text animation 
-        // const shineTexts = document.querySelectorAll(".shine_text");
-
-        // shineTexts.forEach(text => {
-        //     text.addEventListener("mouseenter", () => {
-        //         gsap.to(text, { backgroundPosition: "200%", duration: 1, ease: "power2.out" });
-        //     });
-        //     text.addEventListener("mouseleave", () => {
-        //         gsap.to(text, { backgroundPosition: "0%", duration: 1, ease: "power2.out" });
-        //     });
-        // });
-
-
-
-
-
     </script>
     <script>
     // Make sure the DOM is fully loaded before running the script
