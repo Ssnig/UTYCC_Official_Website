@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Accommodation</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+        }
+
+        /* Background floating elements */
+        .floating-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.05);
+            animation: gentleFloat 8s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 5rem;
+            right: 5rem;
+            width: 8rem;
+            height: 8rem;
+        }
+
+        .floating-element:nth-child(2) {
+            bottom: 5rem;
+            left: 5rem;
+            width: 6rem;
+            height: 6rem;
+            animation-delay: 4s;
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Main form card */
+        .form-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 42rem;
+            position: relative;
+            z-index: 10;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Header section */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: slideInUp 0.6s ease-out 0.2s both;
+        }
+
+        .header-icon {
+            width: 5rem;
+            height: 5rem;
+            margin: 0 auto 1.5rem;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bluePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes bluePulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+
+        .header-icon svg {
+            width: 2.5rem;
+            height: 2.5rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.125rem;
+            color: #6b7280;
+        }
+
+        /* Options section */
+        .options {
+            margin-bottom: 2rem;
+        }
+
+        .option {
+            margin-bottom: 1.5rem;
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .option:nth-child(2) {
+            animation: slideInRight 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .option-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+        }
+
+        .option-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .option-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .radio-button {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #d1d5db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .option-card.selected .radio-button {
+            border-color: #3b82f6;
+            background-color: #3b82f6;
+        }
+
+        .radio-button svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .option-card.selected .radio-button svg {
+            opacity: 1;
+        }
+
+        .option-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: #3b82f6;
+        }
+
+        .option-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .option-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .option-subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .hidden-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Notice section */
+        .notice {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            animation: slideInUp 0.6s ease-out 0.8s both;
+        }
+
+        .notice p {
+            font-size: 0.875rem;
+            color: #374151;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1.5rem;
+            animation: slideInUp 0.6s ease-out 1s both;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            background: white;
+            border: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .btn-back:hover:not(:disabled) {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .form-card {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .option-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .floating-element {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Floating background elements -->
+        <div class="floating-bg">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+
+        <!-- Main form -->
+        <div class="form-card">
+            <form id="dormitoryForm">
+                <!-- Header -->
+                <div class="header">
+                    <div class="header-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <h1>Choose Your Accommodation</h1>
+                    <p>Please select your dormitory preference</p>
+                </div>
+
+                <!-- Options -->
+                <div class="options">
+                    <!-- Option 1 -->
+                    <div class="option">
+                        <div class="option-card" data-value="1">
+                            <input type="radio" name="dormitory" value="1" id="dormitory-yes" class="hidden-input">
+                            <div class="option-content">
+                                <div class="option-left">
+                                    <div class="radio-button">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <svg class="option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                    </svg>
+                                    <div class="option-text">
+                                        <span class="option-title">ကျောင်းအတွင်းဆောင်လျှောက်မည့်သူများ</span>
+                                        <span class="option-subtitle">Students applying for dormitory accommodation</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Option 2 -->
+                    <div class="option">
+                        <div class="option-card" data-value="0">
+                            <input type="radio" name="dormitory" value="0" id="dormitory-no" class="hidden-input">
+                            <div class="option-content">
+                                <div class="option-left">
+                                    <div class="radio-button">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <svg class="option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                    <div class="option-text">
+                                        <span class="option-title">ကျောင်းအတွင်းဆောင်မလျှောက်လိုသူများ</span>
+                                        <span class="option-subtitle">Students not applying for dormitory accommodation</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Important notice -->
+                <div class="notice">
+                    <p>မန္တလေးတိုင်းဒေသကြီးအတွင်းမှ ကျောင်းသား/ကျောင်းသူများအား ကျောင်းအတွင်းဆောင်ပေးမည်မဟုတ်ပါ</p>
+                </div>
+
+                <!-- Navigation buttons -->
+                <div class="nav-buttons">
+                    <button type="button" class="btn btn-back">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        Back
+                    </button>
+                    
+                    <button type="submit" class="btn btn-next" id="nextBtn" disabled>
+                        Next
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const form = document.getElementById('dormitoryForm');
+        const optionCards = document.querySelectorAll('.option-card');
+        const radioInputs = document.querySelectorAll('input[name="dormitory"]');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Initialize form
+        let selectedValue = '';
+
+        // Handle option selection
+        optionCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                selectOption(value);
+            });
+        });
+
+        // Handle radio input change
+        radioInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                if (this.checked) {
+                    selectOption(this.value);
+                }
+            });
+        });
+
+        // Select option function
+        function selectOption(value) {
+            selectedValue = value;
+            
+            // Remove selected class from all cards
+            optionCards.forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selected class to clicked card
+            const selectedCard = document.querySelector(`[data-value="${value}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+
+            // Update radio input
+            const radioInput = document.querySelector(`input[value="${value}"]`);
+            if (radioInput) {
+                radioInput.checked = true;
+            }
+
+            // Enable next button
+            nextBtn.disabled = false;
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!selectedValue) {
+                alert('Please select an option before proceeding.');
+                return;
+            }
+
+            console.log('Selected option:', selectedValue);
+            
+            // Add loading state
+            nextBtn.textContent = 'Processing...';
+            nextBtn.disabled = true;
+
+            // Simulate form submission (replace with actual submission logic)
+            setTimeout(() => {
+                alert(`Form submitted with selection: ${selectedValue === '1' ? 'Apply for dormitory' : 'Do not apply for dormitory'}`);
+                nextBtn.innerHTML = `
+                    Next
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                `;
+                nextBtn.disabled = false;
+            }, 1000);
+        });
+
+        // Add smooth animations on page load
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '1';
+        });
+
+        // Handle keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const currentSelected = document.querySelector('.option-card.selected');
+                let newIndex = 0;
+
+                if (currentSelected) {
+                    const currentIndex = Array.from(optionCards).indexOf(currentSelected);
+                    if (e.key === 'ArrowUp') {
+                        newIndex = currentIndex > 0 ? currentIndex - 1 : optionCards.length - 1;
+                    } else {
+                        newIndex = currentIndex < optionCards.length - 1 ? currentIndex + 1 : 0;
+                    }
+                }
+
+                const newCard = optionCards[newIndex];
+                const newValue = newCard.getAttribute('data-value');
+                selectOption(newValue);
+            }
+
+            if (e.key === 'Enter' && selectedValue) {
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
