@@ -121,8 +121,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'student_address' => $student_address,
             'date' => $date
         ];
+        
         header("location: form2.php");
         exit;
+       
     }
 }
 ?>
