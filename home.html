@@ -729,7 +729,8 @@
                     </h3>
                     <ul class="space-y-2 text-sm text-blue-200">
                         <li>
-                            <a href="./term.html" class="hover:text-white shine_text" data-lang-key="footer_link_terms">Terms &
+                            <a href="./term.html" class="hover:text-white shine_text"
+                                data-lang-key="footer_link_terms">Terms &
                                 Policies</a>
                         </li>
                         <li>
@@ -742,6 +743,12 @@
                         <li>
                             <a href="./r&r.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules &
                                 Regulations</a>
+
+                        </li>
+                        <li>
+                            <a href="" id="gamesLink" class="hover:text-white">
+                                Dinosaur?
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -767,13 +774,39 @@
                     </div>
                 </div>
             </div>
+            <div id="gameContainer" class="game-container hidden text-center mt-10">
+                <iframe src="https://chromedino.com/" frameborder="0" scrolling="no" width="100%" height="100%"
+                    loading="lazy"></iframe>
+                <style type="text/css">
+                    iframe {
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        z-index: 999;
+                    }
+                </style>
+
+            </div>
             <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
                 data-lang-key="footer_copyright">
-                &copy; 2025 University of Technology - Yatanarpon Cyber City. All
+                © 2025 University of Technology - Yatanarpon Cyber City. All
                 Rights Reserved.
             </div>
         </div>
     </footer>
+    <div id="gameContainer" class="game-container hidden text-center mt-10">
+                <iframe src="https://chromedino.com/" frameborder="0" scrolling="no" width="100%" height="100%"
+                    loading="lazy"></iframe>
+                <style type="text/css">
+                    iframe {
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        z-index: 999;
+                    }
+                </style>
+
+            </div>
 
     <!-- Verification Modal -->
     <div id="verification-modal" class="modal-overlay hidden">
@@ -1278,6 +1311,21 @@
 
 
     </script>
+    <script>
+    // Make sure the DOM is fully loaded before running the script
+    document.addEventListener('DOMContentLoaded', function() {
+        const gamesLink = document.getElementById("gamesLink");
+        const gameContainer = document.getElementById("gameContainer");
+
+        gamesLink.addEventListener("click", (event) => {
+            // 1. Prevent the default link behavior (like jumping to the top of the page)
+            event.preventDefault();
+
+            // 2. Toggle the 'hidden' class to show/hide the game container
+            gameContainer.classList.toggle("hidden");
+        });
+    });
+</script>
 </body>
 
 </html>
