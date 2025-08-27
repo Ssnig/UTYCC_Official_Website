@@ -1,7 +1,9 @@
 <?php
 // Start the session to carry data across pages
 session_start();
-
+$form1= $_SESSION['form1_data'] ?? [];
+echo "<pre>";
+print_r($form1);
 // Define variables and initialize with empty values
 $student_name = $student_id = $parent_name = $parent_address = $parent_phone = "";
 $errors = [];

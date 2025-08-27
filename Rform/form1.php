@@ -292,7 +292,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p class="text-sm">Form No. UTYCC-20</p>
                 <div class="text-right">
                     <label for="year" class="block text-sm font-medium text-gray-700">ခုနှစ်</label>
-                    <input type="text" id="year" name="year" class="mt-1 w-24 text-center" value="<?php echo $year; ?>">
+                    <input type="text" id="year" name="year" class="mt-1 w-24 text-center" value="<?php echo $_SESSION['form1_data']['year'] ?? ''; ?>">
                 </div>
             </div>
 
@@ -306,35 +306,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
-                        <input type="text" id="academic_year" name="academic_year" class="mt-1" value="<?php echo $academic_year; ?>">
+                        <input type="text" id="academic_year" name="academic_year" class="mt-1" value="<?php echo $_SESSION['form1_data']['academic_year'] ?? ''; ?>">
                         <?php if (isset($errors['academic_year'])): ?>
                             <p class="error-message"><?php echo $errors['academic_year']; ?></p>
                         <?php endif; ?>
                     </div>
                     <div>
                         <label for="major" class="block text-sm font-medium text-gray-700">အထူးပြုဘာသာ</label>
-                        <input type="text" id="major" name="major" class="mt-1" value="<?php echo $major; ?>">
+                        <input type="text" id="major" name="major" class="mt-1" value="<?php echo $_SESSION['form1_data']['major'] ?? ''; ?>">
                         <?php if (isset($errors['major'])): ?>
                             <p class="error-message"><?php echo $errors['major']; ?></p>
                         <?php endif; ?>
                     </div>
                     <div>
                         <label for="seat_no" class="block text-sm font-medium text-gray-700">ခုံအမှတ်</label>
-                        <input type="text" id="seat_no" name="seat_no" class="mt-1" value="<?php echo $seat_no; ?>">
+                        <input type="text" id="seat_no" name="seat_no" class="mt-1" value="<?php echo $_SESSION['form1_data']['seat_no'] ?? ''; ?>">
                         <?php if (isset($errors['seat_no'])): ?>
                             <p class="error-message"><?php echo $errors['seat_no']; ?></p>
                         <?php endif; ?>
                     </div>
                     <div>
                         <label for="uni_reg_no" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်မှတ်ပုံတင်အမှတ်</label>
-                        <input type="text" id="uni_reg_no" name="uni_reg_no" class="mt-1" value="<?php echo $uni_reg_no; ?>">
+                        <input type="text" id="uni_reg_no" name="uni_reg_no" class="mt-1" value="<?php echo $_SESSION['form1_data']['uni_reg_no'] ?? ''; ?>">
                         <?php if (isset($errors['uni_reg_no'])): ?>
                             <p class="error-message"><?php echo $errors['uni_reg_no']; ?></p>
                         <?php endif; ?>
                     </div>
                     <div class="sm:col-span-2">
                         <label for="entry_year" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
-                        <input type="text" id="entry_year" name="entry_year" class="mt-1" value="<?php echo $entry_year; ?>">
+                        <input type="text" id="entry_year" name="entry_year" class="mt-1" value="<?php echo $_SESSION['form1_data']['entry_year'] ?? ''; ?>">
                     </div>
                 </div>
                 <div id="photo-upload-area"
@@ -367,43 +367,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <tr>
                             <td rowspan="2" class="text-center align-middle">၁</td>
                             <td>အမည် (မြန်မာစာဖြင့်)</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_mm" value="<?php echo $student_name_mm; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_mm" value="<?php echo $father_name_mm; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_mm" value="<?php echo $mother_name_mm; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_mm" value="<?php echo $_SESSION['form1_data']['student_name_mm'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_mm" value="<?php echo $_SESSION['form1_data']['father_name_mm'] ?? ''; ?>"required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_mm" value="<?php echo $_SESSION['form1_data']['mother_name_mm'] ?? ''; ?>" required></td>
                         </tr>
                         <tr>
                             <td>အမည် (အင်္ဂလိပ်စာဖြင့်)</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_en" value="<?php echo $student_name_en; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_en" value="<?php echo $father_name_en; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_en" value="<?php echo $mother_name_en; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_en" value="<?php echo $_SESSION['form1_data']['student_name_en'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_en" value="<?php echo $_SESSION['form1_data']['father_name_en'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_en" value="<?php echo $_SESSION['form1_data']['mother_name_en'] ?? ''; ?>" required></td>
                         </tr>
                         <tr>
                             <td class="text-center">၂</td>
                             <td>လူမျိုး</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_race" value="<?php echo $student_race; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_race" value="<?php echo $father_race; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_race" value="<?php echo $mother_race; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_race" value="<?php echo $_SESSION['form1_data']['student_race'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_race" value="<?php echo $_SESSION['form1_data']['father_race'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_race" value="<?php echo $_SESSION['form1_data']['mother_race'] ?? ''; ?>" required></td>
                         </tr>
                         <tr>
                             <td class="text-center">၃</td>
                             <td>ကိုးကွယ်သည့်ဘာသာ</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_religion" value="<?php echo $student_religion; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_religion" value="<?php echo $father_religion; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_religion" value="<?php echo $mother_religion; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_religion" value="<?php echo $_SESSION['form1_data']['student_religion'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_religion" value="<?php echo $_SESSION['form1_data']['father_religion'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_religion" value="<?php echo $_SESSION['form1_data']['mother_religion'] ?? ''; ?>" required></td>
                         </tr>
                         <tr>
                             <td class="text-center">၄</td>
                             <td>နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_nrc" value="<?php echo $student_nrc; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_nrc" value="<?php echo $father_nrc; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_nrc" value="<?php echo $mother_nrc; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_nrc" value="<?php echo $_SESSION['form1_data']['student_nrc'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_nrc" value="<?php echo $_SESSION['form1_data']['father_nrc'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_nrc" value="<?php echo $_SESSION['form1_data']['mother_nrc'] ?? ''; ?>" required></td>
                         </tr>
                         <tr>
                             <td class="text-center">၅</td>
                             <td>အမျိုးသားမှတ်ပုံတင်အမှတ်</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_nat_reg" value="<?php echo $student_nat_reg; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_nat_reg" value="<?php echo $father_nat_reg; ?>"></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_nat_reg" value="<?php echo $mother_nat_reg; ?>"></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="student_nat_reg" value="<?php echo $_SESSION['form1_data']['student_nat_reg'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="father_nat_reg" value="<?php echo $_SESSION['form1_data']['father_nat_reg'] ?? ''; ?>" required></td>
+                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_nat_reg" value="<?php echo $_SESSION['form1_data']['mother_nat_reg'] ?? ''; ?>" required></td>
                         </tr>
                         <tr>
                             <td class="text-center">၆</td>
@@ -411,7 +411,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <label for="student_dob" class="font-medium">ကျောင်းသား/သူ၏ မွေးသက္ကရာဇ်
                                     (တက္ကသိုလ်ဝင်တန်းစာမေးပွဲဖြေဆိုစဉ်က ဖော်ပြသည့် အတိုင်းရေးရန်)</label>
                                 <input type="text" id="student_dob" name="student_dob" class="mt-1"
-                                    placeholder="ဥပမာ - 01-01-2000" value="<?php echo $student_dob; ?>">
+                                    placeholder="ဥပမာ - 01-01-2000" value="<?php echo $_SESSION['form1_data']['student_dob'] ?? ''; ?>" required>
                             </td>
                         </tr>
                         <tr>
@@ -419,7 +419,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <td colspan="4" style="white-space: normal;">
                                 <label for="student_birthplace"
                                     class="font-medium">မွေးဖွားရာဇာတိမြို့/ပြည်နယ်/ဖုန်းနံပါတ်</label>
-                                <input type="text" id="student_birthplace" name="student_birthplace" class="mt-1" value="<?php echo $student_birthplace; ?>">
+                                <input type="text" id="student_birthplace" name="student_birthplace" class="mt-1" value="<?php echo $_SESSION['form1_data']['student_birthplace'] ?? ''; ?>" required>
                             </td>
                         </tr>
                         <tr>
@@ -439,9 +439,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <td>ကွယ်လွန်ခဲ့လျှင်ကွယ်လွန်ခဲ့သည့်ခုနှစ်</td>
                             <td></td>
                             <td><input type="text" placeholder="_______________________" class="border-0"
-                                    name="father_deceased_year" value="<?php echo $father_deceased_year; ?>"></td>
+                                    name="father_deceased_year" value="<?php echo $_SESSION['form1_data']['father_deceased_year'] ?? ''; ?>" required></td>
                             <td><input type="text" placeholder="_______________________" class="border-0"
-                                    name="mother_deceased_year" value="<?php echo $mother_deceased_year; ?>"></td>
+                                    name="mother_deceased_year" value="<?php echo $_SESSION['form1_data']['mother_deceased_year'] ?? ''; ?>" required></td>
                         </tr>
                         <tr>
                             <td class="text-center">၁၀</td>
@@ -462,7 +462,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mt-12 gap-8 sm:gap-4">
                     <div class="w-full sm:w-auto">
                         <label for="date" class="block text-sm">ရက်စွဲ</label>
-                        <input type="text" id="date" name="date" class="mt-1" placeholder="ဥပမာ - 16-08-2024" value="<?php echo $date; ?>">
+                        <input type="text" id="date" name="date" class="mt-1" placeholder="ဥပမာ - 16-08-2024" value="<?php echo $_SESSION['form1_data']['date'] ?? ''; ?>" required>
                     </div>
                     <div class="w-full sm:w-1/3">
                         <div class="border-t border-gray-400 pt-1 text-center text-sm">(ကျောင်းသား/သူ၏ထိုးမြဲလက်မှတ်)</div>
