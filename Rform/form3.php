@@ -1,52 +1,48 @@
 <?php
-// Start the session to carry data across pages
+// Start the session to access and store data
 session_start();
 
-// Define variables and initialize with empty values
-$student_name = $student_seat_no = "";
+// Define variables and initialize with empty values to avoid PHP notices.
+$student_name_field = $parent1_name = $parent2_name = $course_name = "";
 $errors = [];
 
-// Pre-fill fields with data from previous forms if available
-if (isset($_SESSION['form1_data'])) {
-    // Note: I'm assuming the session variable keys from form1.php
-    $student_name = $_SESSION['form1_data']['student_name_mm'] ?? '';
-    $student_seat_no = $_SESSION['form1_data']['seat_no'] ?? '';
-}
-
-// Processing form data when the form is submitted
+// Check if the form was submitted.
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Sanitize and validate Student Name (from the pledge)
-    if (empty(trim($_POST["student_name_from_pledge"]))) {
-        $errors['student_name_from_pledge'] = "Student's name is required for the pledge.";
+    // Sanitize and validate inputs.
+    // Course name validation
+    if (empty(trim($_POST["course_name"]))) {
+        $errors['course_name'] = "Course name is required.";
     } else {
-        $student_name = htmlspecialchars(trim($_POST["student_name_from_pledge"]));
+        $course_name = htmlspecialchars(trim($_POST["course_name"]));
     }
 
-    // Sanitize and validate Student Seat Number (from the pledge)
-    if (empty(trim($_POST["student_seat_no_from_pledge"]))) {
-        $errors['student_seat_no_from_pledge'] = "Student's seat number is required for the pledge.";
+    // Student name validation
+    if (empty(trim($_POST["student_name_field"]))) {
+        $errors['student_name_field'] = "Student's name is required.";
     } else {
-        $student_seat_no = htmlspecialchars(trim($_POST["student_seat_no_from_pledge"]));
+        $student_name_field = htmlspecialchars(trim($_POST["student_name_field"]));
     }
     
-    // If there are no errors, store data in session and redirect
+    // If no validation errors, store data in session and redirect
     if (empty($errors)) {
-        // Store the validated data in a session variable
-        $_SESSION['form3_data'] = [
-            'student_name_from_pledge' => $student_name,
-            'student_seat_no_from_pledge' => $student_seat_no
+        // Store the validated data in a session variable.
+        $_SESSION['form5_data'] = [
+            'course_name' => $course_name,
+            'student_name_field' => $student_name_field,
+            'parent1_name' => $parent1_name,
+            'parent2_name' => $parent2_name,
         ];
 
-        // Redirect to the next step of the registration
-        header("location: form4.php");
+        // Redirect to the next form. Make sure form6.php exists.
+        header("location: form3.php");
         exit;
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="my">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,275 +57,324 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../CSS/font.css" />
-    <title>Student's Registration Form 3</title>
+    <title>Student's Registration Form 5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="form.css">
 </head>
+
 <body class="bg-gray-100">
     <div class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="#" class="flex items-center space-x-3">
-                <div class="p-2 rounded-lg">
-                    <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
-                </div>
-                <div>
-                    <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
-                    <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
-                        City)</span>
-                </div>
-            </a>
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_about">About Us</a>
-                <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_programs">Academic Programs</a>
-                <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_collaboration">Collaboration</a>
-                <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_contact">Contact</a>
-                <div class="relative ml-4">
-                    <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-                        <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
-                        <select id="language-switcher"
-                            class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="my">မြန်မာ</option>
-                            <option value="en">English</option>
-                        </select>
-                        <i
-                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
-                    </div>
-                </div>
-            </div>
-            <button id="mobile-menu-button" class="md:hidden text-blue-900">
-                <i class="fas fa-bars text-2xl" id="menu-icon"></i>
-            </button>
-        </nav>
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-            <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_about_mobile">About Us</a>
-            <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_programs_mobile">Academic Programs</a>
-            <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_collaboration_mobile">Collaboration</a>
-            <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_contact_mobile">Contact</a>
+    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <a href="#" class="flex items-center space-x-3">
+        <div class="p-2 rounded-lg">
+          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
         </div>
+        <div>
+          <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
+          <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
+            City)</span>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_about">About Us</a>
+        <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_programs">Academic Programs</a>
+        <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_collaboration">Collaboration</a>
+        <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_contact">Contact</a>
+
+      <div class="relative ml-4">
+                        <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+                            <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
+                            <select id="language-switcher"
+                                class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="my">မြန်မာ</option>
+                                <option value="en">English</option>
+                            </select>
+                            <i
+                                class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+                        </div>
+                    </div>
+      </div>
+      <button id="mobile-menu-button" class="md:hidden text-blue-900">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </nav>
+    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
+      <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_about_mobile">About Us</a>
+      <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_programs_mobile">Academic Programs</a>
+      <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_collaboration_mobile">Collaboration</a>
+      <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_contact_mobile">Contact</a>
     </div>
+  </div>
+
+
     <br>
     <div class="max-w-4xl mx-auto">
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" novalidate>
-            <section class="form-section" id="student-pledge">
-                <h2 class="form-title">ကျောင်းသား/ ကျောင်းသူ၏ ကတိခံဝန်ချက်</h2>
-                <p class="pledge-text">
-                    နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)က ချမှတ်ထားသော စည်းမျဥ်းစည်းကမ်းများကို 
-                    <input type="text" placeholder="________________________" class="border-0 form-input inline-block w-48" name="academic_year_from_pledge" value="<?php echo $_SESSION['form1_data']['academic_year'] ?? ''; ?>" readonly> သင်တန်းသား/သင်တန်းသူဖြစ်သူ ကျွန်တော် / ကျွန်မ မောင် / မ 
-                    <input type="text" placeholder="______________________" class="border-0 inline-block w-64" name="student_name_from_pledge" value="<?php echo $student_name; ?>" required> ခုံအမှတ် 
-                    <input type="text" placeholder="________________________" class="border-0 form-input inline-block w-48" name="student_seat_no_from_pledge" value="<?php echo $student_seat_no; ?>" required> သည် တစ်သဝေမတိမ်း မပျက်မကွက် လေးစားစွာ လိုက်နာပါမည်ဟု ခံဝန်ကတိပြု လက်မှတ်ရေးထိုးပါသည်။
-                </p>
-                <span class="text-red-500 text-sm block ml-48"><?php echo $errors['student_name_from_pledge'] ?? ''; ?></span>
-                <span class="text-red-500 text-sm block ml-48"><?php echo $errors['student_seat_no_from_pledge'] ?? ''; ?></span>
-                <div class="mt-12 ml-auto w-full md:w-1/2">
-                    <div class="input-group flex items-center">
-                        <label class="w-48">ကျောင်းသား/ ကျောင်းသူလက်မှတ်:</label>
-                        <div class="signature-line flex-grow"></div>
+            <section class="form-section" id="attendance-pledge">
+                <h2 class="form-title">နည်းပညာတက္ကသိုလ်( ရတနာပုံဆိုက်ဘာစီးတီး)</h2>
+                <h3 class="form-subtitle">ကတိခံဝန်ချက် (၇၅% တက်ရောက်ရေး)</h3>
+                <p class="pledge-text mb-6">ဤတက္ကသိုလ်တွင် <input type="text" name="course_name" placeholder="________________________" class="form-input border-0 inline-block w-48" value="<?php echo $course_name; ?>">
+                    သင်တန်းသို့ တက်ရောက်ခွင့်ရသူ ကျွန်တော်/ကျွန်မ <input type="text" name="student_name_field" placeholder="________________________" class="form-input border-0 inline-block w-64" value="<?php echo $student_name_field; ?>">
+                    နှင့် အမိ၊ အဘ (သို့) အုပ်ထိန်းသူများဖြစ်သည့် (၁) <input type="text" name="parent1_name" placeholder="________________________"
+                        class="form-input border-0 inline-block w-48" value="<?php echo $parent1_name; ?>"> နှင့် (၂) <input type="text" name="parent2_name" placeholder="________________________"
+                        class="form-input border-0 inline-block w-48" value="<?php echo $parent2_name; ?>"> တို့အား အောက်ပါ (၇၅%) နှင့် ပတ်သက်၍ သိရှိရမည့်အချက်များကို
+                    လိုက်နာဆောင်ရွက်ကြပါမည်ဟု ဝန်ခံကတိပြု လက်မှတ် ရေးထိုးကြပါသည်။</p>
+                <span class="text-red-500 text-sm block ml-auto w-full md:w-96"><?php echo $errors['course_name'] ?? ''; ?></span>
+                <span class="text-red-500 text-sm block ml-auto w-full md:w-96"><?php echo $errors['student_name_field'] ?? ''; ?></span>
+                <span class="text-red-500 text-sm block ml-auto w-full md:w-96"><?php echo $errors['parent1_name'] ?? ''; ?></span>
+                <div class="space-y-4 pledge-text text-sm">
+                    <p>(၁) ကျွန်တော်/ကျွန်မ <input type="text" name="student_name_field2" placeholder="________________________" class="form-input border-0 inline-block w-64" value="<?php echo $student_name_field; ?>"> သည်
+                        သင်တန်းတက်ရောက်ခွင့်ရလျှင် နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) မှ ကျောင်းသား/ ကျောင်းသူများအတွက်
+                        ထုတ်ပြန်သည့် (၇၅%) နှင့် ပတ်သက်သည့် အချက်များကို ထိန်းသိမ်းလိုက်နာ ဆောင်ရွက်ပါမည်ဟု
+                        ဝန်ခံကတိပြုပါသည်။</p>
+                    <p>(၂) ကျွန်တော်/ ကျွန်မ <input type="text" name="student_name_field3" placeholder="________________________" class="form-input border-0 inline-block w-64" value="<?php echo $student_name_field; ?>"> သည် နည်းပညာတက္ကသိုလ်
+                        (ရတနာပုံဆိုက်ဘာစီးတီး) တွင် ကျောင်းစတင် ဖွင့်လှစ်သည့်နေ့မှစ၍ ကျောင်းခေါ်ချိန် စတင်တွက်ချက်မည်ကို
+                        သိရှိကြောင်းနှင့် ကျောင်းတက်ရာခိုင်နှုန်း (၇၅%) မပြည့်မီပါက အတန်းတင်စာမေးပွဲ ဝင်ရောက်ဖြေဆိုခွင့်
+                        မပြုကြောင်းကို သိရှိပါသည်။</p>
+                    <p>(၃) ကျွန်တော်/ ကျွန်မ <input type="text" name="student_name_field4" placeholder="________________________" class="form-input border-0 inline-block w-64" value="<?php echo $student_name_field; ?>"> နှင့် အမိအဘ (သို့)
+                        အုပ်ထိန်းသူများသည် ကျောင်းခေါ်ချိန် (၇၅%) မပြည့်သည့် စာရင်းများ လစဥ်ကျောင်းကြော်ငြာသင်ပုန်းတွင်
+                        ကပ်ထားမည်ကို သိရှိပါသည်။ (၇၅%) နှင့် ပတ်သက်၍ မိမိတို့ထံသို့ အကြောင်းကြားစာရောက်သည်ဖြစ်စေ၊
+                        မရောက်သည်ဖြစ်စေ မိမိတို့ ကိုယ်တိုင် လစဥ် ကျောင်းကြော်ငြာ သင်ပုန်း၌ လာရောက်ကြည့်ရှုခြင်း (သို့မဟုတ်)
+                        မိသားစုဆရာ/ ဆရာမ၊ မော်ကွန်းထိန်းတို့အား မေးမြန်းခြင်းတို့ ပြုလုပ်ပါမည်။</p>
+                    <p>(၄) (၇၅%) ပြည့်မီအောင် ကျောင်းတက်ရောက်ခြင်းသည် သက်ဆိုင်ရာ ကျောင်းသား/ ကျောင်းသူနှင့်
+                        မိဘအုပ်ထိန်းသူတို့၏ အဓိက တာဝန်ဖြစ်သည့်အတွက်ကြောင့် အကြောင်းကြားစာရောက်ခြင်း/ မရောက်ခြင်းအား
+                        ဤတက္ကသိုလ်မှ တာဝန်ယူ ဖြေရှင်းပေးမည်မဟုတ်ကြောင်းနှင့် (၃) ကြိမ် ဆက်တိုက် ကျောင်းခေါ်ချိန်
+                        ပြည့်မီခြင်း မရှိပါက မိဘထံအပြီး ပြန်အပ်မည်ကို သိရှိကြောင်း ဝန်ခံကတိပြုပါသည်။</p>
+                    <p>(၅) သို့ဖြစ်ပါ၍ မိမိတို့ ကိုယ်တိုင်လစဥ် (၇၅%) ပြည့်မီခြင်း/ မပြည့်မီခြင်းကို ကြည့်ရှု
+                        စုံစမ်းမေးမြန်း၍ (၇၅%) ပြည့်မီအောင် ကျောင်းတက်ရောက်စေမည်ဖြစ်ပြီး မပြည့်မီပါက သက်ဆိုင်ရာ ကျောင်းသား/
+                        ကျောင်းသူနှင့် မိဘအုပ်ထိန်းသူတို့၏ တာဝန်သာ ဖြစ်ကြောင်းကို သိရှိပါသည်ဟု ထပ်မံဝန်ခံကတိပြုပါသည်။</p>
+                </div>
+                <div class="mt-8 space-y-4">
+                    <div class="flex items-center gap-4">
+                        <label class="w-64">သင်တန်းတက်ရောက်ခွင့်ရသူ၏ အမည်</label>
+                        <input type="text" name="student_name" placeholder="အမည်____________________" class="form-input border-0 w-800" value="<?php echo $student_name_field; ?>">
                     </div>
-                    <div class="input-group flex items-center">
-                        <label for="student-name-id" class="w-48">ကျောင်းသား/ ကျောင်းသူအမည်နှင့် ခုံအမှတ်:</label>
-                        <input type="text" placeholder="______________________" id="student-name-id" class="border-0 form-input flex-grow" value="<?php echo $student_name; ?>" readonly>
+                    <div class="flex items-center gap-4 mt-4">
+                        <label class="w-64">အဘ (သို့) အုပ်ထိန်းသူ (၁) ၏အမည်</label>
+                        <input type="text" name="parent_name1_signed" placeholder="အမည်___________________" class="form-input border-0 w-800" value="<?php echo $parent1_name; ?>">
+                    </div>
+                    <div class="flex items-center gap-4 mt-4">
+                        <label class="w-64">အမိ (သို့) အုပ်ထိန်းသူ (၂) ၏ အမည်</label>
+                        <input type="text" name="parent_name2_signed" placeholder="အမည်____________________" class="form-input border-0 w-800" value="<?php echo $parent2_name; ?>">
                     </div>
                 </div>
-                <div class="form-footer">UTYCC/ SA/ F-20/ Rev-0/31-10-2022</div>
+
+
+                <div class="mt-8 text-center">
+                    <p>အထက်ပါ (၃) ဦးစလုံးသည် ကျွန်ုပ်တို့ ရှေ့မှောက်တွင် ကိုယ်တိုင်လက်မှတ်ရေးထိုးကြခြင်း မှန်ကန်ကြောင်း
+                        အတည်ပြု လက်မှတ်ရေးထိုးကြပါသည်။</p>
+                    <div class="grid md:grid-cols-2 gap-8 mt-8">
+                        <div class="text-center">
+                            <div class="signature-line w-64 mx-auto"></div>
+                            <p>( ဌာနမှူး)</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="signature-line w-64 mx-auto"></div>
+                            <p>(ဒုတိယပါမောက္ခချုပ်)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-footer">UTYCC/SA/F-24/Rev-0/31-10-2022</div>
             </section>
+
             <div class="nav-buttons">
-                <a href="form2.php" class="nav-button">Back</a>
+                <a href="form4.php" class="nav-button">Back</a>
                 <button type="submit" class="nav-button">Next</button>
             </div>
         </form>
     </div>
     <br>
-    <footer id="contact" class="bg-blue-900 text-white ">
-        <div class="container mx-auto px-6 py-12">
-            <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
-                    <h3 class="text-lg font-bold">UTYCC</h3>
-                    <p class="text-blue-200 text-sm mt-4">
-                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
+
+    <footer id="contact" class="bg-blue-900 text-white py-2">
+    <div class="container mx-auto px-6 py-12">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
+          <h3 class="text-lg font-bold">UTYCC</h3>
+          <p class="text-blue-200 text-sm mt-4">
+                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address"
+                            target="_blank">
                             Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
                             Region, Myanmar
                         </a>
                     </p>
-                    <div class="mt-4 text-sm text-blue-200">
-                        <p>Email: info@utycc.edu.mm (example)</p>
-                        <p>Phone: +95 (XX) XXX XXX (example)</p>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
-                        Faculties
-                    </h3>
-                    <ul class="space-y-2 text-sm text-blue-200">
-                        <li>
-                            <a href="../Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
-                        </li>
-                        <li>
-                            <a href="../Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
-                        </li>
-                        <li>
-                            <a href="../Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
-                        </li>
-                        <li><a data-lang-key="footer_faculty_pre" href="../Majors/pre.html">Precision Engineering</a></li>
-                        <li><a data-lang-key="footer_faculty_ame" href="../Majors/ame.html">
-                                Advanced Materials Engineering
-                            </a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
-                        Quick Links
-                    </h3>
-                    <ul class="space-y-2 text-sm text-blue-200">
-                        <li>
-                            <a href="../term.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
-                        </li>
-                        <li>
-                            <a href="../FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
-                        </li>
-                        <li>
-                            <a href="../about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
-                        </li>
-                        <li>
-                            <a href="../r&r.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
-                        Follow Us
-                    </h3>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
-                        <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
-                        <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
-                        <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
-                    </div>
-                    <br />
-                    <br />
-                    <div>
-                        <div class="newtons-cradle">
-                            <div class="newtons-cradle__dot"></div>
-                            <div class="newtons-cradle__dot"></div>
-                            <div class="newtons-cradle__dot"></div>
-                            <div class="newtons-cradle__dot"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
-                data-lang-key="footer_copyright">
-                © 2025 University of Technology - Yatanarpon Cyber City. All
-                Rights Reserved.
-            </div>
+          <div class="mt-4 text-sm text-blue-200">
+            <p>Email: info@utycc.edu.mm (example)</p>
+            <p>Phone: +95 (XX) XXX XXX (example)</p>
+          </div>
         </div>
-    </footer>
-    <script>
-        // --- Menu toggle ---
-        const mobileMenuButton = document.getElementById("mobile-menu-button");
-        const mobileMenu = document.getElementById("mobile-menu");
-        const menuIcon = document.getElementById("menu-icon");
-        if (mobileMenuButton && mobileMenu && menuIcon) {
-            mobileMenuButton.addEventListener("click", () => {
-                mobileMenu.classList.toggle("hidden");
-                if (mobileMenu.classList.contains("hidden")) {
-                    menuIcon.classList.remove("fa-times");
-                    menuIcon.classList.add("fa-bars");
-                } else {
-                    menuIcon.classList.remove("fa-bars");
-                    menuIcon.classList.add("fa-times");
-                }
-            });
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
+            Faculties
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li data-lang-key="footer_faculty_ist">
+              Information Science Technology
+            </li>
+            <li data-lang-key="footer_faculty_ce">Computer Engineering</li>
+            <li data-lang-key="footer_faculty_ece">
+              Electronics Engineering
+            </li>
+            <li data-lang-key="footer_faculty_ame">
+              Advanced Materials Engineering
+            </li>
+            <li data-lang-key="footer_faculty_pre">Precision Engineering</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
+            Quick Links
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li>
+              <a href="#" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
+            Follow Us
+          </h3>
+          <div class="flex space-x-4">
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+          </div>
+          <br />
+          <br />
+          <div>
+            <div class="newtons-cradle">
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
+        data-lang-key="footer_copyright">
+        © 2025 University of Technology - Yatanarpon Cyber City. All
+        Rights Reserved.
+      </div>
+    </div>
+  </footer>
+  <script>
+    // --- Translation Script ---
+    const translations = {
+      my: {
+        utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+        nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+        nav_programs: "ပညာရေးအစီအစဉ်များ",
+        nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
+        nav_contact: "ဆက်သွယ်ရန်",
+        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+        nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
+        nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
+        nav_contact_mobile: "ဆက်သွယ်ရန်",
+        footer_address:
+          "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+        footer_faculties_title: "မဟာဌာနများ",
+        footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+        footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+        footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+        footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+        footer_contact_title: "ဆက်သွယ်ရန်",
+        footer_follow_title: "Follow Us",
+        footer_copyright:
+          "© ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+        footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+        footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+        footer_link_faq: "အမေးများသော မေးခွန်းများ",
+        footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
+        footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+      },
+      en: {
+        utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+        nav_about: "About Us",
+        nav_programs: "Academic Programs",
+        nav_collaboration: "Collaboration",
+        nav_contact: "Contact",
+        nav_about_mobile: "About Us",
+        nav_programs_mobile: "Academic Programs",
+        nav_collaboration_mobile: "Collaboration",
+        nav_contact_mobile: "Contact",
+        footer_address:
+          "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+        footer_faculties_title: "Faculties",
+        footer_faculty_ist: "Information Science Technology",
+        footer_faculty_ce: "Computer Engineering",
+        footer_faculty_ece: "Electronics Engineering",
+        footer_faculty_ame: "Advanced Materials Engineering",
+        footer_faculty_pre: "Precision Engineering",
+        footer_contact_title: "Contact Us",
+        footer_follow_title: "Follow Us",
+        footer_copyright:
+          "© 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+        footer_quick_links_title: "Quick Links",
+        footer_link_terms: "Terms & Policies",
+        footer_link_faq: "FAQs",
+        footer_link_about: "About Us",
+        footer_link_rules: "Rules & Regulations",
+      },
+    };
+
+    const languageSwitcher = document.getElementById("language-switcher");
+
+    const changeLanguage = (lang) => {
+      // Store the selected language
+      localStorage.setItem("language", lang);
+
+      // Set the dropdown to the correct value
+      languageSwitcher.value = lang;
+
+      // Translate all elements with the data-lang-key attribute
+      document.querySelectorAll("[data-lang-key]").forEach((element) => {
+        const key = element.dataset.langKey;
+        const translation = translations[lang][key];
+        if (translation) {
+          element.innerHTML = translation.replace(/\\n/g, "<br>");
         }
-        // --- Translation Script ---
-        const translations = {
-            my: {
-                utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
-                nav_about: "ကျွန်ုပ်တို့အကြောင်း",
-                nav_programs: "ပညာရေးအစီအစဉ်များ",
-                nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
-                nav_contact: "ဆက်သွယ်ရန်",
-                nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
-                nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
-                nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
-                nav_contact_mobile: "ဆက်သွယ်ရန်",
-                footer_address:
-                    "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
-                footer_faculties_title: "မဟာဌာနများ",
-                footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
-                footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
-                footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-                footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
-                footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
-                footer_contact_title: "ဆက်သွယ်ရန်",
-                footer_follow_title: "Follow Us",
-                footer_copyright:
-                    "© ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
-                footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
-                footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
-                footer_link_faq: "အမေးများသော မေးခွန်းများ",
-                footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
-                footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
-            },
-            en: {
-                utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
-                nav_about: "About Us",
-                nav_programs: "Academic Programs",
-                nav_collaboration: "Collaboration",
-                nav_contact: "Contact",
-                nav_about_mobile: "About Us",
-                nav_programs_mobile: "Academic Programs",
-                nav_collaboration_mobile: "Collaboration",
-                nav_contact_mobile: "Contact",
-                footer_address:
-                    "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
-                footer_faculties_title: "Faculties",
-                footer_faculty_ist: "Information Science Technology",
-                footer_faculty_ce: "Computer Engineering",
-                footer_faculty_ece: "Electronics Engineering",
-                footer_faculty_ame: "Advanced Materials Engineering",
-                footer_faculty_pre: "Precision Engineering",
-                footer_contact_title: "Contact Us",
-                footer_follow_title: "Follow Us",
-                footer_copyright:
-                    "© 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
-                footer_quick_links_title: "Quick Links",
-                footer_link_terms: "Terms & Policies",
-                footer_link_faq: "FAQs",
-                footer_link_about: "About Us",
-                footer_link_rules: "Rules & Regulations",
-            },
-        };
-        const languageSwitcher = document.getElementById("language-switcher");
-        const changeLanguage = (lang) => {
-            localStorage.setItem("language", lang);
-            languageSwitcher.value = lang;
-            document.querySelectorAll("[data-lang-key]").forEach((element) => {
-                const key = element.dataset.langKey;
-                const translation = translations[lang][key];
-                if (translation) {
-                    element.innerHTML = translation.replace(/\n/g, "<br>");
-                }
-            });
-        };
-        languageSwitcher.addEventListener("change", (event) => {
-            changeLanguage(event.target.value);
-        });
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedLang = localStorage.getItem("language") || "en";
-            changeLanguage(savedLang);
-        });
-    </script>
+      });
+    };
+
+    // Event listener for the language switcher
+    languageSwitcher.addEventListener("change", (event) => {
+      changeLanguage(event.target.value);
+    });
+
+    // Function to run when the page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check for a saved language in localStorage, otherwise default to 'en'
+      const savedLang = localStorage.getItem("language") || "en";
+      changeLanguage(savedLang);
+    });
+  </script>
 </body>
+
 </html>
