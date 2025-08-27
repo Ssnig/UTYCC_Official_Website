@@ -14,6 +14,7 @@ $student_dob = $student_birthplace = "";
 $father_info = $mother_info = "";
 $father_deceased_year = $mother_deceased_year = "";
 $student_address = $date = "";
+$date = date('d-m-Y');
 $errors = [];
 
 // Processing form data when the form is submitted
@@ -83,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $father_deceased_year = htmlspecialchars(trim($_POST["father_deceased_year"] ?? ''));
     $mother_deceased_year = htmlspecialchars(trim($_POST["mother_deceased_year"] ?? ''));
     $student_address = htmlspecialchars(trim($_POST["student_address"] ?? ''));
-    $date = htmlspecialchars(trim($_POST["date"] ?? ''));
+    $date = htmlspecialchars(trim($_POST["date"] ?? $date));
 
     // If no errors, store all data in the session and redirect
     if (empty($errors)) {
@@ -310,7 +311,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mt-12 gap-8 sm:gap-4">
                     <div class="w-full sm:w-auto">
                         <label for="date" class="block text-sm">ရက်စွဲ</label>
-                        <input type="text" id="date" name="date" class="mt-1" placeholder="ဥပမာ - 16-08-2024" value="<?php echo $_SESSION['form1_data']['date'] ?? ''; ?>" required>
+                        <input type="text" id="date" name="date" class="mt-1" placeholder="ဥပမာ - 16-08-2024" value="<?php echo $date; ?>" required>
                     </div>
                     <div class="w-full sm:w-1/3">
                         <div class="border-t border-gray-400 pt-1 text-center text-sm">(ကျောင်းသား/သူ၏ထိုးမြဲလက်မှတ်)</div>
