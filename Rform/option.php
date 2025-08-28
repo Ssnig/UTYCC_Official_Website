@@ -1,3 +1,23 @@
+<?php
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['dormitory'])) {
+        $choice = intval($_POST['dormitory']);
+        $_SESSION['dormitory_choice'] = $choice;
+
+        if ($choice === 1) {
+            header("Location: additional_address.php");
+            exit();
+        } else {
+            header("Location: form3.php");
+            exit();
+        }
+    } else {
+        $error = "Please select an option before continuing.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +26,8 @@
     <title>Choose Your Accommodation</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <style>
-        * {
+        /* (your CSS 그대로) */
+ * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -59,8 +80,15 @@
         }
 
         @keyframes gentleFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
         }
 
         /* Main form card */
@@ -82,6 +110,7 @@
                 opacity: 0;
                 transform: translateY(30px) scale(0.95);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -108,9 +137,17 @@
         }
 
         @keyframes bluePulse {
-            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
         }
 
         .header-icon svg {
@@ -150,6 +187,7 @@
                 opacity: 0;
                 transform: translateX(-30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -161,6 +199,7 @@
                 opacity: 0;
                 transform: translateX(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -354,214 +393,106 @@
                 display: none;
             }
         }
+
+
+
+
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Floating background elements -->
         <div class="floating-bg">
             <div class="floating-element"></div>
             <div class="floating-element"></div>
         </div>
 
-        <!-- Main form -->
         <div class="form-card">
-            <form id="dormitoryForm">
-                <!-- Header -->
+            <?php if (!empty($error)) : ?>
+                <div style="background:#fee2e2; color:#b91c1c; padding:10px; border-radius:6px; margin-bottom:15px;">
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
+            <form id="dormitoryForm" method="POST" action="">
                 <div class="header">
                     <div class="header-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
                         </svg>
                     </div>
                     <h1>Choose Your Accommodation</h1>
                     <p>Please select your dormitory preference</p>
                 </div>
 
-                <!-- Options -->
                 <div class="options">
-                    <!-- Option 1 -->
                     <div class="option">
-                        <div class="option-card" data-value="1">
-                            <input type="radio" name="dormitory" value="1" id="dormitory-yes" class="hidden-input">
+                        <label class="option-card" data-value="1">
+                            <input type="radio" name="dormitory" value="1" class="hidden-input">
                             <div class="option-content">
                                 <div class="option-left">
                                     <div class="radio-button">
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
                                         </svg>
                                     </div>
-                                    <svg class="option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                                    </svg>
                                     <div class="option-text">
                                         <span class="option-title">ကျောင်းအတွင်းဆောင်လျှောက်မည့်သူများ</span>
                                         <span class="option-subtitle">Students applying for dormitory accommodation</span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </label>
                     </div>
 
-                    <!-- Option 2 -->
                     <div class="option">
-                        <div class="option-card" data-value="0">
-                            <input type="radio" name="dormitory" value="0" id="dormitory-no" class="hidden-input">
+                        <label class="option-card" data-value="0">
+                            <input type="radio" name="dormitory" value="0" class="hidden-input">
                             <div class="option-content">
                                 <div class="option-left">
                                     <div class="radio-button">
                                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
                                         </svg>
                                     </div>
-                                    <svg class="option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                    </svg>
                                     <div class="option-text">
                                         <span class="option-title">ကျောင်းအတွင်းဆောင်မလျှောက်လိုသူများ</span>
                                         <span class="option-subtitle">Students not applying for dormitory accommodation</span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </label>
                     </div>
                 </div>
 
-                <!-- Important notice -->
                 <div class="notice">
                     <p>မန္တလေးတိုင်းဒေသကြီးအတွင်းမှ ကျောင်းသား/ကျောင်းသူများအား ကျောင်းအတွင်းဆောင်ပေးမည်မဟုတ်ပါ</p>
                 </div>
 
-                <!-- Navigation buttons -->
                 <div class="nav-buttons">
-                    <button type="button" class="btn btn-back">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
+                    <button type="button" class="btn btn-back" onclick="history.back()">
                         Back
                     </button>
-                    
                     <button type="submit" class="btn btn-next" id="nextBtn" disabled>
-                        Next
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
+                        Next →
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <script>
-        // DOM elements
-        const form = document.getElementById('dormitoryForm');
-        const optionCards = document.querySelectorAll('.option-card');
-        const radioInputs = document.querySelectorAll('input[name="dormitory"]');
-        const nextBtn = document.getElementById('nextBtn');
-
-        // Initialize form
-        let selectedValue = '';
-
-        // Handle option selection
-        optionCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const value = this.getAttribute('data-value');
-                selectOption(value);
-            });
-        });
-
-        // Handle radio input change
-        radioInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                if (this.checked) {
-                    selectOption(this.value);
-                }
-            });
-        });
-
-        // Select option function
-        function selectOption(value) {
-            selectedValue = value;
-            
-            // Remove selected class from all cards
-            optionCards.forEach(card => {
-                card.classList.remove('selected');
-            });
-
-            // Add selected class to clicked card
-            const selectedCard = document.querySelector(`[data-value="${value}"]`);
-            if (selectedCard) {
-                selectedCard.classList.add('selected');
-            }
-
-            // Update radio input
-            const radioInput = document.querySelector(`input[value="${value}"]`);
-            if (radioInput) {
-                radioInput.checked = true;
-            }
-
-            // Enable next button
-            nextBtn.disabled = false;
-        }
-
-        // Handle form submission
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!selectedValue) {
-                alert('Please select an option before proceeding.');
-                return;
-            }
-
-            console.log('Selected option:', selectedValue);
-            
-            // Add loading state
-            nextBtn.textContent = 'Processing...';
-            nextBtn.disabled = true;
-
-            // Simulate form submission (replace with actual submission logic)
-            setTimeout(() => {
-                alert(`Form submitted with selection: ${selectedValue === '1' ? 'Apply for dormitory' : 'Do not apply for dormitory'}`);
-                nextBtn.innerHTML = `
-                    Next
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                `;
-                nextBtn.disabled = false;
-            }, 1000);
-        });
-
-        // Add smooth animations on page load
-        window.addEventListener('load', function() {
-            document.body.style.opacity = '1';
-        });
-
-        // Handle keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                e.preventDefault();
-                const currentSelected = document.querySelector('.option-card.selected');
-                let newIndex = 0;
-
-                if (currentSelected) {
-                    const currentIndex = Array.from(optionCards).indexOf(currentSelected);
-                    if (e.key === 'ArrowUp') {
-                        newIndex = currentIndex > 0 ? currentIndex - 1 : optionCards.length - 1;
-                    } else {
-                        newIndex = currentIndex < optionCards.length - 1 ? currentIndex + 1 : 0;
-                    }
-                }
-
-                const newCard = optionCards[newIndex];
-                const newValue = newCard.getAttribute('data-value');
-                selectOption(newValue);
-            }
-
-            if (e.key === 'Enter' && selectedValue) {
-                form.dispatchEvent(new Event('submit'));
-            }
-        });
-    </script>
+<script>
+document.querySelectorAll('.option-card').forEach(card => {
+    card.addEventListener('click', function () {
+        document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input[type=radio]').checked = true;
+        document.getElementById('nextBtn').disabled = false;
+    });
+});
+</script>
 </body>
 </html>

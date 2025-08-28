@@ -1,156 +1,4 @@
-<?php
-// Start the session to carry data across pages
-session_start();
-
-// Define variables and initialize with empty values
-$student_name = $student_seat_no = "";
-$errors = [];
-
-// Pre-fill fields with data from previous forms if available
-if (isset($_SESSION['form1_data'])) {
-    // Note: I'm assuming the session variable keys from form1.php
-    $student_name = $_SESSION['form1_data']['student_name_mm'] ?? '';
-    $student_seat_no = $_SESSION['form1_data']['seat_no'] ?? '';
-}
-
-// Processing form data when the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    // Sanitize and validate Student Name (from the pledge)
-    if (empty(trim($_POST["student_name_from_pledge"]))) {
-        $errors['student_name_from_pledge'] = "Student's name is required for the pledge.";
-    } else {
-        $student_name = htmlspecialchars(trim($_POST["student_name_from_pledge"]));
-    }
-
-    // Sanitize and validate Student Seat Number (from the pledge)
-    if (empty(trim($_POST["student_seat_no_from_pledge"]))) {
-        $errors['student_seat_no_from_pledge'] = "Student's seat number is required for the pledge.";
-    } else {
-        $student_seat_no = htmlspecialchars(trim($_POST["student_seat_no_from_pledge"]));
-    }
-    
-    // If there are no errors, store data in session and redirect
-    if (empty($errors)) {
-        // Store the validated data in a session variable
-        $_SESSION['form3_data'] = [
-            'student_name_from_pledge' => $student_name,
-            'student_seat_no_from_pledge' => $student_seat_no
-        ];
-
-        // Redirect to the next step of the registration
-        header("location: form4.php");
-        exit;
-    }
-}
-?>
-
-<!DOCTYPE html>
-<html lang="my">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../CSS/footer.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="../Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="../CSS/font.css" />
-    <title>Student's Registration Form 3</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="form.css">
-</head>
-<body class="bg-gray-100">
-    <div class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="#" class="flex items-center space-x-3">
-                <div class="p-2 rounded-lg">
-                    <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
-                </div>
-                <div>
-                    <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
-                    <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
-                        City)</span>
-                </div>
-            </a>
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_about">About Us</a>
-                <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_programs">Academic Programs</a>
-                <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_collaboration">Collaboration</a>
-                <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_contact">Contact</a>
-                <div class="relative ml-4">
-                    <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-                        <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
-                        <select id="language-switcher"
-                            class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="my">မြန်မာ</option>
-                            <option value="en">English</option>
-                        </select>
-                        <i
-                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
-                    </div>
-                </div>
-            </div>
-            <button id="mobile-menu-button" class="md:hidden text-blue-900">
-                <i class="fas fa-bars text-2xl" id="menu-icon"></i>
-            </button>
-        </nav>
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-            <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_about_mobile">About Us</a>
-            <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_programs_mobile">Academic Programs</a>
-            <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_collaboration_mobile">Collaboration</a>
-            <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_contact_mobile">Contact</a>
-        </div>
-    </div>
-    <br>
-    <div class="max-w-4xl mx-auto">
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" novalidate>
-            <section class="form-section" id="student-pledge">
-                <h2 class="form-title">ကျောင်းသား/ ကျောင်းသူ၏ ကတိခံဝန်ချက်</h2>
-                <p class="pledge-text">
-                    နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)က ချမှတ်ထားသော စည်းမျဥ်းစည်းကမ်းများကို 
-                    <input type="text" placeholder="________________________" class="border-0 form-input inline-block w-48" name="academic_year_from_pledge" value="<?php echo $_SESSION['form1_data']['academic_year'] ?? ''; ?>" readonly> သင်တန်းသား/သင်တန်းသူဖြစ်သူ ကျွန်တော် / ကျွန်မ မောင် / မ 
-                    <input type="text" placeholder="______________________" class="border-0 inline-block w-64" name="student_name_from_pledge" value="<?php echo $student_name; ?>" required> ခုံအမှတ် 
-                    <input type="text" placeholder="________________________" class="border-0 form-input inline-block w-48" name="student_seat_no_from_pledge" value="<?php echo $student_seat_no; ?>" required> သည် တစ်သဝေမတိမ်း မပျက်မကွက် လေးစားစွာ လိုက်နာပါမည်ဟု ခံဝန်ကတိပြု လက်မှတ်ရေးထိုးပါသည်။
-                </p>
-                <span class="text-red-500 text-sm block ml-48"><?php echo $errors['student_name_from_pledge'] ?? ''; ?></span>
-                <span class="text-red-500 text-sm block ml-48"><?php echo $errors['student_seat_no_from_pledge'] ?? ''; ?></span>
-                <div class="mt-12 ml-auto w-full md:w-1/2">
-                    <div class="input-group flex items-center">
-                        <label class="w-48">ကျောင်းသား/ ကျောင်းသူလက်မှတ်:</label>
-                        <div class="signature-line flex-grow"></div>
-                    </div>
-                    <div class="input-group flex items-center">
-                        <label for="student-name-id" class="w-48">ကျောင်းသား/ ကျောင်းသူအမည်နှင့် ခုံအမှတ်:</label>
-                        <input type="text" placeholder="______________________" id="student-name-id" class="border-0 form-input flex-grow" value="<?php echo $student_name; ?>" readonly>
-                    </div>
-                </div>
-                <div class="form-footer">UTYCC/ SA/ F-20/ Rev-0/31-10-2022</div>
-            </section>
-            <div class="nav-buttons">
-                <a href="form2.php" class="nav-button">Back</a>
-                <button type="submit" class="nav-button">Next</button>
-            </div>
-        </form>
-    </div>
-    <br>
-    <footer id="contact" class="bg-blue-900 text-white ">
+ <footer id="contact" class="bg-blue-900 text-white ">
         <div class="container mx-auto px-6 py-12">
             <div class="grid md:grid-cols-4 gap-8">
                 <div>
@@ -167,6 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <p>Phone: +95 (XX) XXX XXX (example)</p>
                     </div>
                 </div>
+
                 <div>
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
                         Faculties
@@ -187,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </a></li>
                     </ul>
                 </div>
+
                 <div>
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
                         Quick Links
@@ -206,6 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </li>
                     </ul>
                 </div>
+
                 <div>
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
                         Follow Us
@@ -235,11 +86,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </footer>
+
+    <script>
+        // JavaScript for Photo Upload Preview and Remove
+        const photoUploadInput = document.getElementById('photo_upload');
+        const photoPlaceholder = document.getElementById('photo-placeholder');
+        const photoPreviewContainer = document.getElementById('photo-preview-container');
+        const photoPreview = document.getElementById('photo-preview');
+        const removePhotoBtn = document.getElementById('remove-photo-btn');
+
+        photoUploadInput.addEventListener('change', function (event) {
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    photoPreview.setAttribute('src', e.target.result);
+                    photoPlaceholder.classList.add('hidden');
+                    photoPreviewContainer.classList.remove('hidden');
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
+
+        removePhotoBtn.addEventListener('click', function () {
+            photoUploadInput.value = ''; // Clear the file input
+            photoPreview.setAttribute('src', '#');
+            photoPlaceholder.classList.remove('hidden');
+            photoPreviewContainer.classList.add('hidden');
+        });
+    </script>
+
     <script>
         // --- Menu toggle ---
         const mobileMenuButton = document.getElementById("mobile-menu-button");
         const mobileMenu = document.getElementById("mobile-menu");
         const menuIcon = document.getElementById("menu-icon");
+
         if (mobileMenuButton && mobileMenu && menuIcon) {
             mobileMenuButton.addEventListener("click", () => {
                 mobileMenu.classList.toggle("hidden");
@@ -252,6 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             });
         }
+
         // --- Translation Script ---
         const translations = {
             my: {
@@ -311,10 +193,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 footer_link_rules: "Rules & Regulations",
             },
         };
+
         const languageSwitcher = document.getElementById("language-switcher");
+
         const changeLanguage = (lang) => {
             localStorage.setItem("language", lang);
             languageSwitcher.value = lang;
+
             document.querySelectorAll("[data-lang-key]").forEach((element) => {
                 const key = element.dataset.langKey;
                 const translation = translations[lang][key];
@@ -323,9 +208,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             });
         };
+
         languageSwitcher.addEventListener("change", (event) => {
             changeLanguage(event.target.value);
         });
+
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem("language") || "en";
             changeLanguage(savedLang);
