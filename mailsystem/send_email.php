@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $mail->Port       = 465;
 
         // Recipients
-        $mail->setFrom('aungmyatt080@gmail.com', 'UTYCC System');
+        $mail->setFrom('aungmyatt080@gmail.com', 'UTYCC');
         $mail->addAddress( $email, $name );
         $mail->addReplyTo($email, $name);
 
