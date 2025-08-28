@@ -4,10 +4,16 @@
     if (!isset($_SESSION['form1_data'])) {
     header("location: form1.php");
     exit;
+    
 }
+
+// print_r($_SESSION['option_data']['dormitory_preference']);
+
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+
     if (isset($_FILES['student_photo']) && $_FILES['student_photo']['error'] == 0) {
         $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
         $max_size = 2 * 1024 * 1024; // 2MB
@@ -122,11 +128,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div> -->
             
             <!-- Add a submit button to trigger the form action -->
-            <div class="mt-8 text-center">
+
+ <!-- Navigation Buttons -->
+        <div class="nav-buttons mt-8 flex justify-between">
+            <a href="option.php" class="nav-button bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Back</a>
+            <button type="submit" class="nav-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Next</button>
+        </div>
+
+            <!-- <div class="mt-8 text-center">
                 <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition">
                     Next
                 </button>
-            </div>
+            </div> -->
         </form>
         <!-- Form End -->
 
