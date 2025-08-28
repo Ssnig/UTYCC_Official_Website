@@ -478,7 +478,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class="notice">
                     <p>မန္တလေးတိုင်းဒေသကြီးအတွင်းမှ ကျောင်းသား/ကျောင်းသူများအား ကျောင်းအတွင်းဆောင်ပေးမည်မဟုတ်ပါ</p>
-                </div>
+                </div> 
                 
                 <?php if (!empty($errors['dormitory'])): ?>
                     <div class="text-center text-red-500 mb-4"><?php echo $errors['dormitory']; ?></div>

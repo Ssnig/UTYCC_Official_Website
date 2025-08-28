@@ -6,7 +6,7 @@
     exit;
     
 }
-
+ 
 // print_r($_SESSION['option_data']['dormitory_preference']);
 
 
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (move_uploaded_file($_FILES["student_photo"]["tmp_name"], $target_file)) {
                 // Save file path into session
                 $_SESSION['student_photo'] = "uploads/" . $file_name;
-                header('Location: next_form_page.php');
+                header('Location: finalform.php');
                 exit();
             } else {
                 echo "❌ Error uploading file.";
