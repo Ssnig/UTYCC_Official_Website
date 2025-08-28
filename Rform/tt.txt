@@ -1,0 +1,32 @@
+<?php
+// Start the session to store data across pages.
+session_start();
+
+// Define variables to handle form data and errors.
+$dormitory_preference = null;
+$errors = [];
+
+// Processing form data when the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate that a dormitory preference has been selected.
+    if (isset($_POST["dormitory"])) {
+        $dormitory_preference = htmlspecialchars(trim($_POST["dormitory"]));
+    } else {
+        $errors['dormitory'] = "Please select an accommodation preference.";
+    }
+
+    // If no errors, store the selection in the session and redirect.
+    if (empty($errors)) {
+        // Store the validated data in a session variable.
+        $_SESSION['option_data'] = [
+            'dormitory_preference' => $dormitory_preference
+        ];
+
+        // Redirect to the next step (form3.php).
+        header("location: form3.php");
+        exit;
+    }
+
+}
+?>
+this is option oage

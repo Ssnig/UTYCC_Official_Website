@@ -204,7 +204,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead class="bg-gray-50 text-base">
-                        <tr>
+                        <tr> 
                             <th class="w-12 text-center">စဉ်</th>
                             <th>အကြောင်းအရာ</th>
                             <th>ကျောင်းသား/သူ</th>

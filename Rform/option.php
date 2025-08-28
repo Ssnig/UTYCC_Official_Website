@@ -1,23 +1,35 @@
+
 <?php
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['dormitory'])) {
-        $choice = intval($_POST['dormitory']);
-        $_SESSION['dormitory_choice'] = $choice;
+$errors = [];
+$dormitory_preference = null;
 
-        if ($choice === 1) {
-            header("Location: additional_address.php");
-            exit();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["dormitory"])) {
+        $dormitory_preference = htmlspecialchars(trim($_POST["dormitory"]));
+    } else {
+        $errors['dormitory'] = "Please select an accommodation preference.";
+    }
+
+    if (empty($errors)) {
+        // Save to session
+        $_SESSION['option_data'] = [
+            'dormitory_preference' => $dormitory_preference
+        ];
+
+        // Redirect based on choice
+        if ($dormitory_preference === '1') {
+            header("Location: hostel.php");
+            exit;
         } else {
             header("Location: form3.php");
-            exit();
+            exit;
         }
-    } else {
-        $error = "Please select an option before continuing.";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Choose Your Accommodation</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <style>
-        /* (your CSS 그대로) */
- * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -50,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             position: relative;
         }
 
-        /* Background floating elements */
         .floating-bg {
             position: absolute;
             inset: 0;
@@ -80,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         @keyframes gentleFloat {
-
             0%,
             100% {
                 transform: translateY(0px);
@@ -91,7 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        /* Main form card */
         .form-card {
             background: white;
             border: 1px solid #e5e7eb;
@@ -117,7 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        /* Header section */
         .header {
             text-align: center;
             margin-bottom: 2rem;
@@ -168,7 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #6b7280;
         }
 
-        /* Options section */
         .options {
             margin-bottom: 2rem;
         }
@@ -297,7 +303,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             pointer-events: none;
         }
 
-        /* Notice section */
         .notice {
             background-color: #eff6ff;
             border: 1px solid #bfdbfe;
@@ -314,7 +319,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 500;
         }
 
-        /* Navigation buttons */
         .nav-buttons {
             display: flex;
             justify-content: space-between;
@@ -332,8 +336,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
             text-decoration: none;
+            width: 100%;
         }
 
         .btn:disabled {
@@ -369,7 +375,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             height: 1.25rem;
         }
 
-        /* Responsive design */
         @media (max-width: 768px) {
             .form-card {
                 padding: 1.5rem;
@@ -393,12 +398,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 display: none;
             }
         }
-
-
-
-
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="floating-bg">
@@ -407,16 +409,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="form-card">
-            <?php if (!empty($error)) : ?>
-                <div style="background:#fee2e2; color:#b91c1c; padding:10px; border-radius:6px; margin-bottom:15px;">
-                    <?= htmlspecialchars($error) ?>
-                </div>
-            <?php endif; ?>
-
-            <form id="dormitoryForm" method="POST" action="">
+            <form id="dormitoryForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" novalidate>
                 <div class="header">
                     <div class="header-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
                             </path>
@@ -425,11 +421,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <h1>Choose Your Accommodation</h1>
                     <p>Please select your dormitory preference</p>
                 </div>
-
+<!-- option 1 -->
                 <div class="options">
                     <div class="option">
-                        <label class="option-card" data-value="1">
-                            <input type="radio" name="dormitory" value="1" class="hidden-input">
+                        <div class="option-card <?php echo ($dormitory_preference === '1') ? 'selected' : ''; ?>" data-value="1">
+                            <input type="radio" name="dormitory" value="1" id="dormitory-yes" class="hidden-input" <?php echo ($dormitory_preference === '1') ? 'checked' : ''; ?>>
                             <div class="option-content">
                                 <div class="option-left">
                                     <div class="radio-button">
@@ -438,18 +434,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 d="M5 13l4 4L19 7"></path>
                                         </svg>
                                     </div>
+                                    <svg class="option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                        </path>
+                                    </svg>
                                     <div class="option-text">
                                         <span class="option-title">ကျောင်းအတွင်းဆောင်လျှောက်မည့်သူများ</span>
-                                        <span class="option-subtitle">Students applying for dormitory accommodation</span>
+                                        <span class="option-subtitle">Students applying for dormitory
+                                            accommodation</span>
                                     </div>
                                 </div>
                             </div>
-                        </label>
+                        </div>
                     </div>
-
+<!-- option 2 -->
                     <div class="option">
-                        <label class="option-card" data-value="0">
-                            <input type="radio" name="dormitory" value="0" class="hidden-input">
+                        <div class="option-card <?php echo ($dormitory_preference === '0') ? 'selected' : ''; ?>" data-value="0">
+                            <input type="radio" name="dormitory" value="0" id="dormitory-no" class="hidden-input" <?php echo ($dormitory_preference === '0') ? 'checked' : ''; ?>>
                             <div class="option-content">
                                 <div class="option-left">
                                     <div class="radio-button">
@@ -458,41 +460,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 d="M5 13l4 4L19 7"></path>
                                         </svg>
                                     </div>
+                                    <svg class="option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                        </path>
+                                    </svg>
                                     <div class="option-text">
                                         <span class="option-title">ကျောင်းအတွင်းဆောင်မလျှောက်လိုသူများ</span>
-                                        <span class="option-subtitle">Students not applying for dormitory accommodation</span>
+                                        <span class="option-subtitle">Students not applying for dormitory
+                                            accommodation</span>
                                     </div>
                                 </div>
                             </div>
-                        </label>
+                        </div>
                     </div>
                 </div>
 
                 <div class="notice">
                     <p>မန္တလေးတိုင်းဒေသကြီးအတွင်းမှ ကျောင်းသား/ကျောင်းသူများအား ကျောင်းအတွင်းဆောင်ပေးမည်မဟုတ်ပါ</p>
-                </div>
+                </div> 
+                
+                <?php if (!empty($errors['dormitory'])): ?>
+                    <div class="text-center text-red-500 mb-4"><?php echo $errors['dormitory']; ?></div>
+                <?php endif; ?>
+
 
                 <div class="nav-buttons">
-                    <button type="button" class="btn btn-back" onclick="history.back()">
+                    <a href="form2.php" class="btn btn-back">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
                         Back
-                    </button>
+                    </a>
+
                     <button type="submit" class="btn btn-next" id="nextBtn" disabled>
-                        Next →
+                        Next
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-<script>
-document.querySelectorAll('.option-card').forEach(card => {
-    card.addEventListener('click', function () {
-        document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-        this.classList.add('selected');
-        this.querySelector('input[type=radio]').checked = true;
-        document.getElementById('nextBtn').disabled = false;
-    });
-});
-</script>
+    <script>
+        const form = document.getElementById('dormitoryForm');
+        const options = document.querySelectorAll('.option-card');
+        const nextButton = document.getElementById('nextBtn');
+    
+        // Function to update the UI based on selection
+        function updateUI(selectedCard) {
+            options.forEach(card => {
+                card.classList.remove('selected');
+            });
+    
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                nextButton.disabled = false;
+            } else {
+                nextButton.disabled = true;
+            }
+        }
+    
+        // Add click event listeners to each option card
+        options.forEach(card => {
+            card.addEventListener('click', () => {
+                const radio = card.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    updateUI(card);
+                }
+            });
+        });
+        
+        // Check for pre-selected option on page load
+        window.addEventListener('load', () => {
+            const selectedRadio = form.querySelector('input[name="dormitory"]:checked');
+            if (selectedRadio) {
+                const selectedCard = selectedRadio.closest('.option-card');
+                updateUI(selectedCard);
+            }
+        });
+    </script>
 </body>
 </html>

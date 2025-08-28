@@ -67,7 +67,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ];
 
         // Redirect to the next form.
-        header("location: form3.php");
+        // header("location: form3.php");
+         header("location: option.php");
         exit;
     }
 }
