@@ -121,10 +121,9 @@
           University of Technology (Yatanarpon Cyber City)
         </div>
         <a id="major-title" href="#"
-          class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">here</a>
-        <p id="major-description" class="mt-2 text-slate-500">
-          This is a placeholder for the major description. The JavaScript will
-          update this content dynamically.
+          class="block mt-1 text-lg leading-tight font-medium text-black hover:underline"data-lang-key="major_title">Faculty of Precision Engineering</a>
+        <p id="major-description" class="mt-2 text-slate-500"data-lang-key="major_description">
+          နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ တိကျစက်ပစ္စည်းထုတ်လုပ်မှုအင်ဂျင်နီယာဌာန (Faculty of Precision Engineering - PrE) သည် တိကျမှန်ကန်သော စက်ပစ္စည်းများ၊ စက်ပစ္စည်းအစိတ်အပိုင်းများကို ဒီဇိုင်းရေးဆွဲခြင်း၊ ထုတ်လုပ်ခြင်းနှင့် အလိုအလျောက်ထိန်းချုပ်စနစ်များ ဖန်တီးခြင်းကို အဓိကထား သင်ကြားပေးသော ဘာသာရပ်တစ်ခုဖြစ်သည်။
         </p>
       </div>
     </div>
@@ -957,10 +956,6 @@
     }
 
     // major name change ပြီးတော့ descriptionရော change
-    updateMajorPanel(
-      "Faculty of Precision Engineering",
-      "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ တိကျစက်ပစ္စည်းထုတ်လုပ်မှုအင်ဂျင်နီယာဌာန (Faculty of Precision Engineering - PrE) သည် တိကျမှန်ကန်သော စက်ပစ္စည်းများ၊ စက်ပစ္စည်းအစိတ်အပိုင်းများကို ဒီဇိုင်းရေးဆွဲခြင်း၊ ထုတ်လုပ်ခြင်းနှင့် အလိုအလျောက်ထိန်းချုပ်စနစ်များ ဖန်တီးခြင်းကို အဓိကထား သင်ကြားပေးသော ဘာသာရပ်တစ်ခုဖြစ်သည်။"
-    );
     // --- DOM Elements ---
     const navLinks = document.querySelectorAll(".nav-link");
     const mobileMenuButton = document.getElementById("mobile-menu-button");
@@ -987,6 +982,9 @@
     // --- Translation Script ---
     const translations = {
       my: {
+        major_title: "တိကျစက်ပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ",
+        major_description:
+          "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ တိကျစက်ပစ္စည်းထုတ်လုပ်မှုအင်ဂျင်နီယာဌာန (Faculty of Precision Engineering - PrE) သည် တိကျမှန်ကန်သော စက်ပစ္စည်းများ၊ စက်ပစ္စည်းအစိတ်အပိုင်းများကို ဒီဇိုင်းရေးဆွဲခြင်း၊ ထုတ်လုပ်ခြင်းနှင့် အလိုအလျောက်ထိန်းချုပ်စနစ်များ ဖန်တီးခြင်းကို အဓိကထား သင်ကြားပေးသော ဘာသာရပ်တစ်ခုဖြစ်သည်။",
         utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
         nav_about: "ကျွန်ုပ်တို့အကြောင်း",
         nav_programs: "ပညာရေးအစီအစဉ်များ",
@@ -1082,6 +1080,9 @@
       },
       
       en: {
+        major_title: "Mechanical Precision and Automation Engineering",
+        major_description:
+          "The Department of Precision Engineering (PrE) at the University of Technology (Yatanarpon Cyber City) focuses on the design, manufacturing, and creation of automated control systems for precise machinery and components.",
         utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
         nav_about: "About Us",
         nav_programs: "Academic Programs",
