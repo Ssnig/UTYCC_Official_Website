@@ -7,6 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
-    'Adamlc\\Premailer\\' => array($vendorDir . '/adamlc/premailer-cli-wrapper/src'),
-    'AdamBrett\\ShellWrapper\\' => array($vendorDir . '/adambrett/shell-wrapper/src'),
 );

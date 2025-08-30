@@ -23,7 +23,7 @@
     $student_dob        = $student_birthplace   = "";
     $father_info        = $mother_info          = "";
     $father_deceased_year = $mother_deceased_year = "";
-    $student_address    = $date   = "";
+    $student_address    = $date = "";
     $state_region       = $township       = ""; // Added for birthplace dropdowns
     $photo_url          = "";
     $date               = date('d-m-Y');
@@ -69,59 +69,55 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // --- Handle Photo Upload ---
-        $existing_photo_url = $_POST['photo_url'] ?? '';
+        $original_photo_on_load = $_POST['original_photo_url'] ?? '';
+        $is_new_upload_attempt = isset($_FILES["photo_upload"]) && $_FILES["photo_upload"]["error"] != UPLOAD_ERR_NO_FILE;
+        $is_removal_request = !empty($_POST['remove_photo']) && $_POST['remove_photo'] == '1';
 
-        // Handle photo removal
-        if (! empty($_POST['remove_photo']) && $_POST['remove_photo'] == '1') {
-            if (! empty($existing_photo_url) && file_exists($existing_photo_url)) {
-                unlink($existing_photo_url); // Delete the file from server
-            }
-            $_POST['photo_url'] = ''; // Clear the photo URL from POST data
-        }
-
-        // Handle new photo upload
-        if (isset($_FILES["photo_upload"]) && $_FILES["photo_upload"]["error"] == UPLOAD_ERR_OK) {
+        if ($is_new_upload_attempt && $_FILES["photo_upload"]["error"] == UPLOAD_ERR_OK) {
             $target_dir = "uploads/";
-            if (! is_dir($target_dir)) {
-                mkdir($target_dir, 0777, true); // Create directory if it doesn't exist
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0777, true);
             }
 
             $imageFileType = strtolower(pathinfo($_FILES["photo_upload"]["name"], PATHINFO_EXTENSION));
-            $unique_name   = uniqid('photo_', true) . '.' . $imageFileType;
-            $target_file   = $target_dir . $unique_name;
-            $uploadOk      = 1;
+            $unique_name = uniqid('photo_', true) . '.' . $imageFileType;
+            $target_file = $target_dir . $unique_name;
+            $uploadOk = 1;
 
-            // Check if image file is a actual image
             $check = getimagesize($_FILES["photo_upload"]["tmp_name"]);
             if ($check === false) {
                 $errors['photo_upload'] = "File is not an image.";
-                $uploadOk               = 0;
+                $uploadOk = 0;
             }
-
-            // Check file size (e.g., 5MB limit)
             if ($_FILES["photo_upload"]["size"] > 5000000) {
                 $errors['photo_upload'] = "Sorry, your file is too large (Max 5MB).";
-                $uploadOk               = 0;
+                $uploadOk = 0;
             }
-
-            // Allow certain file formats
-            if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+            if (!in_array($imageFileType, ["jpg", "png", "jpeg"])) {
                 $errors['photo_upload'] = "Sorry, only JPG, JPEG, & PNG files are allowed.";
-                $uploadOk               = 0;
+                $uploadOk = 0;
             }
 
             if ($uploadOk == 1) {
                 if (move_uploaded_file($_FILES["photo_upload"]["tmp_name"], $target_file)) {
-                    // If there was an old photo, delete it
-                    if (! empty($existing_photo_url) && file_exists($existing_photo_url)) {
-                        unlink($existing_photo_url);
+                    if (!empty($original_photo_on_load) && file_exists($original_photo_on_load)) {
+                        unlink($original_photo_on_load);
                     }
-                    $_POST['photo_url'] = $target_file; // Add the new file path to POST data
+                    $_POST['photo_url'] = $target_file;
                 } else {
-                    $errors['photo_upload'] = "Sorry, there was an an error uploading your file.";
+                    $errors['photo_upload'] = "Sorry, there was an error uploading your file.";
+                    $_POST['photo_url'] = $original_photo_on_load;
                 }
+            } else {
+                $_POST['photo_url'] = $original_photo_on_load;
             }
+        } elseif ($is_removal_request) {
+            if (!empty($original_photo_on_load) && file_exists($original_photo_on_load)) {
+                unlink($original_photo_on_load);
+            }
+            $_POST['photo_url'] = '';
         }
+
 
         $sanitized_post = [];
         foreach ($_POST as $key => $value) {
@@ -168,6 +164,10 @@
         $photo_url          = $sanitized_post["photo_url"] ?? '';
 
         // --- Validate Required Fields ---
+        if (empty($photo_url)) {
+            $errors['photo_upload'] = "ကျေးဇူးပြု၍ ဓာတ်ပုံထည့်သွင်းပါ။";
+        }
+
         if (empty($academic_year)) {
             $errors['academic_year'] = "သင်တန်းနှစ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
@@ -418,9 +418,10 @@
                         <div id="remove-photo-btn" title="Remove Photo">×</div>
                     </div>
                     <input type="file" class="hidden" id="photo_upload" name="photo_upload" accept="image/*">
+                    <input type="hidden" name="original_photo_url" value="<?php echo getValue('photo_url'); ?>">
                     <input type="hidden" name="photo_url" id="photo_url_hidden" value="<?php echo getValue('photo_url'); ?>">
                     <input type="hidden" name="remove_photo" id="remove_photo_flag" value="0">
-                    <?php if (isset($errors['photo_upload'])): ?><p class="error-message mt-2"><?php echo $errors['photo_upload']; ?></p><?php endif; ?>
+                    <?php if (isset($errors['photo_upload'])): ?><p class="error-message mt-2 server-error-message"><?php echo $errors['photo_upload']; ?></p><?php endif; ?>
                 </div>
             </div>
 
@@ -465,27 +466,27 @@
                             <input type="hidden" name="student_nrc" id="student_nrc_hidden" value="<?php echo getValue('student_nrc'); ?>">
                             <?php if (isset($errors['student_nrc'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_nrc']; ?></p><?php endif; ?>
                         </div>
-                         <!-- DOB -->
+                          <!-- DOB -->
                         <div class="relative pb-5">
                             <label for="student_dob" class="block text-sm font-medium text-gray-700">မွေးသက္ကရာဇ်</label>
                             <input type="date" id="student_dob" name="student_dob" class="mt-1" value="<?php echo getValue('student_dob'); ?>" required>
                             <p id="dob_error_client" class="error-message absolute bottom-0 left-0" style="display: none;"></p>
-                            <?php if (isset($errors['student_dob'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_dob']; ?></p><?php endif; ?>
+                            <?php if (isset($errors['student_dob'])): ?><p id="dob_error_server" class="error-message absolute bottom-0 left-0"><?php echo $errors['student_dob']; ?></p><?php endif; ?>
                         </div>
                         <!-- Birthplace -->
                         <div class="relative pb-5">
                              <label for="student_birthplace" class="block text-sm font-medium text-gray-700">မွေးဖွားရာဇာတိ</label>
                              <div class="grid grid-cols-2 gap-2 mt-1">
-                                <div>
-                                    <select id="state_region" name="state_region" required>
-                                        <option value="" disabled selected>တိုင်း/ပြည်နယ်</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <select id="township" name="township" required>
-                                        <option value="" disabled selected>မြို့နယ်</option>
-                                    </select>
-                                </div>
+                                 <div>
+                                     <select id="state_region" name="state_region" required>
+                                         <option value="" disabled selected>တိုင်း/ပြည်နယ်</option>
+                                     </select>
+                                 </div>
+                                 <div>
+                                     <select id="township" name="township" required>
+                                         <option value="" disabled selected>မြို့နယ်</option>
+                                     </select>
+                                 </div>
                              </div>
                              <input type="hidden" id="student_birthplace" name="student_birthplace" value="<?php echo getValue('student_birthplace'); ?>">
                              <?php if (isset($errors['student_birthplace'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_birthplace']; ?></p><?php endif; ?>
@@ -498,9 +499,9 @@
                         </div>
                         <!-- Address -->
                         <div class="relative pb-5 md:col-span-2">
-                             <label for="student_address" class="block text-sm font-medium text-gray-700">အမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ အပြည့်အစုံ</label>
-                             <textarea id="student_address" name="student_address" rows="3" class="mt-1"><?php echo getValue('student_address'); ?></textarea>
-                             <?php if (isset($errors['student_address'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_address']; ?></p><?php endif; ?>
+                              <label for="student_address" class="block text-sm font-medium text-gray-700">အမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ အပြည့်အစုံ</label>
+                              <textarea id="student_address" name="student_address" rows="3" class="mt-1"><?php echo getValue('student_address'); ?></textarea>
+                              <?php if (isset($errors['student_address'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_address']; ?></p><?php endif; ?>
                         </div>
                     </div>
                 </section>
@@ -669,7 +670,7 @@
     // Pass PHP values to JavaScript
     const previouslySelectedState = '<?php echo $repopulate_state; ?>';
     const previouslySelectedTownship = '<?php echo $repopulate_township; ?>';
-    const repopulateNrcData =                                    <?php echo json_encode($repopulate_nrc); ?>;
+    const repopulateNrcData =                                           <?php echo json_encode($repopulate_nrc); ?>;
     const photoUrlFromServer = '<?php echo getValue('photo_url', ''); ?>';
 
 
@@ -682,6 +683,11 @@
         const removeBtn = document.getElementById('remove-photo-btn');
         const photoUrlHidden = document.getElementById('photo_url_hidden');
         const removePhotoFlag = document.getElementById('remove_photo_flag');
+
+        // Create a dedicated container for client-side photo validation messages
+        const photoClientErrorContainer = document.createElement('p');
+        photoClientErrorContainer.className = 'error-message mt-2';
+        photoUploadInput.parentElement.appendChild(photoClientErrorContainer);
 
         function showPhotoPreview(url) {
             if (!url) return;
@@ -705,7 +711,32 @@
         }
 
         photoUploadInput.addEventListener('change', function() {
+            // Clear previous client-side errors
+            photoClientErrorContainer.textContent = '';
+            
+            // Hide any server-side error when a new file is chosen
+            const serverError = this.parentElement.querySelector('.server-error-message');
+            if (serverError) {
+                serverError.style.display = 'none';
+            }
+
             if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                const maxSize = 5 * 1024 * 1024; // 5MB
+
+                if (!allowedTypes.includes(file.type)) {
+                    photoClientErrorContainer.textContent = 'Sorry, only JPG, JPEG, & PNG files are allowed.';
+                    hidePhotoPreview();
+                    return;
+                }
+
+                if (file.size > maxSize) {
+                    photoClientErrorContainer.textContent = 'Sorry, your file is too large (Max 5MB).';
+                    hidePhotoPreview();
+                    return;
+                }
+
                 removePhotoFlag.value = '0'; // If a new file is selected, don't remove it
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -721,9 +752,9 @@
 
 
         // --- Date of Birth Validation ---
-        const form = document.querySelector('form');
         const dobInput = document.getElementById('student_dob');
-        const errorContainer = document.getElementById('dob_error_client');
+        const clientErrorContainer = document.getElementById('dob_error_client');
+        const serverErrorContainer = document.getElementById('dob_error_server');
 
         if (dobInput) {
             const today = new Date();
@@ -735,19 +766,24 @@
 
         const validateDateOfBirth = () => {
             if (!dobInput) return true;
-            errorContainer.style.display = 'none';
-            errorContainer.textContent = '';
+
+            // Hide server error on new input
+            if(serverErrorContainer) {
+                serverErrorContainer.style.display = 'none';
+            }
+
+            clientErrorContainer.style.display = 'none';
+            clientErrorContainer.textContent = '';
             const dobValue = dobInput.value;
             if (!dobValue) {
-                errorContainer.textContent = 'မွေးသက္ကရာဇ်ထည့်သွင်းရန်လိုအပ်ပါသည်။';
-                errorContainer.style.display = 'block';
-                return false;
+                // The server will handle required validation, so we don't need a client-side message for it.
+                return true;
             }
             const birthDate = new Date(dobValue);
             const currentDate = new Date();
             if (birthDate > currentDate) {
-                errorContainer.textContent = 'မွေးသက္ကရာဇ်သည် ယနေ့ထက်နောက်ကျ၍မရပါ။';
-                errorContainer.style.display = 'block';
+                clientErrorContainer.textContent = 'မွေးသက္ကရာဇ်သည် ယနေ့ထက်နောက်ကျ၍မရပါ။';
+                clientErrorContainer.style.display = 'block';
                 return false;
             }
             let age = currentDate.getFullYear() - birthDate.getFullYear();
@@ -756,25 +792,20 @@
                 age--;
             }
             if (age < 16) {
-                errorContainer.textContent = 'အသက် ၁၆ နှစ်ပြည့်ပြီးသူဖြစ်ရပါမည်။';
-                errorContainer.style.display = 'block';
+                clientErrorContainer.textContent = 'အသက် ၁၆ နှစ်ပြည့်ပြီးသူဖြစ်ရပါမည်။';
+                clientErrorContainer.style.display = 'block';
                 return false;
             }
             if (age > 100) {
-                errorContainer.textContent = 'ထည့်သွင်းထားသော အသက်သည် မှန်ကန်မှုမရှိပါ။';
-                errorContainer.style.display = 'block';
+                clientErrorContainer.textContent = 'ထည့်သွင်းထားသော အသက်သည် မှန်ကန်မှုမရှိပါ။';
+                clientErrorContainer.style.display = 'block';
                 return false;
             }
             return true;
         };
 
-        if (form) {
-            form.addEventListener('submit', function(event) {
-                if (!validateDateOfBirth()) {
-                    event.preventDefault();
-                }
-            });
-        }
+        // The 'submit' event listener that prevented server-side validation has been removed.
+        // The form will now submit, and the PHP code will return all validation errors as intended.
         if (dobInput) {
             dobInput.addEventListener('input', validateDateOfBirth);
         }
@@ -1047,3 +1078,4 @@
 
 </body>
 </html>
+

@@ -1,7 +1,7 @@
 <?php
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-require 'vendor/autoload.php'; // Ensure Composer's autoloader is included
+require 'vendor/autoload.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_email') {
@@ -23,13 +23,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'aungmyatt080@gmail.com'; 
-        $mail->Password   = 'esae pekh iukt fyhh'; // ✅ use Gmail App Password
+        $mail->Username   = 'mailutycc@gmail.com'; 
+        $mail->Password   = 'unhm lkmb uewk xkuj';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; 
         $mail->Port       = 465;
 
         // Recipients
-        $mail->setFrom('aungmyatt080@gmail.com', 'UTYCC');
+        $mail->setFrom('mailutycc@gmail.com', 'UTYCC');
         $mail->addAddress( $email, $name );
         $mail->addReplyTo($email, $name);
 
@@ -42,6 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <p><strong>Email:</strong> $email</p>
             <p><strong>Phone:</strong> $phone</p>
             <p><strong>Sign-In Time:</strong> " . date('Y-m-d H:i:s') . "</p>
+            <p>Registeration ID: " . uniqid('REG-') . "</p>
+            //add random method
+            <p>Password: randomlyGeneratedPassword123</p> 
         ";
         $mail->AltBody = "New Student Sign-In:\nName: $name\nEmail: $email\nPhone: $phone\nTime: " . date('Y-m-d H:i:s');
 

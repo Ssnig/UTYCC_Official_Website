@@ -1,6 +1,8 @@
 
 <?php
 session_start();
+// echo '<pre>';
+// print_r($_SESSION);
 
 $errors = [];
 $dormitory_preference = null;
@@ -28,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
 ?>
 
 <!DOCTYPE html>

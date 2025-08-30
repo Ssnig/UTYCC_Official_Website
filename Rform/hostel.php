@@ -1,47 +1,54 @@
 <?php
     
     session_start();
+    // Check if form1 data exists, if not, redirect back to form1
     if (!isset($_SESSION['form1_data'])) {
-    header("location: form1.php");
-    exit;
-    
-}
- 
-// print_r($_SESSION['option_data']['dormitory_preference']);
-
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-
-    if (isset($_FILES['student_photo']) && $_FILES['student_photo']['error'] == 0) {
-        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
-        $max_size = 2 * 1024 * 1024; // 2MB
-
-        if (in_array($_FILES['student_photo']['type'], $allowed_types) &&
-            $_FILES['student_photo']['size'] <= $max_size) {
-            
-            $upload_dir = __DIR__ . "/uploads/";
-            $file_name = time() . "_" . basename($_FILES['student_photo']['name']);
-            $target_file = $upload_dir . $file_name;
-
-            if (move_uploaded_file($_FILES["student_photo"]["tmp_name"], $target_file)) {
-                // Save file path into session
-                $_SESSION['student_photo'] = "uploads/" . $file_name;
-                header('Location: finalform.php');
-                exit();
-            } else {
-                echo "❌ Error uploading file.";
-            }
-        } else {
-            echo "❌ Invalid file type or size too large.";
-        }
-    } else {
-        echo "❌ Please upload a photo.";
+        header("location: form1.php");
+        exit;
     }
 
+    // Get the photo URL from the session data
+    $photo_url = $_SESSION['form1_data']['photo_url'] ?? '';
 
-}
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        
+        // Check if a new photo is uploaded
+        if (isset($_FILES['student_photo']) && $_FILES['student_photo']['error'] == UPLOAD_ERR_OK) {
+            $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+            $max_size = 5 * 1024 * 1024; // 5MB
+            $uploadOk = 1;
+
+            if (in_array($_FILES['student_photo']['type'], $allowed_types) && $_FILES['student_photo']['size'] <= $max_size) {
+                
+                $upload_dir = __DIR__ . "/uploads/";
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                
+                $file_name = uniqid('photo_', true) . "_" . basename($_FILES['student_photo']['name']);
+                $target_file = $upload_dir . $file_name;
+
+                if (move_uploaded_file($_FILES["student_photo"]["tmp_name"], $target_file)) {
+                    // Successfully uploaded new photo, now delete the old one
+                    $old_photo_url = $_SESSION['form1_data']['photo_url'] ?? '';
+                    if (!empty($old_photo_url) && file_exists($old_photo_url)) {
+                        unlink($old_photo_url);
+                    }
+                    
+                    // Save the new file path into session
+                    $_SESSION['form1_data']['photo_url'] = "uploads/" . $file_name;
+
+                } else {
+                    // Handle upload error if needed, for now, we just proceed with old photo
+                }
+            }
+        } 
+        
+        // If no new photo or failed upload, the old photo_url in session remains.
+        // Proceed to the final form
+        header('Location: finalform.php');
+        exit();
+    }
 ?>
 <?php include 'hostelpartials/header.php'; ?>
     <br>
@@ -57,60 +64,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         
         <!-- Form Start -->
-        <!-- The form tag needs method="POST" and enctype for file uploads -->
-        <form action="" method="POST" enctype="multipart/form-data">
-            <!-- Photo Upload -->
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" enctype="multipart/form-data">
+            <!-- Photo Upload/Display -->
             <div class="my-8 flex justify-center">
-                <div class="upload-area w-full sm:w-1/2 md:w-1/3">
-                    <!-- Text and Upload Button -->
-                    <div id="upload-prompt">
-                        <p class="text-lg text-gray-700">ဓာတ်ပုံထည့်ရန်</p>
-                        <!-- The input needs a "name" attribute for PHP to process it -->
-                        <input type="file" name="student_photo" id="photo-upload" accept="image/*" class="hidden">
-                        <div onclick="document.getElementById('photo-upload').click()" class="upload-button">Upload</div>
+                 <div class="upload-area w-48 text-center">
+                    <div id="preview-container" class="relative">
+                        <img id="image-preview" 
+                             src="<?php echo !empty($photo_url) && file_exists($photo_url) ? htmlspecialchars($photo_url) : 'https://placehold.co/192x224/e2e8f0/64748b?text=No+Photo'; ?>" 
+                             alt="Student Photo" 
+                             class="w-full h-full object-cover rounded-lg mb-2 border">
                     </div>
-                    <!-- Image Preview and Remove Button -->
-                    <div id="preview-container" class="hidden">
-                        <img id="image-preview" src="#" alt="Image Preview" class="w-full h-auto rounded-lg mb-4">
-                        <div id="remove-button" class="upload-button">Remove</div>
-                    </div>
+                    <input type="file" name="student_photo" id="photo-upload" accept="image/*" class="hidden">
+                    <button type="button" onclick="document.getElementById('photo-upload').click()" class="mt-2 w-full bg-gray-200 text-gray-800 text-sm py-2 px-4 rounded-lg hover:bg-gray-300 transition">ဓာတ်ပုံပြောင်းရန်</button>
+                    <p id="photo-error" class="text-red-500 text-xs mt-1 h-4"></p>
                 </div>
             </div>
             
-            <!-- Form -->
+            <!-- Form Fields -->
             <div class="mt-8">
                 <div class="form-item">
                     <span class="form-label">အမည်:</span>
-                    <!-- Add name attributes to all inputs -->
-                    <input type="text" name="student_name" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_name_mm'])??''; ?>" readonly>
+                    <input type="text" name="student_name" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_name_mm'] ?? ''); ?>" readonly>
                 </div>
                 <div class="form-item">
                     <span class="form-label">ခုံအမှတ်:</span>
-                    <input type="text" name="seat_number" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['seat_no'])??''; ?>" readonly>
+                    <input type="text" name="seat_number" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['seat_no'] ?? ''); ?>" readonly>
                 </div>
                 <div class="form-item">
                     <span class="form-label">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်:</span>
-                    <input type="text" name="nrc" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_nrc'])??''; ?>" readonly>
+                    <input type="text" name="nrc" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_nrc'] ?? ''); ?>" readonly>
                 </div>
                 <div class="form-item">
                     <span class="form-label">မွေးသက္ကရာဇ်:</span>
-                    <input type="text" name="dob" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_dob'])??''; ?>" readonly>
+                    <input type="text" name="dob" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_dob'] ?? ''); ?>" readonly>
                 </div>
                 <div class="form-item">
                     <span class="form-label">အဖအမည်:</span>
-                    <input type="text" name="father_name" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['father_name_mm'])??''; ?>" readonly>
+                    <input type="text" name="father_name" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['father_name_mm'] ?? ''); ?>" readonly>
                 </div>
                 <div class="form-item">
                     <span class="form-label">အမိအမည်:</span>
-                    <input type="text" name="mother_name" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['mother_name_mm'])??''; ?>" readonly>
+                    <input type="text" name="mother_name" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['mother_name_mm'] ?? ''); ?>" readonly>
                 </div>
                 <div class="form-item">
                     <span class="form-label">ဆက်သွယ်ရန်လိပ်စာ:</span>
-                    <input type="text" name="address" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_address'])??''; ?>" readonly>
+                    <input type="text" name="address" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_address'] ?? ''); ?>" readonly>
                 </div>
                 <div class="form-item">
                     <span class="form-label">ဖုန်းနံပါတ်:</span>
-                    <input type="text" name="phone_number" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_phone'])??''; ?>" readonly>
+                    <input type="text" name="phone_number" class="form-input" value="<?php echo htmlspecialchars($_SESSION['form1_data']['student_phone'] ?? ''); ?>" readonly>
                 </div>
             </div>
             
@@ -119,35 +121,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <p class="text-sm text-red-500">အထက်ပါ သတင်းအချက်အလက်များသည် မှန်ကန်ကြောင်း ဝန်ခံပါသည်။</p>
             </div>
             
-            <!-- Signature -->
-            <!-- <div class="mt-8 flex justify-center items-end">
-                <div class="text-center">
-                    <div class="signature-line"></div>
-                    <p class="text-sm mt-2">(လက်မှတ်)</p>
-                </div>
-            </div> -->
-            
-            <!-- Add a submit button to trigger the form action -->
-
- <!-- Navigation Buttons -->
-        <div class="nav-buttons mt-8 flex justify-between">
-            <a href="option.php" class="nav-button bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Back</a>
-            <button type="submit" class="nav-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Next</button>
-        </div>
-
-            <!-- <div class="mt-8 text-center">
-                <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition">
-                    Next
-                </button>
-            </div> -->
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons mt-8 flex justify-between">
+                <!-- This back button should go to the previous logical step, e.g., form1.php or an options page -->
+                <a href="form1.php" class="nav-button bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Back</a>
+                <button type="submit" class="nav-button bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Next</button>
+            </div>
         </form>
         <!-- Form End -->
 
         <!-- Footer -->
         <div class="mt-8 flex justify-between items-center text-xs text-gray-500">
             <span>UTYCC/SA/F-18/Rev-0/20-6-2022</span>
-            <!-- <span>Prepared By:...................</span>
-            <span>Approved By:...................</span> -->
         </div>
     </div>
     
@@ -220,33 +205,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     <script>
         const photoUpload = document.getElementById('photo-upload');
-        const uploadPrompt = document.getElementById('upload-prompt');
-        const previewContainer = document.getElementById('preview-container');
         const imagePreview = document.getElementById('image-preview');
-        const removeButton = document.getElementById('remove-button');
-        
+        const photoError = document.getElementById('photo-error');
+
         photoUpload.addEventListener('change', function(event) {
+            photoError.textContent = ''; // Clear previous errors
             const file = event.target.files[0];
             if (file) {
+                // Client-side validation
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                const maxSize = 5 * 1024 * 1024; // 5MB
+
+                if (!allowedTypes.includes(file.type)) {
+                    photoError.textContent = 'JPG, PNG, GIF ဖိုင်အမျိုးအစားသာရွေးပါ။';
+                    this.value = ''; // Clear the input
+                    return;
+                }
+
+                if (file.size > maxSize) {
+                    photoError.textContent = 'ဖိုင်ဆိုဒ် 5MB ထက်ကြီးနေပါသည်။';
+                    this.value = ''; // Clear the input
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     imagePreview.src = e.target.result;
-                    uploadPrompt.classList.add('hidden');
-                    previewContainer.classList.remove('hidden');
                 };
                 reader.readAsDataURL(file);
             }
         });
-        
-        removeButton.addEventListener('click', function() {
-            // Clear the file input and hide the preview
-            photoUpload.value = null; // Clear the file
-            imagePreview.src = '';
-            uploadPrompt.classList.remove('hidden');
-            previewContainer.classList.add('hidden');
-        });
-    </script>
-    <script>
+
         // --- Translation Script ---
         const translations = {
             my: {
@@ -310,7 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             localStorage.setItem("language", lang);
             
             // Set the dropdown to the correct value
-            languageSwitcher.value = lang;
+            if(languageSwitcher) languageSwitcher.value = lang;
             
             // Translate all elements with the data-lang-key attribute
             document.querySelectorAll("[data-lang-key]").forEach((element) => {
@@ -323,7 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         };
         
         // Event listener for the language switcher
-        languageSwitcher.addEventListener("change", (event) => {
+        if(languageSwitcher) languageSwitcher.addEventListener("change", (event) => {
             changeLanguage(event.target.value);
         });
         
@@ -337,3 +326,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </body>
 
 </html>
+

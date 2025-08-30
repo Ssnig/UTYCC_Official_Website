@@ -120,10 +120,9 @@
           University of Technology (Yatanarpon Cyber City)
         </div>
         <a id="major-title" href="#"
-          class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">here</a>
-        <p id="major-description" class="mt-2 text-slate-500">
-          This is a placeholder for the major description. The JavaScript will
-          update this content dynamically.
+          class="block mt-1 text-lg leading-tight font-medium text-black hover:underline" data-lang-key="major_Title">Computer Engineering</a>
+        <p id="major-description" class="mt-2 text-slate-500" data-lang-key="major_Description">
+         နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ ကွန်ပျူတာအင်ဂျင်နီယာဌာန (Department of Computer Engineering - CE) သည် ကွန်ပျူတာ hardware (ကွန်ပျူတာစနစ်များ၊ အင်တာနက်ကွန်ယက်များ) နှင့် software (Embedded Systems နှင့် AI/Robotics) နှစ်မျိုးစလုံးကို ပေါင်းစပ်လေ့လာသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။
         </p>
       </div>
     </div>
@@ -934,10 +933,6 @@
     }
 
     // major name change ပြီးတော့ descriptionရော change
-    updateMajorPanel(
-      "Computer Engineering",
-      "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ ကွန်ပျူတာအင်ဂျင်နီယာဌာန (Department of Computer Engineering - CE) သည် ကွန်ပျူတာ hardware (ကွန်ပျူတာစနစ်များ၊ အင်တာနက်ကွန်ယက်များ) နှင့် software (Embedded Systems နှင့် AI/Robotics) နှစ်မျိုးစလုံးကို ပေါင်းစပ်လေ့လာသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။"
-    );
     // --- DOM Elements ---
     const navLinks = document.querySelectorAll(".nav-link");
     const mobileMenuButton = document.getElementById("mobile-menu-button");
@@ -964,6 +959,8 @@
     // --- Translation Script ---
     const translations = {
       my: {
+        major_Title: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+        major_Description:"နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ၏ ကွန်ပျူတာအင်ဂျင်နီယာဌာန (Department of Computer Engineering - CE) သည် ကွန်ပျူတာ hardware (ကွန်ပျူတာစနစ်များ၊ အင်တာနက်ကွန်ယက်များ) နှင့် software (Embedded Systems နှင့် AI/Robotics) နှစ်မျိုးစလုံးကို ပေါင်းစပ်လေ့လာသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။ ကွန်ပျူတာအင်ဂျင်နီယာ သည် ကွန်ပျူတာစက်ပစ္စည်းများ၊ ဆော့ဖ်ဝဲများ၊ အင်တာနက်ကွန်ယက်များ၊ စက်မှုလုပ်ငန်းများတွင် အသုံးပြုသော စနစ်များကို ဒီဇိုင်းရေးဆွဲခြင်း၊ ဖန်တီးခြင်း၊ စမ်းသပ်ခြင်းနှင့် ထိန်းသိမ်းခြင်းတို့ကို လေ့လာသည့် နယ်ပယ်ဖြစ်ပါသည်။ ကျွန်ုပ်တို့၏ ဘွဲ့ရရှိသူများသည် နည်းပညာပိုင်းဆိုင်ရာ ကျွမ်းကျင်မှုများနှင့် ပြဿနာဖြေရှင်းနိုင်သော စွမ်းရည်များကို ရရှိထားပြီး စက်မှုလုပ်ငန်း၊ သုတေသနနှင့် တီထွင်ဆန်းသစ်မှုတို့တွင် အောင်မြင်ရန် ပြင်ဆင်ထားပါသည်။",
         utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
         nav_about: "ကျွန်ုပ်တို့အကြောင်း",
         nav_programs: "ပညာရေးအစီအစဉ်များ",
@@ -1066,6 +1063,8 @@
         job_10: "သုတေသနနှင့် နည်းပညာ ဖန်တီးမှု အင်ဂျင်နီယာ",
       },
       en: {
+        major_Title: "Computer Engineering",
+        major_Description:"The Department of Computer Engineering (CE) at the University of Technology (Yatanarpon Cyber City) is a discipline that combines the study of both computer hardware (computer systems, internet networks) and software (Embedded Systems and AI/Robotics). Computer Engineering involves the design, creation, testing, and maintenance of systems used in computers, software, internet networks, and industrial applications. Our graduates are equipped with technical expertise and problem-solving skills to succeed in industry, research, and innovation.",
         utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
         nav_about: "About Us",
         nav_programs: "Academic Programs",
