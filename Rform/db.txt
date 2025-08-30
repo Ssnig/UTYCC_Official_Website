@@ -1,0 +1,31 @@
+CREATE DATABASE registration_db;
+
+USE registration_db;
+
+-- Main form table
+CREATE TABLE main_form (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_name VARCHAR(255),
+    seat_no VARCHAR(50),
+    nrc VARCHAR(50),
+    dob DATE,
+    father_name VARCHAR(255),
+    mother_name VARCHAR(255),
+    address TEXT,
+    phone VARCHAR(50),
+    preferences JSON,
+    dormitory TINYINT(1),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Hostel table (linked to main_form)
+CREATE TABLE hostel_data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    main_form_id INT NOT NULL,
+    student_photo VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (main_form_id) REFERENCES main_form(id) ON DELETE CASCADE
+);
+
+
+
