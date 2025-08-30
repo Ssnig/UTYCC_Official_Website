@@ -102,8 +102,8 @@
     <div class="bg-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <a href="#" class="flex items-center space-x-3">
-                <div class="p-2 rounded-lg">
-                    <img src="https://placehold.co/40x40/f3f4f6/334155?text=UTYCC" alt="UTYCC Logo" />
+                <div class="p-2 rounded-lg hover_up ">
+                    <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" style="height:48px; width:auto; max-width:120px;" />
                 </div>
                 <div>
                     <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
