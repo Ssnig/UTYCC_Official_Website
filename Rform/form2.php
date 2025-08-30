@@ -4,10 +4,10 @@ session_start();
 
 // Ensure form1_data exists, otherwise redirect back to form1.
 // This prevents users from accessing this page directly.
-// if (!isset($_SESSION['form1_data'])) {
-//     header("location: form1.php");
-//     exit;
-// }
+if (!isset($_SESSION['form1_data'])) {
+    header("location: form1.php");
+    exit;
+}
 
 $form1_data = $_SESSION['form1_data'];
 // --- Configuration ---

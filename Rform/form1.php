@@ -2,76 +2,172 @@
     // Start a new session or resume an existing one
     session_start();
 
+    // --- Academic Year Calculation ---
+    $current_month = date('n');
+    $current_year  = date('Y');
+    // The academic year is assumed to change in June.
+    if ($current_month >= 6) {
+        $academic_year_value = $current_year . '-' . ($current_year + 1);
+    } else {
+        $academic_year_value = ($current_year - 1) . '-' . $current_year;
+    }
+
     // Define variables and initialize with empty values
-    $year                 = $academic_year                 = $major                 = $seat_no                 = $uni_reg_no                 = $entry_year                 = "";
-    $student_name_mm      = $father_name_mm      = $mother_name_mm      = "";
-    $student_name_en      = $father_name_en      = $mother_name_en      = "";
-    $student_race         = $father_race         = $mother_race         = "";
-    $student_religion     = $father_religion     = $mother_religion     = "";
-    $student_nrc          = $father_nrc          = $mother_nrc          = "";
-    $student_nat_reg      = $father_nat_reg      = $mother_nat_reg      = "";
-    $student_dob          = $student_birthplace          = "";
-    $father_info          = $mother_info          = "";
+    $year               = $academic_year        = $major                = $seat_no              = $uni_reg_no           = $entry_year           = "";
+    $student_name_mm    = $father_name_mm       = $mother_name_mm       = "";
+    $student_name_en    = $father_name_en       = $mother_name_en       = "";
+    $student_race       = $father_race          = $mother_race          = "";
+    $student_religion   = $father_religion      = $mother_religion      = "";
+    $student_nrc        = $father_nrc           = $mother_nrc           = "";
+    $student_nat_reg    = $father_nat_reg       = $mother_nat_reg       = "";
+    $student_dob        = $student_birthplace   = "";
+    $father_info        = $mother_info          = "";
     $father_deceased_year = $mother_deceased_year = "";
-    $student_address      = $date      = "";
-    $date                 = date('d-m-Y');
-    $errors               = [];
+    $student_address    = $date   = "";
+    $state_region       = $township       = ""; // Added for birthplace dropdowns
+    $photo_url          = "";
+    $date               = date('d-m-Y');
+    $errors             = [];
 
     // --- Repopulate fields from POST data if available, otherwise from session ---
-    // This ensures that on a validation error, the user's input is kept.
     function getValue($fieldName, $default = '')
     {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            return htmlspecialchars(trim($_POST[$fieldName] ?? $default));
+        // Prioritize POST data first, as it's the most recent user submission.
+        if (isset($_POST[$fieldName])) {
+            return htmlspecialchars(trim($_POST[$fieldName]));
         }
-        return $_SESSION['form1_data'][$fieldName] ?? $default;
+        // If not in POST (e.g., after a refresh/GET request), check the session data from a previous submission.
+        if (isset($_SESSION['form1_data'][$fieldName])) {
+            return htmlspecialchars(trim($_SESSION['form1_data'][$fieldName]));
+        }
+        // If in neither, return the default value.
+        return $default;
     }
+
+    // --- Helper function and data for repopulating NRC dropdowns ---
+    $repopulate_nrc = [
+        'student' => ['state' => '', 'township' => '', 'type' => '', 'number' => ''],
+        'father'  => ['state' => '', 'township' => '', 'type' => '', 'number' => ''],
+        'mother'  => ['state' => '', 'township' => '', 'type' => '', 'number' => ''],
+    ];
+
+    function parseNrc($nrc_string, &$repopulate_array)
+    {
+        if (! empty($nrc_string) && preg_match('/^(\d+)\/([^\(]+)(\(\S+\))(\d{6})$/', $nrc_string, $matches)) {
+            $repopulate_array['state']    = $matches[1];
+            $repopulate_array['township'] = $matches[2];
+            $repopulate_array['type']     = $matches[3];
+            $repopulate_array['number']   = $matches[4];
+        }
+    }
+
+    parseNrc(getValue('student_nrc'), $repopulate_nrc['student']);
+    parseNrc(getValue('father_nrc'), $repopulate_nrc['father']);
+    parseNrc(getValue('mother_nrc'), $repopulate_nrc['mother']);
 
     // Processing form data when the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        // --- Sanitize all POST data first ---
+        // --- Handle Photo Upload ---
+        $existing_photo_url = $_POST['photo_url'] ?? '';
+
+        // Handle photo removal
+        if (! empty($_POST['remove_photo']) && $_POST['remove_photo'] == '1') {
+            if (! empty($existing_photo_url) && file_exists($existing_photo_url)) {
+                unlink($existing_photo_url); // Delete the file from server
+            }
+            $_POST['photo_url'] = ''; // Clear the photo URL from POST data
+        }
+
+        // Handle new photo upload
+        if (isset($_FILES["photo_upload"]) && $_FILES["photo_upload"]["error"] == UPLOAD_ERR_OK) {
+            $target_dir = "uploads/";
+            if (! is_dir($target_dir)) {
+                mkdir($target_dir, 0777, true); // Create directory if it doesn't exist
+            }
+
+            $imageFileType = strtolower(pathinfo($_FILES["photo_upload"]["name"], PATHINFO_EXTENSION));
+            $unique_name   = uniqid('photo_', true) . '.' . $imageFileType;
+            $target_file   = $target_dir . $unique_name;
+            $uploadOk      = 1;
+
+            // Check if image file is a actual image
+            $check = getimagesize($_FILES["photo_upload"]["tmp_name"]);
+            if ($check === false) {
+                $errors['photo_upload'] = "File is not an image.";
+                $uploadOk               = 0;
+            }
+
+            // Check file size (e.g., 5MB limit)
+            if ($_FILES["photo_upload"]["size"] > 5000000) {
+                $errors['photo_upload'] = "Sorry, your file is too large (Max 5MB).";
+                $uploadOk               = 0;
+            }
+
+            // Allow certain file formats
+            if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
+                $errors['photo_upload'] = "Sorry, only JPG, JPEG, & PNG files are allowed.";
+                $uploadOk               = 0;
+            }
+
+            if ($uploadOk == 1) {
+                if (move_uploaded_file($_FILES["photo_upload"]["tmp_name"], $target_file)) {
+                    // If there was an old photo, delete it
+                    if (! empty($existing_photo_url) && file_exists($existing_photo_url)) {
+                        unlink($existing_photo_url);
+                    }
+                    $_POST['photo_url'] = $target_file; // Add the new file path to POST data
+                } else {
+                    $errors['photo_upload'] = "Sorry, there was an an error uploading your file.";
+                }
+            }
+        }
+
         $sanitized_post = [];
         foreach ($_POST as $key => $value) {
             $sanitized_post[$key] = htmlspecialchars(trim($value));
         }
 
         // --- Assign sanitized values to variables ---
-        $year                 = $sanitized_post["year"] ?? '';
-        $academic_year        = $sanitized_post["academic_year"] ?? '';
-        $major                = $sanitized_post["major"] ?? '';
-        $seat_no              = $sanitized_post["seat_no"] ?? '';
-        $uni_reg_no           = $sanitized_post["uni_reg_no"] ?? '';
-        $entry_year           = $sanitized_post["entry_year"] ?? '';
-        $student_name_mm      = $sanitized_post["student_name_mm"] ?? '';
-        $father_name_mm       = $sanitized_post["father_name_mm"] ?? '';
-        $mother_name_mm       = $sanitized_post["mother_name_mm"] ?? '';
-        $student_name_en      = $sanitized_post["student_name_en"] ?? '';
-        $father_name_en       = $sanitized_post["father_name_en"] ?? '';
-        $mother_name_en       = $sanitized_post["mother_name_en"] ?? '';
-        $student_race         = $sanitized_post["student_race"] ?? '';
-        $father_race          = $sanitized_post["father_race"] ?? '';
-        $mother_race          = $sanitized_post["mother_race"] ?? '';
-        $student_religion     = $sanitized_post["student_religion"] ?? '';
-        $father_religion      = $sanitized_post["father_religion"] ?? '';
-        $mother_religion      = $sanitized_post["mother_religion"] ?? '';
-        $student_nrc          = $sanitized_post["student_nrc"] ?? '';
-        $father_nrc           = $sanitized_post["father_nrc"] ?? '';
-        $mother_nrc           = $sanitized_post["mother_nrc"] ?? '';
-        $student_nat_reg      = $sanitized_post["student_nat_reg"] ?? '';
-        $father_nat_reg       = $sanitized_post["father_nat_reg"] ?? '';
-        $mother_nat_reg       = $sanitized_post["mother_nat_reg"] ?? '';
-        $student_dob          = $sanitized_post["student_dob"] ?? '';
-        $student_birthplace   = $sanitized_post["student_birthplace"] ?? '';
-        $father_info          = $sanitized_post["father_info"] ?? '';
-        $mother_info          = $sanitized_post["mother_info"] ?? '';
+        $year               = $sanitized_post["year"] ?? '';
+        $academic_year      = $sanitized_post["academic_year"] ?? '';
+        $major              = $sanitized_post["major"] ?? '';
+        $seat_no            = $sanitized_post["seat_no"] ?? '';
+        $uni_reg_no         = $sanitized_post["uni_reg_no"] ?? '';
+        $entry_year         = $sanitized_post["entry_year"] ?? '';
+        $student_name_mm    = $sanitized_post["student_name_mm"] ?? '';
+        $father_name_mm     = $sanitized_post["father_name_mm"] ?? '';
+        $mother_name_mm     = $sanitized_post["mother_name_mm"] ?? '';
+        $student_name_en    = $sanitized_post["student_name_en"] ?? '';
+        $father_name_en     = $sanitized_post["father_name_en"] ?? '';
+        $mother_name_en     = $sanitized_post["mother_name_en"] ?? '';
+        $student_race       = $sanitized_post["student_race"] ?? '';
+        $father_race        = $sanitized_post["father_race"] ?? '';
+        $mother_race        = $sanitized_post["mother_race"] ?? '';
+        $student_religion   = $sanitized_post["student_religion"] ?? '';
+        $father_religion    = $sanitized_post["father_religion"] ?? '';
+        $mother_religion    = $sanitized_post["mother_religion"] ?? '';
+        $student_nrc        = $sanitized_post["student_nrc"] ?? '';
+        $father_nrc         = $sanitized_post["father_nrc"] ?? '';
+        $mother_nrc         = $sanitized_post["mother_nrc"] ?? '';
+        $student_dob        = $sanitized_post["student_dob"] ?? '';
+        $student_birthplace = $sanitized_post["student_birthplace"] ?? '';
+        $state_region       = $sanitized_post["state_region"] ?? '';
+        $township           = $sanitized_post["township"] ?? '';
+        $student_phone      = $sanitized_post["student_phone"] ?? '';
+        $father_phone       = $sanitized_post["father_phone"] ?? '';
+        $mother_phone       = $sanitized_post["mother_phone"] ?? '';
+        $father_info        = $sanitized_post["father_info"] ?? '';
+        $mother_info        = $sanitized_post["mother_info"] ?? '';
         $father_deceased_year = $sanitized_post["father_deceased_year"] ?? '';
         $mother_deceased_year = $sanitized_post["mother_deceased_year"] ?? '';
-        $student_address      = $sanitized_post["student_address"] ?? '';
-        $date                 = $sanitized_post["date"] ?? date('d-m-Y');
+        $student_address    = $sanitized_post["student_address"] ?? '';
+        $father_address     = $sanitized_post["father_address"] ?? '';
+        $mother_address     = $sanitized_post["mother_address"] ?? '';
+        $date               = $sanitized_post["date"] ?? date('d-m-Y');
+        $photo_url          = $sanitized_post["photo_url"] ?? '';
 
         // --- Validate Required Fields ---
-
         if (empty($academic_year)) {
             $errors['academic_year'] = "သင်တန်းနှစ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
@@ -88,29 +184,12 @@
             $errors['uni_reg_no'] = "မှတ်ပုံတင်အမှတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
-        // Student, Father, Mother Info Validation
         if (empty($student_name_mm)) {
             $errors['student_name_mm'] = "ကျောင်းသား/သူ၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
-        if (empty($father_name_mm)) {
-            $errors['father_name_mm'] = "အဘ(အရင်း)၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($mother_name_mm)) {
-            $errors['mother_name_mm'] = "အမိ(အရင်း)၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
         if (empty($student_name_en)) {
             $errors['student_name_en'] = "ကျောင်းသား/သူ၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($father_name_en)) {
-            $errors['father_name_en'] = "အဘ(အရင်း)၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($mother_name_en)) {
-            $errors['mother_name_en'] = "အမိ(အရင်း)၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
         if (empty($student_race)) {
@@ -118,20 +197,23 @@
         }
 
         if (empty($student_religion)) {
-            $errors['student_religion'] = "ကျောင်းသား/သူ၏ ကိုးကွယ်သည့်ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            $errors['student_religion'] = "ကိုးကွယ်သည့်ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
         if (empty($student_nrc)) {
-            $errors['student_nrc'] = "ကျောင်းသား/သူ၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            $errors['student_nrc'] = "ကျောင်းသား/သူ၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
-        // Other required fields
         if (empty($student_dob)) {
             $errors['student_dob'] = "ကျောင်းသား/သူ၏ မွေးသက္ကရာဇ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
         if (empty($student_birthplace)) {
             $errors['student_birthplace'] = "မွေးဖွားရာဇာတိထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        }
+
+        if (empty($student_phone)) {
+            $errors['student_phone'] = "ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
         if (empty($student_address)) {
@@ -142,43 +224,63 @@
             $errors['date'] = "ရက်စွဲထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
-        // If no errors, store all data in the session and redirect
-        if (empty($errors)) {
-            $_SESSION['form1_data'] = [
-                'year'                 => $year,
-                'academic_year'        => $academic_year,
-                'major'                => $major,
-                'seat_no'              => $seat_no,
-                'uni_reg_no'           => $uni_reg_no,
-                'entry_year'           => $entry_year,
-                'student_name_mm'      => $student_name_mm,
-                'father_name_mm'       => $father_name_mm,
-                'mother_name_mm'       => $mother_name_mm,
-                'student_name_en'      => $student_name_en,
-                'father_name_en'       => $father_name_en,
-                'mother_name_en'       => $mother_name_en,
-                'student_race'         => $student_race,
-                'father_race'          => $father_race,
-                'mother_race'          => $mother_race,
-                'student_religion'     => $student_religion,
-                'father_religion'      => $father_religion,
-                'mother_religion'      => $mother_religion,
-                'student_nrc'          => $student_nrc,
-                'father_nrc'           => $father_nrc,
-                'mother_nrc'           => $mother_nrc,
-                'student_nat_reg'      => $student_nat_reg,
-                'father_nat_reg'       => $father_nat_reg,
-                'mother_nat_reg'       => $mother_nat_reg,
-                'student_dob'          => $student_dob,
-                'student_birthplace'   => $student_birthplace,
-                'father_info'          => $father_info,
-                'mother_info'          => $mother_info,
-                'father_deceased_year' => $father_deceased_year,
-                'mother_deceased_year' => $mother_deceased_year,
-                'student_address'      => $student_address,
-                'date'                 => $date,
-            ];
+        // --- Conditional Parent Validation ---
+        if (empty($father_deceased_year)) {
+            if (empty($father_name_mm)) {
+                $errors['father_name_mm'] = "အဘ(အရင်း)၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($father_name_en)) {
+                $errors['father_name_en'] = "အဘ(အရင်း)၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($father_religion)) {
+                $errors['father_religion'] = "အဘ(အရင်း)၏ ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($father_race)) {
+                $errors['father_race'] = "အဘ(အရင်း)၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($father_info)) {
+                $errors['father_info'] = "အဘ(အရင်း)၏ အလုပ်အကိုင်/ပညာအရည်အချင်း ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($father_nrc)) {
+                $errors['father_nrc'] = "အဘ(အရင်း)၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($father_address)) {
+                $errors['father_address'] = "အဘ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($father_phone)) {
+                $errors['father_phone'] = "အဘ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+        }
+        if (empty($mother_deceased_year)) {
+            if (empty($mother_name_mm)) {
+                $errors['mother_name_mm'] = "အမိ(အရင်း)၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($mother_name_en)) {
+                $errors['mother_name_en'] = "အမိ(အရင်း)၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($mother_religion)) {
+                $errors['mother_religion'] = "အမိ(အရင်း)၏ ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($mother_race)) {
+                $errors['mother_race'] = "အမိ(အရင်း)၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($mother_info)) {
+                $errors['mother_info'] = "အမိ(အရင်း)၏ အလုပ်အကိုင်/ပညာအရည်အချင်း ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($mother_nrc)) {
+                $errors['mother_nrc'] = "အမိ(အရင်း)၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($mother_address)) {
+                $errors['mother_address'] = "အမိ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+            if (empty($mother_phone)) {
+                $errors['mother_phone'] = "အမိ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            }
+        }
 
+        $_SESSION['form1_data'] = $_POST;
+
+        if (empty($errors)) {
             header("location: form2.php");
             exit;
         }
@@ -186,320 +288,368 @@
 ?>
 
 <?php include 'formPartial/header.php'; ?>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f0f4f8; /* Lighter blue-gray background */
+    }
+    .error-message {
+        color: #D32F2F; /* Red color for errors */
+        font-size: 0.75rem; /* 12px */
+    }
+    .form-container {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border-radius: 1rem; /* More rounded corners */
+        border: 1px solid #e2e8f0;
+    }
+    .form-title {
+        color: #1e3a8a; /* Dark blue */
+    }
+    .form-subtitle {
+        color: #3b82f6; /* Medium blue */
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="tel"],
+    select,
+    textarea {
+        transition: all 0.3s ease-in-out;
+        border-color: #cbd5e1;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4) !important;
+        outline: none;
+    }
+    .section-card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        transition: box-shadow 0.3s ease;
+    }
+    .section-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .section-header {
+        color: #1e3a8a; /* Dark blue */
+        border-bottom: 2px solid #93c5fd; /* Light blue underline */
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .nav-button-next {
+        background-image: linear-gradient(to right, #3b82f6, #2563eb);
+        color: white;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 9999px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        transition: all 0.3s ease;
+    }
+    .nav-button-next:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+    #photo-upload-area {
+        border-color: #93c5fd;
+        background-color: #eff6ff;
+    }
+</style>
     <br>
 
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" enctype="multipart/form-data" novalidate>
-        <div class="max-w-4xl mx-auto bg-white p-3 py-3 sm:p-6 md:p-8 rounded-lg shadow-lg">
+        <div class="max-w-4xl mx-auto bg-white p-3 py-3 sm:p-6 md:p-8 form-container">
 
+            <!-- Form Header -->
             <div class="flex justify-between items-start mb-4 ">
-                <p class="text-sm">Form No. UTYCC-20</p>
+                <p class="text-sm text-gray-400">Form No. UTYCC-20</p>
                 <div class="text-right">
-                    <label for="year" class="block text-sm font-medium text-gray-700">ခုနှစ်</label>
-                    <input type="text" id="year" name="year" class="mt-1 w-24 text-center" value="<?php echo getValue('year'); ?>">
+                    <label for="year" class="block text-sm font-medium text-gray-500">ခုနှစ်</label>
+                    <input type="text" id="year" name="year" class="mt-1 w-24 text-center bg-gray-100 rounded-md border-gray-200" value="<?php echo $academic_year_value; ?>" readonly>
                 </div>
             </div>
 
-            <div class="text-center mb-6">
-                <h1 class="text-lg sm:text-xl md:text-2xl font-bold">ကျောင်းသားအဖြစ်မှ မှတ်ပုံတင်ခွင့်တောင်းခံလွှာ</h1>
-                <h2 class="text-base sm:text-lg md:text-xl font-semibold text-gray-700 mt-1">
+            <div class="text-center mb-8">
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold form-title">ကျောင်းသားအဖြစ်မှ မှတ်ပုံတင်ခွင့်တောင်းခံလွှာ</h1>
+                <h2 class="text-md sm:text-lg md:text-xl font-semibold form-subtitle mt-2">
                     နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)</h2>
             </div>
 
+            <!-- Top Information Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
+                    <div class="relative pb-5">
                         <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
                         <input type="text" id="academic_year" name="academic_year" class="mt-1" value="<?php echo getValue('academic_year'); ?>">
-                        <?php if (isset($errors['academic_year'])): ?>
-                            <p class="error-message"><?php echo $errors['academic_year']; ?></p>
-                        <?php endif; ?>
+                        <?php if (isset($errors['academic_year'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['academic_year']; ?></p><?php endif; ?>
                     </div>
-                    <div>
+                    <div class="relative pb-5">
                         <label for="major" class="block text-sm font-medium text-gray-700">အထူးပြုဘာသာ</label>
                         <input type="text" id="major" name="major" class="mt-1" value="<?php echo getValue('major'); ?>">
-                        <?php if (isset($errors['major'])): ?>
-                            <p class="error-message"><?php echo $errors['major']; ?></p>
-                        <?php endif; ?>
+                        <?php if (isset($errors['major'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['major']; ?></p><?php endif; ?>
                     </div>
-                    <div>
+                    <div class="relative pb-5">
                         <label for="seat_no" class="block text-sm font-medium text-gray-700">ခုံအမှတ်</label>
                         <input type="text" id="seat_no" name="seat_no" class="mt-1" value="<?php echo getValue('seat_no'); ?>">
-                        <?php if (isset($errors['seat_no'])): ?>
-                            <p class="error-message"><?php echo $errors['seat_no']; ?></p>
-                        <?php endif; ?>
+                        <?php if (isset($errors['seat_no'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['seat_no']; ?></p><?php endif; ?>
                     </div>
-                    <div>
+                    <div class="relative pb-5">
                         <label for="uni_reg_no" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်မှတ်ပုံတင်အမှတ်</label>
                         <input type="text" id="uni_reg_no" name="uni_reg_no" class="mt-1" value="<?php echo getValue('uni_reg_no'); ?>">
-                        <?php if (isset($errors['uni_reg_no'])): ?>
-                            <p class="error-message"><?php echo $errors['uni_reg_no']; ?></p>
-                        <?php endif; ?>
+                        <?php if (isset($errors['uni_reg_no'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['uni_reg_no']; ?></p><?php endif; ?>
                     </div>
                     <div class="sm:col-span-2">
                         <label for="entry_year" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
                         <input type="text" id="entry_year" name="entry_year" class="mt-1" value="<?php echo getValue('entry_year'); ?>">
                     </div>
                 </div>
-                <div id="photo-upload-area"
-                    class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-2 h-48">
+                <div id="photo-upload-area" class="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-2 h-48">
                     <div id="photo-placeholder" class="text-center">
                         <span class="text-gray-500">ဓါတ်ပုံကပ်ရန်</span>
-                        <button type="button" onclick="document.getElementById('photo_upload').click()"
-                            class="mt-2 block mx-auto px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Upload</button>
+                        <button type="button" onclick="document.getElementById('photo_upload').click()" class="mt-2 block mx-auto px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200">Upload</button>
                     </div>
                     <div id="photo-preview-container" class="hidden w-full h-full">
                         <img id="photo-preview" src="#" alt="Photo Preview">
                         <div id="remove-photo-btn" title="Remove Photo">×</div>
                     </div>
                     <input type="file" class="hidden" id="photo_upload" name="photo_upload" accept="image/*">
+                    <input type="hidden" name="photo_url" id="photo_url_hidden" value="<?php echo getValue('photo_url'); ?>">
+                    <input type="hidden" name="remove_photo" id="remove_photo_flag" value="0">
+                    <?php if (isset($errors['photo_upload'])): ?><p class="error-message mt-2"><?php echo $errors['photo_upload']; ?></p><?php endif; ?>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-50 text-base">
-                        <tr>
-                            <th class="w-12 text-center">စဉ်</th>
-                            <th>အကြောင်းအရာ</th>
-                            <th>ကျောင်းသား/သူ</th>
-                            <th>အဘ(အရင်း)</th>
-                            <th>အမိ(အရင်း)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td rowspan="2" class="text-center align-middle">၁</td>
-                            <td>အမည် (မြန်မာစာဖြင့်)</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_mm" value="<?php echo getValue('student_name_mm'); ?>" required>
-                                <?php if (isset($errors['student_name_mm'])): ?><p class="error-message"><?php echo $errors['student_name_mm']; ?></p><?php endif; ?>
-                            </td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_mm" value="<?php echo getValue('father_name_mm'); ?>"required>
-                                <?php if (isset($errors['father_name_mm'])): ?><p class="error-message"><?php echo $errors['father_name_mm']; ?></p><?php endif; ?>
-                            </td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_mm" value="<?php echo getValue('mother_name_mm'); ?>" required>
-                                <?php if (isset($errors['mother_name_mm'])): ?><p class="error-message"><?php echo $errors['mother_name_mm']; ?></p><?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>အမည် (အင်္ဂလိပ်စာဖြင့်)</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_name_en" value="<?php echo getValue('student_name_en'); ?>" required>
-                                <?php if (isset($errors['student_name_en'])): ?><p class="error-message"><?php echo $errors['student_name_en']; ?></p><?php endif; ?>
-                            </td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_name_en" value="<?php echo getValue('father_name_en'); ?>" required>
-                                <?php if (isset($errors['father_name_en'])): ?><p class="error-message"><?php echo $errors['father_name_en']; ?></p><?php endif; ?>
-                            </td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_en" value="<?php echo getValue('mother_name_en'); ?>" required>
-                                <?php if (isset($errors['mother_name_en'])): ?><p class="error-message"><?php echo $errors['mother_name_en']; ?></p><?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">၂</td>
-                            <td>လူမျိုး</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_race" value="<?php echo getValue('student_race'); ?>" required>
-                                <?php if (isset($errors['student_race'])): ?><p class="error-message"><?php echo $errors['student_race']; ?></p><?php endif; ?>
-                            </td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_race" value="<?php echo getValue('father_race'); ?>" required></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_race" value="<?php echo getValue('mother_race'); ?>" required></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">၃</td>
-                            <td>ကိုးကွယ်သည့်ဘာသာ</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_religion" value="<?php echo getValue('student_religion'); ?>" required>
-                                <?php if (isset($errors['student_religion'])): ?><p class="error-message"><?php echo $errors['student_religion']; ?></p><?php endif; ?>
-                            </td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_religion" value="<?php echo getValue('father_religion'); ?>" required></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_religion" value="<?php echo getValue('mother_religion'); ?>" required></td>
-                        </tr>
-                        <tr>
-                        <td class="text-center">၁</td>
-                        <td>နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</td>
-                        <!-- Student NRC Input -->
-                        <td>
-                            <div id="student_nrc_group" class="flex items-center space-x-1">
-                                <!-- NRC fields will be generated by JavaScript -->
-                            </div>
-                            <!-- Hidden input to store concatenated NRC value -->
-                            <input type="hidden" name="student_nrc" id="student_nrc_hidden">
-                        </td>
-                        <!-- Father NRC Input -->
-                        <td>
-                            <div id="father_nrc_group" class="flex items-center space-x-1">
-                                <!-- NRC fields will be generated by JavaScript -->
-                            </div>
-                             <input type="hidden" name="father_nrc" id="father_nrc_hidden">
-                        </td>
-                        <!-- Mother NRC Input -->
-                        <td>
-                           <div id="mother_nrc_group" class="flex items-center space-x-1">
-                                <!-- NRC fields will be generated by JavaScript -->
-                           </div>
-                            <input type="hidden" name="mother_nrc" id="mother_nrc_hidden">
-                        </td>
-                    </tr>
-                        <tr>
-                            <td class="text-center">၅</td>
-                            <td>အမျိုးသားမှတ်ပုံတင်အမှတ်</td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="student_nat_reg" value="<?php echo getValue('student_nat_reg'); ?>" required></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="father_nat_reg" value="<?php echo getValue('father_nat_reg'); ?>" required></td>
-                            <td><input type="text" placeholder="_________________" class="border-0" name="mother_nat_reg" value="<?php echo getValue('mother_nat_reg'); ?>" required></td>
-                        </tr>
-                        <tr>
-                    <td class="text-center align-top pt-5 w-16">၆</td>
-                    <td colspan="4" class="whitespace-normal">
-                        <!-- Label for the input field -->
-                        <label for="student_dob" class="font-medium">
-                            ကျောင်းသား/သူ၏ မွေးသက္ကရာဇ် (တက္ကသိုလ်ဝင်တန်းစာမေးပွဲဖြေဆိုစဉ်က ဖော်ပြသည့် အတိုင်းရေးရန်)
-                        </label>
+            <!-- Main Information Sections -->
+            <div class="space-y-8 mt-8">
 
-                        <!-- Date input field. Type="date" provides a native calendar picker. -->
-                        <input type="date" id="student_dob" name="student_dob"
-                               value="<?php echo getValue('student_dob'); ?>" required>
-
-                        <!-- Container for client-side JavaScript validation error messages -->
-                        <p id="dob_error_client" class="error-message" style="display: none;"></p>
-
-                        <!-- Container for server-side PHP validation error messages -->
-                        <?php if (isset($errors['student_dob'])): ?>
-                            <p class="error-message"><?php echo $errors['student_dob']; ?></p>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                        <tr>
-                        <td class="text-center align-top w-16">၇</td>
-                        <td colspan="4">
-                            <label for="state_region" class="font-medium">မွေးဖွားရာဇာတိ (တိုင်းဒေသကြီး/ပြည်နယ်)</label>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <!-- State/Region Dropdown -->
+                <!-- Student Information Section -->
+                <section class="section-card p-4 sm:p-6">
+                    <h3 class="text-lg font-semibold mb-6 section-header pb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>ကျောင်းသား/သူ၏ ကိုယ်ရေးအချက်အလက်</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                        <!-- Name MM -->
+                        <div class="relative pb-5">
+                            <label for="student_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
+                            <input type="text" id="student_name_mm" name="student_name_mm" class="mt-1" value="<?php echo getValue('student_name_mm'); ?>" required>
+                            <?php if (isset($errors['student_name_mm'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_name_mm']; ?></p><?php endif; ?>
+                        </div>
+                        <!-- Name EN -->
+                        <div class="relative pb-5">
+                            <label for="student_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
+                            <input type="text" id="student_name_en" name="student_name_en" class="mt-1" value="<?php echo getValue('student_name_en'); ?>" required>
+                            <?php if (isset($errors['student_name_en'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_name_en']; ?></p><?php endif; ?>
+                        </div>
+                        <!-- Race -->
+                        <div class="relative pb-5">
+                            <label for="student_race" class="block text-sm font-medium text-gray-700">လူမျိုး</label>
+                            <input type="text" id="student_race" name="student_race" class="mt-1" value="<?php echo getValue('student_race'); ?>" required>
+                            <?php if (isset($errors['student_race'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_race']; ?></p><?php endif; ?>
+                        </div>
+                        <!-- Religion -->
+                        <div class="relative pb-5">
+                            <label for="student_religion" class="block text-sm font-medium text-gray-700">ကိုးကွယ်သည့်ဘာသာ</label>
+                            <input type="text" id="student_religion" name="student_religion" class="mt-1" value="<?php echo getValue('student_religion'); ?>" required>
+                             <?php if (isset($errors['student_religion'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_religion']; ?></p><?php endif; ?>
+                        </div>
+                        <!-- NRC -->
+                        <div class="relative pb-5 md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                            <div id="student_nrc_group" class="mt-1"></div>
+                            <input type="hidden" name="student_nrc" id="student_nrc_hidden" value="<?php echo getValue('student_nrc'); ?>">
+                            <?php if (isset($errors['student_nrc'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_nrc']; ?></p><?php endif; ?>
+                        </div>
+                         <!-- DOB -->
+                        <div class="relative pb-5">
+                            <label for="student_dob" class="block text-sm font-medium text-gray-700">မွေးသက္ကရာဇ်</label>
+                            <input type="date" id="student_dob" name="student_dob" class="mt-1" value="<?php echo getValue('student_dob'); ?>" required>
+                            <p id="dob_error_client" class="error-message absolute bottom-0 left-0" style="display: none;"></p>
+                            <?php if (isset($errors['student_dob'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_dob']; ?></p><?php endif; ?>
+                        </div>
+                        <!-- Birthplace -->
+                        <div class="relative pb-5">
+                             <label for="student_birthplace" class="block text-sm font-medium text-gray-700">မွေးဖွားရာဇာတိ</label>
+                             <div class="grid grid-cols-2 gap-2 mt-1">
                                 <div>
                                     <select id="state_region" name="state_region" required>
-                                        <option value="" disabled selected>တိုင်းဒေသကြီး/ပြည်နယ် ရွေးချယ်ပါ</option>
-                                        <!-- Options will be populated by JavaScript -->
+                                        <option value="" disabled selected>တိုင်း/ပြည်နယ်</option>
                                     </select>
                                 </div>
-
-                                <!-- Township Dropdown -->
                                 <div>
                                     <select id="township" name="township" required>
-                                        <option value="" disabled selected>မြို့နယ် ရွေးချယ်ပါ</option>
-                                        <!-- Options will be populated based on state/region selection -->
+                                        <option value="" disabled selected>မြို့နယ်</option>
                                     </select>
                                 </div>
-                            </div>
+                             </div>
+                             <input type="hidden" id="student_birthplace" name="student_birthplace" value="<?php echo getValue('student_birthplace'); ?>">
+                             <?php if (isset($errors['student_birthplace'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_birthplace']; ?></p><?php endif; ?>
+                        </div>
+                        <!-- Phone -->
+                        <div class="relative pb-5">
+                            <label for="student_phone" class="block text-sm font-medium text-gray-700">ဆက်သွယ်ရန်ဖုန်းနံပါတ်</label>
+                            <input type="tel" id="student_phone" name="student_phone" class="mt-1" value="<?php echo getValue('student_phone'); ?>" pattern="09\d{7,9}" maxlength="11" placeholder="09xxxxxxxxx" title="Please enter a valid Myanmar phone number starting with 09." required>
+                            <?php if (isset($errors['student_phone'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_phone']; ?></p><?php endif; ?>
+                        </div>
+                        <!-- Address -->
+                        <div class="relative pb-5 md:col-span-2">
+                             <label for="student_address" class="block text-sm font-medium text-gray-700">အမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ အပြည့်အစုံ</label>
+                             <textarea id="student_address" name="student_address" rows="3" class="mt-1"><?php echo getValue('student_address'); ?></textarea>
+                             <?php if (isset($errors['student_address'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_address']; ?></p><?php endif; ?>
+                        </div>
+                    </div>
+                </section>
 
-                            <!-- Example of how you might show an error message -->
-                            <?php if (isset($errors['student_birthplace'])): ?>
-                                <p class="error-message"><?php echo $errors['student_birthplace']; ?></p>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                        <tr>
-                            <td class="text-center">၈</td>
-                            <td colspan="4" style="white-space: normal;">
-                                <label for="student_phone"
-                                    class="font-medium">ဆက်သွယ်ရန်ဖုန်းနံပါတ်</label>
-                                <input 
-            type="tel" 
-            id="student_phone" 
-            name="student_phone"
-            class="mt-1" 
-            value="<?php echo getValue('student_phone'); ?>" 
-            required
-            pattern="09\d{7,9}"
-            maxlength="11"
-            placeholder="09xxxxxxxxx"
-            title="Please enter a valid Myanmar phone number starting with 09." required>
-                                <?php if (isset($errors['student_phone'])): ?><p class="error-message"><?php echo $errors['student_phone']; ?></p><?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">၉</td>
-                            <td class="align-top font-medium" style="white-space: normal;">
-                                မိဘအလုပ်အကိုင်</td>
-                            <td></td>
-                            <td><textarea name="father_info" rows="3"
-                                    placeholder="အဘ(အရင်း)၏ အချက်အလက်များ" class="border-0"
-                                    style="white-space: normal;"><?php echo getValue('father_info'); ?></textarea></td>
-                            <td><textarea name="mother_info" rows="3"
-                                    placeholder="အမိ(အရင်း)၏ အချက်အလက်များ" class="border-0"
-                                    style="white-space: normal;"><?php echo getValue('mother_info'); ?></textarea></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">၁၀</td>
-                            <td class="align-top font-medium" style="white-space: normal;">
-                                မိဘနေရပ်လိပ်စာအပြည့်အစုံ</td>
-                            <td></td>
-                            <td><textarea name="father_address" rows="3"
-                                    placeholder="အဘ(အရင်း)၏ အချက်အလက်များ" class="border-0"
-                                    style="white-space: normal;"><?php echo getValue('father_info'); ?></textarea></td>
-                            <td><textarea name="mother_info" rows="3"
-                                    placeholder="အမိ(အရင်း)၏ အချက်အလက်များ" class="border-0"
-                                    style="white-space: normal;"><?php echo getValue('mother_info'); ?></textarea></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">၁၁</td>
-                            <td class="align-top font-medium" style="white-space: normal;">
-                                မိဘဖုန်းနံပါတ်</td>
-                            <td></td>
-                            <td><input type="number" name="father_phone" rows="3"
-                                    placeholder="အဘ(အရင်း)၏ အချက်အလက်များ" class="border-0"
-                                    style="white-space: normal;"><?php echo getValue('father_phone'); ?></input type="number"></td>
-                            <td><input type="number" name="mother_phone" rows="3"
-                                    placeholder="အမိ(အရင်း)၏ အချက်အလက်များ" class="border-0"
-                                    style="white-space: normal;"><?php echo getValue('mother_phone'); ?></input type="number"></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">၁၂</td>
-                            <td>ကွယ်လွန်ခဲ့လျှင်ကွယ်လွန်ခဲ့သည့်ခုနှစ်</td>
-                            <td></td>
-                            <td><input type="text" placeholder="_______________________" class="border-0"
-                                    name="father_deceased_year" value="<?php echo getValue('father_deceased_year'); ?>" required></td>
-                            <td><input type="text" placeholder="_______________________" class="border-0"
-                                    name="mother_deceased_year" value="<?php echo getValue('mother_deceased_year'); ?>" required></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">၁၃</td>
-                            <td colspan="4" style="white-space: normal;">
-                                <label for="student_address" class="font-medium">ကျောင်းသား/သူထံအမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ
-                                    အပြည့်အစုံ</label>
-                                <textarea id="student_address" name="student_address" rows="3" class="mt-1"
-                                    style="white-space: normal;"><?php echo getValue('student_address'); ?></textarea>
-                                <?php if (isset($errors['student_address'])): ?><p class="error-message"><?php echo $errors['student_address']; ?></p><?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">၁၄</td>
-                            <td colspan="4" style="white-space: normal;">
-                                <label for="student_address" class="font-medium">
-                                    ဖုန်းနံပါတ်</label>
-                                <input type="number" id="student_phone2" name="student_phone2" rows="3" class="mt-1"
-                                    style="white-space: normal;"><?php echo getValue('student_phone2'); ?></input type="number">
-                                <?php if (isset($errors['student_phone2'])): ?><p class="error-message"><?php echo $errors['student_phone2']; ?></p><?php endif; ?>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Parent Information Section -->
+                <section class="section-card p-4 sm:p-6">
+                    <h3 class="text-lg font-semibold mb-6 section-header pb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M18 22a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18h.01"/><path d="M12 14h.01"/><path d="M12 10h.01"/></svg>
+                        <span>မိဘ၏ ကိုယ်ရေးအချက်အလက်</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                        <!-- Father's Column -->
+                        <div class="space-y-2">
+                            <h4 class="font-semibold text-gray-700 mt-2">အဘ (အရင်း)</h4>
+                            <!-- Father Deceased -->
+                            <div class="relative pb-5">
+                                <label for="father_deceased_year" class="block text-sm font-medium text-gray-700">ကွယ်လွန်သည့်ခုနှစ် (ကွယ်လွန်ပါက)</label>
+                                <input type="text" id="father_deceased_year" name="father_deceased_year" class="mt-1" placeholder="ဥပမာ - 2010" value="<?php echo getValue('father_deceased_year'); ?>">
+                            </div>
+                            <!-- Father Name MM -->
+                            <div class="relative pb-5">
+                                <label for="father_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
+                                <input type="text" id="father_name_mm" name="father_name_mm" class="mt-1 father-field" value="<?php echo getValue('father_name_mm'); ?>" required>
+                                <?php if (isset($errors['father_name_mm'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['father_name_mm']; ?></p><?php endif; ?>
+                            </div>
+                            <!-- Father Name EN -->
+                            <div class="relative pb-5">
+                                <label for="father_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
+                                <input type="text" id="father_name_en" name="father_name_en" class="mt-1 father-field" value="<?php echo getValue('father_name_en'); ?>" required>
+                                <?php if (isset($errors['father_name_en'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['father_name_en']; ?></p><?php endif; ?>
+                            </div>
+                            <!-- Father Race -->
+                            <div class="relative pb-5">
+                                <label for="father_race" class="block text-sm font-medium text-gray-700">လူမျိုး</label>
+                                <input type="text" id="father_race" name="father_race" class="mt-1 father-field" value="<?php echo getValue('father_race'); ?>">
+                                <?php if (isset($errors['father_race'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['father_race']; ?></p><?php endif; ?>
+                            </div>
+                            <!-- Father Religion -->
+                            <div class="relative pb-5">
+                                <label for="father_religion" class="block text-sm font-medium text-gray-700">ကိုးကွယ်သည့်ဘာသာ</label>
+                                <input type="text" id="father_religion" name="father_religion" class="mt-1 father-field" value="<?php echo getValue('father_religion'); ?>" required>
+                                <?php if (isset($errors['father_religion'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['father_religion']; ?></p><?php endif; ?>
+                            </div>
+                            <!-- Father NRC -->
+                            <div class="relative pb-5">
+                                <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                                <div id="father_nrc_group" class="mt-1 father-field-group"></div>
+                                <input type="hidden" name="father_nrc" id="father_nrc_hidden" value="<?php echo getValue('father_nrc'); ?>">
+                                <?php if (isset($errors['father_nrc'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['father_nrc']; ?></p><?php endif; ?>
+                            </div>
+                             <!-- Father Occupation -->
+                            <div class="relative pb-5">
+                                <label for="father_info" class="block text-sm font-medium text-gray-700">အလုပ်အကိုင်</label>
+                                <textarea id="father_info" name="father_info" rows="2" class="mt-1 father-field disable-on-deceased"><?php echo getValue('father_info'); ?></textarea>
+                                <?php if (isset($errors['father_info'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['father_info']; ?></p><?php endif; ?>
+                            </div>
+                             <!-- Father Address -->
+                            <div class="relative pb-5">
+                                <label for="father_address" class="block text-sm font-medium text-gray-700">နေရပ်လိပ်စာ</label>
+                                <textarea id="father_address" name="father_address" rows="2" class="mt-1 father-field disable-on-deceased"><?php echo getValue('father_address'); ?></textarea>
+                                <?php if (isset($errors['father_address'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['father_address']; ?></p><?php endif; ?>
+                            </div>
+                             <!-- Father Phone -->
+                            <div class="relative pb-5">
+                                <label for="father_phone" class="block text-sm font-medium text-gray-700">ဖုန်းနံပါတ်</label>
+                                <input type="tel" id="father_phone" name="father_phone" class="mt-1 father-field disable-on-deceased" value="<?php echo getValue('father_phone'); ?>">
+                                <?php if (isset($errors['father_phone'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['father_phone']; ?></p><?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- Mother's Column -->
+                        <div class="space-y-2">
+                            <h4 class="font-semibold text-gray-700 mt-2">အမိ (အရင်း)</h4>
+                             <!-- Mother Deceased -->
+                            <div class="relative pb-5">
+                                <label for="mother_deceased_year" class="block text-sm font-medium text-gray-700">ကွယ်လွန်သည့်ခုနှစ် (ကွယ်လွန်ပါက)</label>
+                                <input type="text" id="mother_deceased_year" name="mother_deceased_year" class="mt-1" placeholder="ဥပမာ - 2010" value="<?php echo getValue('mother_deceased_year'); ?>">
+                            </div>
+                            <!-- Mother Name MM -->
+                            <div class="relative pb-5">
+                                <label for="mother_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
+                                <input type="text" id="mother_name_mm" name="mother_name_mm" class="mt-1 mother-field" value="<?php echo getValue('mother_name_mm'); ?>" required>
+                                <?php if (isset($errors['mother_name_mm'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['mother_name_mm']; ?></p><?php endif; ?>
+                            </div>
+                            <!-- Mother Name EN -->
+                            <div class="relative pb-5">
+                                <label for="mother_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
+                                <input type="text" id="mother_name_en" name="mother_name_en" class="mt-1 mother-field" value="<?php echo getValue('mother_name_en'); ?>" required>
+                                <?php if (isset($errors['mother_name_en'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['mother_name_en']; ?></p><?php endif; ?>
+                            </div>
+                            <!-- Mother Race -->
+                            <div class="relative pb-5">
+                                <label for="mother_race" class="block text-sm font-medium text-gray-700">လူမျိုး</label>
+                                <input type="text" id="mother_race" name="mother_race" class="mt-1 mother-field" value="<?php echo getValue('mother_race'); ?>">
+                                <?php if (isset($errors['mother_race'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['mother_race']; ?></p><?php endif; ?>
+                            </div>
+                            <!-- Mother Religion -->
+                            <div class="relative pb-5">
+                                <label for="mother_religion" class="block text-sm font-medium text-gray-700">ကိုးကွယ်သည့်ဘာသာ</label>
+                                <input type="text" id="mother_religion" name="mother_religion" class="mt-1 mother-field" value="<?php echo getValue('mother_religion'); ?>" required>
+                                <?php if (isset($errors['mother_religion'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['mother_religion']; ?></p><?php endif; ?>
+                            </div>
+                            <!-- Mother NRC -->
+                            <div class="relative pb-5">
+                                <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                                <div id="mother_nrc_group" class="mt-1 mother-field-group"></div>
+                                <input type="hidden" name="mother_nrc" id="mother_nrc_hidden" value="<?php echo getValue('mother_nrc'); ?>">
+                                <?php if (isset($errors['mother_nrc'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['mother_nrc']; ?></p><?php endif; ?>
+                            </div>
+                             <!-- Mother Occupation -->
+                            <div class="relative pb-5">
+                                <label for="mother_info" class="block text-sm font-medium text-gray-700">အလုပ်အကိုင်</label>
+                                <textarea id="mother_info" name="mother_info" rows="2" class="mt-1 mother-field disable-on-deceased"><?php echo getValue('mother_info'); ?></textarea>
+                                <?php if (isset($errors['mother_info'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['mother_info']; ?></p><?php endif; ?>
+                            </div>
+                             <!-- Mother Address -->
+                            <div class="relative pb-5">
+                                <label for="mother_address" class="block text-sm font-medium text-gray-700">နေရပ်လိပ်စာ</label>
+                                <textarea id="mother_address" name="mother_address" rows="2" class="mt-1 mother-field disable-on-deceased"><?php echo getValue('mother_address'); ?></textarea>
+                                <?php if (isset($errors['mother_address'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['mother_address']; ?></p><?php endif; ?>
+                            </div>
+                             <!-- Mother Phone -->
+                            <div class="relative pb-5">
+                                <label for="mother_phone" class="block text-sm font-medium text-gray-700">ဖုန်းနံပါတ်</label>
+                                <input type="tel" id="mother_phone" name="mother_phone" class="mt-1 mother-field disable-on-deceased" value="<?php echo getValue('mother_phone'); ?>">
+                                <?php if (isset($errors['mother_phone'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['mother_phone']; ?></p><?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
 
+            <!-- Declaration and Signature -->
             <div class="mt-8">
-                <p class="text-sm">ဖော်ပြပါအချက်အလက်များမှန်ကန်ကြောင်း ခံဝန်ကတိပြုပါသည်။ တစ်စုံတစ်ရာမှားယွင်းချက်ရှိပါက
-                    ကျွန်တော်/ကျွန်မ တာဝန်သာ ဖြစ်ပါသည်။</p>
+                <p class="text-sm text-red-600 bg-red-50 p-3 rounded-lg">ဖော်ပြပါအချက်အလက်များမှန်ကန်ကြောင်း ခံဝန်ကတိပြုပါသည်။ တစ်စုံတစ်ရာမှားယွင်းချက်ရှိပါက ကျွန်တော်/ကျွန်မ တာဝန်သာ ဖြစ်ပါသည်။</p>
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mt-12 gap-8 sm:gap-4">
-                    <div class="w-full sm:w-auto">
-                        <label for="date" class="block text-sm">ရက်စွဲ</label>
+                    <div class="w-full sm:w-auto relative pb-5">
+                        <label for="date" class="block text-sm font-medium text-gray-700">ရက်စွဲ</label>
                         <input type="text" id="date" name="date" class="mt-1" placeholder="ဥပမာ - 16-08-2024" value="<?php echo getValue('date', date('d-m-Y')); ?>" required>
-                        <?php if (isset($errors['date'])): ?><p class="error-message"><?php echo $errors['date']; ?></p><?php endif; ?>
-                    </div>
-                    <div class="w-full sm:w-1/3">
-                        <div class="border-t border-gray-400 pt-1 text-center text-sm">(ကျောင်းသား/သူ၏ထိုးမြဲလက်မှတ်)</div>
+                        <?php if (isset($errors['date'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['date']; ?></p><?php endif; ?>
                     </div>
                 </div>
             </div>
 
-            <div class="nav-buttons">
-                <a href="#" class="nav-button disabled-button">Back</a>
-                <button type="submit" class="nav-button">Next</button>
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons mt-8 flex justify-between items-center">
+                <a href="#" class="nav-button-back text-gray-600 hover:text-gray-900 font-medium">Back</a>
+                <button type="submit" class="nav-button-next">Next Step</button>
             </div>
 
             <div class="text-right text-xs text-gray-400 mt-6">
@@ -509,90 +659,127 @@
     </form>
     <br>
 
-    <?php include 'formPartial/footer.php'; ?>
+    <?php
+        include 'formPartial/footer.php';
+        $repopulate_state    = getValue('state_region');
+        $repopulate_township = getValue('township');
+    ?>
+
 <script>
-        // Wait for the document to be fully loaded before running the script
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('student-form');
-            const dobInput = document.getElementById('student_dob');
-            const errorContainer = document.getElementById('dob_error_client');
+    // Pass PHP values to JavaScript
+    const previouslySelectedState = '<?php echo $repopulate_state; ?>';
+    const previouslySelectedTownship = '<?php echo $repopulate_township; ?>';
+    const repopulateNrcData =                                    <?php echo json_encode($repopulate_nrc); ?>;
+    const photoUrlFromServer = '<?php echo getValue('photo_url', ''); ?>';
 
-            // --- Set min and max selectable dates ---
-            const today = new Date();
-            // Set the latest selectable date to today
-            const maxDate = today.toISOString().split('T')[0];
-            dobInput.setAttribute('max', maxDate);
 
-            // Set the earliest selectable date to 100 years ago
-            const minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate()).toISOString().split('T')[0];
-            dobInput.setAttribute('min', minDate);
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Photo Upload & Preview Logic ---
+        const photoUploadInput = document.getElementById('photo_upload');
+        const photoPreview = document.getElementById('photo-preview');
+        const previewContainer = document.getElementById('photo-preview-container');
+        const placeholder = document.getElementById('photo-placeholder');
+        const removeBtn = document.getElementById('remove-photo-btn');
+        const photoUrlHidden = document.getElementById('photo_url_hidden');
+        const removePhotoFlag = document.getElementById('remove_photo_flag');
 
-            // --- Validation Function ---
-            const validateDateOfBirth = () => {
-                // Hide previous error messages
-                errorContainer.style.display = 'none';
-                errorContainer.textContent = '';
+        function showPhotoPreview(url) {
+            if (!url) return;
+            photoPreview.src = url;
+            placeholder.style.display = 'none';
+            previewContainer.style.display = 'block';
+        }
 
-                const dobValue = dobInput.value;
-                // Check if a date is selected
-                if (!dobValue) {
-                    errorContainer.textContent = 'မွေးသက္ကရာဇ်ထည့်သွင်းရန်လိုအပ်ပါသည်။';
-                    errorContainer.style.display = 'block';
-                    return false;
+        function hidePhotoPreview() {
+            photoPreview.src = '#';
+            placeholder.style.display = 'block';
+            previewContainer.style.display = 'none';
+            photoUploadInput.value = ''; // Clear the file input
+            photoUrlHidden.value = ''; // Clear the hidden URL field
+            removePhotoFlag.value = '1'; // Set flag to remove on server
+        }
+
+        // On page load, check for an existing photo from the server
+        if (photoUrlFromServer) {
+            showPhotoPreview(photoUrlFromServer);
+        }
+
+        photoUploadInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                removePhotoFlag.value = '0'; // If a new file is selected, don't remove it
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showPhotoPreview(e.target.result);
                 }
-
-                const birthDate = new Date(dobValue);
-                const currentDate = new Date();
-
-                // This check is redundant due to the 'max' attribute but good for robustness
-                if (birthDate > currentDate) {
-                    errorContainer.textContent = 'မွေးသက္ကရာဇ်သည် ယနေ့ထက်နောက်ကျ၍မရပါ။';
-                    errorContainer.style.display = 'block';
-                    return false;
-                }
-
-                // --- Age Calculation ---
-                let age = currentDate.getFullYear() - birthDate.getFullYear();
-                const monthDifference = currentDate.getMonth() - birthDate.getMonth();
-                // Adjust age if the birth month/day hasn't occurred yet this year
-                if (monthDifference < 0 || (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())) {
-                    age--;
-                }
-
-                // --- Age Validation Rules ---
-                // Example: Ensure the student is at least 16 years old
-                if (age < 16) {
-                    errorContainer.textContent = 'အသက် ၁၆ နှစ်ပြည့်ပြီးသူဖြစ်ရပါမည်။';
-                    errorContainer.style.display = 'block';
-                    return false;
-                }
-
-                // This check is redundant due to the 'min' attribute but good for robustness
-                if (age > 100) {
-                    errorContainer.textContent = 'ထည့်သွင်းထားသော အသက်သည် မှန်ကန်မှုမရှိပါ။';
-                    errorContainer.style.display = 'block';
-                    return false;
-                }
-
-                // If all checks pass, validation is successful
-                return true;
-            };
-
-            // --- Event Listeners ---
-            if (form) {
-                // Validate before the form is submitted
-                form.addEventListener('submit', function(event) {
-                    if (!validateDateOfBirth()) {
-                        // Prevent the form from submitting if validation fails
-                        event.preventDefault();
-                    }
-                });
+                reader.readAsDataURL(this.files[0]);
             }
-
-            // Provide immediate feedback when the user changes the date
-            dobInput.addEventListener('input', validateDateOfBirth);
         });
 
+        removeBtn.addEventListener('click', function() {
+            hidePhotoPreview();
+        });
+
+
+        // --- Date of Birth Validation ---
+        const form = document.querySelector('form');
+        const dobInput = document.getElementById('student_dob');
+        const errorContainer = document.getElementById('dob_error_client');
+
+        if (dobInput) {
+            const today = new Date();
+            const maxDate = today.toISOString().split('T')[0];
+            dobInput.setAttribute('max', maxDate);
+            const minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate()).toISOString().split('T')[0];
+            dobInput.setAttribute('min', minDate);
+        }
+
+        const validateDateOfBirth = () => {
+            if (!dobInput) return true;
+            errorContainer.style.display = 'none';
+            errorContainer.textContent = '';
+            const dobValue = dobInput.value;
+            if (!dobValue) {
+                errorContainer.textContent = 'မွေးသက္ကရာဇ်ထည့်သွင်းရန်လိုအပ်ပါသည်။';
+                errorContainer.style.display = 'block';
+                return false;
+            }
+            const birthDate = new Date(dobValue);
+            const currentDate = new Date();
+            if (birthDate > currentDate) {
+                errorContainer.textContent = 'မွေးသက္ကရာဇ်သည် ယနေ့ထက်နောက်ကျ၍မရပါ။';
+                errorContainer.style.display = 'block';
+                return false;
+            }
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            if (age < 16) {
+                errorContainer.textContent = 'အသက် ၁၆ နှစ်ပြည့်ပြီးသူဖြစ်ရပါမည်။';
+                errorContainer.style.display = 'block';
+                return false;
+            }
+            if (age > 100) {
+                errorContainer.textContent = 'ထည့်သွင်းထားသော အသက်သည် မှန်ကန်မှုမရှိပါ။';
+                errorContainer.style.display = 'block';
+                return false;
+            }
+            return true;
+        };
+
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                if (!validateDateOfBirth()) {
+                    event.preventDefault();
+                }
+            });
+        }
+        if (dobInput) {
+            dobInput.addEventListener('input', validateDateOfBirth);
+        }
+
+        // --- Birthplace Dropdown Logic ---
         const locationData = {
             "ကချင်ပြည်နယ်": ["မြစ်ကြီးနား", "ဝိုင်းမော်", "ချီဖွေ", "ဆော့လော်", "တနိုင်း", "အင်ဂျန်းယန်", "မိုးညှင်း", "မိုးကောင်း", "ဖားကန့်", "ဗန်းမော်", "ရွှေကူ", "မံစီ", "မိုးမောက်", "ပူတာအို", "ဆွမ်ပရာဘွမ်", "မချမ်းဘော", "ခေါင်းလန်းဖူး", "နောင်မွန်း"],
             "ကယားပြည်နယ်": ["လွိုင်ကော်", "ဒီးမော့ဆို", "ဖရူဆို", "ရှားတော", "ဘော်လခဲ", "မယ်စဲ့", "ဖာဆောင်း"],
@@ -610,17 +797,13 @@
             "ဧရာဝတီတိုင်းဒေသကြီး": ["ပုသိမ်", "ကန်ကြီးထောင့်", "ကျုံပျော်", "ငပုတော", "သာပေါင်း", "ကျောင်းကုန်း", "ရေကြည်", "မအူပင်", "ဓနုဖြူ", "ပန်းတနော်", "ညောင်တုန်း", "ဟင်္သာတ", "ဇလွန်", "ကြံခင်း", "မြန်အောင်", "အင်္ဂပူ", "လေးမျက်နှာ", "မြောင်းမြ", "ဝါးခယ်မ", "အိမ်မဲ", "ဖျာပုံ", "ဘိုကလေး", "ဒေးဒရဲ", "ကျိုက်လတ်", "လပွတ္တာ", "မော်လမြိုင်ကျွန်း"],
             "နေပြည်တော် ပြည်ထောင်စုနယ်မြေ": ["ဒက္ခိဏသီရိ", "လယ်ဝေး", "ပျဉ်းမနား", "ဇမ္ဗူသီရိ", "ဥတ္တရသီရိ", "ပုဗ္ဗသီရိ", "တပ်ကုန်း", "ဇေယျာသီရိ"]
         };
-
-        // Get the select elements from the DOM
         const stateRegionSelect = document.getElementById('state_region');
         const townshipSelect = document.getElementById('township');
+        const birthplaceHiddenInput = document.getElementById('student_birthplace');
 
-        // Function to populate the state/region dropdown
         function populateStates() {
-            // Get all state/region names from our data
+            if (!stateRegionSelect) return;
             const states = Object.keys(locationData);
-
-            // Create an option element for each state/region and add it to the select box
             states.forEach(state => {
                 const option = document.createElement('option');
                 option.value = state;
@@ -629,44 +812,47 @@
             });
         }
 
-        // Function to update the township dropdown based on the selected state/region
+        function updateHiddenBirthplace() {
+            if (!stateRegionSelect || !townshipSelect || !birthplaceHiddenInput) return;
+            const state = stateRegionSelect.value;
+            const township = townshipSelect.value;
+            if (state && township) {
+                birthplaceHiddenInput.value = `${state}, ${township}`;
+            } else {
+                birthplaceHiddenInput.value = '';
+            }
+        }
+
         function updateTownships() {
-            // Get the selected state/region value
+            if (!stateRegionSelect || !townshipSelect) return;
             const selectedState = stateRegionSelect.value;
-
-            // Clear previous township options
-            townshipSelect.innerHTML = '<option value="" disabled selected>မြို့နယ် ရွေးချယ်ပါ</option>';
-
-            // If a valid state/region is selected
+            townshipSelect.innerHTML = '<option value="" disabled selected>မြို့နယ်</option>';
             if (selectedState && locationData[selectedState]) {
-                // Get the list of townships for the selected state
                 const townships = locationData[selectedState];
-
-                // Create and add an option for each township
                 townships.forEach(township => {
                     const option = document.createElement('option');
                     option.value = township;
                     option.textContent = township;
                     townshipSelect.appendChild(option);
                 });
-                // Enable the township dropdown
                 townshipSelect.disabled = false;
             } else {
-                // If no state is selected, disable the township dropdown
                 townshipSelect.disabled = true;
             }
+            updateHiddenBirthplace();
         }
 
-        // Add an event listener to the state/region dropdown.
-        // When the user changes the selection, the updateTownships function will run.
-        stateRegionSelect.addEventListener('change', updateTownships);
+        if (stateRegionSelect) stateRegionSelect.addEventListener('change', updateTownships);
+        if (townshipSelect) townshipSelect.addEventListener('change', updateHiddenBirthplace);
 
-        // Initial setup when the page loads
-        window.onload = function() {
-            populateStates(); // Fill the state/region dropdown
-            updateTownships(); // Set the initial state of the township dropdown (which will be disabled)
-        };
+        populateStates();
+        if (previouslySelectedState) stateRegionSelect.value = previouslySelectedState;
+        updateTownships();
+        if (previouslySelectedTownship) townshipSelect.value = previouslySelectedTownship;
+        updateHiddenBirthplace();
 
+
+        // --- NRC Input Group Logic ---
         const nrcTownships = {
             1: ["ကစန", "ခဘဒ", "ဂမန", "ဟပန", "အလန", "မကန", "မခဘ", "မဂန", "မညန", "မစန", "မမန", "ပတအ", "ရကန", "ဆပဘ", "ဆလန", "တနန", "ဝမန"],
             2: ["ဒမဆ", "ဖရဆ", "လကန", "မစန"],
@@ -683,23 +869,23 @@
             13: ["ကလန", "ညဥန", "ပပဏ", "ရစက", "တသန", "ဝတလ", "မထလ", "မကင"],
             14: ["တကန", "ကတန", "ကမန", "ကမတ", "ဒဂန", "ဒပန", "လသန", "မဘန", "မရန", "ပစတ", "ဖနန", "ရပန", "သလန", "သဃက"]
         };
-
-        // NRC types
         const nrcTypes = ["နိုင်", "ဧည့်", "ပြု", "သာ", "ယာယီ"];
 
-        /**
-         * Creates and initializes a set of NRC input fields.
-         * @param {string} containerId - The ID of the container element for the NRC inputs.
-         * @param {string} namePrefix - The prefix for the input names.
-         */
-        function createNrcInputGroup(containerId, namePrefix) {
+        function createNrcInputGroup(containerId, namePrefix, defaults) {
             const container = document.getElementById(containerId);
             if (!container) return;
 
-            // 1. State/Region Dropdown
+            container.innerHTML = ''; // Clear previous content
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex flex-col';
+
+            const dropdownContainer = document.createElement('div');
+            dropdownContainer.className = 'grid grid-cols-3 gap-2';
+
             const stateSelect = document.createElement('select');
             stateSelect.name = `${namePrefix}_state`;
-            stateSelect.className = 'nrc-select w-1/4';
+            stateSelect.className = 'nrc-select border rounded p-1';
             for (let i = 1; i <= 14; i++) {
                 const option = document.createElement('option');
                 option.value = i;
@@ -707,15 +893,13 @@
                 stateSelect.appendChild(option);
             }
 
-            // 2. Township Dropdown
             const townshipSelect = document.createElement('select');
             townshipSelect.name = `${namePrefix}_township`;
-            townshipSelect.className = 'nrc-select w-1/3';
+            townshipSelect.className = 'nrc-select border rounded p-1';
 
-            // 3. Type Dropdown
             const typeSelect = document.createElement('select');
             typeSelect.name = `${namePrefix}_type`;
-            typeSelect.className = 'nrc-select w-1/4';
+            typeSelect.className = 'nrc-select border rounded p-1';
             nrcTypes.forEach(type => {
                 const option = document.createElement('option');
                 option.value = `(${type})`;
@@ -723,81 +907,143 @@
                 typeSelect.appendChild(option);
             });
 
-            // 4. Number Input
+            dropdownContainer.append(stateSelect, townshipSelect, typeSelect);
+
             const numberInput = document.createElement('input');
             numberInput.type = 'text';
             numberInput.name = `${namePrefix}_number`;
-            numberInput.className = 'nrc-number w-1/2';
+            numberInput.className = 'nrc-number w-full border rounded p-1 mt-1';
             numberInput.placeholder = '123456';
             numberInput.maxLength = 6;
-            numberInput.pattern = '\\d{6}'; // Ensures 6 digits
-            numberInput.required = true;
+            numberInput.pattern = '\\d{6}';
 
-            // Add all elements to the container
-            container.append(stateSelect, townshipSelect, typeSelect, numberInput);
-            
-            // Function to update townships based on selected state
-            const updateTownships = () => {
-                const selectedState = stateSelect.value;
-                const townships = nrcTownships[selectedState] || [];
-                
-                // Clear existing options
-                townshipSelect.innerHTML = '';
+            wrapper.append(dropdownContainer, numberInput);
+            container.append(wrapper);
 
-                // Populate new options
-                townships.forEach(township => {
-                    const option = document.createElement('option');
-                    option.value = township;
-                    option.textContent = township;
-                    townshipSelect.appendChild(option);
-                });
-                updateHiddenInput(); // Update hidden field when township changes
-            };
-            
-            // Function to update the hidden input with the full NRC string
-            const updateHiddenInput = () => {
+
+            const updateHiddenNrcInput = () => {
                 const hiddenInput = document.getElementById(`${namePrefix}_hidden`);
                 if (hiddenInput) {
                     const state = stateSelect.value;
                     const township = townshipSelect.value;
                     const type = typeSelect.value;
                     const number = numberInput.value;
-                    if (state && township && type && number.length === 6) {
-                         hiddenInput.value = `${state}/${township}${type}${number}`;
+                    if (state && township && type && number.match(/^\d{6}$/)) {
+                        hiddenInput.value = `${state}/${township}${type}${number}`;
                     } else {
-                        hiddenInput.value = ''; // Clear if not complete
+                        hiddenInput.value = '';
                     }
                 }
             };
 
-            // Event Listeners
-            stateSelect.addEventListener('change', updateTownships);
-            townshipSelect.addEventListener('change', updateHiddenInput);
-            typeSelect.addEventListener('change', updateHiddenInput);
-            numberInput.addEventListener('input', updateHiddenInput);
+            const updateNrcTownships = () => {
+                const selectedState = stateSelect.value;
+                const townships = nrcTownships[selectedState] || [];
+                townshipSelect.innerHTML = '';
+                townships.forEach(township => {
+                    const option = document.createElement('option');
+                    option.value = township;
+                    option.textContent = township;
+                    townshipSelect.appendChild(option);
+                });
+
+                // Repopulate township if default value exists
+                if (defaults.township && stateSelect.value == defaults.state) {
+                    townshipSelect.value = defaults.township;
+                }
+
+                updateHiddenNrcInput();
+            };
+
+            // Set default values
+            if(defaults.state) stateSelect.value = defaults.state;
+            if(defaults.type) typeSelect.value = defaults.type;
+            if(defaults.number) numberInput.value = defaults.number;
+
+            stateSelect.addEventListener('change', updateNrcTownships);
+            townshipSelect.addEventListener('change', updateHiddenNrcInput);
+            typeSelect.addEventListener('change', updateHiddenNrcInput);
+            numberInput.addEventListener('input', updateHiddenNrcInput);
 
             // Initial population of townships
-            updateTownships();
+            updateNrcTownships();
         }
 
-        // Initialize all NRC input groups when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            createNrcInputGroup('student_nrc_group', 'student_nrc');
-            createNrcInputGroup('father_nrc_group', 'father_nrc');
-            createNrcInputGroup('mother_nrc_group', 'mother_nrc');
-        });
-        
-        // Handle form submission for demonstration
-        document.getElementById('nrc-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent actual submission
-            const studentNrc = document.getElementById('student_nrc_hidden').value;
-            const fatherNrc = document.getElementById('father_nrc_hidden').value;
-            const motherNrc = document.getElementById('mother_nrc_hidden').value;
+        createNrcInputGroup('student_nrc_group', 'student_nrc', repopulateNrcData.student);
+        createNrcInputGroup('father_nrc_group', 'father_nrc', repopulateNrcData.father);
+        createNrcInputGroup('mother_nrc_group', 'mother_nrc', repopulateNrcData.mother);
+
+        // --- Deceased Parent Logic ---
+        const fatherDeceasedInput = document.getElementById('father_deceased_year');
+        const motherDeceasedInput = document.getElementById('mother_deceased_year');
+
+        function toggleParentFields(prefix, isDeceased) {
+            // Select only the fields that should be disabled if a parent is deceased.
+            const fieldsToDisable = document.querySelectorAll(`.${prefix}-field.disable-on-deceased`);
+
+            fieldsToDisable.forEach(field => {
+                field.disabled = isDeceased;
+                if (isDeceased) {
+                    // Clear the value only if it's deceased
+                    if (field.tagName.toLowerCase() !== 'select') {
+                        field.value = '';
+                    }
+                    field.classList.add('bg-gray-100', 'cursor-not-allowed');
+                } else {
+                    // Re-enable the field
+                    field.classList.remove('bg-gray-100', 'cursor-not-allowed');
+                }
+            });
+        }
+
+
+        if (fatherDeceasedInput) {
+            fatherDeceasedInput.addEventListener('input', (e) => {
+                toggleParentFields('father', e.target.value.trim() !== '');
+            });
+            // Initial check on page load
+            toggleParentFields('father', fatherDeceasedInput.value.trim() !== '');
+        }
+
+        if (motherDeceasedInput) {
+            motherDeceasedInput.addEventListener('input', (e) => {
+                toggleParentFields('mother', e.target.value.trim() !== '');
+            });
+            // Initial check on page load
+            toggleParentFields('mother', motherDeceasedInput.value.trim() !== '');
+        }
+
+        // --- Name Input Validation ---
+        function setupNameValidation(inputId, isMyanmar) {
+            const inputElement = document.getElementById(inputId);
+            if (!inputElement) return;
+
+            const regex = isMyanmar ? /^[\u1000-\u109F\s]*$/ : /^[a-zA-Z\s]*$/;
+            const message = isMyanmar ? "မြန်မာအက္ခရာများသာ ထည့်သွင်းပါ။" : "English letters only.";
             
-            alert(`
-                ကျောင်းသား/သူ NRC: ${studentNrc || 'မပြည့်စုံပါ'}
-                အဘ NRC: ${fatherNrc || 'မပြည့်စုံပါ'}
-                အမိ NRC: ${motherNrc || 'မပြည့်စုံပါ'}
-            `);
-        });
-    </script>
+            inputElement.addEventListener('input', function(e) {
+                if (!regex.test(e.target.value)) {
+                    // Find the last character that is invalid and remove it
+                    e.target.value = e.target.value.slice(0, -1);
+                }
+            });
+             // Add pattern for form submission validation
+            inputElement.setAttribute('pattern', regex.source.slice(1,-1));
+            inputElement.setAttribute('title', message);
+        }
+
+        // Student
+        setupNameValidation('student_name_mm', true);
+        setupNameValidation('student_name_en', false);
+        // Father
+        setupNameValidation('father_name_mm', true);
+        setupNameValidation('father_name_en', false);
+        // Mother
+        setupNameValidation('mother_name_mm', true);
+        setupNameValidation('mother_name_en', false);
+
+    });
+</script>
+
+</body>
+</html>
