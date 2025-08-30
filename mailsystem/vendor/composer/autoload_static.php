@@ -11,25 +11,12 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         array (
             'PHPMailer\\PHPMailer\\' => 20,
         ),
-        'A' => 
-        array (
-            'Adamlc\\Premailer\\' => 17,
-            'AdamBrett\\ShellWrapper\\' => 23,
-        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
-        ),
-        'Adamlc\\Premailer\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/adamlc/premailer-cli-wrapper/src',
-        ),
-        'AdamBrett\\ShellWrapper\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/adambrett/shell-wrapper/src',
         ),
     );
 
