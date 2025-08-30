@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_destroy();
         
         // Set success message to be displayed.
-        $success_message = "✅ လျှောက်လွှာတင်ပြီးပါပြီ\n\nလျှောက်လွှာတင်ခြင်း အောင်မြင်ပါသည်။ ကျေးဇူးပြု၍ သင့်အီးမေးလ်သို့ ပေးပို့ထားသော အကြောင်းကြားစာကို စစ်ဆေးပါ။";
+        $success_message = "✅ ကျောင်းလျှောက်ခြင်း အောင်မြင်ပါသည်။\n\nရတနာပုံဆိုက်ဘာစီးတီး တက္ကသိုလ်မှ နွေးထွေးစွာကြိုဆိုပါသည်။";
         
     } catch (PDOException $e) {
         // In a real application, you would handle this gracefully.
