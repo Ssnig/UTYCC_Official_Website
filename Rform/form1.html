@@ -1,611 +1,683 @@
 <!DOCTYPE html>
-<html lang="my">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <title>Student Registration Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../CSS/footer.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="../Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="../CSS/font.css" />
-
-    <title>Student's Registration Form 1</title>
-    <!-- Tailwind CSS CDN -->
-
-    <!-- Inter Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Padauk:wght@400;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="form.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Padauk', 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8; /* Lighter blue-gray background */
         }
-
-        /* Custom styles for better table borders */
-        table,
-        th,
-        td {
-            border: 1px solid #e5e7eb;
-            /* gray-200 */
+        .error-message {
+            color: #D32F2F; /* Red color for errors */
+            font-size: 0.75rem; /* 12px */
         }
-
-        th,
-        td {
-            padding: 0.75rem;
-            /* p-3 */
-            text-align: left;
-            white-space: nowrap;
-            /* Prevent text wrapping in table cells */
+        .form-container {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-radius: 1rem; /* More rounded corners */
+            border: 1px solid #e2e8f0;
         }
-
-        input,
+        .form-title {
+            color: #1e3a8a; /* Dark blue */
+        }
+        .form-subtitle {
+            color: #3b82f6; /* Medium blue */
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="tel"],
+        select,
         textarea {
             width: 100%;
-            border: 1px solid #d1d5db;
-            /* gray-300 */
+            padding: 0.5rem 0.75rem;
             border-radius: 0.375rem;
-            /* rounded-md */
-            padding: 0.5rem;
-            /* p-2 */
-            transition: border-color 0.2s;
+            border: 1px solid #cbd5e1;
+            transition: all 0.3s ease-in-out;
         }
-
-        input:focus,
-        textarea:focus {
+        input:focus, select:focus, textarea:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4) !important;
             outline: none;
-            border-color: #3b82f6;
-            /* blue-500 */
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
-
+        .section-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            transition: box-shadow 0.3s ease;
+        }
+        .section-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .section-header {
+            color: #1e3a8a; /* Dark blue */
+            border-bottom: 2px solid #93c5fd; /* Light blue underline */
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-button-next {
+            background-image: linear-gradient(to right, #3b82f6, #2563eb);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        .nav-button-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        #photo-upload-area {
+            border-color: #93c5fd;
+            background-color: #eff6ff;
+        }
         #photo-preview-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
+             position: relative;
+             width: 100%;
+             height: 100%;
         }
-
         #photo-preview {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 0.375rem;
+            border-radius: 0.5rem;
         }
-
         #remove-photo-btn {
             position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background-color: rgba(0, 0, 0, 0.5);
+            top: -0.5rem;
+            right: -0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            background-color: rgba(0,0,0,0.6);
             color: white;
-            border-radius: 9999px;
-            width: 1.75rem;
-            height: 1.75rem;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
         }
     </style>
 </head>
+<body>
+    <br>
+    <form action="#" method="get" enctype="multipart/form-data" novalidate>
+        <div class="max-w-4xl mx-auto bg-white p-3 py-3 sm:p-6 md:p-8 form-container">
+            <!-- Form Header -->
+            <div class="flex justify-between items-start mb-4 ">
+                <p class="text-sm text-gray-400">Form No. UTYCC-20</p>
+                <div class="text-right">
+                    <label for="year" class="block text-sm font-medium text-gray-500">ခုနှစ်</label>
+                    <input type="text" id="year" name="year" class="mt-1 w-24 text-center bg-gray-100 rounded-md border-gray-200" value="2025-2026" readonly>
+                </div>
+            </div>
 
-<body class="bg-gray-100 ">
-    <div class="bg-white shadow-md sticky top-0 z-50">
-    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="#" class="flex items-center space-x-3">
-        <div class="p-2 rounded-lg">
-          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
-        </div>
-        <div>
-          <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
-          <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
-            City)</span>
-        </div>
-      </a>
-      <div class="hidden md:flex items-center space-x-6">
-        <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">About Us</a>
-        <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_programs">Academic Programs</a>
-        <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_collaboration">Collaboration</a>
-        <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_contact">Contact</a>
+            <div class="text-center mb-8">
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold form-title">ကျောင်းသားအဖြစ်မှ မှတ်ပုံတင်ခွင့်တောင်းခံလွှာ</h1>
+                <h2 class="text-md sm:text-lg md:text-xl font-semibold form-subtitle mt-2">
+                    နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)</h2>
+            </div>
 
-        <div class="relative ml-4">
-                    <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-                        <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
-                        <select id="language-switcher"
-                            class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="my">မြန်မာ</option>
-                            <option value="en">English</option>
-                        </select>
-                        <i
-                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+            <!-- Top Information Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="relative pb-5">
+                        <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
+                        <input type="text" id="academic_year" name="academic_year" class="mt-1" value="">
+                    </div>
+                    <div class="relative pb-5">
+                        <label for="major" class="block text-sm font-medium text-gray-700">အထူးပြုဘာသာ</label>
+                        <input type="text" id="major" name="major" class="mt-1" value="">
+                    </div>
+                    <div class="relative pb-5">
+                        <label for="seat_no" class="block text-sm font-medium text-gray-700">ခုံအမှတ်</label>
+                        <input type="text" id="seat_no" name="seat_no" class="mt-1" value="">
+                    </div>
+                    <div class="relative pb-5">
+                        <label for="uni_reg_no" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်မှတ်ပုံတင်အမှတ်</label>
+                        <input type="text" id="uni_reg_no" name="uni_reg_no" class="mt-1" value="">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label for="entry_year" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
+                        <input type="text" id="entry_year" name="entry_year" class="mt-1" value="">
                     </div>
                 </div>
-      </div>
-      <button id="mobile-menu-button" class="md:hidden text-blue-900">
-  <i class="fas fa-bars text-2xl" id="menu-icon"></i>
-</button>
-
-      <!-- <button id="mobile-menu-button" class="md:hidden text-blue-900">
-        <i class="fas fa-bars text-2xl"></i>
-      </button> -->
-    </nav>
-    <!-- <div id="mobile-menu" class="hidden px-6 pb-4 border-t md:hidden"> -->
-
-    <!-- <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t"> -->
-      <div id="mobile-menu" class="hidden px-6 pb-4 border-t md:hidden">
-
-      <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_about_mobile">About Us</a>
-      <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_programs_mobile">Academic Programs</a>
-      <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_collaboration_mobile">Collaboration</a>
-      <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-        data-lang-key="nav_contact_mobile">Contact</a>
-    </div>
-  </div>
-
-  <br>
-
-
-
-    <div class="max-w-4xl mx-auto bg-white p-3 py-3 sm:p-6 md:p-8 rounded-lg shadow-lg">
-
-        <!-- Form Header -->
-        <div class="flex justify-between items-start mb-4 ">
-            <p class="text-sm">Form No. UTYCC-20</p>
-            <div class="text-right">
-                <label for="year" class="block text-sm font-medium text-gray-700">ခုနှစ်</label>
-                <input type="text" id="year" name="year" class="mt-1 w-24 text-center">
-            </div>
-        </div>
-
-        <div class="text-center mb-6">
-            <h1 class="text-lg sm:text-xl md:text-2xl font-bold">ကျောင်းသားအဖြစ်မှ မှတ်ပုံတင်ခွင့်တောင်းခံလွှာ</h1>
-            <h2 class="text-base sm:text-lg md:text-xl font-semibold text-gray-700 mt-1">
-                နည်းပညာတက္ကသိုလ်(ရတနာပုံဆိုက်ဘာစီးတီး)</h2>
-        </div>
-
-        <!-- Top Information Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
-                    <input type="text" id="academic_year" name="academic_year" class="mt-1">
-                </div>
-                <div>
-                    <label for="major" class="block text-sm font-medium text-gray-700">အထူးပြုဘာသာ</label>
-                    <input type="text" id="major" name="major" class="mt-1">
-                </div>
-                <div>
-                    <label for="seat_no" class="block text-sm font-medium text-gray-700">ခုံအမှတ်</label>
-                    <input type="text" id="seat_no" name="seat_no" class="mt-1">
-                </div>
-                <div>
-                    <label for="uni_reg_no"
-                        class="block text-sm font-medium text-gray-700">တက္ကသိုလ်မှတ်ပုံတင်အမှတ်</label>
-                    <input type="text" id="uni_reg_no" name="uni_reg_no" class="mt-1">
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="entry_year"
-                        class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
-                    <input type="text" id="entry_year" name="entry_year" class="mt-1">
+                <div id="photo-upload-area" class="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-2 h-48">
+                    <div id="photo-placeholder" class="text-center">
+                        <span class="text-gray-500">ဓါတ်ပုံကပ်ရန်</span>
+                        <button type="button" onclick="document.getElementById('photo_upload').click()" class="mt-2 block mx-auto px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200">Upload</button>
+                    </div>
+                    <div id="photo-preview-container" class="hidden w-full h-full">
+                        <img id="photo-preview" src="#" alt="Photo Preview">
+                        <div id="remove-photo-btn" title="Remove Photo">×</div>
+                    </div>
+                    <input type="file" class="hidden" id="photo_upload" name="photo_upload" accept="image/*">
                 </div>
             </div>
-            <!-- Photo Upload Section -->
-            <div id="photo-upload-area"
-                class="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-2 h-48">
-                <div id="photo-placeholder" class="text-center">
-                    <span class="text-gray-500">ဓါတ်ပုံကပ်ရန်</span>
-                    <button type="button" onclick="document.getElementById('photo_upload').click()"
-                        class="mt-2 block mx-auto px-3 py-1 text-sm bg-gray-200 rounded-md hover:bg-gray-300">Upload</button>
+
+            <!-- Main Information Sections -->
+            <div class="space-y-8 mt-8">
+                <!-- Student Information Section -->
+                <section class="section-card p-4 sm:p-6">
+                    <h3 class="text-lg font-semibold mb-6 section-header pb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>ကျောင်းသား/သူ၏ ကိုယ်ရေးအချက်အလက်</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                        <!-- Name MM -->
+                        <div class="relative pb-5">
+                            <label for="student_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
+                            <input type="text" id="student_name_mm" name="student_name_mm" class="mt-1" value="" required>
+                        </div>
+                        <!-- Name EN -->
+                        <div class="relative pb-5">
+                            <label for="student_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
+                            <input type="text" id="student_name_en" name="student_name_en" class="mt-1" value="" required>
+                        </div>
+                        <!-- Race -->
+                        <div class="relative pb-5">
+                            <label for="student_race" class="block text-sm font-medium text-gray-700">လူမျိုး</label>
+                            <input type="text" id="student_race" name="student_race" class="mt-1" value="" required>
+                        </div>
+                        <!-- Religion -->
+                        <div class="relative pb-5">
+                            <label for="student_religion" class="block text-sm font-medium text-gray-700">ကိုးကွယ်သည့်ဘာသာ</label>
+                            <input type="text" id="student_religion" name="student_religion" class="mt-1" value="" required>
+                        </div>
+                        <!-- NRC -->
+                        <div class="relative pb-5 md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                            <div id="student_nrc_group" class="mt-1"></div>
+                            <input type="hidden" name="student_nrc" id="student_nrc_hidden" value="">
+                        </div>
+                          <!-- DOB -->
+                        <div class="relative pb-5">
+                            <label for="student_dob" class="block text-sm font-medium text-gray-700">မွေးသက္ကရာဇ်</label>
+                            <input type="date" id="student_dob" name="student_dob" class="mt-1" value="" required>
+                            <p id="dob_error_client" class="error-message absolute bottom-0 left-0" style="display: none;"></p>
+                        </div>
+                        <!-- Birthplace -->
+                        <div class="relative pb-5">
+                             <label for="student_birthplace" class="block text-sm font-medium text-gray-700">မွေးဖွားရာဇာတိ</label>
+                             <div class="grid grid-cols-2 gap-2 mt-1">
+                                 <div>
+                                     <select id="state_region" name="state_region" required>
+                                         <option value="" disabled selected>တိုင်း/ပြည်နယ်</option>
+                                     </select>
+                                 </div>
+                                 <div>
+                                     <select id="township" name="township" required>
+                                         <option value="" disabled selected>မြို့နယ်</option>
+                                     </select>
+                                 </div>
+                             </div>
+                             <input type="hidden" id="student_birthplace" name="student_birthplace" value="">
+                        </div>
+                        <!-- Phone -->
+                        <div class="relative pb-5">
+                            <label for="student_phone" class="block text-sm font-medium text-gray-700">ဆက်သွယ်ရန်ဖုန်းနံပါတ်</label>
+                            <input type="tel" id="student_phone" name="student_phone" class="mt-1" value="" pattern="09\d{7,9}" maxlength="11" placeholder="09xxxxxxxxx" title="Please enter a valid Myanmar phone number starting with 09." required>
+                        </div>
+                        <!-- Address -->
+                        <div class="relative pb-5 md:col-span-2">
+                              <label for="student_address" class="block text-sm font-medium text-gray-700">အမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ အပြည့်အစုံ</label>
+                              <textarea id="student_address" name="student_address" rows="3" class="mt-1"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Parent Information Section -->
+                <section class="section-card p-4 sm:p-6">
+                    <h3 class="text-lg font-semibold mb-6 section-header pb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M18 22a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18h.01"/><path d="M12 14h.01"/><path d="M12 10h.01"/></svg>
+                        <span>မိဘ၏ ကိုယ်ရေးအချက်အလက်</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                        <!-- Father's Column -->
+                        <div class="space-y-2">
+                            <h4 class="font-semibold text-gray-700 mt-2">အဘ (အရင်း)</h4>
+                            <!-- Father Deceased -->
+                            <div class="relative pb-5">
+                                <label for="father_deceased_year" class="block text-sm font-medium text-gray-700">ကွယ်လွန်သည့်ခုနှစ် (ကွယ်လွန်ပါက)</label>
+                                <input type="text" id="father_deceased_year" name="father_deceased_year" class="mt-1" placeholder="ဥပမာ - 2010" value="">
+                            </div>
+                            <!-- Father Name MM -->
+                            <div class="relative pb-5">
+                                <label for="father_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
+                                <input type="text" id="father_name_mm" name="father_name_mm" class="mt-1 father-field" value="" required>
+                            </div>
+                            <!-- Father Name EN -->
+                            <div class="relative pb-5">
+                                <label for="father_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
+                                <input type="text" id="father_name_en" name="father_name_en" class="mt-1 father-field" value="" required>
+                            </div>
+                            <!-- Father Race -->
+                            <div class="relative pb-5">
+                                <label for="father_race" class="block text-sm font-medium text-gray-700">လူမျိုး</label>
+                                <input type="text" id="father_race" name="father_race" class="mt-1 father-field" value="">
+                            </div>
+                            <!-- Father Religion -->
+                            <div class="relative pb-5">
+                                <label for="father_religion" class="block text-sm font-medium text-gray-700">ကိုးကွယ်သည့်ဘာသာ</label>
+                                <input type="text" id="father_religion" name="father_religion" class="mt-1 father-field" value="" required>
+                            </div>
+                            <!-- Father NRC -->
+                            <div class="relative pb-5">
+                                <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                                <div id="father_nrc_group" class="mt-1 father-field-group"></div>
+                                <input type="hidden" name="father_nrc" id="father_nrc_hidden" value="">
+                            </div>
+                             <!-- Father Occupation -->
+                            <div class="relative pb-5">
+                                <label for="father_info" class="block text-sm font-medium text-gray-700">အလုပ်အကိုင်</label>
+                                <textarea id="father_info" name="father_info" rows="2" class="mt-1 father-field disable-on-deceased"></textarea>
+                            </div>
+                             <!-- Father Address -->
+                            <div class="relative pb-5">
+                                <label for="father_address" class="block text-sm font-medium text-gray-700">နေရပ်လိပ်စာ</label>
+                                <textarea id="father_address" name="father_address" rows="2" class="mt-1 father-field disable-on-deceased"></textarea>
+                            </div>
+                             <!-- Father Phone -->
+                            <div class="relative pb-5">
+                                <label for="father_phone" class="block text-sm font-medium text-gray-700">ဖုန်းနံပါတ်</label>
+                                <input type="tel" id="father_phone" name="father_phone" class="mt-1 father-field disable-on-deceased" value="">
+                            </div>
+                        </div>
+
+                        <!-- Mother's Column -->
+                        <div class="space-y-2">
+                            <h4 class="font-semibold text-gray-700 mt-2">အမိ (အရင်း)</h4>
+                             <!-- Mother Deceased -->
+                            <div class="relative pb-5">
+                                <label for="mother_deceased_year" class="block text-sm font-medium text-gray-700">ကွယ်လွန်သည့်ခုနှစ် (ကွယ်လွန်ပါက)</label>
+                                <input type="text" id="mother_deceased_year" name="mother_deceased_year" class="mt-1" placeholder="ဥပမာ - 2010" value="">
+                            </div>
+                            <!-- Mother Name MM -->
+                            <div class="relative pb-5">
+                                <label for="mother_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
+                                <input type="text" id="mother_name_mm" name="mother_name_mm" class="mt-1 mother-field" value="" required>
+                            </div>
+                            <!-- Mother Name EN -->
+                            <div class="relative pb-5">
+                                <label for="mother_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
+                                <input type="text" id="mother_name_en" name="mother_name_en" class="mt-1 mother-field" value="" required>
+                            </div>
+                            <!-- Mother Race -->
+                            <div class="relative pb-5">
+                                <label for="mother_race" class="block text-sm font-medium text-gray-700">လူမျိုး</label>
+                                <input type="text" id="mother_race" name="mother_race" class="mt-1 mother-field" value="">
+                            </div>
+                            <!-- Mother Religion -->
+                            <div class="relative pb-5">
+                                <label for="mother_religion" class="block text-sm font-medium text-gray-700">ကိုးကွယ်သည့်ဘာသာ</label>
+                                <input type="text" id="mother_religion" name="mother_religion" class="mt-1 mother-field" value="" required>
+                            </div>
+                            <!-- Mother NRC -->
+                            <div class="relative pb-5">
+                                <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                                <div id="mother_nrc_group" class="mt-1 mother-field-group"></div>
+                                <input type="hidden" name="mother_nrc" id="mother_nrc_hidden" value="">
+                            </div>
+                             <!-- Mother Occupation -->
+                            <div class="relative pb-5">
+                                <label for="mother_info" class="block text-sm font-medium text-gray-700">အလုပ်အကိုင်</label>
+                                <textarea id="mother_info" name="mother_info" rows="2" class="mt-1 mother-field disable-on-deceased"></textarea>
+                            </div>
+                             <!-- Mother Address -->
+                            <div class="relative pb-5">
+                                <label for="mother_address" class="block text-sm font-medium text-gray-700">နေရပ်လိပ်စာ</label>
+                                <textarea id="mother_address" name="mother_address" rows="2" class="mt-1 mother-field disable-on-deceased"></textarea>
+                            </div>
+                             <!-- Mother Phone -->
+                            <div class="relative pb-5">
+                                <label for="mother_phone" class="block text-sm font-medium text-gray-700">ဖုန်းနံပါတ်</label>
+                                <input type="tel" id="mother_phone" name="mother_phone" class="mt-1 mother-field disable-on-deceased" value="">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Declaration and Signature -->
+            <div class="mt-8">
+                <p class="text-sm text-red-600 bg-red-50 p-3 rounded-lg">ဖော်ပြပါအချက်အလက်များမှန်ကန်ကြောင်း ခံဝန်ကတိပြုပါသည်။ တစ်စုံတစ်ရာမှားယွင်းချက်ရှိပါက ကျွန်တော်/ကျွန်မ တာဝန်သာ ဖြစ်ပါသည်။</p>
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mt-12 gap-8 sm:gap-4">
+                    <div class="w-full sm:w-auto relative pb-5">
+                        <label for="date" class="block text-sm font-medium text-gray-700">ရက်စွဲ</label>
+                        <input type="text" id="date" name="date" class="mt-1" placeholder="ဥပမာ - 30-08-2025" value="30-08-2025" required>
+                    </div>
                 </div>
-                <div id="photo-preview-container" class="hidden w-full h-full">
-                    <img id="photo-preview" src="#" alt="Photo Preview">
-                    <div id="remove-photo-btn" title="Remove Photo">×</div>
-                </div>
-                <input type="file" class="hidden" id="photo_upload" accept="image/*">
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons mt-8 flex justify-between items-center">
+                <a href="#" class="nav-button-back text-gray-600 hover:text-gray-900 font-medium">Back</a>
+                <button type="submit" class="nav-button-next">Next Step</button>
+            </div>
+
+            <div class="text-right text-xs text-gray-400 mt-6">
+                <p>UTYCC/ SA/ F-20/ Rev-0/31-10-2022</p>
             </div>
         </div>
-
-        <!-- Main Information Table -->
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="bg-gray-50 text-base">
-                    <tr>
-                        <th class="w-12 text-center">စဉ်</th>
-                        <th>အကြောင်းအရာ</th>
-                        <th>ကျောင်းသား/သူ</th>
-                        <th>အဘ(အရင်း)</th>
-                        <th>အမိ(အရင်း)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Row 1: Name -->
-                    <tr>
-                        <td rowspan="2" class="text-center align-middle">၁</td>
-                        <td>အမည် (မြန်မာစာဖြင့်)</td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="student_name_mm">
-                        </td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="father_name_mm">
-                        </td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_mm">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>အမည် (အင်္ဂလိပ်စာဖြင့်)</td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="student_name_en">
-                        </td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="father_name_en">
-                        </td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="mother_name_en">
-                        </td>
-                    </tr>
-                    <!-- Row 2: Race -->
-                    <tr>
-                        <td class="text-center">၂</td>
-                        <td>လူမျိုး</td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="student_race">
-                        </td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="father_race"></td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="mother_race"></td>
-                    </tr>
-                    <!-- Row 3: Religion -->
-                    <tr>
-                        <td class="text-center">၃</td>
-                        <td>ကိုးကွယ်သည့်ဘာသာ</td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="student_religion">
-                        </td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="father_religion">
-                        </td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="mother_religion">
-                        </td>
-                    </tr>
-                    <!-- Row 4: NRC -->
-                    <tr>
-                        <td class="text-center">၄</td>
-                        <td>နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="student_nrc"></td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="father_nrc"></td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="mother_nrc"></td>
-                    </tr>
-                    <!-- Row 5: National Reg No -->
-                    <tr>
-                        <td class="text-center">၅</td>
-                        <td>အမျိုးသားမှတ်ပုံတင်အမှတ်</td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="student_nat_reg">
-                        </td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="father_nat_reg">
-                        </td>
-                        <td><input type="text" placeholder="_________________" class="border-0" name="mother_nat_reg">
-                        </td>
-                    </tr>
-                    <!-- Row 6: DOB -->
-                    <tr>
-                        <td class="text-center">၆</td>
-                        <td colspan="4" style="white-space: normal;">
-                            <label for="student_dob" class="font-medium">ကျောင်းသား/သူ၏ မွေးသက္ကရာဇ်
-                                (တက္ကသိုလ်ဝင်တန်းစာမေးပွဲဖြေဆိုစဉ်က ဖော်ပြသည့် အတိုင်းရေးရန်)</label>
-                            <input type="text" id="student_dob" name="student_dob" class="mt-1"
-                                placeholder="ဥပမာ - 01-01-2000">
-                        </td>
-                    </tr>
-                    <!-- Row 7: Birthplace -->
-                    <tr>
-                        <td class="text-center">၇</td>
-                        <td colspan="4" style="white-space: normal;">
-                            <label for="student_birthplace"
-                                class="font-medium">မွေးဖွားရာဇာတိမြို့/ပြည်နယ်/ဖုန်းနံပါတ်</label>
-                            <input type="text" id="student_birthplace" name="student_birthplace" class="mt-1">
-                        </td>
-                    </tr>
-                    <!-- Row 8: Parent's Info -->
-                    <tr>
-                        <td class="text-center">၈</td>
-                        <td class="align-top font-medium" style="white-space: normal;">
-                            မိဘအလုပ်အကိုင်နှင့်<br>နေရပ်လိပ်စာအပြည့်အစုံ/<br>ဖုန်းနံပါတ်</td>
-                        <td><!-- Empty Cell for student column --></td>
-                        <td><textarea name="father_info" rows="3"
-                                placeholder="အဘ(အရင်း)၏ အချက်အလက်များ_________________" class="border-0"
-                                style="white-space: normal;"></textarea></td>
-                        <td><textarea name="mother_info" rows="3"
-                                placeholder="အမိ(အရင်း)၏ အချက်အလက်များ___________________" class="border-0"
-                                style="white-space: normal;"></textarea></td>
-                    </tr>
-                    <!-- Row 9: Deceased Year -->
-                    <tr>
-                        <td class="text-center">၉</td>
-                        <td>ကွယ်လွန်ခဲ့လျှင်ကွယ်လွန်ခဲ့သည့်ခုနှစ်</td>
-                        <td><!-- Empty Cell for student column --></td>
-                        <td><input type="text" placeholder="_______________________" class="border-0"
-                                name="father_deceased_year"></td>
-                        <td><input type="text" placeholder="_______________________" class="border-0"
-                                name="mother_deceased_year"></td>
-                    </tr>
-                    <!-- Row 10: Permanent Address -->
-                    <tr>
-                        <td class="text-center">၁၀</td>
-                        <td colspan="4" style="white-space: normal;">
-                            <label for="student_address" class="font-medium">ကျောင်းသား/သူထံအမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ
-                                အပြည့်အစုံ/ဖုန်းနံပါတ်</label>
-                            <textarea id="student_address" name="student_address" rows="3" class="mt-1"
-                                style="white-space: normal;"></textarea>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Declaration and Signature -->
-        <div class="mt-8">
-            <p class="text-sm">ဖော်ပြပါအချက်အလက်များမှန်ကန်ကြောင်း ခံဝန်ကတိပြုပါသည်။ တစ်စုံတစ်ရာမှားယွင်းချက်ရှိပါက
-                ကျွန်တော်/ကျွန်မ တာဝန်သာ ဖြစ်ပါသည်။</p>
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mt-12 gap-8 sm:gap-4">
-                <div class="w-full sm:w-auto">
-                    <label for="date" class="block text-sm">ရက်စွဲ</label>
-                    <input type="text" id="date" name="date" class="mt-1" placeholder="ဥပမာ - 16-08-2024">
-                </div>
-                <div class="w-full sm:w-1/3">
-                    <div class="border-t border-gray-400 pt-1 text-center text-sm">(ကျောင်းသား/သူ၏ထိုးမြဲလက်မှတ်)</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Submit Button -->
-        <!-- <div class="mt-12 text-center">
-            <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-8 rounded-lg hover:bg-blue-700 transition-colors">
-                Hi
-            </button>
-        </div> -->
-        <!-- Navigation Buttons -->
-        <div class="nav-buttons">
-            <a href="#" class="nav-button disabled-button">Back</a>
-            <!-- <input type="hidden" name=""> -->
-            <a href="form2.html" class="nav-button">Next</a>
-        </div>
-
-        <div class="text-right text-xs text-gray-400 mt-6">
-            <p>UTYCC/ SA/ F-20/ Rev-0/31-10-2022</p>
-        </div>
-
-    </div>
+    </form>
     <br>
 
-    <footer id="contact" class="bg-blue-900 text-white ">
-    <div class="container mx-auto px-6 py-12">
-      <div class="grid md:grid-cols-4 gap-8">
-        <div>
-          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
-          <h3 class="text-lg font-bold">UTYCC</h3>
-          <p class="text-blue-200 text-sm mt-4">
-            <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
-              Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
-              Region, Myanmar
-            </a>
-          </p>
-          <div class="mt-4 text-sm text-blue-200">
-            <p>Email: info@utycc.edu.mm (example)</p>
-            <p>Phone: +95 (XX) XXX XXX (example)</p>
-          </div>
-        </div>
-
-        <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
-            Faculties
-          </h3>
-          <ul class="space-y-2 text-sm text-blue-200">
-            <li>
-              <a href="../Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
-            </li>
-            <li>
-              <a href="../Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
-            </li>
-            <li>
-              <a href="../Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
-            </li>
-            <li><a data-lang-key="footer_faculty_pre" href="../Majors/pre.html">Precision Engineering</a></li>
-            <li><a data-lang-key="footer_faculty_ame" href="../Majors/ame.html">
-              Advanced Materials Engineering
-            </a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
-            Quick Links
-          </h3>
-          <ul class="space-y-2 text-sm text-blue-200">
-            <li>
-              <a href="../term.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
-            </li>
-            <li>
-              <a href="../FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
-            </li>
-            <li>
-              <a href="../about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
-            </li>
-            <li>
-              <a href="../r&r.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
-            Follow Us
-          </h3>
-          <div class="flex space-x-4">
-            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
-            <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
-             <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
-            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
-          </div>
-          <br />
-          <br />
-          <div>
-            <div class="newtons-cradle">
-              <div class="newtons-cradle__dot"></div>
-              <div class="newtons-cradle__dot"></div>
-              <div class="newtons-cradle__dot"></div>
-              <div class="newtons-cradle__dot"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
-        data-lang-key="footer_copyright">
-        &copy; 2025 University of Technology - Yatanarpon Cyber City. All
-        Rights Reserved.
-      </div>
-    </div>
-  </footer>
-
-    <script>
-        // JavaScript for Photo Upload Preview and Remove
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Photo Upload & Preview Logic ---
         const photoUploadInput = document.getElementById('photo_upload');
-        const photoPlaceholder = document.getElementById('photo-placeholder');
-        const photoPreviewContainer = document.getElementById('photo-preview-container');
         const photoPreview = document.getElementById('photo-preview');
-        const removePhotoBtn = document.getElementById('remove-photo-btn');
+        const previewContainer = document.getElementById('photo-preview-container');
+        const placeholder = document.getElementById('photo-placeholder');
+        const removeBtn = document.getElementById('remove-photo-btn');
+        
+        function showPhotoPreview(url) {
+            if (!url) return;
+            photoPreview.src = url;
+            placeholder.style.display = 'none';
+            previewContainer.style.display = 'block';
+        }
 
-        photoUploadInput.addEventListener('change', function (event) {
-            if (event.target.files && event.target.files[0]) {
+        function hidePhotoPreview() {
+            photoPreview.src = '#';
+            placeholder.style.display = 'block';
+            previewContainer.style.display = 'none';
+            photoUploadInput.value = '';
+        }
+
+        photoUploadInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
                 const reader = new FileReader();
-                reader.onload = function (e) {
-                    photoPreview.setAttribute('src', e.target.result);
-                    photoPlaceholder.classList.add('hidden');
-                    photoPreviewContainer.classList.remove('hidden');
+                reader.onload = function(e) {
+                    showPhotoPreview(e.target.result);
                 }
-                reader.readAsDataURL(event.target.files[0]);
+                reader.readAsDataURL(file);
             }
         });
 
-        removePhotoBtn.addEventListener('click', function () {
-            photoUploadInput.value = ''; // Clear the file input
-            photoPreview.setAttribute('src', '#');
-            photoPlaceholder.classList.remove('hidden');
-            photoPreviewContainer.classList.add('hidden');
+        removeBtn.addEventListener('click', function() {
+            hidePhotoPreview();
         });
-    </script>
-   
-  <script>
-  // --- Menu toggle ---
-  const mobileMenuButton = document.getElementById("mobile-menu-button");
-  const mobileMenu = document.getElementById("mobile-menu");
-  const menuIcon = document.getElementById("menu-icon");
 
-  if (mobileMenuButton && mobileMenu && menuIcon) {
-    mobileMenuButton.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden");
-      if (mobileMenu.classList.contains("hidden")) {
-        menuIcon.classList.remove("fa-times");
-        menuIcon.classList.add("fa-bars");
-      } else {
-        menuIcon.classList.remove("fa-bars");
-        menuIcon.classList.add("fa-times");
-      }
+        // --- Date of Birth Validation ---
+        const dobInput = document.getElementById('student_dob');
+        const clientErrorContainer = document.getElementById('dob_error_client');
+        
+        if (dobInput) {
+            const today = new Date();
+            const maxDate = today.toISOString().split('T')[0];
+            dobInput.setAttribute('max', maxDate);
+            const minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate()).toISOString().split('T')[0];
+            dobInput.setAttribute('min', minDate);
+        }
+
+        const validateDateOfBirth = () => {
+            if (!dobInput) return true;
+            clientErrorContainer.style.display = 'none';
+            clientErrorContainer.textContent = '';
+            const dobValue = dobInput.value;
+            if (!dobValue) return true;
+
+            const birthDate = new Date(dobValue);
+            const currentDate = new Date();
+            if (birthDate > currentDate) {
+                clientErrorContainer.textContent = 'မွေးသက္ကရာဇ်သည် ယနေ့ထက်နောက်ကျ၍မရပါ။';
+                clientErrorContainer.style.display = 'block';
+                return false;
+            }
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            if (age < 16) {
+                clientErrorContainer.textContent = 'အသက် ၁၆ နှစ်ပြည့်ပြီးသူဖြစ်ရပါမည်။';
+                clientErrorContainer.style.display = 'block';
+                return false;
+            }
+            if (age > 100) {
+                clientErrorContainer.textContent = 'ထည့်သွင်းထားသော အသက်သည် မှန်ကန်မှုမရှိပါ။';
+                clientErrorContainer.style.display = 'block';
+                return false;
+            }
+            return true;
+        };
+
+        if (dobInput) {
+            dobInput.addEventListener('input', validateDateOfBirth);
+        }
+
+        // --- Birthplace Dropdown Logic ---
+        const locationData = {
+            "ကချင်ပြည်နယ်": ["မြစ်ကြီးနား", "ဝိုင်းမော်", "ချီဖွေ", "ဆော့လော်", "တနိုင်း", "အင်ဂျန်းယန်", "မိုးညှင်း", "မိုးကောင်း", "ဖားကန့်", "ဗန်းမော်", "ရွှေကူ", "မံစီ", "မိုးမောက်", "ပူတာအို", "ဆွမ်ပရာဘွမ်", "မချမ်းဘော", "ခေါင်းလန်းဖူး", "နောင်မွန်း"],
+            "ကယားပြည်နယ်": ["လွိုင်ကော်", "ဒီးမော့ဆို", "ဖရူဆို", "ရှားတော", "ဘော်လခဲ", "မယ်စဲ့", "ဖာဆောင်း"],
+            "ကရင်ပြည်နယ်": ["ဘားအံ", "လှိုင်းဘွဲ", "သံတောင်ကြီး", "ကော့ကရိတ်", "ကြာအင်းဆိပ်ကြီး", "မြဝတီ", "ဖာပွန်"],
+            "ချင်းပြည်နယ်": ["ဟားခါး", "ထန်တလန်", "မင်းတပ်", "ပလက်ဝ", "မတူပီ", "ကန်ပက်လက်", "ဖလမ်း", "တီးတိန်", "တွန်းဇံ"],
+            "စစ်ကိုင်းတိုင်းဒေသကြီး": ["မုံရွာ", "အရာတော်", "ချောင်းဦး", "ဘုတလင်", "စစ်ကိုင်း", "မြောင်", "မြင်းမူ", "ကလေး", "ကလေးဝ", "မင်းကင်း", "ကသာ", "အင်းတော်", "ဗန်းမောက်", "ကောလင်း", "ပင်လည်ဘူး", "ဝန်းသို", "ထီးချိုင့်", "ခန္တီး", "ဟုမ္မလင်း", "လေရှီး", "နန်းယွန်း", "လဟယ်", "မော်လိုက်", "ဖောင်းပြင်", "ယင်းမာပင်", "ဆားလင်းကြီး", "ပုလဲ", "ကနီ", "ရွှေဘို", "ဒီပဲယင်း", "ကန့်ဘလူ", "ခင်ဦး", "ကျွန်းလှ", "တန့်ဆည်", "ရေဦး", "ဝက်လက်", "တမူး"],
+            "တနင်္သာရီတိုင်းဒေသကြီး": ["ထားဝယ်", "လောင်းလုံး", "သရက်ချောင်း", "ရေဖြူ", "မြိတ်", "တနင်္သာရီ", "ကျွန်းစု", "ပုလော", "ကော့သောင်း", "ဘုတ်ပြင်း"],
+            "ပဲခူးတိုင်းဒေသကြီး": ["ပဲခူး", "ဒိုက်ဦး", "ကျောက်တံခါး", "ကဝ", "ညောင်လေးပင်", "ရွှေကျင်", "သနပ်ပင်", "ဝေါ", "ပြည်", "ပန်းတောင်း", "သဲကုန်း", "ပေါက်ခေါင်း", "ပေါင်းတည်", "ရွှေတောင်", "သာယာဝတီ", "မိုးညို", "အုတ်ဖို", "လက်ပံတန်း", "မင်းလှ", "နတ်တလင်း", "ဇီးကုန်း", "ကြို့ပင်ကောက်", "တောင်ငူ", "ထန်းတပင်", "ဖြူး", "အုတ်တွင်း", "ရေတာရှည်", "ကျောက်ကြီး"],
+            "မကွေးတိုင်းဒေသကြီး": ["မကွေး", "နတ်မောက်", "မြို့သစ်", "တောင်တွင်းကြီး", "ရေနံချောင်း", "ချောက်", "မင်းဘူး(စကု)", "ပွင့်ဖြူ", "ငဖဲ", "စလင်း", "စေတုတ္တရာ", "ဂန့်ဂေါ", "ထီးလင်း", "ဆော", "သရက်", "ဆင်ပေါင်ဝဲ", "မင်းတုန်း", "အောင်လံ", "မင်းလှ", "ကံမ", "ပခုက္ကူ", "ဆိပ်ဖြူ", "ပေါက်", "မြိုင်", "ရေစကြို"],
+            "မန္တလေးတိုင်းဒေသကြီး": ["အောင်မြေသာဇံ", "ချမ်းအေးသာဇံ", "ချမ်းမြသာစည်", "မဟာအောင်မြေ", "ပြည်ကြီးတံခွန်", "ပုသိမ်ကြီး", "အမရပူရ", "ကျောက်ဆည်", "မြစ်သား", "စဉ့်ကိုင်", "တံတားဦး", "မိတ္ထီလာ", "မလှိုင်", "သာစည်", "ဝမ်းတွင်း", "မြင်းခြံ", "နွားထိုးကြီး", "ငါန်းဇွန်", "တောင်သာ", "ညောင်ဦး", "ကျောက်ပန်းတောင်း", "ပြင်ဦးလွင်", "မိုးကုတ်", "စဉ့်ကူး", "သပိတ်ကျင်း", "မတ္တရာ", "ရမည်းသင်း", "ပျော်ဘွယ်"],
+            "မွန်ပြည်နယ်": ["မော်လမြိုင်", "ရေး", "ချောင်းဆုံ", "ကျိုက်မရော", "မုဒုံ", "သံဖြူဇရပ်", "သထုံ", "ဘီးလင်း", "ကျိုက်ထို", "ပေါင်"],
+            "ရခိုင်ပြည်နယ်": ["စစ်တွေ", "ပေါက်တော", "ပုဏ္ဏားကျွန်း", "ရသေ့တောင်", "ကျောက်ဖြူ", "ရမ်းဗြဲ", "အမ်း", "မာန်အောင်", "မြောက်ဦး", "မြေပုံ", "မင်းပြား", "ကျောက်တော်", "သံတွဲ", "တောင်ကုတ်", "ဂွ", "မောင်တော", "ဘူးသီးတောင်"],
+            "ရန်ကုန်တိုင်းဒေသကြီး": ["တာမွေ", "တောင်ဥက္ကလာပ", "ဒဂုံမြို့သစ်(ဆိပ်ကမ်း)", "ဒဂုံမြို့သစ်(တောင်ပိုင်း)", "ဒဂုံမြို့သစ်(မြောက်ပိုင်း)", "ဒဂုံမြို့သစ်(အရှေ့ပိုင်း)", "ဒေါပုံ", "ပုဇွန်တောင်", "ဗိုလ်တထောင်", "မြောက်ဥက္ကလာပ", "ရန်ကင်း", "သင်္ဃန်းကျွန်း", "သာကေတ", "မင်္ဂလာတောင်ညွန့်", "တိုက်ကြီး", "ထန်းတပင်", "မင်္ဂလာဒုံ", "မှော်ဘီ", "ရွှေပြည်သာ", "လှည်းကူး", "လှိုင်သာယာ", "အင်းစိန်", "ကျောက်တန်း", "ကွမ်းခြံကုန်း", "ကိုကိုးကျွန်း", "ကော့မှူး", "ခရမ်း", "ဆိပ်ကြီးခနောင်တို", "တွံတေး", "ဒလ", "သန်လျင်", "သုံးခွ", "ကမာရွတ်", "ကျောက်တံတား", "ကြည့်မြင်တိုင်", "စမ်းချောင်း", "ဆိပ်ကမ်း", "ဒဂုံ", "ဗဟန်း", "မရမ်းကုန်း", "လမ်းမတော်", "လသာ", "လှိုင်", "အလုံ", "ပန်းဘဲတန်း"],
+            "ရှမ်းပြည်နယ်": ["တောင်ကြီး", "ဆီဆိုင်", "ကလော", "ရပ်စောက်", "ညောင်ရွှေ", "ပင်းတယ", "ပင်လောင်း", "ရွာငံ", "ဖယ်ခုံ", "ဟိုပုံး", "ကျိုင်းတုံ", "မိုင်းခတ်", "မိုင်းယန်း", "မိုင်းပျဉ်း", "တာချီလိတ်", "မိုင်းဖြတ်", "မိုင်းယောင်း", "မက်မန်း", "မိုးမိတ်", "မဘိမ်း", "မိုင်းဆတ်", "မိုင်းတုံ", "မူဆယ်", "ကွတ်ခိုင်", "နမ့်ခမ်း", "လင်းခေး", "မိုးနဲ", "မိုင်းပန်", "မောက်မယ်", "လွိုင်လင်", "ကွန်ဟိန်း", "လဲချား", "မိုင်းကိုင်", "မိုင်းရှူး", "ကျေးသီး", "နမ့်စန်", "လားရှိုး", "သိန္နီ", "ကွမ်းလုံ", "မိုင်းရယ်", "တန့်ယန်း", "ကျောက်မဲ", "သီပေါ", "မန်တုံ", "နမ့်ဆန်", "နမ္မတူ", "နောင်ချို", "လောက်ကိုင်", "ကုန်းကြမ်း", "ဟိုပန်"],
+            "ဧရာဝတီတိုင်းဒေသကြီး": ["ပုသိမ်", "ကန်ကြီးထောင့်", "ကျုံပျော်", "ငပုတော", "သာပေါင်း", "ကျောင်းကုန်း", "ရေကြည်", "မအူပင်", "ဓနုဖြူ", "ပန်းတနော်", "ညောင်တုန်း", "ဟင်္သာတ", "ဇလွန်", "ကြံခင်း", "မြန်အောင်", "အင်္ဂပူ", "လေးမျက်နှာ", "မြောင်းမြ", "ဝါးခယ်မ", "အိမ်မဲ", "ဖျာပုံ", "ဘိုကလေး", "ဒေးဒရဲ", "ကျိုက်လတ်", "လပွတ္တာ", "မော်လမြိုင်ကျွန်း"],
+            "နေပြည်တော် ပြည်ထောင်စုနယ်မြေ": ["ဒက္ခိဏသီရိ", "လယ်ဝေး", "ပျဉ်းမနား", "ဇမ္ဗူသီရိ", "ဥတ္တရသီရိ", "ပုဗ္ဗသီရိ", "တပ်ကုန်း", "ဇေယျာသီရိ"]
+        };
+        const stateRegionSelect = document.getElementById('state_region');
+        const townshipSelect = document.getElementById('township');
+        const birthplaceHiddenInput = document.getElementById('student_birthplace');
+
+        function populateStates() {
+            if (!stateRegionSelect) return;
+            const states = Object.keys(locationData);
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateRegionSelect.appendChild(option);
+            });
+        }
+
+        function updateHiddenBirthplace() {
+            if (!stateRegionSelect || !townshipSelect || !birthplaceHiddenInput) return;
+            const state = stateRegionSelect.value;
+            const township = townshipSelect.value;
+            if (state && township) {
+                birthplaceHiddenInput.value = `${state}, ${township}`;
+            } else {
+                birthplaceHiddenInput.value = '';
+            }
+        }
+
+        function updateTownships() {
+            if (!stateRegionSelect || !townshipSelect) return;
+            const selectedState = stateRegionSelect.value;
+            townshipSelect.innerHTML = '<option value="" disabled selected>မြို့နယ်</option>';
+            if (selectedState && locationData[selectedState]) {
+                const townships = locationData[selectedState];
+                townships.forEach(township => {
+                    const option = document.createElement('option');
+                    option.value = township;
+                    option.textContent = township;
+                    townshipSelect.appendChild(option);
+                });
+                townshipSelect.disabled = false;
+            } else {
+                townshipSelect.disabled = true;
+            }
+            updateHiddenBirthplace();
+        }
+
+        if (stateRegionSelect) stateRegionSelect.addEventListener('change', updateTownships);
+        if (townshipSelect) townshipSelect.addEventListener('change', updateHiddenBirthplace);
+
+        populateStates();
+        updateTownships();
+
+        // --- NRC Input Group Logic ---
+        const nrcTownships = {
+            1: ["ကစန", "ခဘဒ", "ဂမန", "ဟပန", "အလန", "မကန", "မခဘ", "မဂန", "မညန", "မစန", "မမန", "ပတအ", "ရကန", "ဆပဘ", "ဆလန", "တနန", "ဝမန"],
+            2: ["ဒမဆ", "ဖရဆ", "လကန", "မစန"],
+            3: ["ဘအန", "ဖပန", "ကကရ", "လဘန", "မဝတ", "သတန"],
+            4: ["ဟခန", "ဖလန", "မတပ", "ပလဝ", "တတန", "ထတလ"],
+            5: ["စကန", "ဘမန", "ကနလ", "ကလဝ", "ကလဟ", "ကသ", "ခဥန", "လရန", "မလန", "မငန", "စလင", "ရမဘ", "တဇန", "ဝန်းသို"],
+            6: ["တငန", "ဘလန", "ကပက", "ကတခ", "လရန", "မဘန", "မမန", "မတရ", "နလန", "ပဖန", "သပက"],
+            7: ["ပခက", "ဂဂန", "မကန", "ငဖန", "ပတန", "စလန", "သရန", "တငန"],
+            8: ["မကန", "အလန", "မငလ", "မနန", "ပကခ", "စတရ", "တငန", "သရက"],
+            9: ["မလမ", "ကမရ", "ဥကမ", "ဒဂမ", "ဒလန", "ကခက", "လမန", "မဂတ", "ပဘတ", "စခန", "သကတ", "တမန", "ရကန"],
+            10: ["မအန", "ဘကလ", "ဒနဘ", "ဟသတ", "ဟငသ", "လပတ", "မအန", "မမက", "ပသန", "ဖပန", "ဝခမ"],
+            11: ["စတန", "ကမန", "ကပန", "လယန", "မခန", "မညန", "ပလန", "သစန"],
+            12: ["ဥတသ", "ဒခသ", "ပဗသ", "ဇယသ", "လဝန", "ပမန", "တကန", "ဇမသ"],
+            13: ["ကလန", "ညဥန", "ပပဏ", "ရစက", "တသန", "ဝတလ", "မထလ", "မကင"],
+            14: ["တကန", "ကတန", "ကမန", "ကမတ", "ဒဂန", "ဒပန", "လသန", "မဘန", "မရန", "ပစတ", "ဖနန", "ရပန", "သလန", "သဃက"]
+        };
+        const nrcTypes = ["နိုင်", "ဧည့်", "ပြု", "သာ", "ယာယီ"];
+
+        function createNrcInputGroup(containerId, namePrefix) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = ''; 
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex flex-col';
+
+            const dropdownContainer = document.createElement('div');
+            dropdownContainer.className = 'grid grid-cols-3 gap-2';
+
+            const stateSelect = document.createElement('select');
+            stateSelect.name = `${namePrefix}_state`;
+            for (let i = 1; i <= 14; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                stateSelect.appendChild(option);
+            }
+
+            const townshipSelect = document.createElement('select');
+            townshipSelect.name = `${namePrefix}_township`;
+
+            const typeSelect = document.createElement('select');
+            typeSelect.name = `${namePrefix}_type`;
+            nrcTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = `(${type})`;
+                option.textContent = `(${type})`;
+                typeSelect.appendChild(option);
+            });
+
+            dropdownContainer.append(stateSelect, townshipSelect, typeSelect);
+
+            const numberInput = document.createElement('input');
+            numberInput.type = 'text';
+            numberInput.name = `${namePrefix}_number`;
+            numberInput.className = 'mt-1';
+            numberInput.placeholder = '123456';
+            numberInput.maxLength = 6;
+            numberInput.pattern = '\\d{6}';
+
+            wrapper.append(dropdownContainer, numberInput);
+            container.append(wrapper);
+
+            const updateHiddenNrcInput = () => {
+                const hiddenInput = document.getElementById(`${namePrefix}_hidden`);
+                if (hiddenInput) {
+                    const state = stateSelect.value;
+                    const township = townshipSelect.value;
+                    const type = typeSelect.value;
+                    const number = numberInput.value;
+                    if (state && township && type && number.match(/^\d{6}$/)) {
+                        hiddenInput.value = `${state}/${township}${type}${number}`;
+                    } else {
+                        hiddenInput.value = '';
+                    }
+                }
+            };
+
+            const updateNrcTownships = () => {
+                const selectedState = stateSelect.value;
+                const townships = nrcTownships[selectedState] || [];
+                townshipSelect.innerHTML = '';
+                townships.forEach(township => {
+                    const option = document.createElement('option');
+                    option.value = township;
+                    option.textContent = township;
+                    townshipSelect.appendChild(option);
+                });
+                updateHiddenNrcInput();
+            };
+
+            stateSelect.addEventListener('change', updateNrcTownships);
+            townshipSelect.addEventListener('change', updateHiddenNrcInput);
+            typeSelect.addEventListener('change', updateHiddenNrcInput);
+            numberInput.addEventListener('input', updateHiddenNrcInput);
+            updateNrcTownships();
+        }
+
+        createNrcInputGroup('student_nrc_group', 'student_nrc');
+        createNrcInputGroup('father_nrc_group', 'father_nrc');
+        createNrcInputGroup('mother_nrc_group', 'mother_nrc');
+
+        // --- Deceased Parent Logic ---
+        const fatherDeceasedInput = document.getElementById('father_deceased_year');
+        const motherDeceasedInput = document.getElementById('mother_deceased_year');
+
+        function toggleParentFields(prefix, isDeceased) {
+            const fieldsToDisable = document.querySelectorAll(`.${prefix}-field.disable-on-deceased`);
+            fieldsToDisable.forEach(field => {
+                field.disabled = isDeceased;
+                if (isDeceased) {
+                    if (field.tagName.toLowerCase() !== 'select') field.value = '';
+                    field.classList.add('bg-gray-100', 'cursor-not-allowed');
+                } else {
+                    field.classList.remove('bg-gray-100', 'cursor-not-allowed');
+                }
+            });
+        }
+
+        if (fatherDeceasedInput) {
+            fatherDeceasedInput.addEventListener('input', (e) => toggleParentFields('father', e.target.value.trim() !== ''));
+            toggleParentFields('father', fatherDeceasedInput.value.trim() !== '');
+        }
+
+        if (motherDeceasedInput) {
+            motherDeceasedInput.addEventListener('input', (e) => toggleParentFields('mother', e.target.value.trim() !== ''));
+            toggleParentFields('mother', motherDeceasedInput.value.trim() !== '');
+        }
+
+        // --- Name Input Validation ---
+        function setupNameValidation(inputId, isMyanmar) {
+            const inputElement = document.getElementById(inputId);
+            if (!inputElement) return;
+            const regex = isMyanmar ? /^[\u1000-\u109F\s]*$/ : /^[a-zA-Z\s]*$/;
+            const message = isMyanmar ? "မြန်မာအက္ခရာများသာ ထည့်သွင်းပါ။" : "English letters only.";
+            
+            inputElement.addEventListener('input', function(e) {
+                if (!regex.test(e.target.value)) {
+                    e.target.value = e.target.value.slice(0, -1);
+                }
+            });
+            inputElement.setAttribute('pattern', regex.source.slice(1,-1));
+            inputElement.setAttribute('title', message);
+        }
+
+        setupNameValidation('student_name_mm', true);
+        setupNameValidation('student_name_en', false);
+        setupNameValidation('father_name_mm', true);
+        setupNameValidation('father_name_en', false);
+        setupNameValidation('mother_name_mm', true);
+        setupNameValidation('mother_name_en', false);
     });
-  }
-
-  // --- Translation Script ---
-  const translations = {
-    my: {
-      utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
-      nav_about: "ကျွန်ုပ်တို့အကြောင်း",
-      nav_programs: "ပညာရေးအစီအစဉ်များ",
-      nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
-      nav_contact: "ဆက်သွယ်ရန်",
-      nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
-      nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
-      nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
-      nav_contact_mobile: "ဆက်သွယ်ရန်",
-      footer_address:
-        "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
-      footer_faculties_title: "မဟာဌာနများ",
-      footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
-      footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
-      footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-      footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
-      footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
-      footer_contact_title: "ဆက်သွယ်ရန်",
-      footer_follow_title: "Follow Us",
-      footer_copyright:
-        "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
-      footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
-      footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
-      footer_link_faq: "အမေးများသော မေးခွန်းများ",
-      footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
-      footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
-    },
-    en: {
-      utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
-      nav_about: "About Us",
-      nav_programs: "Academic Programs",
-      nav_collaboration: "Collaboration",
-      nav_contact: "Contact",
-      nav_about_mobile: "About Us",
-      nav_programs_mobile: "Academic Programs",
-      nav_collaboration_mobile: "Collaboration",
-      nav_contact_mobile: "Contact",
-      footer_address:
-        "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
-      footer_faculties_title: "Faculties",
-      footer_faculty_ist: "Information Science Technology",
-      footer_faculty_ce: "Computer Engineering",
-      footer_faculty_ece: "Electronics Engineering",
-      footer_faculty_ame: "Advanced Materials Engineering",
-      footer_faculty_pre: "Precision Engineering",
-      footer_contact_title: "Contact Us",
-      footer_follow_title: "Follow Us",
-      footer_copyright:
-        "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
-      footer_quick_links_title: "Quick Links",
-      footer_link_terms: "Terms & Policies",
-      footer_link_faq: "FAQs",
-      footer_link_about: "About Us",
-      footer_link_rules: "Rules & Regulations",
-    },
-  };
-
-  const languageSwitcher = document.getElementById("language-switcher");
-
-  const changeLanguage = (lang) => {
-    localStorage.setItem("language", lang);
-    languageSwitcher.value = lang;
-
-    document.querySelectorAll("[data-lang-key]").forEach((element) => {
-      const key = element.dataset.langKey;
-      const translation = translations[lang][key];
-      if (translation) {
-        element.innerHTML = translation.replace(/\n/g, "<br>");
-      }
-    });
-  };
-
-  languageSwitcher.addEventListener("change", (event) => {
-    changeLanguage(event.target.value);
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const savedLang = localStorage.getItem("language") || "en";
-    changeLanguage(savedLang);
-  });
 </script>
-
 </body>
-
 </html>
