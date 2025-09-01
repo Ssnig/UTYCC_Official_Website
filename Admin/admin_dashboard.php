@@ -42,26 +42,41 @@ $pdo = null;
   <meta name="description" content="Admin dashboard for the UTYCC student registration system." />
   <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
+  <!-- Theme Loader Script: Prevents a flash of incorrect theme on page load -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {
+        console.error('Could not apply theme from localStorage', e);
+      }
+    })();
+  </script>
+
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
 
   <style>
     :root {
-      /* UTYCC Theme (HSL) - White and Blue */
-      --bg: 220 20% 98%; /* Light Blue-Gray background */
-      --fg: 222 47% 11%; /* Dark text */
+      /* Light Theme (Default) */
+      --bg: 220 20% 98%;
+      --fg: 222 47% 11%;
       --muted: 214 32% 91%;
       --muted-foreground: 215 17% 47%;
       
-      --primary: 220 83% 58%; /* UTYCC Blue (from #2563eb) */
-      --primary-foreground: 0 0% 100%; /* White */
+      --primary: 220 83% 58%;
+      --primary-foreground: 0 0% 100%;
       
-      --secondary: 0 0% 100%; /* White sidebar background */
-      --secondary-foreground: 222 47% 11%; /* Dark sidebar text */
+      --secondary: 0 0% 100%;
+      --secondary-foreground: 222 47% 11%;
       
-      --card: 0 0% 100%; /* White */
+      --card: 0 0% 100%;
       --card-foreground: 222 47% 11%;
       --border: 214 32% 91%;
       --ring: 220 83% 58%;
@@ -79,6 +94,23 @@ $pdo = null;
       --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
     }
 
+    html.dark {
+        /* Dark Theme */
+        --bg: 222 47% 11%;
+        --fg: 210 40% 98%;
+        --muted: 217 33% 17%;
+        --muted-foreground: 215 20% 65%;
+        --primary: 217 91% 60%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 222 47% 13%;
+        --secondary-foreground: 210 40% 98%;
+        --card: 222 47% 15%;
+        --card-foreground: 210 40% 98%;
+        --border: 217 33% 22%;
+        --ring: 217 91% 60%;
+        --shadow-card: 0 10px 20px -10px hsl(220 40% 2% / 0.45);
+    }
+
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
@@ -87,6 +119,7 @@ $pdo = null;
       background: hsl(var(--bg));
       font: 500 16px/1.4 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
       text-rendering: optimizeLegibility;
+      transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
     }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; }
@@ -118,7 +151,7 @@ $pdo = null;
     .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground)); }
     nav { margin-top: 18px; display: grid; gap: 8px; }
     .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border var(--duration) var(--ease); }
-    .nav-link:hover { background: hsl(220 20% 96%); color: hsl(var(--fg)); }
+    .nav-link:hover { background: hsl(var(--muted)); color: hsl(var(--fg)); }
     .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: var(--shadow-soft); }
 
     .header {
@@ -166,7 +199,7 @@ $pdo = null;
     table { width: 100%; border-collapse: collapse; min-width: 900px; }
     thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--bg)); position: sticky; top: 0; z-index: 1; }
     th, td { padding: 12px 14px; border-bottom: 1px solid hsl(var(--border)); }
-    tbody tr:hover { background: hsl(var(--bg)); }
+    tbody tr:hover { background: hsl(var(--muted)); }
 
     .badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .02em; border: 1px solid hsl(var(--border)); }
     .badge.success { background: hsl(var(--success)/0.12); color: hsl(var(--success)); border-color: hsl(var(--success)/0.3); }
@@ -304,11 +337,11 @@ $pdo = null;
         <h1>UTYCC Admin Panel</h1>
       </div>
       <nav>
-        <a class="nav-link active" href="#students">Students</a>
+        <a class="nav-link active" href="#">Students</a>
         <a class="nav-link" href="#">Courses</a>
         <a class="nav-link" href="#">Registrations</a>
         <a class="nav-link" href="#">Reports</a>
-        <a class="nav-link" href="#">Settings</a>
+        <a class="nav-link" href="settings.php">Settings</a>
       </nav>
     </aside>
 
