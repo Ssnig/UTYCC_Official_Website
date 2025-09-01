@@ -1,50 +1,105 @@
 <?php
+// Include the database connection file.
+// This assumes you have a file named 'db.php' with your PDO connection logic.
 include "db.php";
-// PHP code to handle form submission
+
+// Initialize a variable to store the message to be displayed.
 $message = '';
 
+// Check if the request method is POST. This indicates a form submission.
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Check if required fields are not empty
+    // Validate required fields.
     if (empty($_POST['name']) || empty($_POST['comments'])) {
-        $message = "<div class='bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg relative mb-4' role='alert'>
-                        <strong class='font-bold'>Warning!</strong>
-                        <span class='block sm:inline'> Please fill out all required fields.</span>
-                    </div>";
+        // Redirect with a status for missing fields.
+        header("Location: feedback.php?status=error_missing");
+        exit(); // Stop further script execution.
     } else {
         try {
-            // SQL query to insert data. Using named placeholders is good practice.
+            // SQL query to insert data. Using named placeholders for security.
             $sql = "INSERT INTO feedback (student_name, student_email, message) VALUES (:name, :email, :comments)";
-
-            // Prepare the SQL statement
+            
+            // Prepare the SQL statement to prevent SQL injection.
             $stmt = $pdo->prepare($sql);
-
-            // Bind parameters
+            
+            // Bind the form data to the placeholders.
+            // PDO automatically handles the sanitization.
             $stmt->bindParam(':name', $_POST['name'], PDO::PARAM_STR);
             $stmt->bindParam(':email', $_POST['email'], PDO::PARAM_STR);
             $stmt->bindParam(':comments', $_POST['comments'], PDO::PARAM_STR);
             
-            // Execute the statement
+            // Execute the prepared statement.
             if ($stmt->execute()) {
-                // Redirect to home.php after successful submission
-                header("Location: ../home.php");
-                exit(); // It's crucial to call exit() or die() after a redirect
+                // On successful insertion, redirect to the same page with a success status.
+                header("Location: feedback.php?status=success");
+                exit();
             } else {
-                $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4' role='alert'>
-                                <strong class='font-bold'>Error!</strong>
-                                <span class='block sm:inline'> There was a problem submitting your feedback. Please try again.</span>
-                            </div>";
+                // If execution fails, redirect with a database error status.
+                header("Location: feedback.php?status=error_db");
+                exit();
             }
         } catch (PDOException $e) {
-            // Display a general error message to the user
-            $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4' role='alert'>
-                            <strong class='font-bold'>Error!</strong>
-                            <span class='block sm:inline'> Database error: " . $e->getMessage() . "</span>
-                        </div>";
-            // Log the full error message for debugging purposes
+            // Catch any PDO connection or query errors.
+            // Log the detailed error for debugging purposes.
             error_log("PDO Error: " . $e->getMessage());
+            // Redirect with a generic error status to the user.
+            header("Location: feedback.php?status=error_db_exception");
+            exit();
         }
     }
 }
+
+// Check for status messages in the URL (from a redirect).
+if (isset($_GET['status'])) {
+    $status = $_GET['status'];
+    
+    // Set the appropriate message based on the status code.
+    if ($status == 'success') {
+        $message = "<div class='bg-green-100 border-green-400 text-green-700 font-bold px-4 py-3 rounded-md shadow-lg flex items-center justify-between mb-4 animate-fade-down' role='alert'>
+                        <div class='flex items-center'>
+                            <svg class='w-6 h-6 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 13l4 4L19 7'></path>
+                            </svg>
+                                                   <strong class='font-bold'>Success!</strong>
+                        <span class='block sm:inline'> Your feedback has been submitted successfully.</span>
+
+                        </div>
+                        <button type='button' onclick='this.parentElement.style.display=\"none\";' class='text-white hover:text-gray-200 transition duration-150 ease-in-out'>
+                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'></path>
+                            </svg>
+                        </button>
+                    </div>";
+    } elseif ($status == 'error_missing') {
+        $message = "<div class='bg-yellow-500 text-white font-bold px-4 py-3 rounded-md shadow-lg flex items-center justify-between mb-4 animate-fade-down' role='alert'>
+                        <div class='flex items-center'>
+                            <svg class='w-6 h-6 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'></path>
+                            </svg>
+                            <span>Please fill out all required fields.</span>
+                        </div>
+                        <button type='button' onclick='this.parentElement.style.display=\"none\";' class='text-white hover:text-gray-200 transition duration-150 ease-in-out'>
+                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'></path>
+                            </svg>
+                        </button>
+                    </div>";
+    } elseif ($status == 'error_db' || $status == 'error_db_exception') {
+        $message = "<div class='bg-red-500 text-white font-bold px-4 py-3 rounded-md shadow-lg flex items-center justify-between mb-4 animate-fade-down' role='alert'>
+                        <div class='flex items-center'>
+                            <svg class='w-6 h-6 mr-2' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'></path>
+                            </svg>
+                            <span>There was a problem submitting your feedback. Please try again.</span>
+                        </div>
+                        <button type='button' onclick='this.parentElement.style.display=\"none\";' class='text-white hover:text-gray-200 transition duration-150 ease-in-out'>
+                            <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'></path>
+                            </svg>
+                        </button>
+                    </div>";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -307,8 +362,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
         </form>
       </div>
+
+
+
+       <script>
+        // Check if the URL contains the status parameter
+        if (window.location.search.includes('status=success')) {
+            // Use the history API to replace the current URL
+            // This removes the "?status=success" part from the URL
+            history.replaceState({}, document.title, window.location.pathname);
+        }
+    </script>
     </body>
 </html>
-[PHP Redirect after form submit](https://www.youtube.com/watch?v=MaZgH0NcMBc)
-This video shows how to use the `header()` function to redirect a user to a different page after a form submission.
-http://googleusercontent.com/youtube_content/0
