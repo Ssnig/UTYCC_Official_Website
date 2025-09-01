@@ -7,7 +7,7 @@
  */
 
 header('Content-Type: application/json');
-require_once 'db_config.php'; // Provides the $pdo object
+require_once '../Rform/db.php'; // Provides the $pdo object
 
 // Get the request data from the frontend
 $data = json_decode(file_get_contents('php://input'), true);

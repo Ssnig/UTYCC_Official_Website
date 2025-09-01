@@ -85,8 +85,9 @@ CREATE TABLE `students` (
   `student_phone` VARCHAR(20),
   `student_address` TEXT,
   
-  `date` DATE,
+  `date` TIMESTAMP,
   `photo_url` VARCHAR(255)
+
 ) ENGINE=InnoDB;
 
 -- --------------------------------------------------------

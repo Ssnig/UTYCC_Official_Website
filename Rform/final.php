@@ -112,14 +112,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $form1['mother_address']
         ]);
 
-        // 2. အားလုံးအောင်မြင်ရင် Transaction ကို commit လုပ်ပါ (Data ကို အတည်ပြုပါ)
-        $pdo->commit();
-        
-        // Session data တွေကို ရှင်းလင်းပါ
-        session_destroy();
+       // 2. အားလုံးအောင်မြင်ရင် Transaction ကို commit လုပ်ပါ (Data ကို အတည်ပြုပါ)
+      $pdo->commit();
 
-        // အောင်မြင်ကြောင်း message ပြပါ
-        // $success_message = "✅ ကျောင်းလျှောက်ခြင်း အောင်မြင်ပါသည်။\n\nရတနာပုံဆိုက်ဘာစီးတီး တက္ကသိုလ်မှ နွေးထွေးစွာကြိုဆိုပါသည်။";
+// Session data တွေကို ရှင်းလင်းပါ
+session_destroy();
+
+// အောင်မြင်ကြောင်း message နဲ့ redirect
+echo "<script>
+    alert('Registration is succeed');
+    window.location.href = 'final.php';
+</script>";
+exit;
 
     } catch (PDOException $e) {
         // 3. Error တစ်ခုခုဖြစ်ခဲ့ရင် Transaction ကို rollback လုပ်ပါ (လုပ်ဆောင်ချက်တွေ အကုန်ပြန်ဖျက်ပါ)
