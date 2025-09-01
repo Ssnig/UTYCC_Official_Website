@@ -13,13 +13,12 @@
     }
 
     // Define variables and initialize with empty values
-    $year               = $academic_year        = $major                = $seat_no              = $uni_reg_no           = $entry_year           = "";
+    $year               = $academic_year        = $seat_no              = $student_email           = $entry_year           = "";
     $student_name_mm    = $father_name_mm       = $mother_name_mm       = "";
     $student_name_en    = $father_name_en       = $mother_name_en       = "";
     $student_race       = $father_race          = $mother_race          = "";
     $student_religion   = $father_religion      = $mother_religion      = "";
     $student_nrc        = $father_nrc           = $mother_nrc           = "";
-    $student_nat_reg    = $father_nat_reg       = $mother_nat_reg       = "";
     $student_dob        = $student_birthplace   = "";
     $father_info        = $mother_info          = "";
     $father_deceased_year = $mother_deceased_year = "";
@@ -127,9 +126,8 @@
         // --- Assign sanitized values to variables ---
         $year               = $sanitized_post["year"] ?? '';
         $academic_year      = $sanitized_post["academic_year"] ?? '';
-        $major              = $sanitized_post["major"] ?? '';
+        $student_email      = $sanitized_post["student_email"] ?? '';
         $seat_no            = $sanitized_post["seat_no"] ?? '';
-        $uni_reg_no         = $sanitized_post["uni_reg_no"] ?? '';
         $entry_year         = $sanitized_post["entry_year"] ?? '';
         $student_name_mm    = $sanitized_post["student_name_mm"] ?? '';
         $father_name_mm     = $sanitized_post["father_name_mm"] ?? '';
@@ -163,7 +161,7 @@
         $date               = $sanitized_post["date"] ?? date('d-m-Y');
         $photo_url          = $sanitized_post["photo_url"] ?? '';
 
-        // --- Validate Required Fields ---
+        // --- Validate Required Fields ----
         if (empty($photo_url)) {
             $errors['photo_upload'] = "ကျေးဇူးပြု၍ ဓာတ်ပုံထည့်သွင်းပါ။";
         }
@@ -172,16 +170,12 @@
             $errors['academic_year'] = "သင်တန်းနှစ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
-        if (empty($major)) {
-            $errors['major'] = "အထူးပြုဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($student_email)) {
+            $errors['student_email'] = "emailထည့်ပေးပါရန်";
         }
 
         if (empty($seat_no)) {
             $errors['seat_no'] = "ခုံအမှတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($uni_reg_no)) {
-            $errors['uni_reg_no'] = "မှတ်ပုံတင်အမှတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
         if (empty($student_name_mm)) {
@@ -385,24 +379,15 @@
                 <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="relative pb-5">
                         <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
-                        <input type="text" id="academic_year" name="academic_year" class="mt-1" value="<?php echo getValue('academic_year'); ?>">
+                        <input type="text" placeholder="ဉပမာ-ပထမနှစ်" id="academic_year" name="academic_year" class="mt-1" value="<?php echo getValue('academic_year'); ?>">
                         <?php if (isset($errors['academic_year'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['academic_year']; ?></p><?php endif; ?>
                     </div>
                     <div class="relative pb-5">
-                        <label for="major" class="block text-sm font-medium text-gray-700">အထူးပြုဘာသာ</label>
-                        <input type="text" id="major" name="major" class="mt-1" value="<?php echo getValue('major'); ?>">
-                        <?php if (isset($errors['major'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['major']; ?></p><?php endif; ?>
-                    </div>
-                    <div class="relative pb-5">
-                        <label for="seat_no" class="block text-sm font-medium text-gray-700">ခုံအမှတ်</label>
-                        <input type="text" id="seat_no" name="seat_no" class="mt-1" value="<?php echo getValue('seat_no'); ?>">
+                        <label for="major" class="block text-sm font-medium text-gray-700">ခုံအမှတ်</label>
+                        <input type="text" placeholder="တက္ကသိုလ်ဝင်တန်း ခုံအမှတ်" id="seat_no" name="seat_no" class="mt-1" value="<?php echo getValue('seat_no'); ?>">
                         <?php if (isset($errors['seat_no'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['seat_no']; ?></p><?php endif; ?>
                     </div>
-                    <div class="relative pb-5">
-                        <label for="uni_reg_no" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်မှတ်ပုံတင်အမှတ်</label>
-                        <input type="text" id="uni_reg_no" name="uni_reg_no" class="mt-1" value="<?php echo getValue('uni_reg_no'); ?>">
-                        <?php if (isset($errors['uni_reg_no'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['uni_reg_no']; ?></p><?php endif; ?>
-                    </div>
+                  
                     <div class="sm:col-span-2">
                         <label for="entry_year" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
                         <input type="text" id="entry_year" name="entry_year" class="mt-1" value="<?php echo getValue('entry_year'); ?>">
@@ -496,6 +481,12 @@
                             <label for="student_phone" class="block text-sm font-medium text-gray-700">ဆက်သွယ်ရန်ဖုန်းနံပါတ်</label>
                             <input type="tel" id="student_phone" name="student_phone" class="mt-1" value="<?php echo getValue('student_phone'); ?>" pattern="09\d{7,9}" maxlength="11" placeholder="09xxxxxxxxx" title="Please enter a valid Myanmar phone number starting with 09." required>
                             <?php if (isset($errors['student_phone'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_phone']; ?></p><?php endif; ?>
+                        </div>
+                        <!-- email -->
+                        <div class="relative pb-5">
+                            <label for="student_email" class="block text-sm font-medium text-gray-700">E-mail</label>
+                            <input type="email" id="student_email" name="student_email" class="mt-1" value="<?php echo getValue('student_email'); ?>" placeholder="example@gmail.com" title="Please enter a valid email address." required>
+                            <?php if (isset($errors['student_email'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_email']; ?></p><?php endif; ?>
                         </div>
                         <!-- Address -->
                         <div class="relative pb-5 md:col-span-2">

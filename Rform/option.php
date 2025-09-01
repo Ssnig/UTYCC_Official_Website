@@ -407,7 +407,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="container">
         <div class="floating-bg">
-            <div class="floating-element"></div>
+            <div class="floating-element"></div> 
             <div class="floating-element"></div>
         </div>
 
