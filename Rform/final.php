@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // =================================================================
         $stmt_student = $pdo->prepare("
             INSERT INTO students 
-            (year, academic_year, seat_no, entry_year, student_email, dormitory_preference, 
+            (year, academic_year, seat_no, entry_year, student_email, dormitory_preference,
              student_name_mm, student_name_en, student_race, student_religion, student_nrc, 
              student_dob, student_birthplace, state_region, township, student_phone, student_address, 
              date, photo_url)
@@ -48,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $form1['entry_year'],
             $form1['student_email'],
             $option['dormitory_preference'],// Dormitory preference
-            
             $form1['student_name_mm'],
             $form1['student_name_en'],
             $form1['student_race'],
@@ -62,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $form1['student_address'],
             
             date("Y-m-d"), // လက်ရှိနေ့စွဲ
-            $_SESSION['student_photo'] ?? null // photo session ရှိခဲ့ရင်
+            $form1['photo_url'] ?? null // photo session ရှိခဲ့ရင်
         ]);
 
         // အခုလေးတင် ထည့်လိုက်တဲ့ ကျောင်းသားရဲ့ ID ကို ပြန်ယူပါ
@@ -120,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_destroy();
 
         // အောင်မြင်ကြောင်း message ပြပါ
-        $success_message = "✅ ကျောင်းလျှောက်ခြင်း အောင်မြင်ပါသည်။\n\nရတနာပုံဆိုက်ဘာစီးတီး တက္ကသိုလ်မှ နွေးထွေးစွာကြိုဆိုပါသည်။";
+        // $success_message = "✅ ကျောင်းလျှောက်ခြင်း အောင်မြင်ပါသည်။\n\nရတနာပုံဆိုက်ဘာစီးတီး တက္ကသိုလ်မှ နွေးထွေးစွာကြိုဆိုပါသည်။";
 
     } catch (PDOException $e) {
         // 3. Error တစ်ခုခုဖြစ်ခဲ့ရင် Transaction ကို rollback လုပ်ပါ (လုပ်ဆောင်ချက်တွေ အကုန်ပြန်ဖျက်ပါ)
@@ -197,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <!-- Confirmation Modal -->
-<div id="confirmation-modal" class="modal-overlay hidden">
+<!-- <div id="confirmation-modal" class="modal-overlay hidden">
   <div class="bg-white rounded-2xl shadow-lg p-8 w-11/12 max-w-md mx-auto text-center">
     <div class="flex flex-col items-center space-y-4">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-green-500" fill="currentColor" viewBox="0 0 24 24">
@@ -208,8 +207,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button id="okay-btn" class="w-full mt-4 px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold">Okay</button>
     </div>
   </div>
-</div>
-
+</div> -->
+<!-- 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const successMessage = "<?php echo $success_message; ?>";
@@ -218,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (successMessage.length > 0) { modal.classList.remove('hidden'); }
   okayBtn.addEventListener('click', () => { window.location.href = "form1.php"; });
 });
-</script>
+</script> -->
 
 </body>
 </html>
