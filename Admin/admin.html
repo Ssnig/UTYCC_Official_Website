@@ -3,25 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin Dashboard — Student Registration System</title>
-  <meta name="description" content="Admin dashboard for a student registration system with search, sort, CRUD, and CSV import/export. No frameworks, pure HTML/CSS/JS." />
-  <link rel="canonical" href="/admin.html" />
+  <title>Admin Dashboard — UTYCC</title>
+  <meta name="description" content="Admin dashboard for the UTYCC student registration system." />
+  <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
-  <meta property="og:title" content="Admin Dashboard — Student Registration System" />
-  <meta property="og:description" content="Manage students, courses, and registrations. Search, sort, CRUD, CSV import/export. Pure HTML/CSS/JS." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      /* Light theme (HSL) - White and Blue Theme */
-      --bg: 0 0% 100%; /* White background */
+      /* UTYCC Theme (HSL) - White and Blue */
+      --bg: 220 20% 98%; /* Light Blue-Gray background */
       --fg: 222 47% 11%; /* Dark text */
       --muted: 214 32% 91%;
       --muted-foreground: 215 17% 47%;
       
-      --primary: 220 70% 55%; /* Professional Blue */
+      --primary: 220 83% 58%; /* UTYCC Blue (from #2563eb) */
       --primary-foreground: 0 0% 100%; /* White */
       
       --secondary: 0 0% 100%; /* White sidebar background */
@@ -30,7 +29,7 @@
       --card: 0 0% 100%; /* White */
       --card-foreground: 222 47% 11%;
       --border: 214 32% 91%;
-      --ring: 220 70% 55%;
+      --ring: 220 83% 58%;
       --success: 153 61% 34%;
       --warning: 43 96% 56%;
       --danger: 0 84% 60%;
@@ -51,7 +50,7 @@
       margin: 0;
       color: hsl(var(--fg));
       background: hsl(var(--bg));
-      font: 500 16px/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      font: 500 16px/1.4 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
       text-rendering: optimizeLegibility;
     }
     a { color: inherit; text-decoration: none; }
@@ -75,14 +74,16 @@
       position: sticky; top: 0; height: 100dvh;
     }
     .brand {
-      display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px;
-      background: transparent; border: 1px solid hsl(var(--border));
+      display: flex; align-items: center; gap: 12px; padding: 8px 10px;
     }
-    .brand-badge { width: 12px; height: 12px; border-radius: 4px; background: hsl(var(--primary)); box-shadow: 0 0 0 4px hsl(var(--primary)/0.15); }
-    .brand h1 { font-size: 16px; margin: 0; letter-spacing: .2px; color: hsl(var(--secondary-foreground)); }
+    .brand img {
+      width: 32px;
+      height: 32px;
+    }
+    .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground)); }
     nav { margin-top: 18px; display: grid; gap: 8px; }
-    .nav-link { padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border var(--duration) var(--ease); }
-    .nav-link:hover { background: hsl(210 40% 98%); color: hsl(var(--fg)); }
+    .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border var(--duration) var(--ease); }
+    .nav-link:hover { background: hsl(220 20% 96%); color: hsl(var(--fg)); }
     .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: var(--shadow-soft); }
 
     .header {
@@ -93,7 +94,7 @@
       display: flex; align-items: center; gap: 12px; padding: 16px 20px;
     }
     .search {
-      flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(210 40% 98%); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px; box-shadow: var(--shadow-card);
+      flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px;
     }
     .search input { width: 100%; border: none; outline: none; background: transparent; color: hsl(var(--fg)); }
 
@@ -114,7 +115,7 @@
     .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
     .btn.ghost { background: transparent; border-color: hsl(var(--border)); }
 
-    .main { grid-area: main; padding: 20px; background: hsl(210 40% 98%);}
+    .main { grid-area: main; padding: 20px; background: hsl(var(--bg));}
 
     .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
     .card { background: hsl(var(--card)); color: hsl(var(--card-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); }
@@ -130,7 +131,7 @@
     table { width: 100%; border-collapse: collapse; min-width: 900px; }
     thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--bg)); position: sticky; top: 0; z-index: 1; }
     th, td { padding: 12px 14px; border-bottom: 1px solid hsl(var(--border)); }
-    tbody tr:hover { background: hsl(210 40% 98%); }
+    tbody tr:hover { background: hsl(var(--bg)); }
 
     .badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .02em; border: 1px solid hsl(var(--border)); }
     .badge.success { background: hsl(var(--success)/0.12); color: hsl(var(--success)); border-color: hsl(var(--success)/0.3); }
@@ -139,20 +140,136 @@
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .toolbar .spacer { flex: 1; }
 
+    /* Toast Notifications */
+    .toast-wrap {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: min(360px, 92vw);
+      display: grid;
+      gap: 12px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      color: hsl(var(--primary-foreground));
+      background: hsl(var(--fg));
+      box-shadow: var(--shadow-card);
+      border-left: 4px solid hsl(var(--primary));
+      animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards;
+    }
+    .toast.success { border-left-color: hsl(var(--success)); }
+    .toast.warning { border-left-color: hsl(var(--warning)); }
+    .toast.error { border-left-color: hsl(var(--danger)); }
+    .toast .close-btn {
+      background: transparent;
+      border: 0;
+      color: hsl(var(--primary-foreground));
+      opacity: 0.7;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(100%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(100%); }
+    }
+
     /* Modal */
     dialog { border: none; border-radius: 16px; padding: 0; background: hsl(var(--card)); color: hsl(var(--card-foreground)); width: min(640px, 92vw); box-shadow: 0 30px 100px -40px hsl(var(--fg)/0.5); }
     dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2px); }
     .modal-header { padding: 16px 18px; border-bottom: 1px solid hsl(var(--border)); display: flex; justify-content: space-between; align-items: center; }
-    .modal-body { padding: 18px; display: grid; gap: 12px; }
+    .modal-body { padding: 18px; display: grid; gap: 12px; max-height: 70vh; overflow-y: auto; }
     .modal-footer { padding: 14px 18px; border-top: 1px solid hsl(var(--border)); display: flex; justify-content: flex-end; gap: 8px; }
 
     .field { display: grid; gap: 6px; }
     .field label { font-size: 13px; color: hsl(var(--muted-foreground)); }
     .field input, .field select { padding: 10px 12px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--bg)); color: hsl(var(--fg)); outline: none; }
     .field input:focus, .field select:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 3px hsl(var(--ring)/0.25); }
+    
+    .details-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      font-size: 15px;
+    }
+    .details-grid dt {
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+    }
+    .details-grid dd {
+      margin: 0;
+      word-break: break-all;
+    }
+    
+    .detail-section-header {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: hsl(var(--fg));
+      margin-top: 20px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid hsl(var(--border));
+    }
+    .detail-section-header:first-of-type {
+      margin-top: 0;
+    }
+    
+    .detail-parent-section h4 {
+        font-weight: 600;
+        margin-top: 16px;
+        margin-bottom: 8px;
+        color: hsl(var(--primary));
+    }
 
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
+
+    /* Custom Select Wrapper */
+    .select-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .select-wrapper select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding: 10px 36px 10px 14px; /* Make space for arrow */
+      border-radius: 12px;
+      border: 1px solid hsl(var(--border));
+      background: hsl(var(--card));
+      color: hsl(var(--fg));
+      box-shadow: var(--shadow-card);
+      transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+      cursor: pointer;
+      font: inherit;
+      min-width: 180px; /* Give it some width */
+    }
+    .select-wrapper select:hover {
+      border-color: hsl(var(--muted-foreground));
+    }
+    .select-wrapper select:focus {
+      outline: 2px solid hsl(var(--ring));
+      outline-offset: 2px;
+    }
+    .select-arrow {
+      position: absolute;
+      right: 14px;
+      pointer-events: none; /* Allows clicks to pass through to the select */
+      color: hsl(var(--muted-foreground));
+    }
 
     /* Responsive */
     @media (max-width: 1000px) {
@@ -167,30 +284,20 @@
     }
   </style>
 
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Student Registration Admin Dashboard",
-      "url": "/admin.html",
-      "applicationCategory": "EducationApplication",
-      "operatingSystem": "All"
-    }
-  </script>
 </head>
 <body>
   <div class="app" id="app">
     <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
-        <div class="brand-badge" aria-hidden="true"></div>
-        <h1>Student Registration</h1>
+        <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+        <h1>UTYCC Admin Panel</h1>
       </div>
       <nav>
         <a class="nav-link active" href="#students">Students</a>
-        <a class="nav-link" href="./courses.html">Courses</a>
-        <a class="nav-link" href="./registrations">Registrations</a>
-        <a class="nav-link" href="./reports">Reports</a>
-        <a class="nav-link" href="./settings">Settings</a>
+        <a class="nav-link" href="#">Courses</a>
+        <a class="nav-link" href="#">Registrations</a>
+        <a class="nav-link" href="#">Reports</a>
+        <a class="nav-link" href="#">Settings</a>
       </nav>
     </aside>
 
@@ -230,11 +337,14 @@
         <div class="section-header">
           <h2>Students</h2>
           <div class="toolbar">
-            <select id="statusFilter" aria-label="Filter by status">
-              <option value="">All statuses</option>
-              <option value="active">Active</option>
-              <option value="pending">Pending</option>
-            </select>
+            <div class="select-wrapper">
+              <select id="statusFilter" aria-label="Filter by status">
+                <option value="">All statuses</option>
+                <option value="active">Active</option>
+                <option value="pending">Pending</option>
+              </select>
+              <svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
             <div class="spacer"></div>
             <button class="btn ghost" id="bulkDeleteBtn" disabled>Delete Selected</button>
           </div>
@@ -301,7 +411,37 @@
     </form>
   </dialog>
 
+  <!-- Modal: View Student Details -->
+  <dialog id="detailsModal" aria-modal="true">
+    <div class="modal-header">
+      <strong>Student Details</strong>
+      <button class="btn ghost" type="button" id="closeDetailsModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="detailsModalBody">
+      <!-- Details will be populated here -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn primary" type="button" id="okDetailsModal">OK</button>
+    </div>
+  </dialog>
+  
+  <!-- Modal: Confirmation -->
+  <dialog id="confirmModal" aria-modal="true">
+    <div class="modal-header">
+        <strong id="confirmTitle">Confirm Action</strong>
+    </div>
+    <div class="modal-body">
+        <p id="confirmMessage">Are you sure?</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn ghost" id="confirmCancel">Cancel</button>
+        <button class="btn destructive" id="confirmOK">Confirm</button>
+    </div>
+  </dialog>
+
   <input type="file" id="fileInput" accept=".csv" hidden />
+  
+  <div class="toast-wrap"></div>
 
   <script defer>
     // Simple state with localStorage
@@ -333,19 +473,12 @@
       const cur = load();
       if (cur.length) return;
       const samples = [
-        ['Alice Johnson', 'alice@uni.edu', 'Computer Science', 'active'],
-        ['Brian Kim', 'brian@uni.edu', 'Mathematics', 'pending'],
-        ['Carla Gomez', 'carla@uni.edu', 'Physics', 'active'],
-        ['David Chen', 'david@uni.edu', 'Chemistry', 'active'],
-        ['Elena Petrova', 'elena@uni.edu', 'Economics', 'pending'],
-        ['Fatima Zahra', 'fatima@uni.edu', 'Biology', 'active'],
-        ['George Smith', 'george@uni.edu', 'Philosophy', 'pending'],
-        ['Hina Patel', 'hina@uni.edu', 'Data Science', 'active'],
-        ['Ivan Novak', 'ivan@uni.edu', 'Engineering', 'active'],
-        ['Julia Park', 'julia@uni.edu', 'Literature', 'pending']
+        {name: 'Alice Johnson', name_mm: 'အဲလစ် ဂျွန်ဆင်', email: 'alice@uni.edu', course: 'Computer Science', status: 'active', nrc: '9/မရမ(နိုင်)123456', dob: '2004-05-15', phone: '09123456789', address: 'No. 1, Main Road, Yangon', race: 'ဗမာ', religion: 'ဗုဒ္ဓဘာသာ', father_name: 'John Johnson', father_name_mm: 'ဦးဂျွန်ဂျွန်ဆင်', father_nrc: '9/မရမ(နိုင်)001122', father_phone: '09-1111111', father_info: 'Engineer', father_race: 'ဗမာ', father_religion: 'ဗုဒ္ဓဘာသာ', father_address: 'No. 1, Main Road, Yangon', father_deceased_year: '', mother_name: 'Jane Johnson', mother_name_mm: 'ဒေါ်ဂျိန်းဂျွန်ဆင်', mother_nrc: '9/မရမ(နိုင်)001133', mother_phone: '09-2222222', mother_info: 'Teacher', mother_race: 'ဗမာ', mother_religion: 'ဗုဒ္ဓဘာသာ', mother_address: 'No. 1, Main Road, Yangon', mother_deceased_year: ''},
+        {name: 'Brian Kim', name_mm: 'ဘရိုင်ယန် ကင်မ်', email: 'brian@uni.edu', course: 'Mathematics', status: 'pending', nrc: '12/ဥကမ(နိုင်)987654', dob: '2003-11-22', phone: '09876543210', address: 'No. 2, Second St, Mandalay', race: 'ကိုရီးယား', religion: 'ခရစ်ယာန်', father_name: 'Peter Kim', father_name_mm: 'ဦးပီတာကင်မ်', father_nrc: '12/ဥကမ(နိုင်)112233', father_phone: '09-3333333', father_info: 'Doctor', father_race: 'ကိုရီးယား', father_religion: 'ခရစ်ယာန်', father_address: 'No. 2, Second St, Mandalay', father_deceased_year: '2020', mother_name: 'Mary Kim', mother_name_mm: 'ဒေါ်မေရီကင်မ်', mother_nrc: '12/ဥကမ(နိုင်)445566', mother_phone: '09-4444444', mother_info: 'Nurse', mother_race: 'ကိုရီးယား', mother_religion: 'ခရစ်ယာန်', mother_address: 'No. 2, Second St, Mandalay', mother_deceased_year: ''},
+        {name: 'Carla Gomez', name_mm: 'ကာလာ ဂိုမက်ဇ်', email: 'carla@uni.edu', course: 'Physics', status: 'active', nrc: '7/ပခက(နိုင်)111222', dob: '2004-02-10', phone: '09111222333', address: 'No. 3, Third Ave, Pyin Oo Lwin', race: 'ကပြား', religion: 'ခရစ်ယာန်', father_name: 'Carlos Gomez', father_name_mm: 'ဦးကာလို့စ်', father_nrc: '7/ပခက(နိုင်)555666', father_phone: '09-5555555', father_info: 'Businessman', father_race: 'စပိန်', father_religion: 'ခရစ်ယာန်', father_address: 'No. 3, Third Ave, Pyin Oo Lwin', father_deceased_year: '', mother_name: 'Maria Gomez', mother_name_mm: 'ဒေါ်မာရီယာ', mother_nrc: '7/ပခက(နိုင်)777888', mother_phone: '09-6666666', mother_info: 'Housewife', mother_race: 'ဗမာ', mother_religion: 'ဗုဒ္ဓဘာသာ', mother_address: 'No. 3, Third Ave, Pyin Oo Lwin', mother_deceased_year: ''},
       ];
-      const seeded = samples.map(([name, email, course, status], i) => ({
-        id: uid(), name, email, course, status, createdAt: todayStr(new Date(Date.now() - (i*86400000)))
+      const seeded = samples.map((s, i) => ({
+        id: uid(), ...s, createdAt: todayStr(new Date(Date.now() - (i*86400000)))
       }));
       save(seeded);
     }
@@ -356,8 +489,20 @@
 
     function cmp(a, b, key) {
       const av = a[key]; const bv = b[key];
-      if (key === 'createdAt') return new Date(av) - new Date(bv);
+      if (key === 'createdAt' || key === 'dob') return new Date(av) - new Date(bv);
       return ('' + av).localeCompare('' + bv);
+    }
+
+    // Toast function
+    const toastWrap = document.querySelector(".toast-wrap");
+    function showToast(message, type = "success", duration = 4000) {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${message}</span><button class="close-btn" aria-label="Close">×</button>`;
+        const removeToast = () => { if (toast.parentElement) toast.parentElement.removeChild(toast); };
+        toast.querySelector(".close-btn").addEventListener("click", removeToast);
+        toastWrap.appendChild(toast);
+        setTimeout(removeToast, duration);
     }
 
     // DOM refs
@@ -378,7 +523,7 @@
     const statPending = document.getElementById('statPending');
     const statToday = document.getElementById('statToday');
 
-    // Modal refs
+    // Edit/Add Modal refs
     const modal = document.getElementById('studentModal');
     const modalTitle = document.getElementById('modalTitle');
     const closeModal = document.getElementById('closeModal');
@@ -389,6 +534,39 @@
     const emailEl = document.getElementById('email');
     const courseEl = document.getElementById('course');
     const statusEl = document.getElementById('status');
+    
+    // Details Modal refs
+    const detailsModal = document.getElementById('detailsModal');
+    const detailsModalBody = document.getElementById('detailsModalBody');
+    const closeDetailsModal = document.getElementById('closeDetailsModal');
+    const okDetailsModal = document.getElementById('okDetailsModal');
+    
+    // Confirmation Modal refs
+    const confirmModal = document.getElementById('confirmModal');
+    const confirmTitle = document.getElementById('confirmTitle');
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmCancel = document.getElementById('confirmCancel');
+    const confirmOK = document.getElementById('confirmOK');
+
+    function showConfirm(title, message) {
+      return new Promise(resolve => {
+        confirmTitle.textContent = title;
+        confirmMessage.textContent = message;
+        confirmModal.showModal();
+
+        const handleConfirm = () => {
+          confirmModal.close();
+          resolve(true);
+        };
+        const handleCancel = () => {
+          confirmModal.close();
+          resolve(false);
+        };
+        
+        confirmOK.addEventListener('click', handleConfirm, { once: true });
+        confirmCancel.addEventListener('click', handleCancel, { once: true });
+      });
+    }
 
     function openModal(mode, student = null) {
       modalTitle.textContent = mode === 'edit' ? 'Edit Student' : 'Add Student';
@@ -401,6 +579,57 @@
       nameEl.focus();
     }
     function closeModalSafe() { modal.close(); }
+    
+    function openDetailsModal(student) {
+        detailsModalBody.innerHTML = `
+            <h3 class="detail-section-header">ကိုယ်ရေးအချက်အလက်</h3>
+            <dl class="details-grid">
+                <dt>အမည် (EN)</dt><dd>${student.name || 'N/A'}</dd>
+                <dt>အမည် (MM)</dt><dd>${student.name_mm || 'N/A'}</dd>
+                <dt>Email</dt><dd>${student.email || 'N/A'}</dd>
+                <dt>Course</dt><dd>${student.course || 'N/A'}</dd>
+                <dt>NRC</dt><dd>${student.nrc || 'N/A'}</dd>
+                <dt>မွေးသက္ကရာဇ်</dt><dd>${student.dob ? formatDate(student.dob) : 'N/A'}</dd>
+                <dt>လူမျိုး</dt><dd>${student.race || 'N/A'}</dd>
+                <dt>ကိုးကွယ်သည့်ဘာသာ</dt><dd>${student.religion || 'N/A'}</dd>
+                <dt>ဖုန်းနံပါတ်</dt><dd>${student.phone || 'N/A'}</dd>
+                <dt>နေရပ်လိပ်စာ</dt><dd>${student.address || 'N/A'}</dd>
+                <dt>Status</dt><dd>${student.status === 'active' ? '<span class="badge success">Active</span>' : '<span class="badge warning">Pending</span>'}</dd>
+                <dt>Registered On</dt><dd>${formatDate(student.createdAt)}</dd>
+            </dl>
+
+            <h3 class="detail-section-header">မိဘအချက်အလက်</h3>
+            <div class="detail-parent-section">
+                <h4>အဘ (အရင်း)</h4>
+                <dl class="details-grid">
+                    <dt>အခြေအနေ</dt><dd>${student.father_deceased_year ? `ကွယ်လွန် (${student.father_deceased_year})` : 'သက်ရှိထင်ရှား'}</dd>
+                    <dt>အမည် (EN)</dt><dd>${student.father_name || 'N/A'}</dd>
+                    <dt>အမည် (MM)</dt><dd>${student.father_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${student.father_nrc || 'N/A'}</dd>
+                    <dt>လူမျိုး</dt><dd>${student.father_race || 'N/A'}</dd>
+                    <dt>ကိုးကွယ်သည့်ဘာသာ</dt><dd>${student.father_religion || 'N/A'}</dd>
+                    <dt>အလုပ်အကိုင်</dt><dd>${student.father_info || 'N/A'}</dd>
+                    <dt>နေရပ်လိပ်စာ</dt><dd>${student.father_address || 'N/A'}</dd>
+                    <dt>ဖုန်းနံပါတ်</dt><dd>${student.father_phone || 'N/A'}</dd>
+                </dl>
+            </div>
+            <div class="detail-parent-section">
+                <h4>အမိ (အရင်း)</h4>
+                <dl class="details-grid">
+                    <dt>အခြေအနေ</dt><dd>${student.mother_deceased_year ? `ကွယ်လွန် (${student.mother_deceased_year})` : 'သက်ရှိထင်ရှား'}</dd>
+                    <dt>အမည် (EN)</dt><dd>${student.mother_name || 'N/A'}</dd>
+                    <dt>အမည် (MM)</dt><dd>${student.mother_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${student.mother_nrc || 'N/A'}</dd>
+                    <dt>လူမျိုး</dt><dd>${student.mother_race || 'N/A'}</dd>
+                    <dt>ကိုးကွယ်သည့်ဘာသာ</dt><dd>${student.mother_religion || 'N/A'}</dd>
+                    <dt>အလုပ်အကိုင်</dt><dd>${student.mother_info || 'N/A'}</dd>
+                    <dt>နေရပ်လိပ်စာ</dt><dd>${student.mother_address || 'N/A'}</dd>
+                    <dt>ဖုန်းနံပါတ်</dt><dd>${student.mother_phone || 'N/A'}</dd>
+                </dl>
+            </div>
+        `;
+        detailsModal.showModal();
+    }
 
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
@@ -448,6 +677,7 @@
           <td>${formatDate(s.createdAt)}</td>
           <td>
             <div style="display:flex; gap:6px;">
+              <button class="btn ghost" data-details="${s.id}">Details</button>
               <button class="btn ghost" data-edit="${s.id}">Edit</button>
               <button class="btn destructive" data-del="${s.id}">Delete</button>
             </div>
@@ -469,18 +699,29 @@
       });
 
       // Action handlers
+      tbody.querySelectorAll('[data-details]').forEach(btn => btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-details');
+        const s = state.students.find(x => x.id === id);
+        if (s) openDetailsModal(s);
+      }));
       tbody.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-edit');
         const s = state.students.find(x => x.id === id);
         if (s) openModal('edit', s);
       }));
-      tbody.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-del');
-        if (!confirm('Delete this student?')) return;
+      tbody.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', async (e) => {
+        const id = e.target.getAttribute('data-del');
+        const student = state.students.find(s => s.id === id);
+        if (!student) return;
+
+        const confirmed = await showConfirm('Delete Student', `Are you sure you want to delete "${student.name}"? This action cannot be undone.`);
+        if (!confirmed) return;
+
         state.students = state.students.filter(x => x.id !== id);
         state.selected.delete(id);
         save(state.students);
         render();
+        showToast(`Student "${student.name}" deleted successfully.`, 'success');
       }));
 
       // Update selectAll based on page
@@ -532,19 +773,26 @@
     });
 
     // Bulk delete
-    bulkDeleteBtn.addEventListener('click', () => {
+    bulkDeleteBtn.addEventListener('click', async () => {
       if (!state.selected.size) return;
-      if (!confirm(`Delete ${state.selected.size} selected student(s)?`)) return;
+      const confirmed = await showConfirm('Delete Selected Students', `Are you sure you want to delete the ${state.selected.size} selected student(s)? This action cannot be undone.`);
+      if (!confirmed) return;
+      
+      const numDeleted = state.selected.size;
       state.students = state.students.filter(s => !state.selected.has(s.id));
       state.selected.clear();
       save(state.students);
       render();
+      showToast(`${numDeleted} student(s) deleted successfully.`, 'success');
     });
 
     // Modal lifecycle
     addBtn.addEventListener('click', () => openModal('add'));
     closeModal.addEventListener('click', closeModalSafe);
     cancelModal.addEventListener('click', closeModalSafe);
+    
+    closeDetailsModal.addEventListener('click', () => detailsModal.close());
+    okDetailsModal.addEventListener('click', () => detailsModal.close());
 
     saveStudent.addEventListener('click', (e) => {
       e.preventDefault();
@@ -555,10 +803,12 @@
         const i = state.students.findIndex(s => s.id === id);
         if (i !== -1) {
           state.students[i] = { ...state.students[i], name: nameEl.value, email: emailEl.value, course: courseEl.value, status: statusEl.value };
+          showToast(`Student "${nameEl.value}" updated.`, 'success');
         }
       } else {
         // Create
         state.students.unshift({ id: uid(), name: nameEl.value, email: emailEl.value, course: courseEl.value, status: statusEl.value, createdAt: todayStr() });
+        showToast(`Student "${nameEl.value}" added.`, 'success');
       }
       save(state.students);
       closeModalSafe();
@@ -588,7 +838,14 @@
     }
 
     exportBtn.addEventListener('click', () => {
-      download('students.csv', toCSV(state.students));
+      if (state.selected.size > 0) {
+        const studentsToExport = state.students.filter(s => state.selected.has(s.id));
+        const fileName = `students-selected-${new Date().toISOString().slice(0,10)}.csv`;
+        download(fileName, toCSV(studentsToExport));
+        showToast(`${studentsToExport.length} selected student(s) exported.`, 'success');
+      } else {
+        showToast('ကျေးဇူးပြု၍ export လုပ်ရန် အနည်းဆုံး ကျောင်းသားတစ်ဦးကို select လုပ်ပေးပါ။', 'warning');
+      }
     });
 
     const fileInput = document.getElementById('fileInput');
@@ -603,7 +860,10 @@
           const [headerLine, ...lines] = text.split(/\r?\n/).filter(Boolean);
           const headers = headerLine.split(',').map(h => h.replace(/^\"|\"$/g,''));
           const req = ['id','name','email','course','status','createdAt'];
-          if (!req.every(k => headers.includes(k))) { alert('CSV headers must include: ' + req.join(', ')); return; }
+          if (!req.every(k => headers.includes(k))) { 
+            showToast('CSV headers must include: ' + req.join(', '), 'error', 6000);
+            return; 
+          }
           const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
           const imported = lines.map(line => {
             const cells = line.match(/\"(?:[^\"]|\"\")*\"|[^,]+/g)?.map(c => c.replace(/^\"|\"$/g,'').replace(/\"\"/g,'"')) || [];
@@ -619,9 +879,9 @@
           state.students = Array.from(map.values());
           save(state.students);
           render();
-          alert('Import complete.');
+          showToast('Import complete.', 'success');
         } catch (err) {
-          alert('Failed to import CSV.');
+          showToast('Failed to import CSV.', 'error');
         } finally {
           fileInput.value = '';
         }
@@ -636,3 +896,4 @@
   </script>
 </body>
 </html>
+

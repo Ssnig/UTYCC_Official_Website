@@ -1,89 +1,133 @@
 <?php 
 session_start();
-require_once "db.php"; // DB connection
+
+
+
+include "db.php"; // DB connection
 
 $success_message = null;
 
 // Check if the form was submitted using the POST method.
+// session_start() ကို file ရဲ့ အပေါ်ဆုံးမှာ ခေါ်ထားဖို့ မမေ့ပါနဲ့
+// include 'db.php'; ကိုလည်း ထည့်သွင်းထားပေးပါ
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if the required session variables exist.
+    // Session data တွေ တကယ်ရှိမရှိ စစ်ဆေးပါ
+    // မှတ်ချက်: form1_data, form2_data စသည်ဖြင့် session key တွေက သင့် form တွေကနေ သတ်မှတ်လိုက်တဲ့အတိုင်း ဖြစ်ရပါမယ်။
     if (!isset($_SESSION['form1_data']) || !isset($_SESSION['form2_data']) || !isset($_SESSION['option_data'])) {
-        // Redirect if session data is missing.
         header("Location: form1.php");
         exit;
     }
 
+    // Database ထဲကို Data တွေ အကုန်လုံး အောင်မြင်မှ ထည့်သွင်းဖို့ Transaction ကို အသုံးပြုပါမယ်
     try {
-        $form1  = $_SESSION['form1_data'];
-        $form2  = $_SESSION['form2_data'];
-        $option = $_SESSION['option_data'];
-
-        // Begin transaction
+        // 1. Transaction ကို စတင်ပါ
         $pdo->beginTransaction();
 
-        // Insert Student
-        $stmt = $pdo->prepare("
+        // Session data တွေကို variable တွေထဲ ခဏထည့်ထားလိုက်ပါ
+        $form1 = $_SESSION['form1_data'];
+        $form2 = $_SESSION['form2_data']; // preferences က ဒီထဲမှာရှိတယ်လို့ ယူဆပါတယ်
+        $option = $_SESSION['option_data'];
+
+        // =================================================================
+        // အဆင့် (၁) - students table ထဲကို အရင်ထည့်ပါ
+        // =================================================================
+        $stmt_student = $pdo->prepare("
             INSERT INTO students 
             (year, academic_year, seat_no, entry_year, student_email, dormitory_preference,
-             student_name_mm, student_name_en, student_race, student_religion, student_nrc,
-             student_dob, student_birthplace, state_region, township,
-             student_phone, student_address, date, photo_url)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+             student_name_mm, student_name_en, student_race, student_religion, student_nrc, 
+             student_dob, student_birthplace, state_region, township, student_phone, student_address, 
+             date, photo_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        $stmt->execute([
-            $form1['year'], $form1['academic_year'], $form1['seat_no'], $form1['entry_year'], 
-            $form1['student_email'], $option['dormitory_preference'],
-            $form1['student_name_mm'], $form1['student_name_en'], $form1['student_race'], $form1['student_religion'], $form1['student_nrc'],
-            $form1['student_dob'], $form1['student_birthplace'], $form1['state_region'], $form1['township'],
-            $form1['student_phone'], $form1['student_address'], date("Y-m-d H:i:s"), $_SESSION['student_photo'] ?? ''
+        $stmt_student->execute([
+            $form1['year'],                 // Session ထဲမှာ ဒီ key တွေရှိရပါမယ်
+            $form1['academic_year'],
+            $form1['seat_no'],
+            $form1['entry_year'],
+            $form1['student_email'],
+            $option['dormitory_preference'],// Dormitory preference
+            $form1['student_name_mm'],
+            $form1['student_name_en'],
+            $form1['student_race'],
+            $form1['student_religion'],
+            $form1['student_nrc'],
+            $form1['student_dob'],
+            $form1['student_birthplace'],
+            $form1['state_region'],
+            $form1['township'],
+            $form1['student_phone'],
+            $form1['student_address'],
+            
+            date("Y-m-d"), // လက်ရှိနေ့စွဲ
+            $form1['photo_url'] ?? null // photo session ရှိခဲ့ရင်
         ]);
 
+        // အခုလေးတင် ထည့်လိုက်တဲ့ ကျောင်းသားရဲ့ ID ကို ပြန်ယူပါ
         $student_id = $pdo->lastInsertId();
 
-        // Insert Father
-        $stmt = $pdo->prepare("
+        // =================================================================
+        // အဆင့် (၂) - fathers table ထဲကို student_id နဲ့အတူ ထည့်ပါ
+        // =================================================================
+        $stmt_father = $pdo->prepare("
             INSERT INTO fathers 
-            (student_id, father_name_mm, father_name_en, father_race, father_religion, father_nrc,
-             father_phone, father_info, father_deceased_year, father_address)
-            VALUES (?,?,?,?,?,?,?,?,?,?)
+            (student_id, father_name_mm, father_name_en, father_race, father_religion, 
+             father_nrc, father_phone, father_info, father_deceased_year, father_address)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->execute([
-            $student_id, $form1['father_name_mm'], $form1['father_name_en'], $form1['father_race'], $form1['father_religion'], $form1['father_nrc'],
-            $form1['father_phone'], $form1['father_info'], $form1['father_deceased_year'], $form1['father_address']
+        
+        $stmt_father->execute([
+            $student_id, // အပေါ်က ရလာတဲ့ ကျောင်းသား ID
+            $form1['father_name_mm'],
+            $form1['father_name_en'],
+            $form1['father_race'],
+            $form1['father_religion'],
+            $form1['father_nrc'],
+            $form1['father_phone'],
+            $form1['father_info'],
+            $form1['father_deceased_year'] ?? null, // မရှိရင် NULL
+            $form1['father_address']
+        ]);
+        // =================================================================
+        // အဆင့် (၃) - mothers table ထဲကို student_id နဲ့အတူ ထည့်ပါ
+        // =================================================================
+        $stmt_mother = $pdo->prepare("
+            INSERT INTO mothers
+            (student_id, mother_name_mm, mother_name_en, mother_race, mother_religion,
+             mother_nrc, mother_phone, mother_info, mother_deceased_year, mother_address)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        
+        $stmt_mother->execute([
+            $student_id, // အပေါ်က ရလာတဲ့ ကျောင်းသား ID
+            $form1['mother_name_mm'],
+            $form1['mother_name_en'],
+            $form1['mother_race'],
+            $form1['mother_religion'],
+            $form1['mother_nrc'],
+            $form1['mother_phone'],
+            $form1['mother_info'],
+            $form1['mother_deceased_year'] ?? null, // မရှိရင် NULL
+            $form1['mother_address']
         ]);
 
-        // Insert Mother
-        $stmt = $pdo->prepare("
-            INSERT INTO mothers 
-            (student_id, mother_name_mm, mother_name_en, mother_race, mother_religion, mother_nrc,
-             mother_phone, mother_info, mother_deceased_year, mother_address)
-            VALUES (?,?,?,?,?,?,?,?,?,?)
-        ");
-        $stmt->execute([
-            $student_id, $form1['mother_name_mm'], $form1['mother_name_en'], $form1['mother_race'], $form1['mother_religion'], $form1['mother_nrc'],
-            $form1['mother_phone'], $form1['mother_info'], $form1['mother_deceased_year'], $form1['mother_address']
-        ]);
-
-        // Store Preferences (form2)
-        $stmt = $pdo->prepare("INSERT INTO preferences (student_id, preference_order, major_code) VALUES (?,?,?)");
-        foreach ($form2['preferences'] as $order => $major_code) {
-            $stmt->execute([$student_id, $order + 1, $major_code]);
-        }
-
-        // Commit transaction
+        // 2. အားလုံးအောင်မြင်ရင် Transaction ကို commit လုပ်ပါ (Data ကို အတည်ပြုပါ)
         $pdo->commit();
-
-        // Clear session data
+        
+        // Session data တွေကို ရှင်းလင်းပါ
         session_destroy();
 
-        // Success message
-        $success_message = "✅ ကျောင်းလျှောက်ခြင်း အောင်မြင်ပါသည်။ \n\nရတနာပုံ UTYCC မှ နွေးထွေးစွာကြိုဆိုပါသည်။";
+        // အောင်မြင်ကြောင်း message ပြပါ
+        // $success_message = "✅ ကျောင်းလျှောက်ခြင်း အောင်မြင်ပါသည်။\n\nရတနာပုံဆိုက်ဘာစီးတီး တက္ကသိုလ်မှ နွေးထွေးစွာကြိုဆိုပါသည်။";
 
     } catch (PDOException $e) {
+        // 3. Error တစ်ခုခုဖြစ်ခဲ့ရင် Transaction ကို rollback လုပ်ပါ (လုပ်ဆောင်ချက်တွေ အကုန်ပြန်ဖျက်ပါ)
         $pdo->rollBack();
+        
+        // Error message အတိအကျကို ပြသပါ (ဒါက debugging အတွက် အရေးကြီးဆုံးပါ)
+        $success_message = "❌ Submission failed. Error: " . $e->getMessage();
         error_log("Database error: " . $e->getMessage());
-        $success_message = "❌ Submission failed. Please try again.";
     }
 }
 ?>
@@ -152,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <!-- Confirmation Modal -->
-<div id="confirmation-modal" class="modal-overlay hidden">
+<!-- <div id="confirmation-modal" class="modal-overlay hidden">
   <div class="bg-white rounded-2xl shadow-lg p-8 w-11/12 max-w-md mx-auto text-center">
     <div class="flex flex-col items-center space-y-4">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-green-500" fill="currentColor" viewBox="0 0 24 24">
@@ -163,17 +207,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button id="okay-btn" class="w-full mt-4 px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold">Okay</button>
     </div>
   </div>
-</div>
-
+</div> -->
+<!-- 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const successMessage = "<?php echo $success_message; ?>";
   const modal = document.getElementById('confirmation-modal');
   const okayBtn = document.getElementById('okay-btn');
   if (successMessage.length > 0) { modal.classList.remove('hidden'); }
-  okayBtn.addEventListener('click', () => { window.location.href = "home.php"; });
+  okayBtn.addEventListener('click', () => { window.location.href = "form1.php"; });
 });
-</script>
+</script> -->
 
 </body>
 </html>

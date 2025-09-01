@@ -1,44 +1,70 @@
 <?php
-// Start the session to check the login state.
-session_start();
+// Include the database configuration file
+require_once '../Rform/db.php';
 
-// Check if the user is not logged in. If so, redirect to the login page.
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header("location: ../signin.php");
-    exit;
+// --- FETCH ALL STUDENT DATA ON INITIAL PAGE LOAD ---
+// --- FETCH ALL STUDENT DATA ON INITIAL PAGE LOAD USING PDO ---
+$students = [];
+$sql = "SELECT s.*, 
+               f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
+               m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
+        FROM students s
+        LEFT JOIN fathers f ON s.student_id = f.student_id
+        LEFT JOIN mothers m ON s.student_id = m.student_id
+        ORDER BY s.date DESC";
+
+try {
+    $stmt = $pdo->query($sql);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($results as $row) {
+        // Ensure numeric and boolean types are correctly cast for JSON
+        $row['student_id'] = (int)$row['student_id'];
+        $row['dormitory_preference'] = (bool)$row['dormitory_preference'];
+        if($row['father_deceased_year']) $row['father_deceased_year'] = (int)$row['father_deceased_year'];
+        if($row['mother_deceased_year']) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
+        $students[] = $row;
+    }
+} catch (PDOException $e) {
+    // For a real application, you might want to log this error and show a friendly message.
+    die("Error fetching student data: " . $e->getMessage());
 }
-?>
 
+// Close the connection by setting the PDO object to null
+$pdo = null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin Dashboard — Student Registration System</title>
-  <meta name="description" content="Admin dashboard for a student registration system with search, sort, CRUD, and CSV import/export. No frameworks, pure HTML/CSS/JS." />
-  <link rel="canonical" href="/admin.html" />
+  <title>Admin Dashboard — UTYCC</title>
+  <meta name="description" content="Admin dashboard for the UTYCC student registration system." />
+  <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
-  <meta property="og:title" content="Admin Dashboard — Student Registration System" />
-  <meta property="og:description" content="Manage students, courses, and registrations. Search, sort, CRUD, CSV import/export. Pure HTML/CSS/JS." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      /* Light theme (HSL) */
-      --bg: 0 0% 100%;
-      --fg: 222 47% 11%;
+      /* UTYCC Theme (HSL) - White and Blue */
+      --bg: 220 20% 98%; /* Light Blue-Gray background */
+      --fg: 222 47% 11%; /* Dark text */
       --muted: 214 32% 91%;
       --muted-foreground: 215 17% 47%;
-      --primary: 261 80% 55%; /* violet accent */
-      --primary-foreground: 0 0% 100%;
-      --secondary: 210 40% 96%;
-      --secondary-foreground: 222 47% 11%;
-      --card: 0 0% 100%;
+      
+      --primary: 220 83% 58%; /* UTYCC Blue (from #2563eb) */
+      --primary-foreground: 0 0% 100%; /* White */
+      
+      --secondary: 0 0% 100%; /* White sidebar background */
+      --secondary-foreground: 222 47% 11%; /* Dark sidebar text */
+      
+      --card: 0 0% 100%; /* White */
       --card-foreground: 222 47% 11%;
       --border: 214 32% 91%;
-      --ring: 262 83% 58%;
+      --ring: 220 83% 58%;
       --success: 153 61% 34%;
       --warning: 43 96% 56%;
       --danger: 0 84% 60%;
@@ -48,35 +74,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
       --ease: cubic-bezier(.2,.8,.2,1);
       --duration: 220ms;
 
-      /* Layered gradient for header */
-      --gradient: linear-gradient(135deg, hsl(var(--primary)/0.12), hsl(200 100% 50%/0.10)), radial-gradient(1200px 600px at var(--mx, 50%) var(--my, 0%), hsl(var(--primary)/0.15), transparent 60%);
-
       /* Shadows */
       --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.25);
       --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: 222 47% 8%;
-        --fg: 210 40% 96%;
-        --muted: 217 33% 18%;
-        --muted-foreground: 215 20% 65%;
-        --primary: 261 83% 70%;
-        --primary-foreground: 222 47% 11%;
-        --secondary: 220 18% 12%;
-        --secondary-foreground: 210 40% 96%;
-        --card: 222 40% 9%;
-        --card-foreground: 210 40% 96%;
-        --border: 220 14% 20%;
-        --ring: 262 83% 68%;
-        --success: 153 61% 45%;
-        --warning: 43 96% 62%;
-        --danger: 0 84% 66%;
-        --gradient: linear-gradient(135deg, hsl(var(--primary)/0.16), hsl(200 100% 50%/0.12)), radial-gradient(1200px 600px at var(--mx, 50%) var(--my, 0%), hsl(var(--primary)/0.22), transparent 60%);
-        --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.35);
-        --shadow-card: 0 10px 20px -10px hsl(220 40% 5% / 0.6);
-      }
     }
 
     * { box-sizing: border-box; }
@@ -85,7 +85,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
       margin: 0;
       color: hsl(var(--fg));
       background: hsl(var(--bg));
-      font: 500 16px/1.4 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      font: 500 16px/1.4 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
       text-rendering: optimizeLegibility;
     }
     a { color: inherit; text-decoration: none; }
@@ -109,26 +109,27 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
       position: sticky; top: 0; height: 100dvh;
     }
     .brand {
-      display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px;
-      background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); box-shadow: var(--shadow-soft);
+      display: flex; align-items: center; gap: 12px; padding: 8px 10px;
     }
-    .brand-badge { width: 12px; height: 12px; border-radius: 4px; background: hsl(var(--primary)); box-shadow: 0 0 0 4px hsl(var(--primary)/0.15); }
-    .brand h1 { font-size: 16px; margin: 0; letter-spacing: .2px; }
+    .brand img {
+      width: 32px;
+      height: 32px;
+    }
+    .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground)); }
     nav { margin-top: 18px; display: grid; gap: 8px; }
-    .nav-link { padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border var(--duration) var(--ease); }
-    .nav-link:hover { background: hsl(var(--bg)); color: hsl(var(--fg)); border-color: hsl(var(--border)); }
-    .nav-link.active { background: hsl(var(--bg)); color: hsl(var(--fg)); border-color: hsl(var(--border)); box-shadow: var(--shadow-card); }
+    .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: background var(--duration) var(--ease), color var(--duration) var(--ease), border var(--duration) var(--ease); }
+    .nav-link:hover { background: hsl(220 20% 96%); color: hsl(var(--fg)); }
+    .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: var(--shadow-soft); }
 
     .header {
       grid-area: header;
       position: sticky; top: 0; z-index: 10;
-      background: var(--gradient);
+      background: hsl(var(--card));
       border-bottom: 1px solid hsl(var(--border));
       display: flex; align-items: center; gap: 12px; padding: 16px 20px;
-      backdrop-filter: saturate(1.2) blur(8px);
     }
     .search {
-      flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px; box-shadow: var(--shadow-card);
+      flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px;
     }
     .search input { width: 100%; border: none; outline: none; background: transparent; color: hsl(var(--fg)); }
 
@@ -138,7 +139,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
       --bcol: var(--border);
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 10px 14px; border-radius: 12px; border: 1px solid hsl(var(--bcol));
-      background: hsl(var(--bg)); color: hsl(var(--fg));
+      background: hsl(var(--card)); color: hsl(var(--fg));
       box-shadow: var(--shadow-card);
       transition: transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease), background var(--duration) var(--ease), color var(--duration) var(--ease), border-color var(--duration) var(--ease);
       cursor: pointer;
@@ -149,9 +150,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
     .btn.ghost { background: transparent; border-color: hsl(var(--border)); }
 
-    .main { grid-area: main; padding: 20px; }
+    .main { grid-area: main; padding: 20px; background: hsl(var(--bg));}
 
-    .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
     .card { background: hsl(var(--card)); color: hsl(var(--card-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); }
     .card h3 { margin: 0 0 6px; font-size: 14px; color: hsl(var(--muted-foreground)); font-weight: 600; }
     .card .value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
@@ -163,9 +164,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     /* Table */
     .table-wrap { overflow: auto; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); box-shadow: var(--shadow-card); }
     table { width: 100%; border-collapse: collapse; min-width: 900px; }
-    thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--secondary)); position: sticky; top: 0; z-index: 1; }
+    thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--bg)); position: sticky; top: 0; z-index: 1; }
     th, td { padding: 12px 14px; border-bottom: 1px solid hsl(var(--border)); }
-    tbody tr:hover { background: hsl(var(--secondary)); }
+    tbody tr:hover { background: hsl(var(--bg)); }
 
     .badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .02em; border: 1px solid hsl(var(--border)); }
     .badge.success { background: hsl(var(--success)/0.12); color: hsl(var(--success)); border-color: hsl(var(--success)/0.3); }
@@ -174,17 +175,108 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .toolbar .spacer { flex: 1; }
 
+    /* Toast Notifications */
+    .toast-wrap {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: min(360px, 92vw);
+      display: grid;
+      gap: 12px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      color: hsl(var(--primary-foreground));
+      background: hsl(var(--fg));
+      box-shadow: var(--shadow-card);
+      border-left: 4px solid hsl(var(--primary));
+      animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards;
+    }
+    .toast.success { border-left-color: hsl(var(--success)); }
+    .toast.warning { border-left-color: hsl(var(--warning)); }
+    .toast.error { border-left-color: hsl(var(--danger)); }
+    .toast .close-btn {
+      background: transparent;
+      border: 0;
+      color: hsl(var(--primary-foreground));
+      opacity: 0.7;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(100%); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(100%); }
+    }
+
     /* Modal */
-    dialog { border: none; border-radius: 16px; padding: 0; background: hsl(var(--card)); color: hsl(var(--card-foreground)); width: min(640px, 92vw); box-shadow: 0 30px 100px -40px hsl(var(--fg)/0.5); }
+    dialog { border: none; border-radius: 16px; padding: 0; background: hsl(var(--card)); color: hsl(var(--card-foreground)); width: min(860px, 94vw); box-shadow: 0 30px 100px -40px hsl(var(--fg)/0.5); }
     dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2px); }
     .modal-header { padding: 16px 18px; border-bottom: 1px solid hsl(var(--border)); display: flex; justify-content: space-between; align-items: center; }
-    .modal-body { padding: 18px; display: grid; gap: 12px; }
+    .modal-body { padding: 18px; display: grid; gap: 16px; max-height: 70vh; overflow-y: auto; }
     .modal-footer { padding: 14px 18px; border-top: 1px solid hsl(var(--border)); display: flex; justify-content: flex-end; gap: 8px; }
 
     .field { display: grid; gap: 6px; }
     .field label { font-size: 13px; color: hsl(var(--muted-foreground)); }
-    .field input, .field select { padding: 10px 12px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--bg)); color: hsl(var(--fg)); outline: none; }
-    .field input:focus, .field select:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 3px hsl(var(--ring)/0.25); }
+    .field input, .field select, .field textarea { padding: 10px 12px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--bg)); color: hsl(var(--fg)); outline: none; font: inherit; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 3px hsl(var(--ring)/0.25); }
+    .field textarea { min-height: 60px; resize: vertical; }
+    .field-checkbox { display: flex; align-items: center; gap: 8px; }
+    .field-checkbox label { margin: 0; }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 18px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      font-size: 15px;
+    }
+    .details-grid dt {
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+    }
+    .details-grid dd {
+      margin: 0;
+      word-break: break-all;
+    }
+    
+    .detail-section-header {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: hsl(var(--fg));
+      margin-top: 20px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid hsl(var(--border));
+      grid-column: 1 / -1; /* Span across grid columns */
+    }
+    .detail-section-header:first-of-type {
+      margin-top: 0;
+    }
+    
+    .detail-parent-section h4 {
+        font-weight: 600;
+        margin-top: 16px;
+        margin-bottom: 8px;
+        color: hsl(var(--primary));
+    }
 
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
@@ -192,6 +284,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     /* Responsive */
     @media (max-width: 1000px) {
       .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .form-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 780px) {
       .app { grid-template-columns: 1fr; grid-template-areas:
@@ -202,38 +295,27 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     }
   </style>
 
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Student Registration Admin Dashboard",
-      "url": "/admin.html",
-      "applicationCategory": "EducationApplication",
-      "operatingSystem": "All"
-    }
-  </script>
 </head>
 <body>
   <div class="app" id="app">
     <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
-        <div class="brand-badge" aria-hidden="true"></div>
-        <h1>Student Registration</h1>
+        <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+        <h1>UTYCC Admin Panel</h1>
       </div>
       <nav>
         <a class="nav-link active" href="#students">Students</a>
-        <a class="nav-link" href="./courses.html">Courses</a>
-        <a class="nav-link" href="#registrations">Registrations</a>
-        <a class="nav-link" href="#reports">Reports</a>
-        <a class="nav-link" href="#settings">Settings</a>
-        <a class="nav-link" href="../logout.php" class="logout-btn">Logout</a>
+        <a class="nav-link" href="#">Courses</a>
+        <a class="nav-link" href="#">Registrations</a>
+        <a class="nav-link" href="#">Reports</a>
+        <a class="nav-link" href="#">Settings</a>
       </nav>
     </aside>
 
     <header class="header" id="header">
       <form class="search" role="search" aria-label="Search students" onsubmit="event.preventDefault()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/></svg>
-        <input id="search" name="q" placeholder="Search students by name or email..." autocomplete="off" />
+        <input id="search" name="q" placeholder="Search by name, email, or seat no..." autocomplete="off" />
       </form>
       <div class="userbar">
         <button class="btn ghost" id="importBtn" title="Import CSV" aria-label="Import CSV">Import</button>
@@ -249,15 +331,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
           <div class="value" id="statTotal">0</div>
         </article>
         <article class="card">
-          <h3>Active</h3>
-          <div class="value" id="statActive">0</div>
+            <h3>Dormitory Requests</h3>
+            <div class="value" id="statDormitory">0</div>
         </article>
         <article class="card">
-          <h3>Pending</h3>
-          <div class="value" id="statPending">0</div>
-        </article>
-        <article class="card">
-          <h3>Today</h3>
+          <h3>Today's Entries</h3>
           <div class="value" id="statToday">0</div>
         </article>
       </section>
@@ -266,11 +344,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <div class="section-header">
           <h2>Students</h2>
           <div class="toolbar">
-            <select id="statusFilter" aria-label="Filter by status">
-              <option value="">All statuses</option>
-              <option value="active">Active</option>
-              <option value="pending">Pending</option>
-            </select>
             <div class="spacer"></div>
             <button class="btn ghost" id="bulkDeleteBtn" disabled>Delete Selected</button>
           </div>
@@ -281,11 +354,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             <thead>
               <tr>
                 <th><input type="checkbox" id="selectAll" aria-label="Select all" /></th>
-                <th data-sort="name" class="sortable">Name</th>
-                <th data-sort="email" class="sortable">Email</th>
-                <th data-sort="course" class="sortable">Course</th>
-                <th data-sort="status" class="sortable">Status</th>
-                <th data-sort="createdAt" class="sortable">Registered</th>
+                <th data-sort="seat_no" class="sortable">Seat No</th>
+                <th data-sort="student_name_en" class="sortable">Name</th>
+                <th data-sort="student_email" class="sortable">Email</th>
+                <th data-sort="student_phone" class="sortable">Phone</th>
+                <th data-sort="date" class="sortable">Registered</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -309,151 +382,394 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <button class="btn ghost" type="button" id="closeModal" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
-        <input type="hidden" id="studentId" />
-        <div class="field">
-          <label for="name">Full name</label>
-          <input id="name" required placeholder="Jane Doe" />
-        </div>
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" required type="email" placeholder="jane@example.com" />
-        </div>
-        <div class="field">
-          <label for="course">Course</label>
-          <input id="course" required placeholder="Computer Science" />
-        </div>
-        <div class="field">
-          <label for="status">Status</label>
-          <select id="status" required>
-            <option value="active">Active</option>
-            <option value="pending">Pending</option>
-          </select>
+        <input type="hidden" id="student_id" />
+        <div class="form-grid">
+            <h3 class="detail-section-header">Student Information</h3>
+            <div class="field">
+                <label for="student_name_en">Name (EN)</label>
+                <input id="student_name_en" required />
+            </div>
+            <div class="field">
+                <label for="student_name_mm">Name (MM)</label>
+                <input id="student_name_mm" />
+            </div>
+            <div class="field">
+                <label for="seat_no">Seat No.</label>
+                <input id="seat_no" required />
+            </div>
+            <div class="field">
+                <label for="student_email">Email</label>
+                <input id="student_email" type="email" required />
+            </div>
+            <div class="field">
+                <label for="student_phone">Phone</label>
+                <input id="student_phone" />
+            </div>
+            <div class="field">
+                <label for="student_nrc">NRC</label>
+                <input id="student_nrc" />
+            </div>
+            <div class="field">
+                <label for="student_dob">Date of Birth</label>
+                <input id="student_dob" type="date" />
+            </div>
+             <div class="field">
+                <label for="student_birthplace">Birthplace</label>
+                <input id="student_birthplace" />
+            </div>
+            <div class="field">
+                <label for="student_race">Race</label>
+                <input id="student_race" />
+            </div>
+            <div class="field">
+                <label for="student_religion">Religion</label>
+                <input id="student_religion" />
+            </div>
+            <div class="field">
+                <label for="township">Township</label>
+                <input id="township" />
+            </div>
+            <div class="field">
+                <label for="state_region">State/Region</label>
+                <input id="state_region" />
+            </div>
+             <div class="field" style="grid-column: 1 / -1;">
+                <label for="student_address">Address</label>
+                <textarea id="student_address"></textarea>
+            </div>
+            <div class="field-checkbox" style="grid-column: 1 / -1;">
+                <input id="dormitory_preference" type="checkbox" />
+                <label for="dormitory_preference">Requires Dormitory</label>
+            </div>
+
+            <h3 class="detail-section-header">Academic Information</h3>
+            <div class="field">
+                <label for="year">Year</label>
+                <input id="year" />
+            </div>
+            <div class="field">
+                <label for="academic_year">Academic Year</label>
+                <input id="academic_year" />
+            </div>
+            <div class="field">
+                <label for="entry_year">Entry Year</label>
+                <input id="entry_year" />
+            </div>
+
+            <h3 class="detail-section-header">Father's Information</h3>
+            <div class="field">
+                <label for="father_name_en">Name (EN)</label>
+                <input id="father_name_en" />
+            </div>
+            <div class="field">
+                <label for="father_name_mm">Name (MM)</label>
+                <input id="father_name_mm" />
+            </div>
+             <div class="field">
+                <label for="father_nrc">NRC</label>
+                <input id="father_nrc" />
+            </div>
+            <div class="field">
+                <label for="father_phone">Phone</label>
+                <input id="father_phone" />
+            </div>
+             <div class="field">
+                <label for="father_race">Race</label>
+                <input id="father_race" />
+            </div>
+            <div class="field">
+                <label for="father_religion">Religion</label>
+                <input id="father_religion" />
+            </div>
+             <div class="field" style="grid-column: 1 / -1;">
+                <label for="father_info">Occupation</label>
+                <input id="father_info" />
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+                <label for="father_address">Address</label>
+                <textarea id="father_address"></textarea>
+            </div>
+             <div class="field">
+                <label for="father_deceased_year">Deceased Year (if applicable)</label>
+                <input id="father_deceased_year" type="number" placeholder="YYYY" />
+            </div>
+
+            <h3 class="detail-section-header">Mother's Information</h3>
+            <div class="field">
+                <label for="mother_name_en">Name (EN)</label>
+                <input id="mother_name_en" />
+            </div>
+            <div class="field">
+                <label for="mother_name_mm">Name (MM)</label>
+                <input id="mother_name_mm" />
+            </div>
+             <div class="field">
+                <label for="mother_nrc">NRC</label>
+                <input id="mother_nrc" />
+            </div>
+            <div class="field">
+                <label for="mother_phone">Phone</label>
+                <input id="mother_phone" />
+            </div>
+             <div class="field">
+                <label for="mother_race">Race</label>
+                <input id="mother_race" />
+            </div>
+            <div class="field">
+                <label for="mother_religion">Religion</label>
+                <input id="mother_religion" />
+            </div>
+             <div class="field" style="grid-column: 1 / -1;">
+                <label for="mother_info">Occupation</label>
+                <input id="mother_info" />
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+                <label for="mother_address">Address</label>
+                <textarea id="mother_address"></textarea>
+            </div>
+             <div class="field">
+                <label for="mother_deceased_year">Deceased Year (if applicable)</label>
+                <input id="mother_deceased_year" type="number" placeholder="YYYY" />
+            </div>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn ghost" value="cancel" type="button" id="cancelModal">Cancel</button>
-        <button class="btn primary" value="default" id="saveStudent">Save</button>
+        <button class="btn primary" value="default" id="saveStudent">Save Changes</button>
       </div>
     </form>
   </dialog>
 
+  <!-- Modal: View Student Details -->
+  <dialog id="detailsModal" aria-modal="true">
+    <div class="modal-header">
+      <strong>Student Details</strong>
+      <button class="btn ghost" type="button" id="closeDetailsModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="detailsModalBody">
+      <!-- Details will be populated here -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn primary" type="button" id="okDetailsModal">OK</button>
+    </div>
+  </dialog>
+  
+  <!-- Modal: Confirmation -->
+  <dialog id="confirmModal" aria-modal="true">
+    <div class="modal-header">
+        <strong id="confirmTitle">Confirm Action</strong>
+    </div>
+    <div class="modal-body">
+        <p id="confirmMessage">Are you sure?</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn ghost" id="confirmCancel">Cancel</button>
+        <button class="btn destructive" id="confirmOK">Confirm</button>
+    </div>
+  </dialog>
+
   <input type="file" id="fileInput" accept=".csv" hidden />
+  
+  <div class="toast-wrap"></div>
 
-  <script defer>
-    // Signature interaction: Responsive gradient following the pointer on header
-    const header = document.getElementById('header');
-    header?.addEventListener('pointermove', (e) => {
-      const rect = header.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      document.documentElement.style.setProperty('--mx', x + '%');
-      document.documentElement.style.setProperty('--my', y + '%');
-    });
-
-    // Simple state with localStorage
-    const STORAGE_KEY = 'srs_students_v1';
+  <script>
     const PAGE_SIZE = 8;
 
     const state = {
-      students: [],
+      students: <?php echo json_encode($students); ?>,
       q: '',
-      status: '',
       page: 1,
-      sort: { key: 'createdAt', dir: 'desc' },
+      sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
     };
 
-    function uid() { return Math.random().toString(36).slice(2, 10); }
-    function todayStr(d = new Date()) { return d.toISOString(); }
-
-    function load() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-      try { return JSON.parse(raw); } catch { return []; }
-    }
-    function save(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
-
-    function seedIfEmpty() {
-      const cur = load();
-      if (cur.length) return;
-      const samples = [
-        ['Alice Johnson', 'alice@uni.edu', 'Computer Science', 'active'],
-        ['Brian Kim', 'brian@uni.edu', 'Mathematics', 'pending'],
-        ['Carla Gomez', 'carla@uni.edu', 'Physics', 'active'],
-        ['David Chen', 'david@uni.edu', 'Chemistry', 'active'],
-        ['Elena Petrova', 'elena@uni.edu', 'Economics', 'pending'],
-        ['Fatima Zahra', 'fatima@uni.edu', 'Biology', 'active'],
-        ['George Smith', 'george@uni.edu', 'Philosophy', 'pending'],
-        ['Hina Patel', 'hina@uni.edu', 'Data Science', 'active'],
-        ['Ivan Novak', 'ivan@uni.edu', 'Engineering', 'active'],
-        ['Julia Park', 'julia@uni.edu', 'Literature', 'pending']
-      ];
-      const seeded = samples.map(([name, email, course, status], i) => ({
-        id: uid(), name, email, course, status, createdAt: todayStr(new Date(Date.now() - (i*86400000)))
-      }));
-      save(seeded);
-    }
+    function todayStr(d = new Date()) { return d.toISOString().split('T')[0]; }
 
     function formatDate(iso) {
+      if (!iso) return 'N/A';
       try { const d = new Date(iso); return d.toLocaleDateString(); } catch { return iso; }
     }
 
     function cmp(a, b, key) {
-      const av = a[key]; const bv = b[key];
-      if (key === 'createdAt') return new Date(av) - new Date(bv);
-      return ('' + av).localeCompare('' + bv);
+      const av = a[key] || ''; 
+      const bv = b[key] || '';
+      if (key === 'date' || key === 'student_dob') return new Date(av) - new Date(bv);
+      return av.toString().localeCompare(bv.toString());
     }
 
-    // DOM refs
-    const tbody = document.getElementById('tbody');
-    const search = document.getElementById('search');
-    const statusFilter = document.getElementById('statusFilter');
-    const selectAll = document.getElementById('selectAll');
-    const prevPage = document.getElementById('prevPage');
-    const nextPage = document.getElementById('nextPage');
-    const pageInfo = document.getElementById('pageInfo');
-    const addBtn = document.getElementById('addBtn');
-    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
-    const importBtn = document.getElementById('importBtn');
-    const exportBtn = document.getElementById('exportBtn');
+    async function apiRequest(action, data) {
+        try {
+            const response = await fetch('api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, ...data }),
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error ${response.status}: ${errorText}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('API Request Failed:', error);
+            showToast(`Error: ${error.message}`, 'error');
+            return { status: 'error', message: error.message };
+        }
+    }
 
-    const statTotal = document.getElementById('statTotal');
-    const statActive = document.getElementById('statActive');
-    const statPending = document.getElementById('statPending');
-    const statToday = document.getElementById('statToday');
+    const toastWrap = document.querySelector(".toast-wrap");
+    function showToast(message, type = "success", duration = 4000) {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${message}</span><button class="close-btn" aria-label="Close">×</button>`;
+        const removeToast = () => { if (toast.parentElement) toast.parentElement.removeChild(toast); };
+        toast.querySelector(".close-btn").addEventListener("click", removeToast);
+        toastWrap.appendChild(toast);
+        setTimeout(removeToast, duration);
+    }
+    
+    // --- DOM Refs ---
+    // This object holds references to all form elements for easy access.
+    const formElements = {
+        student_id: document.getElementById('student_id'),
+        student_name_en: document.getElementById('student_name_en'),
+        student_name_mm: document.getElementById('student_name_mm'),
+        seat_no: document.getElementById('seat_no'),
+        student_email: document.getElementById('student_email'),
+        student_phone: document.getElementById('student_phone'),
+        student_nrc: document.getElementById('student_nrc'),
+        student_dob: document.getElementById('student_dob'),
+        student_birthplace: document.getElementById('student_birthplace'),
+        student_race: document.getElementById('student_race'),
+        student_religion: document.getElementById('student_religion'),
+        student_address: document.getElementById('student_address'),
+        township: document.getElementById('township'),
+        state_region: document.getElementById('state_region'),
+        dormitory_preference: document.getElementById('dormitory_preference'),
+        year: document.getElementById('year'),
+        academic_year: document.getElementById('academic_year'),
+        entry_year: document.getElementById('entry_year'),
+        father_name_en: document.getElementById('father_name_en'),
+        father_name_mm: document.getElementById('father_name_mm'),
+        father_nrc: document.getElementById('father_nrc'),
+        father_phone: document.getElementById('father_phone'),
+        father_race: document.getElementById('father_race'),
+        father_religion: document.getElementById('father_religion'),
+        father_info: document.getElementById('father_info'),
+        father_address: document.getElementById('father_address'),
+        father_deceased_year: document.getElementById('father_deceased_year'),
+        mother_name_en: document.getElementById('mother_name_en'),
+        mother_name_mm: document.getElementById('mother_name_mm'),
+        mother_nrc: document.getElementById('mother_nrc'),
+        mother_phone: document.getElementById('mother_phone'),
+        mother_race: document.getElementById('mother_race'),
+        mother_religion: document.getElementById('mother_religion'),
+        mother_info: document.getElementById('mother_info'),
+        mother_address: document.getElementById('mother_address'),
+        mother_deceased_year: document.getElementById('mother_deceased_year'),
+    };
 
-    // Modal refs
-    const modal = document.getElementById('studentModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const closeModal = document.getElementById('closeModal');
-    const cancelModal = document.getElementById('cancelModal');
-    const saveStudent = document.getElementById('saveStudent');
-    const studentId = document.getElementById('studentId');
-    const nameEl = document.getElementById('name');
-    const emailEl = document.getElementById('email');
-    const courseEl = document.getElementById('course');
-    const statusEl = document.getElementById('status');
+    function showConfirm(title, message) {
+      return new Promise(resolve => {
+        const confirmModal = document.getElementById('confirmModal');
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
+        confirmModal.showModal();
+        const handleConfirm = () => { confirmModal.close(); resolve(true); };
+        const handleCancel = () => { confirmModal.close(); resolve(false); };
+        document.getElementById('confirmOK').addEventListener('click', handleConfirm, { once: true });
+        document.getElementById('confirmCancel').addEventListener('click', handleCancel, { once: true });
+      });
+    }
 
     function openModal(mode, student = null) {
-      modalTitle.textContent = mode === 'edit' ? 'Edit Student' : 'Add Student';
+      const modal = document.getElementById('studentModal');
+      document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Edit Student' : 'Add Student';
+      
       if (mode === 'edit' && student) {
-        studentId.value = student.id; nameEl.value = student.name; emailEl.value = student.email; courseEl.value = student.course; statusEl.value = student.status;
+          for (const key in formElements) {
+              const element = formElements[key];
+              if (element) {
+                  if (element.type === 'checkbox') {
+                      element.checked = !!student[key];
+                  } else {
+                      element.value = student[key] || '';
+                  }
+              }
+          }
       } else {
-        studentId.value = ''; nameEl.value = ''; emailEl.value = ''; courseEl.value = ''; statusEl.value = 'active';
+        document.getElementById('studentForm').reset();
+        formElements.student_id.value = '';
       }
       modal.showModal();
-      nameEl.focus();
+      formElements.student_name_en.focus();
     }
-    function closeModalSafe() { modal.close(); }
+    
+    function closeModalSafe() { document.getElementById('studentModal').close(); }
+    
+    function openDetailsModal(s) {
+        const detailsModal = document.getElementById('detailsModal');
+        const detailsModalBody = document.getElementById('detailsModalBody');
+        detailsModalBody.innerHTML = `
+            <h3 class="detail-section-header">Student Information</h3>
+            <dl class="details-grid">
+                <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd>
+                <dt>Name (EN)</dt><dd>${s.student_name_en || 'N/A'}</dd>
+                <dt>Name (MM)</dt><dd>${s.student_name_mm || 'N/A'}</dd>
+                <dt>Email</dt><dd>${s.student_email || 'N/A'}</dd>
+                <dt>Phone</dt><dd>${s.student_phone || 'N/A'}</dd>
+                <dt>NRC</dt><dd>${s.student_nrc || 'N/A'}</dd>
+                <dt>Date of Birth</dt><dd>${formatDate(s.student_dob)}</dd>
+                <dt>Birthplace</dt><dd>${s.student_birthplace || 'N/A'}</dd>
+                <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd>
+                <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
+                <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd>
+                <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
+                <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd>
+                <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
+                <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
+            </dl>
+            <h3 class="detail-section-header">Academic Info</h3>
+             <dl class="details-grid">
+                <dt>Year</dt><dd>${s.year || 'N/A'}</dd>
+                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
+                <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
+            </dl>
+            <h3 class="detail-section-header">Parent Information</h3>
+            <div class="detail-parent-section">
+                <h4>Father's Details</h4>
+                <dl class="details-grid">
+                    <dt>Status</dt><dd>${s.father_deceased_year ? `Deceased (${s.father_deceased_year})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd>
+                    <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd>
+                    <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd>
+                    <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd>
+                    <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
+                </dl>
+            </div>
+            <div class="detail-parent-section">
+                <h4>Mother's Details</h4>
+                <dl class="details-grid">
+                    <dt>Status</dt><dd>${s.mother_deceased_year ? `Deceased (${s.mother_deceased_year})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd>
+                    <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd>
+                    <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd>
+                    <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd>
+                    <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
+                </dl>
+            </div>`;
+        detailsModal.showModal();
+    }
 
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
-      const status = state.status;
       const base = state.students.filter(s =>
-        (!q || s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)) &&
-        (!status || s.status === status)
+        (!q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q)))
       );
       const { key, dir } = state.sort;
       base.sort((a,b) => {
@@ -465,13 +781,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
     function renderStats() {
       const total = state.students.length;
-      const active = state.students.filter(s=>s.status==='active').length;
-      const pending = state.students.filter(s=>s.status==='pending').length;
-      const today = state.students.filter(s=> new Date(s.createdAt).toDateString() === new Date().toDateString()).length;
-      statTotal.textContent = total;
-      statActive.textContent = active;
-      statPending.textContent = pending;
-      statToday.textContent = today;
+      const dormitory = state.students.filter(s => s.dormitory_preference).length;
+      const today = state.students.filter(s => s.date === todayStr()).length;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statDormitory').textContent = dormitory;
+      document.getElementById('statToday').textContent = today;
     }
 
     function renderTable() {
@@ -481,204 +795,160 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
       state.page = Math.min(state.page, totalPages);
       const start = (state.page - 1) * PAGE_SIZE;
       const pageRows = rows.slice(start, start + PAGE_SIZE);
+      const tbody = document.getElementById('tbody');
 
       tbody.innerHTML = '';
       for (const s of pageRows) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><input type="checkbox" data-id="${s.id}" ${state.selected.has(s.id)?'checked':''} /></td>
-          <td>${s.name}</td>
-          <td>${s.email}</td>
-          <td>${s.course}</td>
-          <td>${s.status === 'active' ? '<span class="badge success">Active</span>' : '<span class="badge warning">Pending</span>'}</td>
-          <td>${formatDate(s.createdAt)}</td>
+          <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
+          <td>${s.seat_no || ''}</td>
+          <td>${s.student_name_en || ''}</td>
+          <td>${s.student_email || ''}</td>
+          <td>${s.student_phone || ''}</td>
+          <td>${formatDate(s.date)}</td>
           <td>
             <div style="display:flex; gap:6px;">
-              <button class="btn ghost" data-edit="${s.id}">Edit</button>
-              <button class="btn destructive" data-del="${s.id}">Delete</button>
+              <button class="btn ghost" data-details="${s.student_id}">Details</button>
+              <button class="btn ghost" data-edit="${s.student_id}">Edit</button>
+              <button class="btn destructive" data-del="${s.student_id}">Delete</button>
             </div>
           </td>`;
         tbody.appendChild(tr);
       }
 
-      pageInfo.textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
-      prevPage.disabled = state.page <= 1;
-      nextPage.disabled = state.page >= totalPages;
-
-      // Checkbox handlers
-      tbody.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-        cb.addEventListener('change', (e) => {
-          const id = e.target.getAttribute('data-id');
-          if (e.target.checked) state.selected.add(id); else state.selected.delete(id);
-          bulkDeleteBtn.disabled = state.selected.size === 0;
-        })
-      });
-
-      // Action handlers
-      tbody.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-edit');
-        const s = state.students.find(x => x.id === id);
-        if (s) openModal('edit', s);
-      }));
-      tbody.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-del');
-        if (!confirm('Delete this student?')) return;
-        state.students = state.students.filter(x => x.id !== id);
-        state.selected.delete(id);
-        save(state.students);
-        render();
-      }));
-
-      // Update selectAll based on page
-      const pageIds = new Set(pageRows.map(s=>s.id));
-      const allChecked = pageRows.length > 0 && pageRows.every(s => state.selected.has(s.id));
-      selectAll.checked = allChecked;
-      selectAll.indeterminate = !allChecked && Array.from(state.selected).some(id => pageIds.has(id));
-
-      bulkDeleteBtn.disabled = state.selected.size === 0;
+      document.getElementById('pageInfo').textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
+      document.getElementById('prevPage').disabled = state.page <= 1;
+      document.getElementById('nextPage').disabled = state.page >= totalPages;
     }
 
     function render() {
       renderStats();
       renderTable();
     }
+    
+    function addEventListeners() {
+      document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
+      document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
+      document.getElementById('nextPage').addEventListener('click', () => { state.page++; render(); });
+      document.getElementById('addBtn').addEventListener('click', () => openModal('add'));
+      document.getElementById('closeModal').addEventListener('click', closeModalSafe);
+      document.getElementById('cancelModal').addEventListener('click', closeModalSafe);
+      document.getElementById('closeDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
+      document.getElementById('okDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
 
-    // Sorting
-    document.querySelectorAll('th.sortable').forEach(th => {
-      th.style.cursor = 'pointer';
-      th.title = 'Sort';
-      th.addEventListener('click', () => {
-        const key = th.getAttribute('data-sort');
-        if (state.sort.key === key) {
-          state.sort.dir = state.sort.dir === 'asc' ? 'desc' : 'asc';
-        } else {
-          state.sort.key = key; state.sort.dir = 'asc';
-        }
+      document.querySelectorAll('th.sortable').forEach(th => {
+        th.addEventListener('click', () => {
+          const key = th.getAttribute('data-sort');
+          if (state.sort.key === key) {
+            state.sort.dir = state.sort.dir === 'asc' ? 'desc' : 'asc';
+          } else {
+            state.sort.key = key; state.sort.dir = 'asc';
+          }
+          render();
+        });
+      });
+
+      document.getElementById('selectAll').addEventListener('change', (e) => {
+        const pageRows = getFilteredSorted().slice((state.page - 1) * PAGE_SIZE, state.page * PAGE_SIZE);
+        pageRows.forEach(s => {
+            if (e.target.checked) state.selected.add(s.student_id);
+            else state.selected.delete(s.student_id);
+        });
         render();
       });
-    });
 
-    // Filters
-    search.addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
-    statusFilter.addEventListener('change', (e) => { state.status = e.target.value; state.page = 1; render(); });
+      const tbody = document.getElementById('tbody');
+      tbody.addEventListener('change', e => {
+        if(e.target.matches('input[type="checkbox"]')) {
+            const id = parseInt(e.target.dataset.id, 10);
+            if (e.target.checked) state.selected.add(id);
+            else state.selected.delete(id);
+            document.getElementById('bulkDeleteBtn').disabled = state.selected.size === 0;
+        }
+      });
+      
+      tbody.addEventListener('click', async e => {
+          const targetButton = e.target.closest('button');
+          if (!targetButton) return;
 
-    // Pagination
-    prevPage.addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
-    nextPage.addEventListener('click', () => { state.page++; render(); });
+          const id = parseInt(targetButton.dataset.details || targetButton.dataset.edit || targetButton.dataset.del, 10);
+          const student = state.students.find(s => s.student_id === id);
+          if (!student) return;
 
-    // Select all for current page
-    selectAll.addEventListener('change', () => {
-      const rows = getFilteredSorted();
-      const start = (state.page - 1) * PAGE_SIZE;
-      const pageRows = rows.slice(start, start + PAGE_SIZE);
-      for (const s of pageRows) {
-        if (selectAll.checked) state.selected.add(s.id); else state.selected.delete(s.id);
-      }
-      renderTable();
-    });
+          if (targetButton.dataset.details !== undefined) openDetailsModal(student);
+          if (targetButton.dataset.edit !== undefined) openModal('edit', student);
+          if (targetButton.dataset.del !== undefined) {
+              const confirmed = await showConfirm('Delete Student', `Are you sure you want to delete "${student.student_name_en}"? This action cannot be undone.`);
+              if (!confirmed) return;
+              
+              const response = await apiRequest('delete', { ids: [id] });
+              if (response.status === 'success') {
+                  state.students = state.students.filter(s => s.student_id !== id);
+                  state.selected.delete(id);
+                  render();
+                  showToast(`Student "${student.student_name_en}" deleted.`, 'success');
+              }
+          }
+      });
 
-    // Bulk delete
-    bulkDeleteBtn.addEventListener('click', () => {
-      if (!state.selected.size) return;
-      if (!confirm(`Delete ${state.selected.size} selected student(s)?`)) return;
-      state.students = state.students.filter(s => !state.selected.has(s.id));
-      state.selected.clear();
-      save(state.students);
+      document.getElementById('bulkDeleteBtn').addEventListener('click', async () => {
+        if (!state.selected.size) return;
+        const confirmed = await showConfirm('Delete Selected', `Delete ${state.selected.size} student(s)? This cannot be undone.`);
+        if (!confirmed) return;
+        
+        const ids = Array.from(state.selected);
+        const response = await apiRequest('delete', { ids });
+        if (response.status === 'success') {
+            state.students = state.students.filter(s => !state.selected.has(s.student_id));
+            state.selected.clear();
+            render();
+            showToast(`${ids.length} student(s) deleted.`, 'success');
+        }
+      });
+
+      document.getElementById('saveStudent').addEventListener('click', async (e) => {
+        e.preventDefault();
+        
+        const studentData = {};
+        for(const key in formElements) {
+            const element = formElements[key];
+            if (element.type === 'checkbox') {
+                studentData[key] = element.checked;
+            } else {
+                studentData[key] = element.value.trim() === '' ? null : element.value.trim();
+            }
+        }
+        studentData.student_id = parseInt(studentData.student_id, 10) || null;
+
+        if (!studentData.student_name_en || !studentData.seat_no || !studentData.student_email) {
+            showToast('Please fill all required fields.', 'warning');
+            return;
+        }
+
+        const action = studentData.student_id ? 'update' : 'add';
+        const response = await apiRequest(action, { student: studentData });
+
+        if (response.status === 'success' && response.student) {
+            if (action === 'add') {
+                state.students.unshift(response.student);
+            } else {
+                const index = state.students.findIndex(s => s.student_id === studentData.student_id);
+                if (index !== -1) state.students[index] = response.student;
+            }
+            render();
+            closeModalSafe();
+            showToast(`Student "${studentData.student_name_en}" saved.`, 'success');
+        } else {
+            showToast(response.message || 'Failed to save student.', 'error');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      addEventListeners();
       render();
     });
-
-    // Modal lifecycle
-    addBtn.addEventListener('click', () => openModal('add'));
-    closeModal.addEventListener('click', closeModalSafe);
-    cancelModal.addEventListener('click', closeModalSafe);
-
-    saveStudent.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (!nameEl.value || !emailEl.value || !courseEl.value) return;
-      const id = studentId.value;
-      if (id) {
-        // Update
-        const i = state.students.findIndex(s => s.id === id);
-        if (i !== -1) {
-          state.students[i] = { ...state.students[i], name: nameEl.value, email: emailEl.value, course: courseEl.value, status: statusEl.value };
-        }
-      } else {
-        // Create
-        state.students.unshift({ id: uid(), name: nameEl.value, email: emailEl.value, course: courseEl.value, status: statusEl.value, createdAt: todayStr() });
-      }
-      save(state.students);
-      closeModalSafe();
-      render();
-    });
-
-    // CSV export/import
-    function toCSV(rows) {
-      const header = ['id','name','email','course','status','createdAt'];
-      const lines = [header.join(',')];
-      for (const s of rows) {
-        lines.push(header.map(k => '"' + String(s[k]).replace(/"/g,'""') + '"').join(','));
-      }
-      return lines.join('\n');
-    }
-    function download(filename, text) {
-      const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', filename);
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
-
-    exportBtn.addEventListener('click', () => {
-      download('students.csv', toCSV(state.students));
-    });
-
-    const fileInput = document.getElementById('fileInput');
-    importBtn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const text = reader.result; if (typeof text !== 'string') return;
-          const [headerLine, ...lines] = text.split(/\r?\n/).filter(Boolean);
-          const headers = headerLine.split(',').map(h => h.replace(/^\"|\"$/g,''));
-          const req = ['id','name','email','course','status','createdAt'];
-          if (!req.every(k => headers.includes(k))) { alert('CSV headers must include: ' + req.join(', ')); return; }
-          const idx = Object.fromEntries(headers.map((h,i)=>[h,i]));
-          const imported = lines.map(line => {
-            const cells = line.match(/\"(?:[^\"]|\"\")*\"|[^,]+/g)?.map(c => c.replace(/^\"|\"$/g,'').replace(/\"\"/g,'"')) || [];
-            const obj = {};
-            for (const k of req) obj[k] = cells[idx[k]] || '';
-            if (!obj.id) obj.id = uid();
-            if (!obj.createdAt) obj.createdAt = todayStr();
-            return obj;
-          });
-          // Merge by id, prefer imported
-          const map = new Map(state.students.map(s=>[s.id,s]));
-          for (const s of imported) map.set(s.id, { ...map.get(s.id), ...s });
-          state.students = Array.from(map.values());
-          save(state.students);
-          render();
-          alert('Import complete.');
-        } catch (err) {
-          alert('Failed to import CSV.');
-        } finally {
-          fileInput.value = '';
-        }
-      };
-      reader.readAsText(file);
-    });
-
-    // Init
-    seedIfEmpty();
-    state.students = load();
-    render();
   </script>
 </body>
 </html>
