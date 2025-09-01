@@ -340,7 +340,7 @@ $pdo = null;
         <a class="nav-link active" href="#">Students</a>
         <a class="nav-link" href="#">Courses</a>
         <a class="nav-link" href="#">Registrations</a>
-        <a class="nav-link" href="#">Reports</a>
+        <a class="nav-link" href="support.php">Support</a>
         <a class="nav-link" href="settings.php">Settings</a>
       </nav>
     </aside>

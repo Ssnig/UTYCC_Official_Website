@@ -1,147 +1,183 @@
 <?php
-/**
- * api.php
- *
- * Handles all backend data manipulation (Create, Update, Delete) using PDO.
- * This script expects JSON input and returns JSON responses.
- */
+require_once '../Rform/db.php'; // Database connection
 
-header('Content-Type: application/json');
-require_once '../Rform/db.php'; // Provides the $pdo object
-
-// Get the request data from the frontend
-$data = json_decode(file_get_contents('php://input'), true);
-$action = $data['action'] ?? '';
-$response = ['status' => 'error', 'message' => 'Invalid Request'];
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        switch ($action) {
-            // NOTE: The 'add' case would need to be expanded similarly to 'update' to handle all fields.
-            // For now, it remains simple as per the previous version.
-            case 'add':
-                $student = $data['student'] ?? null;
-                if ($student) {
-                    $pdo->beginTransaction();
-
-                    // Insert into students table
-                    $sqlStudent = "INSERT INTO students (student_name_en, seat_no, student_email, student_phone, date) VALUES (:name, :seat, :email, :phone, CURDATE())";
-                    $stmtStudent = $pdo->prepare($sqlStudent);
-                    $stmtStudent->execute([
-                        ':name' => $student['student_name_en'],
-                        ':seat' => $student['seat_no'],
-                        ':email' => $student['student_email'],
-                        ':phone' => $student['student_phone']
-                    ]);
-                    $newId = $pdo->lastInsertId();
-
-                    // ... Logic to insert into fathers and mothers tables would go here ...
-
-                    $pdo->commit();
-                    
-                    // Fetch the newly created record to return to the frontend
-                    $fetchStmt = $pdo->prepare("SELECT * FROM students WHERE student_id = :id");
-                    $fetchStmt->execute([':id' => $newId]);
-                    $newStudent = $fetchStmt->fetch(PDO::FETCH_ASSOC);
-                    
-                    $response = ['status' => 'success', 'student' => $newStudent];
-                } else {
-                    $response['message'] = 'No student data provided.';
-                }
-                break;
-
-            case 'update':
-                $student = $data['student'] ?? null;
-                if ($student && !empty($student['student_id'])) {
-                    $student_id = $student['student_id'];
-                    $pdo->beginTransaction();
-
-                    // 1. Update Students Table
-                    $sqlStudents = "UPDATE students SET 
-                        year = :year, academic_year = :academic_year, seat_no = :seat_no, entry_year = :entry_year, student_email = :student_email, 
-                        dormitory_preference = :dormitory_preference, student_name_mm = :student_name_mm, student_name_en = :student_name_en, 
-                        student_race = :student_race, student_religion = :student_religion, student_nrc = :student_nrc, student_dob = :student_dob, 
-                        student_birthplace = :student_birthplace, state_region = :state_region, township = :township, student_phone = :student_phone, 
-                        student_address = :student_address 
-                        WHERE student_id = :student_id";
-                    
-                    $stmtStudents = $pdo->prepare($sqlStudents);
-                    $stmtStudents->execute([
-                        ':year' => $student['year'], ':academic_year' => $student['academic_year'], ':seat_no' => $student['seat_no'], 
-                        ':entry_year' => $student['entry_year'], ':student_email' => $student['student_email'], ':dormitory_preference' => $student['dormitory_preference'], 
-                        ':student_name_mm' => $student['student_name_mm'], ':student_name_en' => $student['student_name_en'], ':student_race' => $student['student_race'], 
-                        ':student_religion' => $student['student_religion'], ':student_nrc' => $student['student_nrc'], ':student_dob' => $student['student_dob'], 
-                        ':student_birthplace' => $student['student_birthplace'], ':state_region' => $student['state_region'], ':township' => $student['township'], 
-                        ':student_phone' => $student['student_phone'], ':student_address' => $student['student_address'], ':student_id' => $student_id
-                    ]);
-
-                    // 2. Upsert Fathers Table
-                    $stmtCheckFather = $pdo->prepare("SELECT father_id FROM fathers WHERE student_id = :student_id");
-                    $stmtCheckFather->execute([':student_id' => $student_id]);
-                    if ($stmtCheckFather->fetch()) { // Father exists, UPDATE
-                        $sqlFathers = "UPDATE fathers SET father_name_mm = ?, father_name_en = ?, father_race = ?, father_religion = ?, father_nrc = ?, father_phone = ?, father_info = ?, father_deceased_year = ?, father_address = ? WHERE student_id = ?";
-                        $stmtFathers = $pdo->prepare($sqlFathers);
-                        $stmtFathers->execute([$student['father_name_mm'], $student['father_name_en'], $student['father_race'], $student['father_religion'], $student['father_nrc'], $student['father_phone'], $student['father_info'], $student['father_deceased_year'], $student['father_address'], $student_id]);
-                    } else { // Father does not exist, INSERT
-                        $sqlFathers = "INSERT INTO fathers (student_id, father_name_mm, father_name_en, father_race, father_religion, father_nrc, father_phone, father_info, father_deceased_year, father_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                        $stmtFathers = $pdo->prepare($sqlFathers);
-                        $stmtFathers->execute([$student_id, $student['father_name_mm'], $student['father_name_en'], $student['father_race'], $student['father_religion'], $student['father_nrc'], $student['father_phone'], $student['father_info'], $student['father_deceased_year'], $student['father_address']]);
-                    }
-
-                    // 3. Upsert Mothers Table
-                    $stmtCheckMother = $pdo->prepare("SELECT mother_id FROM mothers WHERE student_id = :student_id");
-                    $stmtCheckMother->execute([':student_id' => $student_id]);
-                     if ($stmtCheckMother->fetch()) { // Mother exists, UPDATE
-                        $sqlMothers = "UPDATE mothers SET mother_name_mm = ?, mother_name_en = ?, mother_race = ?, mother_religion = ?, mother_nrc = ?, mother_phone = ?, mother_info = ?, mother_deceased_year = ?, mother_address = ? WHERE student_id = ?";
-                        $stmtMothers = $pdo->prepare($sqlMothers);
-                        $stmtMothers->execute([$student['mother_name_mm'], $student['mother_name_en'], $student['mother_race'], $student['mother_religion'], $student['mother_nrc'], $student['mother_phone'], $student['mother_info'], $student['mother_deceased_year'], $student['mother_address'], $student_id]);
-                    } else { // Mother does not exist, INSERT
-                        $sqlMothers = "INSERT INTO mothers (student_id, mother_name_mm, mother_name_en, mother_race, mother_religion, mother_nrc, mother_phone, mother_info, mother_deceased_year, mother_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                        $stmtMothers = $pdo->prepare($sqlMothers);
-                        $stmtMothers->execute([$student_id, $student['mother_name_mm'], $student['mother_name_en'], $student['mother_race'], $student['mother_religion'], $student['mother_nrc'], $student['mother_phone'], $student['mother_info'], $student['mother_deceased_year'], $student['mother_address']]);
-                    }
-
-                    $pdo->commit();
-
-                    // 4. Fetch the fully updated record to send back to the frontend
-                    $fullRecordSql = "SELECT s.*, f.*, m.* FROM students s LEFT JOIN fathers f ON s.student_id = f.student_id LEFT JOIN mothers m ON s.student_id = m.student_id WHERE s.student_id = :student_id";
-                    $stmtFetch = $pdo->prepare($fullRecordSql);
-                    $stmtFetch->execute([':student_id' => $student_id]);
-                    $updatedStudent = $stmtFetch->fetch(PDO::FETCH_ASSOC);
-                    
-                    $response = ['status' => 'success', 'student' => $updatedStudent];
-                } else {
-                    $response['message'] = 'Incomplete student data for update.';
-                }
-                break;
-
-            case 'delete':
-                $ids = $data['ids'] ?? [];
-                if (!empty($ids) && is_array($ids)) {
-                    $sanitized_ids = array_map('intval', $ids);
-                    $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
-                    
-                    // Note: Because of ON DELETE CASCADE, deleting from students will also delete from fathers and mothers.
-                    $sql = "DELETE FROM students WHERE student_id IN ($placeholders)";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->execute($sanitized_ids);
-                    
-                    $response = ['status' => 'success', 'message' => $stmt->rowCount() . ' student(s) deleted.'];
-                } else {
-                    $response['message'] = 'No student IDs provided for deletion.';
-                }
-                break;
-        }
-    } catch (PDOException $e) {
-        if ($pdo->inTransaction()) {
-            $pdo->rollBack();
-        }
-        $response['message'] = 'Database error: ' . $e->getMessage();
-    }
+$feedbacks = [];
+try {
+    $stmt = $pdo->query("SELECT feedback_id, student_name, student_email, message, submitted_at FROM feedback ORDER BY submitted_at DESC");
+    $feedbacks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // For a real app, log this error and show a friendly message
+    die("Error fetching feedback data: ". $e->getMessage());
 }
-
-// Close the connection
 $pdo = null;
-echo json_encode($response);
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Feedback — UTYCC Admin</title>
+    <meta name="description" content="View student feedback for the UTYCC registration system." />
+    <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
+    <!-- Theme Loader Script -->
+    <script>
+      (function() {
+        try {
+          const theme = localStorage.getItem('theme');
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) { /* ignore */ }
+      })();
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+       :root {
+          /* Light Theme */
+          --bg: 220 20% 98%; --fg: 222 47% 11%; --muted: 214 32% 91%;
+          --muted-foreground: 215 17% 47%; --primary: 220 83% 58%;
+          --primary-foreground: 0 0% 100%; --secondary: 0 0% 100%;
+          --secondary-foreground: 222 47% 11%; --card: 0 0% 100%;
+          --card-foreground: 222 47% 11%; --border: 214 32% 91%;
+          --ring: 220 83% 58%; --success: 153 61% 34%; --warning: 43 96% 56%;
+          --danger: 0 84% 60%; --radius: 12px; --ease: cubic-bezier(.2,.8,.2,1);
+          --duration: 220ms; --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.25);
+          --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
+        }
+        html.dark {
+            /* Dark Theme */
+            --bg: 222 47% 11%; --fg: 210 40% 98%; --muted: 217 33% 17%;
+            --muted-foreground: 215 20% 65%; --primary: 217 91% 60%;
+            --primary-foreground: 210 40% 98%; --secondary: 222 47% 13%;
+            --secondary-foreground: 210 40% 98%; --card: 222 47% 15%;
+            --card-foreground: 210 40% 98%; --border: 217 33% 22%;
+            --ring: 217 91% 60%; --shadow-card: 0 10px 20px -10px hsl(220 40% 2% / 0.45);
+        }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; }
+        body { margin: 0; color: hsl(var(--fg)); background: hsl(var(--bg)); font: 500 16px/1.4 'Inter', sans-serif; text-rendering: optimizeLegibility; transition: background var(--duration) var(--ease), color var(--duration) var(--ease); }
+        a { color: inherit; text-decoration: none; }
+        button { font: inherit; }
+        .app { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 72px 1fr; grid-template-areas: "sidebar header" "sidebar main"; min-height: 100dvh; }
+        .sidebar { grid-area: sidebar; border-right: 1px solid hsl(var(--border)); background: hsl(var(--secondary)); padding: 20px 16px; position: sticky; top: 0; height: 100dvh; }
+        .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
+        .brand img { width: 32px; height: 32px; }
+        .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground)); }
+        nav { margin-top: 18px; display: grid; gap: 8px; }
+        .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); transition: background var(--duration) var(--ease), color var(--duration) var(--ease); }
+        .nav-link:hover { background: hsl(var(--muted)); color: hsl(var(--fg)); }
+        .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: var(--shadow-soft); }
+        .header { grid-area: header; position: sticky; top: 0; z-index: 10; background: hsl(var(--card)); border-bottom: 1px solid hsl(var(--border)); display: flex; align-items: center; gap: 12px; padding: 16px 20px; }
+        .header h1 { font-size: 24px; margin: 0; }
+        .main { grid-area: main; padding: 20px; }
+        .feedback-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .feedback-card { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; }
+        .feedback-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .feedback-header .info { display: grid; }
+        .feedback-header .name { font-weight: 700; }
+        .feedback-header .email { font-size: 13px; color: hsl(var(--muted-foreground)); }
+        .feedback-body { font-size: 15px; line-height: 1.6; color: hsl(var(--card-foreground)); flex-grow: 1; margin-bottom: 16px; }
+        .feedback-footer { font-size: 12px; color: hsl(var(--muted-foreground)); text-align: right; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 12px; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); color: hsl(var(--fg)); box-shadow: var(--shadow-card); cursor: pointer; transition: all var(--duration) var(--ease); }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -12px hsl(var(--fg)/0.25); }
+        .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
+        .toast-wrap { position: fixed; top: 20px; right: 20px; width: min(360px, 92vw); display: grid; gap: 12px; z-index: 9999; }
+        .toast { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--primary-foreground)); background: hsl(var(--fg)); box-shadow: var(--shadow-card); border-left: 4px solid; }
+        .toast.success { border-left-color: hsl(var(--success)); }
+        .toast.error { border-left-color: hsl(var(--danger)); }
+    </style>
+</head>
+<body>
+    <div class="app" id="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+                <h1>UTYCC Admin Panel</h1>
+            </div>
+            <nav>
+                <a class="nav-link" href="admin_dashboard.php">Students</a>
+                <a class="nav-link" href="#">Courses</a>
+                <a class="nav-link active" href="feedback.php">Feedback</a>
+                <a class="nav-link" href="#">Registrations</a>
+                <a class="nav-link" href="#">Reports</a>
+                <a class="nav-link" href="settings.php">Settings</a>
+            </nav>
+        </aside>
+
+        <header class="header">
+            <h1>Student Feedback</h1>
+        </header>
+
+        <main class="main" id="main">
+            <div class="feedback-grid" id="feedbackGrid">
+                <?php if (empty($feedbacks)): ?>
+                    <p>No feedback submitted yet.</p>
+                <?php else: ?>
+                    <?php foreach ($feedbacks as $item): ?>
+                        <div class="feedback-card" id="feedback-<?php echo htmlspecialchars($item['feedback_id']); ?>">
+                            <div class="feedback-header">
+                                <div class="info">
+                                    <span class="name"><?php echo htmlspecialchars($item['student_name']); ?></span>
+                                    <span class="email"><?php echo htmlspecialchars($item['student_email']); ?></span>
+                                </div>
+                                <button class="btn destructive" data-id="<?php echo htmlspecialchars($item['feedback_id']); ?>">Delete</button>
+                            </div>
+                            <div class="feedback-body">
+                                <?php echo nl2br(htmlspecialchars($item['message'])); ?>
+                            </div>
+                            <div class="feedback-footer">
+                                Submitted on: <?php echo date('M d, Y, h:i A', strtotime($item['submitted_at'])); ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </main>
+    </div>
+    
+    <div class="toast-wrap"></div>
+
+    <script>
+        async function apiRequest(action, data) {
+            try {
+                const response = await fetch('api.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action, ...data }),
+                });
+                if (!response.ok) throw new Error(await response.text());
+                return await response.json();
+            } catch (error) {
+                showToast(`Error: ${error.message}`, 'error');
+                return { status: 'error' };
+            }
+        }
+
+        const toastWrap = document.querySelector(".toast-wrap");
+        function showToast(message, type = "success") {
+            const toast = document.createElement("div");
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            toastWrap.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        document.getElementById('feedbackGrid').addEventListener('click', async (e) => {
+            if (e.target.matches('button.destructive')) {
+                const id = e.target.dataset.id;
+                if (!confirm('Are you sure you want to delete this feedback?')) return;
+                
+                const response = await apiRequest('delete_feedback', { id });
+                if (response.status === 'success') {
+                    document.getElementById(`feedback-${id}`).remove();
+                    showToast('Feedback deleted successfully.', 'success');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
