@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: hostel.php");
             exit;
         } else {
-            header("Location: form3.php");
+            header("Location: final.php");
             exit;
         }
     }

@@ -17,12 +17,119 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="./CSS/hero-carousel.css" />
-    <script src="./JS/hero-carousel.js"></script>
     <link rel="stylesheet" href="CSS/font.css" />
     <script src="./JS/GSAP.js"></script>
     <style>
+        /* --- Preloader Styles --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.75s ease, visibility 0.75s ease;
+        }
+
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e0e0; /* light grey */
+            border-top-color: #3b82f6; /* blue-500 */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
         
+        /* --- Smooth Scrolling --- */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* --- Scroll Animation Styles --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered animation delay for children */
+        .animate-on-scroll.is-visible .program-card {
+            transition-delay: calc(0.1s * var(--i));
+        }
+        
+        /* --- Hero Slideshow Styles --- */
+        .hero-container {
+            position: relative;
+            height: 80vh; /* Adjust height as needed */
+            color: #1e3a8a; /* Tailwind blue-900 for text */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-slideshow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
 
         .game-toast {
             position: fixed;
@@ -68,7 +175,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background-color 0.3s;
+            transition: background-color: 0.3s;
         }
 
         .close_button2:hover {
@@ -76,10 +183,11 @@
             /* Tailwind red-600 */
         }
 
-        /* Style the iframe to fill the container */
-        .game-toast iframe {
+        /* Style the canvas to fill the container */
+        .game-toast canvas {
             width: 100%;
-            height: 100%;
+            flex: 1; /* Make canvas fill remaining space */
+            background-color: #f0f8ff; /* AliceBlue, nice and light */
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
         }
@@ -96,11 +204,7 @@
             background-color: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
         }
-
-        .program-card {
-            cursor: pointer;
-        }
-
+        
         /* --- Styles for Verification Modal --- */
         :root {
             --bg-light: #ecf0f1;
@@ -341,6 +445,8 @@
             font-size: 24px;
             color: var(--text-muted);
             cursor: pointer;
+            z-index: 10;
+            /* This ensures the button is on top of other elements */
         }
 
         .terms,
@@ -369,15 +475,100 @@
         .view.active {
             display: block;
         }
+        
+        /* --- Back to Top Button --- */
+        #back-to-top-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        #back-to-top-btn.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* --- Photo Gallery & Lightbox Styles --- */
+        .gallery-item {
+            cursor: pointer;
+        }
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .lightbox.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* --- Enhanced Hover Effects --- */
+        .card-hover-effect {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1), 0 8px 16px -8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-hover-effect {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .btn-hover-effect:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .icon-hover-effect {
+            transition: transform 0.3s ease;
+        }
+        .icon-hover-effect:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 
 <body class="bg-gray-100">
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
     <!-- Header -->
-    <div class="bg-white shadow-md sticky top-0 z-50">
+    <div id="header" class="bg-white shadow-md sticky top-0 z-50 transition-colors duration-300">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="#" class="flex items-center space-x-3">
-                <div class="p-2 rounded-lg hover_up ">
+            <a href="./home.html" id="header-logo-link" class="flex items-center space-x-3">
+                <div class="p-2 rounded-lg icon-hover-effect ">
                     <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
                 </div>
                 <div>
@@ -443,24 +634,23 @@
             <div class="hero-slideshow">
                 <div class="hero-slide active" style="background-image: url(./Img/hero-carousel/2.jpg)"></div>
                 <div class="hero-slide" style="background-image: url(./Img/hero-carousel/5.JPG)"></div>
-                <div class="hero-slide active" style="background-image: url(./Img/hero-carousel/7.jpg)"></div>
-                <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/front_view2.JPG)">
-                </div>
-                <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/lab.JPG)"></div>
-                <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/lab3.JPG)"></div>
-                <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/lecture.JPG)"></div>
-                <div class="hero-slide active" style="background-image: url(./Img/utycc_buildings/workshop2.JPG)"></div>
+                <div class="hero-slide" style="background-image: url(./Img/hero-carousel/7.jpg)"></div>
+                <div class="hero-slide" style="background-image: url(./Img/utycc_buildings/front_view2.JPG)"></div>
+                <div class="hero-slide" style="background-image: url(./Img/utycc_buildings/lab.JPG)"></div>
+                <div class="hero-slide" style="background-image: url(./Img/utycc_buildings/lab3.JPG)"></div>
+                <div class="hero-slide" style="background-image: url(./Img/utycc_buildings/lecture.JPG)"></div>
+                <div class="hero-slide" style="background-image: url(./Img/utycc_buildings/workshop2.JPG)"></div>
             </div>
-            <div class="hero-overlay bg-gradient-to-br from-blue-50/80 to-white/40"></div>
-            <div class="hero-content container mx-auto px-6 py-24 md:py-32 text-center">
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight" data-lang-key="hero_title">
+            <div class="hero-overlay bg-gradient-to-br from-blue-900/40 to-blue-500/20"></div>
+            <div class="hero-content container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white" data-lang-key="hero_title">
                     University of Technology - Yatanarpon Cyber City
                 </h1>
-                <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto font-light" data-lang-key="hero_subtitle">
+                <p class="text-lg md:text-xl text-gray-200 mb-8 max-w-3xl mx-auto font-light" data-lang-key="hero_subtitle">
                     A Leading Engineering Institution for Sustainable Development
                 </p>
                 <a href="#enrollment-card"
-                    class="bg-white text-blue-800 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition text-lg shadow-lg"
+                    class="bg-white text-blue-800 font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition text-lg shadow-lg btn-hover-effect"
                     data-lang-key="hero_button">TO ENROLL</a>
             </div>
         </section>
@@ -578,7 +768,7 @@
             </section>
 
             <!-- Academic Programs Section -->
-            <section id="programs" class="mb-20 bg-white p-8 md:p-12 rounded-lg shadow-lg">
+            <section id="programs" class="mb-20 bg-white p-8 md:p-12 rounded-lg shadow-lg animate-on-scroll">
                 <h2 class="text-3xl font-bold text-blue-900 mb-10 text-center" data-lang-key="programs_title">
                     Academic Programs
                 </h2>
@@ -588,8 +778,8 @@
                         Bachelor's Degrees (6 Years)
                     </h3>
                     <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 card_1">
-                        <a href="./Majors/ist.html">
-                            <div class="program-card hover_up border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition h-full"
+                        <a href="./Majors/ist.html" class="program-card" style="--i:1;">
+                            <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="ist">
                                 <img src="Img\logo\IST.webp" alt="Information Science and Technology" />
                                 <h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ist">
@@ -597,8 +787,8 @@
                                 </h3>
                             </div>
                         </a>
-                        <a href="./Majors/ce.html">
-                            <div class="program-card hover_up border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition h-full"
+                        <a href="./Majors/ce.html" class="program-card" style="--i:2;">
+                            <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="ce">
                                 <img src="Img\logo\CE.webp" alt="Computer Engineering" />
                                 <h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ce">
@@ -606,8 +796,8 @@
                                 </h3>
                             </div>
                         </a>
-                        <a href="./Majors/ece.html">
-                            <div class="program-card hover_up border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition h-full"
+                        <a href="./Majors/ece.html" class="program-card" style="--i:3;">
+                            <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="ece">
                                 <img src="Img/logo/EcE.jpg" alt="Electronics Engineering" />
                                 <h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ece">
@@ -615,8 +805,8 @@
                                 </h3>
                             </div>
                         </a>
-                        <a href="./Majors/pre.html">
-                            <div class="program-card hover_up border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition h-full"
+                        <a href="./Majors/pre.html" class="program-card" style="--i:4;">
+                            <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="pre">
                                 <img src="Img/logo/PrE.png" alt="Precision Engineering" />
                                 <h3 class="text-lg font-bold text-blue-900" data-lang-key="program_pre">
@@ -624,8 +814,8 @@
                                 </h3>
                             </div>
                         </a>
-                        <a href="./Majors/ame.html">
-                            <div class="program-card hover_up border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-blue-500 transition h-full"
+                        <a href="./Majors/ame.html" class="program-card" style="--i:5;">
+                            <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="ame">
                                 <img src="Img\logo\Ame_updated.jpg" alt="Advanced Materials Engineering" />
                                 <h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ame">
@@ -659,12 +849,12 @@
             </section>
 
             <!-- International Collaboration Section -->
-            <section id="collaboration" class="mb-16">
+            <section id="collaboration" class="mb-16 animate-on-scroll">
                 <h2 class="text-3xl font-bold text-blue-900 mb-8 text-center" data-lang-key="collab_title">
                     International Collaboration
                 </h2>
                 <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 hover_up">
+                    <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
                         <img src="https://placehold.co/100x100/3b82f6/ffffff?text=ACU" class="rounded-full"
                             alt="ACU Logo" />
                         <div>
@@ -677,7 +867,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 hover_up">
+                    <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
                         <img src="https://placehold.co/100x100/16a34a/ffffff?text=MU" class="rounded-full"
                             alt="Miyazaki University Logo" />
                         <div>
@@ -700,7 +890,7 @@
         style="background-image: url('./Img/utycc_buildings/front_view.JPG')">
         <div class="absolute inset-0 bg-black opacity-50"></div>
         <div
-            class="relative container mx-auto max-w-5xl bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl overflow-hidden">
+            class="relative container mx-auto max-w-5xl bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl overflow-hidden animate-on-scroll">
             <div class="flex flex-col md:flex-row">
                 <!-- New Students Card -->
                 <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
@@ -713,13 +903,10 @@
                         academic year.
                     </p>
                     <button id="new-student-enroll-trigger"
-                        class="w-full hover_up sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg"
+                        class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect"
                         data-lang-key="enroll_new_button">
                         Enroll as a Fresher
                     </button>
-                    <!-- From Uiverse.io by barisdogansutcu -->
-                    
-
                 </div>
 
                 <!-- Divider -->
@@ -735,7 +922,7 @@
                         year.
                     </p>
                     <button id="current-student-enroll-trigger"
-                        class="w-full hover_up sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg"
+                        class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect"
                         data-lang-key="enroll_current_button">
                         Enroll for Next Year
                     </button>
@@ -746,17 +933,22 @@
 
     <div id="gameContainer" class="game-toast">
         <button id="closeGameBtn" class="close_button2">Close Game</button>
-        <iframe src="https://chromedino.com/" class="rounded-b-lg"></iframe>
+        <canvas id="gameCanvas"></canvas>
     </div>
 
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
 
 
     <!-- Footer -->
     <footer id="contact" class="bg-blue-900 text-white">
         <div class="container mx-auto px-6 py-12">
             <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4 hover_up" />
+                <div class="animate-on-scroll" style="--i:1;">
+                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4 icon-hover-effect" />
                     <h3 class="text-lg font-bold">UTYCC</h3>
                     <p class="text-blue-200 text-sm mt-4">
                         <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address"
@@ -770,7 +962,7 @@
                         <p>Phone: +95 (XX) XXX XXX (example)</p>
                     </div>
                 </div>
-                <div>
+                <div class="animate-on-scroll" style="--i:2;">
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
                         Faculties
                     </h3>
@@ -794,7 +986,7 @@
                         </li>
                     </ul>
                 </div>
-                <div>
+                <div class="animate-on-scroll" style="--i:3;">
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
                         Quick Links
                     </h3>
@@ -816,11 +1008,9 @@
                                 Regulations</a>
 
                         </li>
-                        <!-- <li><a href="#" id="gamesLink"
-                                class="text-gray-400 hover:text-white transition-colors duration-300">Dinosaur?</a></li> -->
                     </ul>
                 </div>
-                <div>
+                <div class="animate-on-scroll" style="--i:4;">
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
                         Follow Us
                     </h3>
@@ -842,19 +1032,6 @@
                     </div>
                 </div>
             </div>
-            <div id="gameContainer" class="game-container hidden text-center mt-10">
-                <iframe src="https://chromedino.com/" frameborder="0" scrolling="no" width="100%" height="100%"
-                    loading="lazy"></iframe>
-                <style type="text/css">
-                    iframe {
-                        position: absolute;
-                        width: 100%;
-                        height: 100%;
-                        z-index: 999;
-                    }
-                </style>
-
-            </div>
             <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
                 data-lang-key="footer_copyright">
                 © 2025 University of Technology - Yatanarpon Cyber City. All
@@ -862,6 +1039,11 @@
             </div>
         </div>
     </footer>
+    
+    <!-- Back to Top Button -->
+    <button id="back-to-top-btn" class="bg-blue-800 text-white w-12 h-12 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none flex items-center justify-center btn-hover-effect">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
 
     <!-- Verification Modal -->
@@ -980,9 +1162,29 @@
 
         // Login Form
         const loginForm = document.getElementById("login-form");
+        
+        // --- Easter Egg Game Elements ---
+        const headerLogo = document.getElementById('header-logo-link');
+        const gameContainer = document.getElementById('gameContainer');
+        const closeGameBtn = document.getElementById('closeGameBtn');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
         // --- State ---
         let currentLang = "my";
+        let logoClickCount = 0;
+        const requiredClicks = 10;
+        
+        // --- Game State Variables ---
+        let score = 0;
+        let gameActive = false;
+        let animationFrameId;
+        let logoSpawnerInterval;
+        const logoImg = new Image();
+        logoImg.src = './Img/logo/utycc_logo_favicon/favicon.ico';
+        const catcher = { x: 150, y: 350, width: 60, height: 10, color: '#3b82f6' };
+        const fallingLogos = [];
+
 
         // --- Translations ---
         const translations = {
@@ -1033,6 +1235,21 @@
                 collab_mu_title: "မီယာဇာကီ တက္ကသိုလ်၊ ဂျပန်",
                 collab_mu_text:
                     "နိုင်ငံတကာ ပညာရေးဖလှယ်မှုကို အားပေးသည့် နှစ်နိုင်ငံ မဟာဘွဲ့ ပရိုဂရမ်ကို ဖွင့်လှစ်ထားသည်။",
+                news_title: "သတင်းနှင့် ကြေညာချက်များ",
+                news_cat_announcement: "ကြေညာချက်",
+                news_cat_event: "ပွဲလမ်းသဘင်",
+                news_cat_research: "သုတေသန",
+                news_date_1: "ဩဂုတ် ၂၈၊ ၂၀၂၅",
+                news_title_1: "၂၀၂၅-၂၀၂၆ ပညာသင်နှစ်အတွက် ကျောင်းအပ်လက်ခံခြင်း",
+                news_desc_1: "လာမည့် ပညာသင်နှစ်အတွက် ကျောင်းအပ်လက်ခံမည့်ရက်နှင့် လိုအပ်ချက်များအကြောင်း အသေးစိတ်ကို ဤနေရာတွင် ကြည့်ရှုနိုင်ပါသည်။",
+                news_date_2: "ဩဂုတ် ၁၅၊ ၂၀၂၅",
+                news_title_2: "UTYCC နည်းပညာပြပွဲနှင့် အလုပ်အကိုင်အခွင့်အလမ်းပွဲတော်",
+                news_desc_2: "ကျောင်းသားများ၏ တီထွင်ဖန်တီးမှုများကို ပြသပြီး ထိပ်တန်းကုမ္ပဏီများနှင့် တွေ့ဆုံနိုင်မည့် အခွင့်အရေး။",
+                news_date_3: "ဇူလိုင် ၃၀၊ ၂၀၂၅",
+                news_title_3: "AME ဌာနမှ သုတေသနစာတမ်းသစ် ထုတ်ဝေခြင်း",
+                news_desc_3: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာဌာနမှ နောက်ဆုံးထုတ်ဝေလိုက်သော နာနိုနည်းပညာဆိုင်ရာ သုတေသနစာတမ်း။",
+                news_read_more: "ဆက်လက်ဖတ်ရှုရန်",
+                gallery_title: "ကျောင်းတွင်းဘဝပုံရိပ်များ",
                 enroll_new_title: "ကျောင်းသား/သူအသစ်များ",
                 enroll_new_text:
                     "သင်၏ ပညာရေးခရီးကို ကျွန်ုပ်တို့နှင့်အတူ စတင်လိုက်ပါ။ လာမည့် ပညာသင်နှစ်အတွက် ကျောင်းအပ်ရန် ဤနေရာကို နှိပ်ပါ။",
@@ -1063,7 +1280,7 @@
                 signup_email_label: "အီးမေးလ်",
                 signup_phone_label: "ဖုန်းနံပါတ်",
                 signup_terms_agree: "ကျွန်ုပ်သည်",
-                signup_terms_link: "စည်းမျဉ်းများနှင့် မူဝါဒများ ကိုသဘောတူပါသည်။",
+                signup_terms_link: "စည်းမျဉ်းများနှင့် မူဝါဒများ ကိုသဘောတူပါသည်။",
                 signup_button: "အကောင့်ပြုလုပ်မည်",
                 signup_toggle:
                     "အကောင့်ရှိပြီးသားလား? <a id='toggle-to-login-btn'>ဝင်ရောက်ရန်</a>",
@@ -1121,6 +1338,21 @@
                 collab_mu_title: "Miyazaki University, Japan",
                 collab_mu_text:
                     "Offering a Double Master's Degree program, fostering international academic exchange.",
+                news_title: "News & Announcements",
+                news_cat_announcement: "Announcement",
+                news_cat_event: "Event",
+                news_cat_research: "Research",
+                news_date_1: "August 28, 2025",
+                news_title_1: "Enrollment for 2025-2026 Academic Year",
+                news_desc_1: "Details about the upcoming academic year's enrollment dates and requirements are now available here.",
+                news_date_2: "August 15, 2025",
+                news_title_2: "UTYCC Tech Expo and Career Fair",
+                news_desc_2: "An opportunity to showcase student innovations and connect with leading tech companies.",
+                news_date_3: "July 30, 2025",
+                news_title_3: "New Research Paper Published by AME Department",
+                news_desc_3: "The latest research paper on nanotechnology from the Advanced Materials Engineering department.",
+                news_read_more: "Read More",
+                gallery_title: "Campus Life Photo Gallery",
                 enroll_new_title: "New Students",
                 enroll_new_text:
                     "Start your journey with us! Click here to enroll for the upcoming academic year.",
@@ -1218,6 +1450,83 @@
             // Re-translate the modal title and subtitle
             setLanguage(currentLang);
         }
+        
+        // --- Game Functions ---
+        function resizeCanvas() {
+            const gameToast = document.getElementById('gameContainer');
+            const buttonHeight = document.getElementById('closeGameBtn').offsetHeight;
+            canvas.width = gameToast.clientWidth;
+            canvas.height = gameToast.clientHeight - buttonHeight;
+            catcher.y = canvas.height - 20;
+            catcher.x = (canvas.width / 2) - (catcher.width / 2);
+        }
+
+        function spawnLogo() {
+            if (gameActive) {
+                fallingLogos.push({
+                    x: Math.random() * (canvas.width - 24),
+                    y: -24,
+                    width: 24,
+                    height: 24,
+                    speed: 1.5 + Math.random() * 2
+                });
+            }
+        }
+
+        function gameLoop() {
+            if (!gameActive) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw catcher
+            ctx.fillStyle = catcher.color;
+            ctx.fillRect(catcher.x, catcher.y, catcher.width, catcher.height);
+
+            // Update and draw logos
+            for (let i = fallingLogos.length - 1; i >= 0; i--) {
+                const logo = fallingLogos[i];
+                logo.y += logo.speed;
+                ctx.drawImage(logoImg, logo.x, logo.y, logo.width, logo.height);
+
+                // Collision detection
+                if (
+                    logo.x < catcher.x + catcher.width &&
+                    logo.x + logo.width > catcher.x &&
+                    logo.y + logo.height > catcher.y &&
+                    logo.y < catcher.y + catcher.height
+                ) {
+                    score++;
+                    fallingLogos.splice(i, 1);
+                } else if (logo.y > canvas.height) {
+                    fallingLogos.splice(i, 1);
+                }
+            }
+
+            // Draw score
+            ctx.fillStyle = '#1e3a8a';
+            ctx.font = '16px Inter, sans-serif';
+            ctx.fillText('Score: ' + score, 10, 25);
+
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            if (gameActive) return;
+            gameActive = true;
+            score = 0;
+            fallingLogos.length = 0;
+            resizeCanvas();
+            logoSpawnerInterval = setInterval(spawnLogo, 900);
+            gameLoop();
+        }
+
+        function stopGame() {
+            gameActive = false;
+            cancelAnimationFrame(animationFrameId);
+            clearInterval(logoSpawnerInterval);
+        }
+        
+        // --- Event Listeners ---
 
         mobileMenuButton.addEventListener("click", () => {
             mobileMenu.classList.toggle("hidden");
@@ -1333,8 +1642,39 @@
 
         observer.observe(statsSection);
 
+        // --- Easter Egg Game Logic ---
+        headerLogo.addEventListener('click', (event) => {
+            event.preventDefault(); 
+            logoClickCount++;
+            if (logoClickCount >= requiredClicks) {
+                gameContainer.classList.add('show');
+                startGame();
+                logoClickCount = 0; 
+            }
+        });
+
+        closeGameBtn.addEventListener('click', () => {
+            gameContainer.classList.remove('show');
+            stopGame();
+            logoClickCount = 0;
+        });
+        
+        canvas.addEventListener('mousemove', e => {
+            if (!gameActive) return;
+            const rect = canvas.getBoundingClientRect();
+            let mouseX = e.clientX - rect.left;
+            catcher.x = mouseX - catcher.width / 2;
+            if (catcher.x < 0) catcher.x = 0;
+            if (catcher.x + catcher.width > canvas.width) catcher.x = canvas.width - catcher.width;
+        });
+
 
         // --- Initial Page Load ---
+        window.onload = function() {
+            const preloader = document.getElementById('preloader');
+            preloader.classList.add('hidden');
+        };
+
         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem("selectedLanguage") || "my";
             setLanguage(savedLang);
@@ -1346,6 +1686,98 @@
                     };
                 }
             });
+
+            // Close mobile menu when a nav link is clicked
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            // --- Scroll Animation Observer ---
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        scrollObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            });
+
+            animatedElements.forEach(el => {
+                scrollObserver.observe(el);
+            });
+            
+            // --- Hero Slideshow Logic ---
+            const slides = document.querySelectorAll('.hero-slide');
+            let currentSlide = 0;
+
+            if (slides.length > 0) {
+                // Ensure only the first slide is active initially
+                slides.forEach((slide, index) => {
+                    if (index === 0) {
+                        slide.classList.add('active');
+                    } else {
+                        slide.classList.remove('active');
+                    }
+                });
+
+                setInterval(() => {
+                    slides[currentSlide].classList.remove('active');
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    slides[currentSlide].classList.add('active');
+                }, 5000); // Change image every 5 seconds
+            }
+
+            // --- Back to Top Button Logic ---
+            const backToTopBtn = document.getElementById('back-to-top-btn');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) { // Show button after scrolling 300px
+                    backToTopBtn.classList.add('show');
+                } else {
+                    backToTopBtn.classList.remove('show');
+                }
+            });
+
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // --- Lightbox Logic ---
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const lightboxClose = document.querySelector('.lightbox-close');
+
+            galleryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const imgSrc = item.querySelector('img').src;
+                    lightboxImg.src = imgSrc;
+                    lightbox.classList.add('show');
+                });
+            });
+
+            const closeLightbox = () => {
+                lightbox.classList.remove('show');
+            }
+
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+
         });
     </script>
 
@@ -1370,50 +1802,8 @@
             stagger: 1,
             ease: "back.out(1.7)",
         });
-
-        const logos = document.querySelectorAll(".hover_up");
-
-        logos.forEach(logo => {
-            logo.addEventListener("mouseenter", () => {
-                gsap.to(logo, { scale: 1.1, duration: 0.3, ease: "power1.out" });
-            });
-            logo.addEventListener("mouseleave", () => {
-                gsap.to(logo, { scale: 1, duration: 0.3, ease: "power1.out" });
-            });
-        });
-        // // Game Toggle Script
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const gamesLink = document.getElementById("gamesLink");
-        //     const gameContainer = document.getElementById("gameContainer");
-        //     const closeGameBtn = document.getElementById("closeGameBtn");
-
-        //     // Toggle the game toast on and off when the footer link is clicked
-        //     gamesLink.addEventListener("click", (event) => {
-        //         event.preventDefault();
-        //         gameContainer.classList.toggle("show");
-        //     });
-
-        //     // Close the game toast when the close button is clicked
-        //     closeGameBtn.addEventListener("click", () => {
-        //         gameContainer.classList.remove("show");
-        //     });
-        // });
     </script>
-    <!-- <script>
-        // Make sure the DOM is fully loaded before running the script
-        document.addEventListener('DOMContentLoaded', function () {
-            const gamesLink = document.getElementById("gamesLink");
-            const gameContainer = document.getElementById("gameContainer");
-
-            gamesLink.addEventListener("click", (event) => {
-                // 1. Prevent the default link behavior (like jumping to the top of the page)
-                event.preventDefault();
-
-                // 2. Toggle the 'hidden' class to show/hide the game container
-                gameContainer.classList.toggle("hidden");
-            });
-        });
-    </script> -->
 </body>
 
 </html>
+
