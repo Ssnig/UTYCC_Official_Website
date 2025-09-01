@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review & Payment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 700px;
+        }
+        
+        .disk {
+            width: 80%;
+            margin: auto;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .staggered-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-hover-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body>
+
+  <div class="disk">
+
+<div class="container w-full bg-white rounded-3xl shadow-2xl p-8 md:p-12 space-y-8 animate-fade-in">
+    <!-- Progress Header -->
+    <div class="text-center space-y-2">
+        <div style="display: flex; justify-content: center; align-items: center;">
+             <!-- Placeholder for the logo to ensure the form is self-contained -->
+                    <div style="display: flex; justify-content: center; align-items: center;">
+            <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" style="display: block; margin: 0 auto; width: 80px; height: 80px;" />
+        </div>
+        </div>
+        <h2 class="text-4xl font-extrabold">UTYCC</h2>
+        <p class="text-gray-500">You are at the final step of your submission.</p>
+    </div>
+    
+    <!-- Progress Bar -->
+    <!-- The progress bar is commented out as the user requested a static final form -->
+    <div class="text-right text-gray-500 text-sm">100% Complete</div>
+
+    <!-- Review Section -->
+    <div class="space-y-6">        
+        <!-- Example field to be reviewed -->
+        <a href="form1.html" class="bg-gray-50 p-6 rounded-xl flex justify-between items-center shadow-sm staggered-fade-in transition-transform duration-200 hover:scale-[1.01] no-underline" style="animation-delay: 0.2s;">
+            <div>
+                <p class="text-gray-400 text-sm font-medium">Personal Details</p>
+                <p class="font-semibold text-lg">Form 1 was completed</p>
+            </div>
+            <div class="text-green-500 font-bold flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                Complete
+            </div>
+        </a>
+
+        <!-- Another example field -->
+        <a href="form2.html" class="bg-gray-50 p-6 rounded-xl flex justify-between items-center shadow-sm staggered-fade-in transition-transform duration-200 hover:scale-[1.01] no-underline" style="animation-delay: 0.4s;">
+            <div>
+                <p class="text-gray-400 text-sm font-medium">Preferences Majors</p>
+                <p class="font-semibold text-lg">Form 2 was completed</p>
+            </div>
+            <div class="text-green-500 font-bold flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                Complete
+            </div>
+        </a>
+
+        <!-- Add more review items here as needed -->
+ <a href="option.html" class="bg-gray-50 p-6 rounded-xl flex justify-between items-center shadow-sm staggered-fade-in transition-transform duration-200 hover:scale-[1.01] no-underline" style="animation-delay: 0.4s;">
+            <div>
+                <p class="text-gray-400 text-sm font-medium"></p>
+                <p class="font-semibold text-lg">Choosing Accommodation</p>
+            </div>
+            <div class="text-green-500 font-bold flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                Complete
+            </div>
+        </a>
+
+
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="flex justify-between items-center gap-4 pt-4">
+        <a href="option.html" class="w-auto px-6 py-3 rounded-full border border-gray-300 font-medium text-gray-700 transition-all duration-200 btn-hover-effect">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Back
+        </a>
+        <button class="w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-all duration-200 shadow-md btn-hover-effect">
+            Submit
+        </button>
+    </div>
+</div>
+
+  </div>
+</body>
+</html>

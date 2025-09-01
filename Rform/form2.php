@@ -9,7 +9,10 @@ if (!isset($_SESSION['form1_data'])) {
     exit;
 }
 
+$form1_data = $_SESSION['form1_data'];
 // --- Configuration ---
+// echo '<pre>';
+// print_r($form1_data);
 
 // Define the list of available majors. This makes the code easier to maintain.
 $available_majors = [
@@ -22,8 +25,15 @@ $available_majors = [
 
 // --- Variable Initialization ---
 
-// Initialize an array to hold user's preferences. Default to empty strings.
-$preferences = array_fill(1, 5, '');
+// MODIFICATION: Initialize preferences from session if available (for 'back' navigation).
+// If not, create a default empty array.
+// This will be overwritten by POST data if the form is submitted.
+if (isset($_SESSION['form2_data']['preferences'])) {
+    $preferences = $_SESSION['form2_data']['preferences'];
+} else {
+    $preferences = array_fill(1, 5, '');
+}
+
 // Initialize an array to hold validation errors.
 $errors = [];
 
@@ -31,6 +41,12 @@ $errors = [];
 
 // Check if the form was submitted.
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // MODIFICATION: First, populate preferences from POST data to preserve user input on validation error.
+    for ($i = 1; $i <= 5; $i++) {
+        $key = 'preference' . $i;
+        $preferences[$i] = isset($_POST[$key]) ? htmlspecialchars($_POST[$key]) : '';
+    }
 
     // --- Data Validation ---
 
@@ -43,14 +59,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif (!array_key_exists($_POST[$key], $available_majors)) {
             $errors[$key] = "သင်ရွေးချယ်လိုက်သော ဘာသာရပ်သည် ရွေးချယ်ခွင့်မရှိပါ။"; // "Invalid major selected."
         } else {
-            // Store the valid preference
-            $preferences[$i] = htmlspecialchars($_POST[$key]);
-            $submitted_preferences[] = $preferences[$i];
+            // Add to a temporary array for duplicate checking
+            $submitted_preferences[] = $_POST[$key];
         }
     }
 
     // 2. Check for Duplicate Preferences
-    // This check runs only if there are no other errors with the preferences.
+    // This check runs only if all 5 preferences have been submitted.
     if (count($submitted_preferences) === 5 && count(array_unique($submitted_preferences)) !== 5) {
         $errors['preferences_duplicate'] = "ဦးစားပေး ဘာသာရပ်များ တူညီနေ၍မရပါ။ ကျေးဇူးပြု၍ မတူညီသော ဘာသာရပ်များကို ရွေးချယ်ပါ။"; // "Preferences cannot be the same. Please choose different majors."
     }
@@ -63,11 +78,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Store the validated data in the session.
         // We only store data relevant to this form.
         $_SESSION['form2_data'] = [
-            'preferences' => $preferences,
+            'preferences' => $preferences, // $preferences is now populated from the valid POST data
         ];
 
         // Redirect to the next form.
-        header("location: form3.php");
+        header("location: option.php");
         exit;
     }
 }

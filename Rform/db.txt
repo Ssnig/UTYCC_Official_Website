@@ -1,0 +1,218 @@
+CREATE DATABASE registration_db;
+
+USE registration_db;
+
+-- Main form table
+CREATE TABLE main_form (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_name VARCHAR(255),
+    seat_no VARCHAR(50),
+    nrc VARCHAR(50),
+    dob DATE,
+    father_name VARCHAR(255),
+    mother_name VARCHAR(255),
+    address TEXT,
+    phone VARCHAR(50),
+    preferences JSON,
+    dormitory TINYINT(1),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Hostel table (linked to main_form)
+CREATE TABLE hostel_data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    main_form_id INT NOT NULL,
+    student_photo VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (main_form_id) REFERENCES main_form(id) ON DELETE CASCADE
+);
+
+
+
+$year , $academic_year , $seat_no , $entry_year ,$student_email,dormitory_preference
+$student_name_mm , $father_name_mm , $mother_name_mm , $student_name_en,
+$father_name_en, $mother_name_en, $student_race  , $father_race , $mother_race,
+  $student_religion , $father_religion ,  $mother_religion , $student_nrc, $father_nrc,
+   $mother_nrc , $student_dob   ,$student_birthplace , $state_region  ,$township   , 
+    $student_phone, $father_phone ,  $mother_phone,  $father_info ,
+     $mother_info ,$father_deceased_year  ,$mother_deceased_year,  $student_address ,
+     $father_address, $mother_address,  $date  ,$photo_url    
+
+
+
+
+
+
+
+
+-- phpMyAdmin SQL Dump
+-- Database: `registration_db`
+-- Generation Time: 2025-08-30
+-- --------------------------------------------------------
+
+
+
+
+
+
+
+
+
+CREATE DATABASE IF NOT EXISTS `registration_db` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `registration_db`;
+
+-- --------------------------------------------------------
+-- Table: students
+-- --------------------------------------------------------
+CREATE TABLE `students` (
+  `student_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `year` VARCHAR(20),
+  `academic_year` VARCHAR(20),
+  `seat_no` VARCHAR(50) UNIQUE,
+  `entry_year` VARCHAR(10),
+  `student_email` VARCHAR(100),
+  `dormitory_preference` TINYINT(1) DEFAULT 0,
+  
+  `student_name_mm` VARCHAR(100),
+  `student_name_en` VARCHAR(100),
+  `student_race` VARCHAR(50),
+  `student_religion` VARCHAR(50),
+  `student_nrc` VARCHAR(50),
+  `student_dob` DATE,
+  `student_birthplace` VARCHAR(100),
+  `state_region` VARCHAR(100),
+  `township` VARCHAR(100),
+  `student_phone` VARCHAR(20),
+  `student_address` TEXT,
+  
+  `date` DATE,
+  `photo_url` VARCHAR(255)
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+-- Table: fathers
+-- --------------------------------------------------------
+CREATE TABLE `fathers` (
+  `father_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `student_id` INT,
+  
+  `father_name_mm` VARCHAR(100),
+  `father_name_en` VARCHAR(100),
+  `father_race` VARCHAR(50),
+  `father_religion` VARCHAR(50),
+  `father_nrc` VARCHAR(50),
+  `father_phone` VARCHAR(20),
+  `father_info` TEXT,
+  `father_deceased_year` YEAR NULL,
+  `father_address` TEXT,
+  
+  CONSTRAINT `fk_father_student`
+    FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+-- Table: mothers
+-- --------------------------------------------------------
+CREATE TABLE `mothers` (
+  `mother_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `student_id` INT,
+  
+  `mother_name_mm` VARCHAR(100),
+  `mother_name_en` VARCHAR(100),
+  `mother_race` VARCHAR(50),
+  `mother_religion` VARCHAR(50),
+  `mother_nrc` VARCHAR(50),
+  `mother_phone` VARCHAR(20),
+  `mother_info` TEXT,
+  `mother_deceased_year` YEAR NULL,
+  `mother_address` TEXT,
+  
+  CONSTRAINT `fk_mother_student`
+    FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- --------------------------------------------------------
+-- Sample Insert (optional)
+-- --------------------------------------------------------
+INSERT INTO `students` 
+(`year`,`academic_year`,`seat_no`,`entry_year`,`student_email`,`dormitory_preference`,`student_name_mm`,`student_name_en`,`student_race`,`student_religion`,`student_nrc`,`student_dob`,`student_birthplace`,`state_region`,`township`,`student_phone`,`student_address`,`date`,`photo_url`)
+VALUES 
+('2025','2025-2026','12345','2025','student@example.com',1,'မောင်မောင်','Maung Maung','Bamar','Buddhist','12/KaMaNa(N)123456','2005-01-01','Yangon','Yangon','Latha','09123456789','Yangon, Myanmar','2025-08-30','/uploads/photo1.jpg');
+
+INSERT INTO `fathers`
+(`student_id`,`father_name_mm`,`father_name_en`,`father_race`,`father_religion`,`father_nrc`,`father_phone`,`father_info`,`father_deceased_year`,`father_address`)
+VALUES
+(1,'အောင်ကျော်','Aung Kyaw','Bamar','Buddhist','12/KaMaNa(N)654321','09987654321','Businessman',NULL,'Yangon, Myanmar');
+
+INSERT INTO `mothers`
+(`student_id`,`mother_name_mm`,`mother_name_en`,`mother_race`,`mother_religion`,`mother_nrc`,`mother_phone`,`mother_info`,`mother_deceased_year`,`mother_address`)
+VALUES
+(1,'ဒေါ်စု','Daw Su','Bamar','Buddhist','12/KaMaNa(N)112233','0987654321','Housewife',NULL,'Yangon, Myanmar');
+
+      

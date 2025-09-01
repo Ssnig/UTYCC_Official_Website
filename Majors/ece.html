@@ -120,10 +120,9 @@
           University of Technology (Yatanarpon Cyber City)
         </div>
         <a id="major-title" href="#"
-          class="block mt-1 text-lg leading-tight font-medium text-black hover:underline">here</a>
-        <p id="major-description" class="mt-2 text-slate-500">
-          This is a placeholder for the major description. The JavaScript will
-          update this content dynamically.
+          class="block mt-1 text-lg leading-tight font-medium text-black hover:underline" data-lang-key="major_title">Faculty of Electronics Engineering</a>
+        <p id="major-description" class="mt-2 text-slate-500"data-lang-key="major_description">
+          နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ အီလက်ထရောနစ်အင်ဂျင်နီယာဌာန (Faculty of Electronics Engineering - EcE) သည် အီလက်ထရောနစ်စနစ်များ၊ ကိရိယာများ၊ ဆက်သွယ်ရေးနည်းပညာများနှင့် Signal Processing စသည့်နယ်ပယ်များကို အခြေခံ၍ ဖန်တီး၊ ပေါင်းဆက်၊ စမ်းသပ်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။
         </p>
       </div>
     </div>
@@ -863,10 +862,6 @@
     }
 
     // major name change ပြီးတော့ descriptionရော change
-    updateMajorPanel(
-      "Faculty of Electronics Engineering",
-      "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ အီလက်ထရောနစ်အင်ဂျင်နီယာဌာန (Faculty of Electronics Engineering - EcE) သည် အီလက်ထရောနစ်စနစ်များ၊ ကိရိယာများ၊ ဆက်သွယ်ရေးနည်းပညာများနှင့် Signal Processing စသည့်နယ်ပယ်များကို အခြေခံ၍ ဖန်တီး၊ ပေါင်းဆက်၊ စမ်းသပ်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။"
-    );
     // --- DOM Elements ---
     const navLinks = document.querySelectorAll(".nav-link");
     const mobileMenuButton = document.getElementById("mobile-menu-button");
@@ -893,6 +888,9 @@
     // --- Translation Script ---
     const translations = {
       my: {
+        major_title: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+        major_description:
+          "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ အီလက်ထရောနစ်အင်ဂျင်နီယာဌာန (Faculty of Electronics Engineering - EcE) သည် အီလက်ထရောနစ်စနစ်များ၊ ကိရိယာများ၊ ဆက်သွယ်ရေးနည်းပညာများနှင့် Signal Processing စသည့်နယ်ပယ်များကို အခြေခံ၍ ဖန်တီး၊ ပေါင်းဆက်၊ စမ်းသပ်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။",  
         utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
         nav_about: "ကျွန်ုပ်တို့အကြောင်း",
         nav_programs: "ပညာရေးအစီအစဉ်များ",
@@ -1000,6 +998,9 @@
         job_10: "သုတေသန နှင့် ဖွံ့ဖြိုးတိုးတက်ရေးအင်ဂျင်နီယာ",
       },
       en: {
+        major_title: "Electronics Engineering",
+        major_description:
+          "The Faculty of Electronics Engineering (EcE) at the University of Technology (Yatanarpon Cyber City) is an engineering discipline that focuses on the study, design, integration, and testing of electronic systems, devices, communication technologies, and signal processing.",
         utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
         nav_about: "About Us",
         nav_programs: "Academic Programs",
