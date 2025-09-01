@@ -39,7 +39,7 @@ $father_name_en, $mother_name_en, $student_race  , $father_race , $mother_race,
      $father_address, $mother_address,  $date  ,$photo_url    
 
 
-
+36
 
 
 

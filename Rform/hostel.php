@@ -46,7 +46,7 @@
         
         // If no new photo or failed upload, the old photo_url in session remains.
         // Proceed to the final form
-        header('Location: finalform.php');
+        header('Location: final.php');  
         exit();
     }
 ?>
