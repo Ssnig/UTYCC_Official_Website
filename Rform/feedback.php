@@ -4,39 +4,45 @@ include "db.php";
 $message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   
-    try {
-        // SQL query to insert data. Using named placeholders is good practice.
-        $sql = "INSERT INTO feedbacks (name, email, comments) VALUES (:name, :email, :comments)";
+    // Check if required fields are not empty
+    if (empty($_POST['name']) || empty($_POST['comments'])) {
+        $message = "<div class='bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg relative mb-4' role='alert'>
+                        <strong class='font-bold'>Warning!</strong>
+                        <span class='block sm:inline'> Please fill out all required fields.</span>
+                    </div>";
+    } else {
+        try {
+            // SQL query to insert data. Using named placeholders is good practice.
+            $sql = "INSERT INTO feedback (student_name, student_email, message) VALUES (:name, :email, :comments)";
 
-        // Prepare the SQL statement
-        $stmt = $pdo->prepare($sql);
+            // Prepare the SQL statement
+            $stmt = $pdo->prepare($sql);
 
-        // Bind parameters
-        $stmt->bindParam(':name', $_POST['name'], PDO::PARAM_STR);
-        $stmt->bindParam(':email', $_POST['email'], PDO::PARAM_STR);
-        $stmt->bindParam(':comments', $_POST['comments'], PDO::PARAM_STR);
-        
-        // Execute the statement
-        if ($stmt->execute()) {
-            $message = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-4' role='alert'>
-                            <strong class='font-bold'>Success!</strong>
-                            <span class='block sm:inline'> Your feedback has been submitted successfully.</span>
-                        </div>";
-        } else {
+            // Bind parameters
+            $stmt->bindParam(':name', $_POST['name'], PDO::PARAM_STR);
+            $stmt->bindParam(':email', $_POST['email'], PDO::PARAM_STR);
+            $stmt->bindParam(':comments', $_POST['comments'], PDO::PARAM_STR);
+            
+            // Execute the statement
+            if ($stmt->execute()) {
+                // Redirect to home.php after successful submission
+                header("Location: ../home.php");
+                exit(); // It's crucial to call exit() or die() after a redirect
+            } else {
+                $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4' role='alert'>
+                                <strong class='font-bold'>Error!</strong>
+                                <span class='block sm:inline'> There was a problem submitting your feedback. Please try again.</span>
+                            </div>";
+            }
+        } catch (PDOException $e) {
+            // Display a general error message to the user
             $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4' role='alert'>
                             <strong class='font-bold'>Error!</strong>
-                            <span class='block sm:inline'> There was a problem submitting your feedback. Please try again.</span>
+                            <span class='block sm:inline'> Database error: " . $e->getMessage() . "</span>
                         </div>";
+            // Log the full error message for debugging purposes
+            error_log("PDO Error: " . $e->getMessage());
         }
-    } catch (PDOException $e) {
-        // Display a general error message to the user
-        $message = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4' role='alert'>
-                        <strong class='font-bold'>Error!</strong>
-                        <span class='block sm:inline'> Database error: " . $e->getMessage() . "</span>
-                    </div>";
-        // Log the full error message for debugging purposes
-        error_log("PDO Error: " . $e->getMessage());
     }
 }
 ?>
@@ -303,3 +309,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
     </body>
 </html>
+[PHP Redirect after form submit](https://www.youtube.com/watch?v=MaZgH0NcMBc)
+This video shows how to use the `header()` function to redirect a user to a different page after a form submission.
+http://googleusercontent.com/youtube_content/0
