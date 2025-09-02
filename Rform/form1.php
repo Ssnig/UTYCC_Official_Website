@@ -73,8 +73,13 @@
         $is_new_upload_attempt = isset($_FILES["photo_upload"]) && $_FILES["photo_upload"]["error"] != UPLOAD_ERR_NO_FILE;
         $is_removal_request = !empty($_POST['remove_photo']) && $_POST['remove_photo'] == '1';
 
+        // Set photo_url to the original one by default. It will be overwritten on successful upload/removal.
+        $_POST['photo_url'] = $original_photo_on_load;
+
         if ($is_new_upload_attempt && $_FILES["photo_upload"]["error"] == UPLOAD_ERR_OK) {
-            $target_dir ="/uploads/";
+            // *** FIXED ***
+            // Use a proper filesystem path for server-side operations.
+            $target_dir = __DIR__ . "/uploads/";
             if (!is_dir($target_dir)) {
                 mkdir($target_dir, 0777, true);
             }
@@ -100,24 +105,23 @@
 
             if ($uploadOk == 1) {
                 if (move_uploaded_file($_FILES["photo_upload"]["tmp_name"], $target_file)) {
-                    if (!empty($original_photo_on_load) && file_exists($original_photo_on_load)) {
-                        unlink($original_photo_on_load);
+                    // Delete old photo if it exists
+                    if (!empty($original_photo_on_load) && file_exists(__DIR__ . $original_photo_on_load)) {
+                        unlink(__DIR__ . $original_photo_on_load);
                     }
-                    $_POST['photo_url'] = $target_file;
+                    // *** FIXED ***
+                    // Store the browser-accessible URL path in the POST data
+                    $_POST['photo_url'] = "/uploads/" . $unique_name;
                 } else {
                     $errors['photo_upload'] = "Sorry, there was an error uploading your file.";
-                    $_POST['photo_url'] = $original_photo_on_load;
                 }
-            } else {
-                $_POST['photo_url'] = $original_photo_on_load;
             }
         } elseif ($is_removal_request) {
-            if (!empty($original_photo_on_load) && file_exists($original_photo_on_load)) {
-                unlink($original_photo_on_load);
+            if (!empty($original_photo_on_load) && file_exists(__DIR__ . $original_photo_on_load)) {
+                unlink(__DIR__ . $original_photo_on_load);
             }
             $_POST['photo_url'] = '';
         }
-
 
         $sanitized_post = [];
         foreach ($_POST as $key => $value) {
@@ -125,6 +129,7 @@
         }
 
         // --- Assign sanitized values to variables ---
+        // ... (rest of your PHP code from line 140 remains the same)
         $year               = $sanitized_post["year"] ?? '';
         $academic_year      = $sanitized_post["academic_year"] ?? '';
         $student_email      = $sanitized_post["student_email"] ?? '';
@@ -166,7 +171,7 @@
         if (empty($photo_url)) {
             $errors['photo_upload'] = "ကျေးဇူးပြု၍ ဓာတ်ပုံထည့်သွင်းပါ။";
         }
-
+        // ... (rest of your validation logic remains the same)
         if (empty($academic_year)) {
             $errors['academic_year'] = "သင်တန်းနှစ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
@@ -272,7 +277,7 @@
                 $errors['mother_phone'] = "အမိ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
             }
         }
-
+        
         $_SESSION['form1_data'] = $_POST;
 
         if (empty($errors)) {
@@ -280,6 +285,7 @@
             exit;
         }
     }
+?>                    
 ?>
 
 <?php include 'formPartial/header.php'; ?>

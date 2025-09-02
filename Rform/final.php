@@ -120,6 +120,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $form1['mother_address']
         ]);
 
+// preferences insert
+if (!empty($form2['preferences'])) {
+    $stmt_pref = $pdo->prepare("
+        INSERT INTO preferences (student_id, preference_order, major_code)
+        VALUES (?, ?, ?)
+    ");
+
+    foreach ($form2['preferences'] as $order => $major_code) {
+        if (!empty($major_code)) {
+            $stmt_pref->execute([$student_id, $order, $major_code]);
+        }
+    }
+}
+
+
+
+
+
+
+
+
        // 2. အားလုံးအောင်မြင်ရင် Transaction ကို commit လုပ်ပါ (Data ကို အတည်ပြုပါ)
       $pdo->commit();
 
