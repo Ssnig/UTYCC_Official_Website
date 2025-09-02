@@ -1,6 +1,8 @@
 <?php
     
     session_start();
+    // echo '<pre>';
+    // print_r($_SESSION);
     // Check if form1 data exists, if not, redirect back to form1
     if (!isset($_SESSION['form1_data'])) {
         header("location: form1.php");
@@ -36,7 +38,7 @@
                     }
                     
                     // Save the new file path into session
-                    $_SESSION['form1_data']['photo_url'] = "uploads/" . $file_name;
+                    $_SESSION['form1_data']['photo_url'] = "/uploads/" . $file_name;
 
                 } else {
                     // Handle upload error if needed, for now, we just proceed with old photo

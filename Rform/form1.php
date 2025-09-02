@@ -1,6 +1,7 @@
 <?php
     // Start a new session or resume an existing one
     session_start();
+    // require_once __DIR__ . '/../config.php';
 
     // --- Academic Year Calculation ---
     $current_month = date('n');
@@ -73,7 +74,7 @@
         $is_removal_request = !empty($_POST['remove_photo']) && $_POST['remove_photo'] == '1';
 
         if ($is_new_upload_attempt && $_FILES["photo_upload"]["error"] == UPLOAD_ERR_OK) {
-            $target_dir = "uploads/";
+            $target_dir ="/uploads/";
             if (!is_dir($target_dir)) {
                 mkdir($target_dir, 0777, true);
             }

@@ -16,9 +16,10 @@ require_once '../Rform/db.php'; // Provides the $pdo object
 $action = $_POST['action'] ?? (json_decode(file_get_contents('php://input'), true)['action'] ?? null);
 $response = ['status' => 'error', 'message' => 'Invalid Request'];
 
-// Define both file system path for PHP and URL path for browser
-$fileSystemUploadDir = '../rform/uploads/';
-$urlUploadDir = '/rform/uploads/'; // Root-relative URL path
+// [ပြင်ဆင်မှု] Path များကို web root directory အောက်သို့ ပြောင်းလဲ သတ်မှတ်ထားခြင်း။
+$fileSystemUploadDir = '../uploads/'; // 'rform' folder မှ အပြင်သို့ထုတ်လိုက်သည်။
+$urlUploadDir = '/uploads/'; // URL path ကိုလည်း တိုက်ရိုက် root အောက်သို့ ပြောင်းထားသည်။
+
 
 if (!is_dir($fileSystemUploadDir)) {
     // The `true` parameter creates nested directories if they don't exist.
