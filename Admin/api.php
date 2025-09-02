@@ -1,183 +1,236 @@
 <?php
-require_once '../Rform/db.php'; // Database connection
+/**
+ * api.php
+ *
+ * Handles all backend data manipulation (Create, Update, Delete) using PDO.
+ * This script now handles both JSON (for delete) and multipart/form-data (for add/update with photo).
+ * Added output buffering to prevent corrupted JSON responses.
+ */
 
-$feedbacks = [];
-try {
-    $stmt = $pdo->query("SELECT feedback_id, student_name, student_email, message, submitted_at FROM feedback ORDER BY submitted_at DESC");
-    $feedbacks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    // For a real app, log this error and show a friendly message
-    die("Error fetching feedback data: ". $e->getMessage());
+ob_start(); // Start output buffering
+
+header('Content-Type: application/json');
+require_once '../Rform/db.php'; // Provides the $pdo object
+
+// Determine action from POST data (for forms with files) or JSON payload (for simple requests)
+$action = $_POST['action'] ?? (json_decode(file_get_contents('php://input'), true)['action'] ?? null);
+$response = ['status' => 'error', 'message' => 'Invalid Request'];
+
+// [ပြင်ဆင်မှု] Path များကို web root directory အောက်သို့ ပြောင်းလဲ သတ်မှတ်ထားခြင်း။
+$fileSystemUploadDir = '../uploads/'; // 'rform' folder မှ အပြင်သို့ထုတ်လိုက်သည်။
+$urlUploadDir = '/uploads/'; // URL path ကိုလည်း တိုက်ရိုက် root အောက်သို့ ပြောင်းထားသည်။
+
+
+if (!is_dir($fileSystemUploadDir)) {
+    // The `true` parameter creates nested directories if they don't exist.
+    if (!mkdir($fileSystemUploadDir, 0775, true)) {
+        http_response_code(500);
+        $response['message'] = 'Failed to create uploads directory.';
+        echo json_encode($response);
+        exit;
+    }
 }
-$pdo = null;
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Student Feedback — UTYCC Admin</title>
-    <meta name="description" content="View student feedback for the UTYCC registration system." />
-    <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
-    <!-- Theme Loader Script -->
-    <script>
-      (function() {
-        try {
-          const theme = localStorage.getItem('theme');
-          if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-          }
-        } catch (e) { /* ignore */ }
-      })();
-    </script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <style>
-       :root {
-          /* Light Theme */
-          --bg: 220 20% 98%; --fg: 222 47% 11%; --muted: 214 32% 91%;
-          --muted-foreground: 215 17% 47%; --primary: 220 83% 58%;
-          --primary-foreground: 0 0% 100%; --secondary: 0 0% 100%;
-          --secondary-foreground: 222 47% 11%; --card: 0 0% 100%;
-          --card-foreground: 222 47% 11%; --border: 214 32% 91%;
-          --ring: 220 83% 58%; --success: 153 61% 34%; --warning: 43 96% 56%;
-          --danger: 0 84% 60%; --radius: 12px; --ease: cubic-bezier(.2,.8,.2,1);
-          --duration: 220ms; --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.25);
-          --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        switch ($action) {
+
+            // delete_feedback
+case 'delete_feedback':
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id = $data['id'] ?? null;
+
+    if ($id) {
+        $stmt = $pdo->prepare("DELETE FROM feedback WHERE feedback_id = ?");
+        $stmt->execute([$id]);
+
+        if ($stmt->rowCount() > 0) {
+            $response = ['status' => 'success', 'message' => 'Feedback deleted successfully'];
+        } else {
+            $response = ['status' => 'error', 'message' => 'Feedback not found'];
         }
-        html.dark {
-            /* Dark Theme */
-            --bg: 222 47% 11%; --fg: 210 40% 98%; --muted: 217 33% 17%;
-            --muted-foreground: 215 20% 65%; --primary: 217 91% 60%;
-            --primary-foreground: 210 40% 98%; --secondary: 222 47% 13%;
-            --secondary-foreground: 210 40% 98%; --card: 222 47% 15%;
-            --card-foreground: 210 40% 98%; --border: 217 33% 22%;
-            --ring: 217 91% 60%; --shadow-card: 0 10px 20px -10px hsl(220 40% 2% / 0.45);
-        }
-        * { box-sizing: border-box; }
-        html, body { height: 100%; }
-        body { margin: 0; color: hsl(var(--fg)); background: hsl(var(--bg)); font: 500 16px/1.4 'Inter', sans-serif; text-rendering: optimizeLegibility; transition: background var(--duration) var(--ease), color var(--duration) var(--ease); }
-        a { color: inherit; text-decoration: none; }
-        button { font: inherit; }
-        .app { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 72px 1fr; grid-template-areas: "sidebar header" "sidebar main"; min-height: 100dvh; }
-        .sidebar { grid-area: sidebar; border-right: 1px solid hsl(var(--border)); background: hsl(var(--secondary)); padding: 20px 16px; position: sticky; top: 0; height: 100dvh; }
-        .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
-        .brand img { width: 32px; height: 32px; }
-        .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground)); }
-        nav { margin-top: 18px; display: grid; gap: 8px; }
-        .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); transition: background var(--duration) var(--ease), color var(--duration) var(--ease); }
-        .nav-link:hover { background: hsl(var(--muted)); color: hsl(var(--fg)); }
-        .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: var(--shadow-soft); }
-        .header { grid-area: header; position: sticky; top: 0; z-index: 10; background: hsl(var(--card)); border-bottom: 1px solid hsl(var(--border)); display: flex; align-items: center; gap: 12px; padding: 16px 20px; }
-        .header h1 { font-size: 24px; margin: 0; }
-        .main { grid-area: main; padding: 20px; }
-        .feedback-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        .feedback-card { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; }
-        .feedback-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
-        .feedback-header .info { display: grid; }
-        .feedback-header .name { font-weight: 700; }
-        .feedback-header .email { font-size: 13px; color: hsl(var(--muted-foreground)); }
-        .feedback-body { font-size: 15px; line-height: 1.6; color: hsl(var(--card-foreground)); flex-grow: 1; margin-bottom: 16px; }
-        .feedback-footer { font-size: 12px; color: hsl(var(--muted-foreground)); text-align: right; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 12px; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); color: hsl(var(--fg)); box-shadow: var(--shadow-card); cursor: pointer; transition: all var(--duration) var(--ease); }
-        .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -12px hsl(var(--fg)/0.25); }
-        .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
-        .toast-wrap { position: fixed; top: 20px; right: 20px; width: min(360px, 92vw); display: grid; gap: 12px; z-index: 9999; }
-        .toast { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--primary-foreground)); background: hsl(var(--fg)); box-shadow: var(--shadow-card); border-left: 4px solid; }
-        .toast.success { border-left-color: hsl(var(--success)); }
-        .toast.error { border-left-color: hsl(var(--danger)); }
-    </style>
-</head>
-<body>
-    <div class="app" id="app">
-        <aside class="sidebar">
-            <div class="brand">
-                <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
-                <h1>UTYCC Admin Panel</h1>
-            </div>
-            <nav>
-                <a class="nav-link" href="admin_dashboard.php">Students</a>
-                <a class="nav-link" href="#">Courses</a>
-                <a class="nav-link active" href="feedback.php">Feedback</a>
-                <a class="nav-link" href="#">Registrations</a>
-                <a class="nav-link" href="#">Reports</a>
-                <a class="nav-link" href="settings.php">Settings</a>
-            </nav>
-        </aside>
+    } else {
+        $response = ['status' => 'error', 'message' => 'Feedback ID required'];
+    }
+    break;
 
-        <header class="header">
-            <h1>Student Feedback</h1>
-        </header>
 
-        <main class="main" id="main">
-            <div class="feedback-grid" id="feedbackGrid">
-                <?php if (empty($feedbacks)): ?>
-                    <p>No feedback submitted yet.</p>
-                <?php else: ?>
-                    <?php foreach ($feedbacks as $item): ?>
-                        <div class="feedback-card" id="feedback-<?php echo htmlspecialchars($item['feedback_id']); ?>">
-                            <div class="feedback-header">
-                                <div class="info">
-                                    <span class="name"><?php echo htmlspecialchars($item['student_name']); ?></span>
-                                    <span class="email"><?php echo htmlspecialchars($item['student_email']); ?></span>
-                                </div>
-                                <button class="btn destructive" data-id="<?php echo htmlspecialchars($item['feedback_id']); ?>">Delete</button>
-                            </div>
-                            <div class="feedback-body">
-                                <?php echo nl2br(htmlspecialchars($item['message'])); ?>
-                            </div>
-                            <div class="feedback-footer">
-                                Submitted on: <?php echo date('M d, Y, h:i A', strtotime($item['submitted_at'])); ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-        </main>
-    </div>
-    
-    <div class="toast-wrap"></div>
 
-    <script>
-        async function apiRequest(action, data) {
-            try {
-                const response = await fetch('api.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action, ...data }),
-                });
-                if (!response.ok) throw new Error(await response.text());
-                return await response.json();
-            } catch (error) {
-                showToast(`Error: ${error.message}`, 'error');
-                return { status: 'error' };
-            }
-        }
 
-        const toastWrap = document.querySelector(".toast-wrap");
-        function showToast(message, type = "success") {
-            const toast = document.createElement("div");
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `<span>${message}</span>`;
-            toastWrap.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-        }
-
-        document.getElementById('feedbackGrid').addEventListener('click', async (e) => {
-            if (e.target.matches('button.destructive')) {
-                const id = e.target.dataset.id;
-                if (!confirm('Are you sure you want to delete this feedback?')) return;
+            // end
+            
+            case 'add':
+            case 'update':
+                // For add/update, data comes from $_POST because of FormData
+                $student = $_POST;
                 
-                const response = await apiRequest('delete_feedback', { id });
-                if (response.status === 'success') {
-                    document.getElementById(`feedback-${id}`).remove();
-                    showToast('Feedback deleted successfully.', 'success');
+                // Basic validation
+                if (empty($student['student_name_en']) || empty($student['seat_no'])) {
+                    $response['message'] = 'Required fields are missing.';
+                    break;
                 }
-            }
-        });
-    </script>
-</body>
-</html>
+
+                $pdo->beginTransaction();
+
+                // --- Handle Photo Upload ---
+                $photoUrl = null; // This will be the URL path for the database
+                if ($action === 'update') {
+                    // Fetch existing photo URL to keep it if no new photo is uploaded
+                    $stmt = $pdo->prepare("SELECT photo_url FROM students WHERE student_id = ?");
+                    $stmt->execute([$student['student_id']]);
+                    $photoUrl = $stmt->fetchColumn();
+                }
+
+                if (isset($_FILES['student_photo']) && $_FILES['student_photo']['error'] === UPLOAD_ERR_OK) {
+                    // If an old photo exists, delete it from the file system.
+                    if ($action === 'update' && !empty($photoUrl)) {
+                        $oldFileName = basename($photoUrl);
+                        $oldFileSystemPath = $fileSystemUploadDir . $oldFileName;
+                        if (file_exists($oldFileSystemPath)) {
+                            unlink($oldFileSystemPath);
+                        }
+                    }
+                    
+                    // Sanitize filename and create a unique name
+                    $fileName = uniqid() . '-' . basename(preg_replace("/[^a-zA-Z0-9\.\-\_]/", "", $_FILES['student_photo']['name']));
+                    $newFileSystemPath = $fileSystemUploadDir . $fileName;
+
+                    if (move_uploaded_file($_FILES['student_photo']['tmp_name'], $newFileSystemPath)) {
+                        // Store the web-accessible, root-relative URL path in the database
+                        $photoUrl = $urlUploadDir . $fileName; 
+                    } else {
+                        throw new Exception('Failed to move uploaded file.');
+                    }
+                }
+
+                if ($action === 'add') {
+                     $sqlStudent = "INSERT INTO students (
+                        year, academic_year, seat_no, entry_year, student_email, 
+                        dormitory_preference, student_name_mm, student_name_en, 
+                        student_race, student_religion, student_nrc, student_dob, 
+                        student_birthplace, state_region, township, student_phone, 
+                        student_address, photo_url, date
+                    ) VALUES (
+                        :year, :academic_year, :seat_no, :entry_year, :student_email, 
+                        :dormitory_preference, :student_name_mm, :student_name_en, 
+                        :student_race, :student_religion, :student_nrc, :student_dob, 
+                        :student_birthplace, :state_region, :township, :student_phone, 
+                        :student_address, :photo_url, CURDATE()
+                    )";
+                    $stmtStudent = $pdo->prepare($sqlStudent);
+                } else { // update
+                    $sqlStudent = "UPDATE students SET 
+                        year = :year, academic_year = :academic_year, seat_no = :seat_no, entry_year = :entry_year, student_email = :student_email, 
+                        dormitory_preference = :dormitory_preference, student_name_mm = :student_name_mm, student_name_en = :student_name_en, 
+                        student_race = :student_race, student_religion = :student_religion, student_nrc = :student_nrc, student_dob = :student_dob, 
+                        student_birthplace = :student_birthplace, state_region = :state_region, township = :township, student_phone = :student_phone, 
+                        student_address = :student_address, photo_url = :photo_url 
+                        WHERE student_id = :student_id";
+                    $stmtStudent = $pdo->prepare($sqlStudent);
+                    $stmtStudent->bindValue(':student_id', $student['student_id']);
+                }
+                
+                // Bind values
+                $stmtStudent->bindValue(':year', $student['year'] ?? null);
+                $stmtStudent->bindValue(':academic_year', $student['academic_year'] ?? null);
+                $stmtStudent->bindValue(':seat_no', $student['seat_no'] ?? null);
+                $stmtStudent->bindValue(':entry_year', $student['entry_year'] ?? null);
+                $stmtStudent->bindValue(':student_email', $student['student_email'] ?? null);
+                $stmtStudent->bindValue(':dormitory_preference', isset($student['dormitory_preference']) ? 1 : 0);
+                $stmtStudent->bindValue(':student_name_mm', $student['student_name_mm'] ?? null);
+                $stmtStudent->bindValue(':student_name_en', $student['student_name_en'] ?? null);
+                $stmtStudent->bindValue(':student_race', $student['student_race'] ?? null);
+                $stmtStudent->bindValue(':student_religion', $student['student_religion'] ?? null);
+                $stmtStudent->bindValue(':student_nrc', $student['student_nrc'] ?? null);
+                $stmtStudent->bindValue(':student_dob', empty($student['student_dob']) ? null : $student['student_dob']);
+                $stmtStudent->bindValue(':student_birthplace', $student['student_birthplace'] ?? null);
+                $stmtStudent->bindValue(':state_region', $student['state_region'] ?? null);
+                $stmtStudent->bindValue(':township', $student['township'] ?? null);
+                $stmtStudent->bindValue(':student_phone', $student['student_phone'] ?? null);
+                $stmtStudent->bindValue(':student_address', $student['student_address'] ?? null);
+                $stmtStudent->bindValue(':photo_url', $photoUrl);
+                $stmtStudent->execute();
+
+                $student_id = ($action === 'add') ? $pdo->lastInsertId() : $student['student_id'];
+
+                // Upsert father/mother info (same logic as your original file)
+                foreach (['father', 'mother'] as $parent) {
+                    $stmtCheck = $pdo->prepare("SELECT {$parent}_id FROM {$parent}s WHERE student_id = ?");
+                    $stmtCheck->execute([$student_id]);
+                    $params = [
+                        $student["{$parent}_name_mm"] ?? null, $student["{$parent}_name_en"] ?? null, $student["{$parent}_race"] ?? null,
+                        $student["{$parent}_religion"] ?? null, $student["{$parent}_nrc"] ?? null, $student["{$parent}_phone"] ?? null,
+                        $student["{$parent}_info"] ?? null, empty($student["{$parent}_deceased_year"]) ? null : $student["{$parent}_deceased_year"],
+                        $student["{$parent}_address"] ?? null, $student_id
+                    ];
+                    if ($stmtCheck->fetch()) {
+                        $sql = "UPDATE {$parent}s SET {$parent}_name_mm = ?, {$parent}_name_en = ?, {$parent}_race = ?, {$parent}_religion = ?, {$parent}_nrc = ?, {$parent}_phone = ?, {$parent}_info = ?, {$parent}_deceased_year = ?, {$parent}_address = ? WHERE student_id = ?";
+                    } else {
+                        $sql = "INSERT INTO {$parent}s ({$parent}_name_mm, {$parent}_name_en, {$parent}_race, {$parent}_religion, {$parent}_nrc, {$parent}_phone, {$parent}_info, {$parent}_deceased_year, {$parent}_address, student_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    }
+                    $stmtParent = $pdo->prepare($sql);
+                    $stmtParent->execute($params);
+                }
+
+                $pdo->commit();
+                
+                // Fetch the full record to return
+                $fullRecordSql = "SELECT s.*, f.*, m.* FROM students s LEFT JOIN fathers f ON s.student_id = f.student_id LEFT JOIN mothers m ON s.student_id = m.student_id WHERE s.student_id = ?";
+                $stmtFetch = $pdo->prepare($fullRecordSql);
+                $stmtFetch->execute([$student_id]);
+                $finalStudent = $stmtFetch->fetch(PDO::FETCH_ASSOC);
+
+                $response = ['status' => 'success', 'student' => $finalStudent];
+                break;
+
+            case 'delete':
+                $data = json_decode(file_get_contents('php://input'), true);
+                $ids = $data['ids'] ?? [];
+                if (!empty($ids) && is_array($ids)) {
+                    $sanitized_ids = array_map('intval', $ids);
+                    $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
+                    
+                    // First, get photo URLs to delete files
+                    $stmtSelect = $pdo->prepare("SELECT photo_url FROM students WHERE student_id IN ($placeholders)");
+                    $stmtSelect->execute($sanitized_ids);
+                    $photoUrls = $stmtSelect->fetchAll(PDO::FETCH_COLUMN);
+
+                    // Then, delete student records (cascading should handle parents)
+                    $sql = "DELETE FROM students WHERE student_id IN ($placeholders)";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($sanitized_ids);
+                    
+                    // Finally, delete the actual files from the file system
+                    foreach ($photoUrls as $url) {
+                        if (!empty($url)) {
+                           $fileName = basename($url);
+                           $fileSystemPath = $fileSystemUploadDir . $fileName;
+                           if (file_exists($fileSystemPath)) {
+                               unlink($fileSystemPath);
+                           }
+                        }
+                    }
+                    
+                    $response = ['status' => 'success', 'message' => $stmt->rowCount() . ' student(s) deleted.'];
+                } else {
+                    $response['message'] = 'No student IDs provided for deletion.';
+                }
+                break;
+                
+            // Keep your other cases like delete_feedback if needed
+        }
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        http_response_code(500);
+        $response['message'] = 'Server error: ' . $e->getMessage();
+    }
+}
+
+ob_end_clean(); // Clean any stray output
+echo json_encode($response);
+$pdo = null; // Close connection
+?>
+

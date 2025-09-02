@@ -1,7 +1,8 @@
 <?php 
 session_start();
 
-
+echo "pre";
+print_r($_SESSION);
 
 include "db.php"; // DB connection
 
@@ -40,6 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              date, photo_url)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
+
+         // Get the photo URL from the session and remove any '..' from the path.
+        // $photo_url = null;
+        // if (isset($form1['photo_url'])) {
+        //     // Replace '..' with an empty string to clean the path.
+        //     $photo_url = str_replace('..', '', $form1['photo_url']);
+        // }
 
         $stmt_student->execute([
             $form1['year'],                 // Session ထဲမှာ ဒီ key တွေရှိရပါမယ်

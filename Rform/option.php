@@ -1,8 +1,8 @@
 
 <?php
 session_start();
-echo '<pre>';
-print_r($_SESSION);
+// echo '<pre>';
+// print_r($_SESSION);
 
 $errors = [];
 $dormitory_preference = null;

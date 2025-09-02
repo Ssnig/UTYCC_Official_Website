@@ -5,6 +5,7 @@ require_once '../Rform/db.php';
 // --- FETCH ALL STUDENT DATA ON INITIAL PAGE LOAD ---
 // --- FETCH ALL STUDENT DATA ON INITIAL PAGE LOAD USING PDO ---
 $students = [];
+// Added s.student_photo to the SELECT statement
 $sql = "SELECT s.*, 
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
@@ -333,7 +334,7 @@ $pdo = null;
   <div class="app" id="app">
     <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
-        <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+      <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" class="mx-auto w-20 h-20"/>
         <h1>UTYCC Admin Panel</h1>
       </div>
       <nav>
@@ -415,154 +416,161 @@ $pdo = null;
         <button class="btn ghost" type="button" id="closeModal" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
-        <input type="hidden" id="student_id" />
+        <input type="hidden" id="student_id" name="student_id" />
         <div class="form-grid">
+            <!-- NEW: Image Upload Section -->
+            <div style="grid-column: 1 / -1; text-align: center; margin-bottom: 12px;">
+                <img id="photo_preview" src="https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo" alt="Student Photo Preview" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border)); cursor: pointer;">
+                <input type="file" id="student_photo" name="student_photo" accept="image/*" style="display: none;">
+                <p style="font-size: 12px; color: hsl(var(--muted-foreground)); margin-top: 8px;">Click image to upload a new photo</p>
+            </div>
+          
             <h3 class="detail-section-header">Student Information</h3>
             <div class="field">
                 <label for="student_name_en">Name (EN)</label>
-                <input id="student_name_en" required />
+                <input id="student_name_en" name="student_name_en" required />
             </div>
             <div class="field">
                 <label for="student_name_mm">Name (MM)</label>
-                <input id="student_name_mm" />
+                <input id="student_name_mm" name="student_name_mm" />
             </div>
             <div class="field">
                 <label for="seat_no">Seat No.</label>
-                <input id="seat_no" required />
+                <input id="seat_no" name="seat_no" required />
             </div>
             <div class="field">
                 <label for="student_email">Email</label>
-                <input id="student_email" type="email" required />
+                <input id="student_email" name="student_email" type="email" required />
             </div>
             <div class="field">
                 <label for="student_phone">Phone</label>
-                <input id="student_phone" />
+                <input id="student_phone" name="student_phone" />
             </div>
             <div class="field">
                 <label for="student_nrc">NRC</label>
-                <input id="student_nrc" />
+                <input id="student_nrc" name="student_nrc" />
             </div>
             <div class="field">
                 <label for="student_dob">Date of Birth</label>
-                <input id="student_dob" type="date" />
+                <input id="student_dob" name="student_dob" type="date" />
             </div>
              <div class="field">
                 <label for="student_birthplace">Birthplace</label>
-                <input id="student_birthplace" />
+                <input id="student_birthplace" name="student_birthplace" />
             </div>
             <div class="field">
                 <label for="student_race">Race</label>
-                <input id="student_race" />
+                <input id="student_race" name="student_race" />
             </div>
             <div class="field">
                 <label for="student_religion">Religion</label>
-                <input id="student_religion" />
+                <input id="student_religion" name="student_religion" />
             </div>
             <div class="field">
                 <label for="township">Township</label>
-                <input id="township" />
+                <input id="township" name="township" />
             </div>
             <div class="field">
                 <label for="state_region">State/Region</label>
-                <input id="state_region" />
+                <input id="state_region" name="state_region" />
             </div>
              <div class="field" style="grid-column: 1 / -1;">
                 <label for="student_address">Address</label>
-                <textarea id="student_address"></textarea>
+                <textarea id="student_address" name="student_address"></textarea>
             </div>
             <div class="field-checkbox" style="grid-column: 1 / -1;">
-                <input id="dormitory_preference" type="checkbox" />
+                <input id="dormitory_preference" name="dormitory_preference" type="checkbox" />
                 <label for="dormitory_preference">Requires Dormitory</label>
             </div>
 
             <h3 class="detail-section-header">Academic Information</h3>
             <div class="field">
                 <label for="year">Year</label>
-                <input id="year" />
+                <input id="year" name="year" />
             </div>
             <div class="field">
                 <label for="academic_year">Academic Year</label>
-                <input id="academic_year" />
+                <input id="academic_year" name="academic_year" />
             </div>
             <div class="field">
                 <label for="entry_year">Entry Year</label>
-                <input id="entry_year" />
+                <input id="entry_year" name="entry_year" />
             </div>
 
             <h3 class="detail-section-header">Father's Information</h3>
             <div class="field">
                 <label for="father_name_en">Name (EN)</label>
-                <input id="father_name_en" />
+                <input id="father_name_en" name="father_name_en" />
             </div>
             <div class="field">
                 <label for="father_name_mm">Name (MM)</label>
-                <input id="father_name_mm" />
+                <input id="father_name_mm" name="father_name_mm" />
             </div>
              <div class="field">
                 <label for="father_nrc">NRC</label>
-                <input id="father_nrc" />
+                <input id="father_nrc" name="father_nrc" />
             </div>
             <div class="field">
                 <label for="father_phone">Phone</label>
-                <input id="father_phone" />
+                <input id="father_phone" name="father_phone" />
             </div>
              <div class="field">
                 <label for="father_race">Race</label>
-                <input id="father_race" />
+                <input id="father_race" name="father_race" />
             </div>
             <div class="field">
                 <label for="father_religion">Religion</label>
-                <input id="father_religion" />
+                <input id="father_religion" name="father_religion" />
             </div>
              <div class="field" style="grid-column: 1 / -1;">
                 <label for="father_info">Occupation</label>
-                <input id="father_info" />
+                <input id="father_info" name="father_info" />
             </div>
             <div class="field" style="grid-column: 1 / -1;">
                 <label for="father_address">Address</label>
-                <textarea id="father_address"></textarea>
+                <textarea id="father_address" name="father_address"></textarea>
             </div>
              <div class="field">
                 <label for="father_deceased_year">Deceased Year (if applicable)</label>
-                <input id="father_deceased_year" type="number" placeholder="YYYY" />
+                <input id="father_deceased_year" name="father_deceased_year" type="number" placeholder="YYYY" />
             </div>
 
             <h3 class="detail-section-header">Mother's Information</h3>
             <div class="field">
                 <label for="mother_name_en">Name (EN)</label>
-                <input id="mother_name_en" />
+                <input id="mother_name_en" name="mother_name_en" />
             </div>
             <div class="field">
                 <label for="mother_name_mm">Name (MM)</label>
-                <input id="mother_name_mm" />
+                <input id="mother_name_mm" name="mother_name_mm" />
             </div>
              <div class="field">
                 <label for="mother_nrc">NRC</label>
-                <input id="mother_nrc" />
+                <input id="mother_nrc" name="mother_nrc" />
             </div>
             <div class="field">
                 <label for="mother_phone">Phone</label>
-                <input id="mother_phone" />
+                <input id="mother_phone" name="mother_phone" />
             </div>
              <div class="field">
                 <label for="mother_race">Race</label>
-                <input id="mother_race" />
+                <input id="mother_race" name="mother_race" />
             </div>
             <div class="field">
                 <label for="mother_religion">Religion</label>
-                <input id="mother_religion" />
+                <input id="mother_religion" name="mother_religion" />
             </div>
              <div class="field" style="grid-column: 1 / -1;">
                 <label for="mother_info">Occupation</label>
-                <input id="mother_info" />
+                <input id="mother_info" name="mother_info" />
             </div>
             <div class="field" style="grid-column: 1 / -1;">
                 <label for="mother_address">Address</label>
-                <textarea id="mother_address"></textarea>
+                <textarea id="mother_address" name="mother_address"></textarea>
             </div>
              <div class="field">
                 <label for="mother_deceased_year">Deceased Year (if applicable)</label>
-                <input id="mother_deceased_year" type="number" placeholder="YYYY" />
+                <input id="mother_deceased_year" name="mother_deceased_year" type="number" placeholder="YYYY" />
             </div>
         </div>
       </div>
@@ -607,6 +615,7 @@ $pdo = null;
 
   <script>
     const PAGE_SIZE = 8;
+    const PHOTO_PLACEHOLDER = 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
 
     const state = {
       students: <?php echo json_encode($students); ?>,
@@ -615,6 +624,27 @@ $pdo = null;
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
     };
+    
+    /**
+     * [ပြင်ဆင်ပြီးသော Function]
+     * ဤ function သည် database ထဲတွင်ရှိသော path ပုံစံအမျိုးမျိုးကို (ဥပမာ 'uploads/...', '../uploads/...')
+     * browser ကနားလည်သော ပုံစံအမှန် ('/uploads/...') ဖြစ်အောင် ပြောင်းလဲပေးသည်။
+     */
+    function getSafePhotoUrl(path) {
+        if (!path) {
+            return PHOTO_PLACEHOLDER;
+        }
+
+        const uploadsIndex = path.indexOf('uploads/');
+
+        if (uploadsIndex !== -1) {
+            const correctPart = path.substring(uploadsIndex);
+            return `/${correctPart}`;
+        }
+        
+        // '/uploads/' ဆိုသော စာသားမပါဝင်ပါက၊ မူရင်း path ကိုသာ ပြန်ပေးမည်။
+        return path;
+    }
 
     function todayStr(d = new Date()) { return d.toISOString().split('T')[0]; }
 
@@ -660,46 +690,10 @@ $pdo = null;
         setTimeout(removeToast, duration);
     }
     
-    // --- DOM Refs ---
-    // This object holds references to all form elements for easy access.
-    const formElements = {
-        student_id: document.getElementById('student_id'),
-        student_name_en: document.getElementById('student_name_en'),
-        student_name_mm: document.getElementById('student_name_mm'),
-        seat_no: document.getElementById('seat_no'),
-        student_email: document.getElementById('student_email'),
-        student_phone: document.getElementById('student_phone'),
-        student_nrc: document.getElementById('student_nrc'),
-        student_dob: document.getElementById('student_dob'),
-        student_birthplace: document.getElementById('student_birthplace'),
-        student_race: document.getElementById('student_race'),
-        student_religion: document.getElementById('student_religion'),
-        student_address: document.getElementById('student_address'),
-        township: document.getElementById('township'),
-        state_region: document.getElementById('state_region'),
-        dormitory_preference: document.getElementById('dormitory_preference'),
-        year: document.getElementById('year'),
-        academic_year: document.getElementById('academic_year'),
-        entry_year: document.getElementById('entry_year'),
-        father_name_en: document.getElementById('father_name_en'),
-        father_name_mm: document.getElementById('father_name_mm'),
-        father_nrc: document.getElementById('father_nrc'),
-        father_phone: document.getElementById('father_phone'),
-        father_race: document.getElementById('father_race'),
-        father_religion: document.getElementById('father_religion'),
-        father_info: document.getElementById('father_info'),
-        father_address: document.getElementById('father_address'),
-        father_deceased_year: document.getElementById('father_deceased_year'),
-        mother_name_en: document.getElementById('mother_name_en'),
-        mother_name_mm: document.getElementById('mother_name_mm'),
-        mother_nrc: document.getElementById('mother_nrc'),
-        mother_phone: document.getElementById('mother_phone'),
-        mother_race: document.getElementById('mother_race'),
-        mother_religion: document.getElementById('mother_religion'),
-        mother_info: document.getElementById('mother_info'),
-        mother_address: document.getElementById('mother_address'),
-        mother_deceased_year: document.getElementById('mother_deceased_year'),
-    };
+    const formElements = {};
+    document.querySelectorAll('#studentForm [name]').forEach(el => {
+        formElements[el.name] = el;
+    });
 
     function showConfirm(title, message) {
       return new Promise(resolve => {
@@ -716,23 +710,27 @@ $pdo = null;
 
     function openModal(mode, student = null) {
       const modal = document.getElementById('studentModal');
+      const form = document.getElementById('studentForm');
       document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Edit Student' : 'Add Student';
       
+      form.reset();
+      document.getElementById('photo_preview').src = PHOTO_PLACEHOLDER;
+      formElements.student_id.value = '';
+
       if (mode === 'edit' && student) {
           for (const key in formElements) {
               const element = formElements[key];
               if (element) {
                   if (element.type === 'checkbox') {
                       element.checked = !!student[key];
-                  } else {
+                  } else if (element.type !== 'file') {
                       element.value = student[key] || '';
                   }
               }
           }
-      } else {
-        document.getElementById('studentForm').reset();
-        formElements.student_id.value = '';
-      }
+          // [ပြင်ဆင်မှု] getSafePhotoUrl function ကိုသုံးပြီး ပုံရဲ့ path ကို ပြန်စစ်ဆေးခြင်း
+          document.getElementById('photo_preview').src = getSafePhotoUrl(student.photo_url);
+      } 
       modal.showModal();
       formElements.student_name_en.focus();
     }
@@ -742,7 +740,12 @@ $pdo = null;
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
+        // [ပြင်ဆင်မှု] getSafePhotoUrl function ကိုသုံးပြီး ပုံရဲ့ path ကို ပြန်စစ်ဆေးခြင်း
+        const photoUrl = getSafePhotoUrl(s.photo_url);
         detailsModalBody.innerHTML = `
+            <div style="text-align: center; margin-bottom: 16px;">
+                 <img src="${photoUrl}" alt="Student Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border));">
+            </div>
             <h3 class="detail-section-header">Student Information</h3>
             <dl class="details-grid">
                 <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd>
@@ -870,6 +873,22 @@ $pdo = null;
       document.getElementById('closeDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
       document.getElementById('okDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
 
+      // --- NEW: Event listeners for photo upload ---
+      document.getElementById('photo_preview').addEventListener('click', () => {
+          document.getElementById('student_photo').click();
+      });
+      document.getElementById('student_photo').addEventListener('change', (event) => {
+          const file = event.target.files[0];
+          if (file) {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                  document.getElementById('photo_preview').src = e.target.result;
+              }
+              reader.readAsDataURL(file);
+          }
+      });
+
+
       document.querySelectorAll('th.sortable').forEach(th => {
         th.addEventListener('click', () => {
           const key = th.getAttribute('data-sort');
@@ -888,6 +907,7 @@ $pdo = null;
             if (e.target.checked) state.selected.add(s.student_id);
             else state.selected.delete(s.student_id);
         });
+        document.getElementById('bulkDeleteBtn').disabled = state.selected.size === 0;
         render();
       });
 
@@ -943,37 +963,48 @@ $pdo = null;
       document.getElementById('saveStudent').addEventListener('click', async (e) => {
         e.preventDefault();
         
-        const studentData = {};
-        for(const key in formElements) {
-            const element = formElements[key];
-            if (element.type === 'checkbox') {
-                studentData[key] = element.checked;
-            } else {
-                studentData[key] = element.value.trim() === '' ? null : element.value.trim();
-            }
-        }
-        studentData.student_id = parseInt(studentData.student_id, 10) || null;
-
-        if (!studentData.student_name_en || !studentData.seat_no || !studentData.student_email) {
-            showToast('Please fill all required fields.', 'warning');
+        const form = document.getElementById('studentForm');
+        const studentId = parseInt(formElements.student_id.value, 10) || null;
+        
+        if (!formElements.student_name_en.value || !formElements.seat_no.value || !formElements.student_email.value) {
+            showToast('Please fill all required fields: Name (EN), Seat No, Email.', 'warning');
             return;
         }
+        
+        // Use FormData to send both file and text data
+        const formData = new FormData(form);
+        const action = studentId ? 'update' : 'add';
+        formData.append('action', action);
 
-        const action = studentData.student_id ? 'update' : 'add';
-        const response = await apiRequest(action, { student: studentData });
+        try {
+            const response = await fetch('api.php', {
+                method: 'POST',
+                body: formData,
+            });
 
-        if (response.status === 'success' && response.student) {
-            if (action === 'add') {
-                state.students.unshift(response.student);
-            } else {
-                const index = state.students.findIndex(s => s.student_id === studentData.student_id);
-                if (index !== -1) state.students[index] = response.student;
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error ${response.status}: ${errorText}`);
             }
-            render();
-            closeModalSafe();
-            showToast(`Student "${studentData.student_name_en}" saved.`, 'success');
-        } else {
-            showToast(response.message || 'Failed to save student.', 'error');
+
+            const result = await response.json();
+
+            if (result.status === 'success' && result.student) {
+                if (action === 'add') {
+                    state.students.unshift(result.student);
+                } else {
+                    const index = state.students.findIndex(s => s.student_id === studentId);
+                    if (index !== -1) state.students[index] = result.student;
+                }
+                render();
+                closeModalSafe();
+                showToast(`Student "${result.student.student_name_en}" saved.`, 'success');
+            } else {
+                showToast(result.message || 'Failed to save student.', 'error');
+            }
+        } catch (error) {
+            console.error('Save Student Failed:', error);
+            showToast(`Error: ${error.message}`, 'error');
         }
       });
     }
@@ -985,3 +1016,4 @@ $pdo = null;
   </script>
 </body>
 </html>
+
