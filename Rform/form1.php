@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
     // Start a new session or resume an existing one
     session_start();

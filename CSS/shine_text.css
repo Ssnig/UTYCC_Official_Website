@@ -1,0 +1,52 @@
+
+  /* Existing styles... */
+  
+  /* Keyframes for the shine effect */
+  @keyframes shine {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Shine and float effect on hover */
+  .shine-text {
+    background: linear-gradient(
+      90deg,
+      white
+      
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .shine-text:hover {
+    animation: shine 1.5s ease-in-out forwards;
+    transform: translateY(-5px);
+  }
+
+  /* Keyframes for float up on load animation */
+  @keyframes floatUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Elements that float up on load */
+  .float-up {
+    animation: floatUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+
+
