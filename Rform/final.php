@@ -150,13 +150,12 @@ if (!empty($form2['preferences'])) {
 
 // Session data တွေကို ရှင်းလင်းပါ
 session_destroy();
-
-// အောင်မြင်ကြောင်း message နဲ့ redirect
-echo "<script>
-    alert('Registration is succeed');
-    window.location.href = 'final.php';
-</script>";
-exit;
+  // ✅ Success message with alert + redirect
+        echo "<script>
+            alert('Registration is successful!');
+            window.location.href = '../home.php';
+        </script>";
+        exit;
 
     } catch (PDOException $e) {
         // 3. Error တစ်ခုခုဖြစ်ခဲ့ရင် Transaction ကို rollback လုပ်ပါ (လုပ်ဆောင်ချက်တွေ အကုန်ပြန်ဖျက်ပါ)
