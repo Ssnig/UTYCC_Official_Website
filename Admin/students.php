@@ -2,16 +2,15 @@
 // Include the database configuration file
 require_once '../Rform/db.php';
 
-// --- FETCH ALL STUDENT DATA ON INITIAL PAGE LOAD ---
-// --- FETCH ALL STUDENT DATA ON INITIAL PAGE LOAD USING PDO ---
+// --- FETCH ALL APPROVED STUDENT DATA ---
 $students = [];
-// Added s.student_photo to the SELECT statement
 $sql = "SELECT s.*, 
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
         FROM students s
         LEFT JOIN fathers f ON s.student_id = f.student_id
         LEFT JOIN mothers m ON s.student_id = m.student_id
+        WHERE s.status = 'approved'
         ORDER BY s.date DESC";
 
 try {
@@ -39,8 +38,8 @@ $pdo = null;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin Dashboard — UTYCC</title>
-  <meta name="description" content="Admin dashboard for the UTYCC student registration system." />
+  <title>Students — UTYCC Admin</title>
+  <meta name="description" content="Manage all registered students in the UTYCC student registration system." />
   <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
   <!-- Theme Loader Script: Prevents a flash of incorrect theme on page load -->
@@ -162,6 +161,11 @@ $pdo = null;
       border-bottom: 1px solid hsl(var(--border));
       display: flex; align-items: center; gap: 12px; padding: 16px 20px;
     }
+    .header h1 {
+        font-size: 24px;
+        margin: 0;
+        margin-right: 16px;
+    }
     .search {
       flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px;
     }
@@ -186,12 +190,7 @@ $pdo = null;
 
     .main { grid-area: main; padding: 20px; background: hsl(var(--bg));}
 
-    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .card { background: hsl(var(--card)); color: hsl(var(--card-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); }
-    .card h3 { margin: 0 0 6px; font-size: 14px; color: hsl(var(--muted-foreground)); font-weight: 600; }
-    .card .value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
-
-    .section { margin-top: 24px; }
+    .section { margin-top: 0; }
     .section-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
     .section-header h2 { font-size: 20px; margin: 0; }
 
@@ -201,10 +200,6 @@ $pdo = null;
     thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--bg)); position: sticky; top: 0; z-index: 1; }
     th, td { padding: 12px 14px; border-bottom: 1px solid hsl(var(--border)); }
     tbody tr:hover { background: hsl(var(--muted)); }
-
-    .badge { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .02em; border: 1px solid hsl(var(--border)); }
-    .badge.success { background: hsl(var(--success)/0.12); color: hsl(var(--success)); border-color: hsl(var(--success)/0.3); }
-    .badge.warning { background: hsl(var(--warning)/0.12); color: hsl(var(--warning)); border-color: hsl(var(--warning)/0.3); }
 
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .toolbar .spacer { flex: 1; }
@@ -317,7 +312,6 @@ $pdo = null;
 
     /* Responsive */
     @media (max-width: 1000px) {
-      .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .form-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 780px) {
@@ -325,7 +319,6 @@ $pdo = null;
           "header"
           "main"; }
       .sidebar { position: static; height: auto; display: none; }
-      .cards { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -338,15 +331,16 @@ $pdo = null;
         <h1>UTYCC Admin Panel</h1>
       </div>
       <nav>
-        <a class="nav-link active" href="#">Students</a>
+        <a class="nav-link" href="admin_dashboard.php">Registrations</a>
         <a class="nav-link" href="#">Courses</a>
-        <a class="nav-link" href="#">Registrations</a>
+        <a class="nav-link active" href="students.php">Students</a>
         <a class="nav-link" href="support.php">Support</a>
         <a class="nav-link" href="settings.php">Settings</a>
       </nav>
     </aside>
 
     <header class="header" id="header">
+      <h1>လက်ခံပြီး ကျောင်းသား/သူများ</h1>
       <form class="search" role="search" aria-label="Search students" onsubmit="event.preventDefault()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/></svg>
         <input id="search" name="q" placeholder="Search by name, email, or seat no..." autocomplete="off" />
@@ -359,24 +353,8 @@ $pdo = null;
     </header>
 
     <main class="main" id="main">
-      <section class="cards" aria-label="Overview">
-        <article class="card" aria-live="polite">
-          <h3>Total Students</h3>
-          <div class="value" id="statTotal">0</div>
-        </article>
-        <article class="card">
-            <h3>Dormitory Requests</h3>
-            <div class="value" id="statDormitory">0</div>
-        </article>
-        <article class="card">
-          <h3>Today's Entries</h3>
-          <div class="value" id="statToday">0</div>
-        </article>
-      </section>
-
       <section class="section" id="students">
         <div class="section-header">
-          <h2>Students</h2>
           <div class="toolbar">
             <div class="spacer"></div>
             <button class="btn ghost" id="bulkDeleteBtn" disabled>Delete Selected</button>
@@ -625,24 +603,14 @@ $pdo = null;
       selected: new Set(),
     };
     
-    /**
-     * [ပြင်ဆင်ပြီးသော Function]
-     * ဤ function သည် database ထဲတွင်ရှိသော path ပုံစံအမျိုးမျိုးကို (ဥပမာ 'uploads/...', '../uploads/...')
-     * browser ကနားလည်သော ပုံစံအမှန် ('/uploads/...') ဖြစ်အောင် ပြောင်းလဲပေးသည်။
-     */
     function getSafePhotoUrl(path) {
         if (!path) {
             return PHOTO_PLACEHOLDER;
         }
-
         const uploadsIndex = path.indexOf('uploads/');
-
         if (uploadsIndex !== -1) {
-            const correctPart = path.substring(uploadsIndex);
-            return `/${correctPart}`;
+            return `/${path.substring(uploadsIndex)}`;
         }
-        
-        // '/uploads/' ဆိုသော စာသားမပါဝင်ပါက၊ မူရင်း path ကိုသာ ပြန်ပေးမည်။
         return path;
     }
 
@@ -728,7 +696,6 @@ $pdo = null;
                   }
               }
           }
-          // [ပြင်ဆင်မှု] getSafePhotoUrl function ကိုသုံးပြီး ပုံရဲ့ path ကို ပြန်စစ်ဆေးခြင်း
           document.getElementById('photo_preview').src = getSafePhotoUrl(student.photo_url);
       } 
       modal.showModal();
@@ -740,7 +707,6 @@ $pdo = null;
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
-        // [ပြင်ဆင်မှု] getSafePhotoUrl function ကိုသုံးပြီး ပုံရဲ့ path ကို ပြန်စစ်ဆေးခြင်း
         const photoUrl = getSafePhotoUrl(s.photo_url);
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
@@ -815,15 +781,6 @@ $pdo = null;
       return base;
     }
 
-    function renderStats() {
-      const total = state.students.length;
-      const dormitory = state.students.filter(s => s.dormitory_preference).length;
-      const today = state.students.filter(s => s.date === todayStr()).length;
-      document.getElementById('statTotal').textContent = total;
-      document.getElementById('statDormitory').textContent = dormitory;
-      document.getElementById('statToday').textContent = today;
-    }
-
     function renderTable() {
       const rows = getFilteredSorted();
       const total = rows.length;
@@ -859,7 +816,6 @@ $pdo = null;
     }
 
     function render() {
-      renderStats();
       renderTable();
     }
     

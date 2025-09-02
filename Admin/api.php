@@ -110,13 +110,13 @@ case 'delete_feedback':
                         dormitory_preference, student_name_mm, student_name_en, 
                         student_race, student_religion, student_nrc, student_dob, 
                         student_birthplace, state_region, township, student_phone, 
-                        student_address, photo_url, date
+                        student_address, photo_url, date, status
                     ) VALUES (
                         :year, :academic_year, :seat_no, :entry_year, :student_email, 
                         :dormitory_preference, :student_name_mm, :student_name_en, 
                         :student_race, :student_religion, :student_nrc, :student_dob, 
                         :student_birthplace, :state_region, :township, :student_phone, 
-                        :student_address, :photo_url, CURDATE()
+                        :student_address, :photo_url, CURDATE(), 'pending'
                     )";
                     $stmtStudent = $pdo->prepare($sqlStudent);
                 } else { // update
@@ -184,6 +184,23 @@ case 'delete_feedback':
                 $response = ['status' => 'success', 'student' => $finalStudent];
                 break;
 
+            case 'approve_students':
+                $data = json_decode(file_get_contents('php://input'), true);
+                $ids = $data['ids'] ?? [];
+                if (!empty($ids) && is_array($ids)) {
+                    $sanitized_ids = array_map('intval', $ids);
+                    $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
+                    
+                    $sql = "UPDATE students SET status = 'approved' WHERE student_id IN ($placeholders)";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute($sanitized_ids);
+                    
+                    $response = ['status' => 'success', 'message' => $stmt->rowCount() . ' student(s) approved.'];
+                } else {
+                    $response['message'] = 'No student IDs provided for approval.';
+                }
+                break;
+
             case 'delete':
                 $data = json_decode(file_get_contents('php://input'), true);
                 $ids = $data['ids'] ?? [];
@@ -233,4 +250,3 @@ ob_end_clean(); // Clean any stray output
 echo json_encode($response);
 $pdo = null; // Close connection
 ?>
-
