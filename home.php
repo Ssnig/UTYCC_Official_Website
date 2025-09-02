@@ -891,7 +891,9 @@
         <div class="absolute inset-0 bg-black opacity-50"></div>
         <div
             class="relative container mx-auto max-w-5xl bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl overflow-hidden animate-on-scroll">
-            <div class="flex flex-col md:flex-row">
+            
+            <!-- This part will be shown when enrollment is open -->
+            <div id="enrollment-open" class="flex flex-col md:flex-row">
                 <!-- New Students Card -->
                 <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
                     <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4 shine-text"
@@ -926,6 +928,21 @@
                         data-lang-key="enroll_current_button">
                         Enroll for Next Year
                     </button>
+                </div>
+            </div>
+
+            <!-- This part will be shown when enrollment is closed -->
+            <div id="enrollment-closed" class="hidden">
+                 <div class="p-8 md:p-12 text-center w-full">
+                    <div class="mx-auto bg-gray-200 w-32 h-32 rounded-full flex items-center justify-center mb-6">
+                        <img src="./Img/logo/utycc_logo.png" alt="UTYCC Logo" class="p-2">
+                    </div>
+                    <h1 class="text-3xl font-bold text-red-600 mb-4" data-lang-key="admission_closed_title">
+                        ADMISSIONS ARE CURRENTLY CLOSED
+                    </h1>
+                    <p class="text-gray-700 text-lg mb-8" data-lang-key="admission_closed_text">
+                        Our university is not accepting new student applications at this time.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1291,6 +1308,8 @@
                 login_button: "ဝင်ရောက်မည်",
                 login_toggle:
                     "အကောင့်မရှိသေးဘူးလား? <a id='toggle-to-signup-btn'>အသစ်ပြုလုပ်ရန်</a>",
+                    admission_closed_title: "ကျောင်းအပ်လက်ခံခြင်း ယာယီပိတ်ထားပါသည်",
+                admission_closed_text: "တက္ကသိုလ်မှ ကျောင်းသား/သူအသစ်များ လက်ခံခြင်းကို လက်ရှိတွင် ရပ်ဆိုင်းထားပါသည်။",
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -1394,6 +1413,8 @@
                 login_button: "Sign In",
                 login_toggle:
                     "Don't have an account? <a id='toggle-to-signup-btn'>Create one</a>",
+                    admission_closed_title: "ADMISSIONS ARE CURRENTLY CLOSED",
+                admission_closed_text: "Our university is not accepting new student applications at this time.",
             },
         };
 
@@ -1675,17 +1696,19 @@
             preloader.classList.add('hidden');
         };
 
-        document.addEventListener("DOMContentLoaded", () => {
+         document.addEventListener("DOMContentLoaded", () => {
             const savedLang = localStorage.getItem("selectedLanguage") || "my";
             setLanguage(savedLang);
 
-            document.querySelectorAll("img").forEach((img) => {
-                if (img.src.includes("placehold.co")) {
-                    img.onerror = function () {
-                        this.src = "https://placehold.co/80x80/cccccc/ffffff?text=Error";
-                    };
-                }
-            });
+            // --- Enrollment Status Check ---
+            const enrollmentStatus = localStorage.getItem('enrollmentStatus');
+            const enrollmentOpenSection = document.getElementById('enrollment-open');
+            const enrollmentClosedSection = document.getElementById('enrollment-closed');
+
+            if (enrollmentStatus === 'closed') {
+                if (enrollmentOpenSection) enrollmentOpenSection.style.display = 'none';
+                if (enrollmentClosedSection) enrollmentClosedSection.classList.remove('hidden');
+            }
 
             // Close mobile menu when a nav link is clicked
             document.querySelectorAll('.nav-link').forEach(link => {
