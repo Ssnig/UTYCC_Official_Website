@@ -72,7 +72,7 @@ CREATE TABLE `students` (
   `entry_year` VARCHAR(10),
   `student_email` VARCHAR(100),
   `dormitory_preference` TINYINT(1) DEFAULT 0,
-   preferences JSON,
+   `preferences` JSON,
   `student_name_mm` VARCHAR(100),
   `student_name_en` VARCHAR(100),
   `student_race` VARCHAR(50),
@@ -84,7 +84,7 @@ CREATE TABLE `students` (
   `township` VARCHAR(100),
   `student_phone` VARCHAR(20),
   `student_address` TEXT,
-   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   `date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `photo_url` VARCHAR(255)
 

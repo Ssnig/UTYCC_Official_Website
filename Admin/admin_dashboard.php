@@ -624,6 +624,27 @@ $pdo = null;
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
     };
+    
+    /**
+     * [ပြင်ဆင်ပြီးသော Function]
+     * ဤ function သည် database ထဲတွင်ရှိသော path ပုံစံအမျိုးမျိုးကို (ဥပမာ 'uploads/...', '../uploads/...')
+     * browser ကနားလည်သော ပုံစံအမှန် ('/uploads/...') ဖြစ်အောင် ပြောင်းလဲပေးသည်။
+     */
+    function getSafePhotoUrl(path) {
+        if (!path) {
+            return PHOTO_PLACEHOLDER;
+        }
+
+        const uploadsIndex = path.indexOf('uploads/');
+
+        if (uploadsIndex !== -1) {
+            const correctPart = path.substring(uploadsIndex);
+            return `/${correctPart}`;
+        }
+        
+        // '/uploads/' ဆိုသော စာသားမပါဝင်ပါက၊ မူရင်း path ကိုသာ ပြန်ပေးမည်။
+        return path;
+    }
 
     function todayStr(d = new Date()) { return d.toISOString().split('T')[0]; }
 
@@ -669,8 +690,6 @@ $pdo = null;
         setTimeout(removeToast, duration);
     }
     
-    // This object holds references to all form elements for easy access.
-    // It's populated dynamically now to make it cleaner.
     const formElements = {};
     document.querySelectorAll('#studentForm [name]').forEach(el => {
         formElements[el.name] = el;
@@ -709,9 +728,8 @@ $pdo = null;
                   }
               }
           }
-          if (student.student_photo) {
-              document.getElementById('photo_preview').src = student.student_photo;
-          }
+          // [ပြင်ဆင်မှု] getSafePhotoUrl function ကိုသုံးပြီး ပုံရဲ့ path ကို ပြန်စစ်ဆေးခြင်း
+          document.getElementById('photo_preview').src = getSafePhotoUrl(student.photo_url);
       } 
       modal.showModal();
       formElements.student_name_en.focus();
@@ -722,9 +740,11 @@ $pdo = null;
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
+        // [ပြင်ဆင်မှု] getSafePhotoUrl function ကိုသုံးပြီး ပုံရဲ့ path ကို ပြန်စစ်ဆေးခြင်း
+        const photoUrl = getSafePhotoUrl(s.photo_url);
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
-                 <img src="${s.student_photo ? s.student_photo : PHOTO_PLACEHOLDER.replace('Photo', 'No Photo')}" alt="Student Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border));">
+                 <img src="${photoUrl}" alt="Student Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border));">
             </div>
             <h3 class="detail-section-header">Student Information</h3>
             <dl class="details-grid">
@@ -996,3 +1016,4 @@ $pdo = null;
   </script>
 </body>
 </html>
+
