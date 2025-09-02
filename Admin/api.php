@@ -35,6 +35,31 @@ if (!is_dir($fileSystemUploadDir)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         switch ($action) {
+
+            // delete_feedback
+case 'delete_feedback':
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id = $data['id'] ?? null;
+
+    if ($id) {
+        $stmt = $pdo->prepare("DELETE FROM feedback WHERE feedback_id = ?");
+        $stmt->execute([$id]);
+
+        if ($stmt->rowCount() > 0) {
+            $response = ['status' => 'success', 'message' => 'Feedback deleted successfully'];
+        } else {
+            $response = ['status' => 'error', 'message' => 'Feedback not found'];
+        }
+    } else {
+        $response = ['status' => 'error', 'message' => 'Feedback ID required'];
+    }
+    break;
+
+
+
+
+            // end
+            
             case 'add':
             case 'update':
                 // For add/update, data comes from $_POST because of FormData

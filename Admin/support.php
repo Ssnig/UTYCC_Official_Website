@@ -177,6 +177,32 @@ $pdo = null;
                 }
             }
         });
+
+// for delete feedback
+
+function deleteFeedback(id) {
+    if (!confirm("Are you sure you want to delete this feedback?")) return;
+
+    fetch("../api.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "delete_feedback", id: id })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("Deleted!");
+            location.reload(); // Refresh to update list
+        } else {
+            alert("Error: " + data.message);
+        }
+    })
+    .catch(err => console.error("Fetch error:", err));
+}
+
+
+
+
     </script>
 </body>
 </html>
