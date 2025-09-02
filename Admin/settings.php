@@ -251,6 +251,17 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
                         </div>
                     </div>
                 </div>
+                <div class="card">
+                    <h3>ကျောင်းအပ်ခြင်းဆိုင်ရာ သတ်မှတ်ချက်များ</h3>
+                    <p style="font-size: 14px; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">ကျောင်းသားများ ကျောင်းအပ်နိုင်ခြင်းကို ထိန်းချုပ်ရန်။</p>
+                     <div class="field">
+                        <label>ကျောင်းအပ် လက်ခံမှု အခြေအနေ</label>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn" id="enrollmentOpenBtn">ဖွင့်ရန်</button>
+                            <button class="btn" id="enrollmentCloseBtn">ပိတ်ရန်</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="card" style="border-color: hsl(var(--danger)/0.5);">
                     <h3 style="color: hsl(var(--danger));">Danger Zone</h3>
                     <p style="font-size: 14px; color: hsl(var(--muted-foreground));">This action is irreversible. Please proceed with caution.</p>
@@ -346,6 +357,36 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
                 }
                 localStorage.setItem('theme', theme);
             }
+
+            // --- Enrollment Settings ---
+            const enrollmentOpenBtn = document.getElementById('enrollmentOpenBtn');
+            const enrollmentCloseBtn = document.getElementById('enrollmentCloseBtn');
+
+            function updateEnrollmentButtonState() {
+                const status = localStorage.getItem('enrollmentStatus') || 'open'; // Default to open
+                if (status === 'open') {
+                    enrollmentOpenBtn.classList.add('primary');
+                    enrollmentCloseBtn.classList.remove('destructive');
+                } else {
+                    enrollmentOpenBtn.classList.remove('primary');
+                    enrollmentCloseBtn.classList.add('destructive');
+                }
+            }
+            
+            enrollmentOpenBtn.addEventListener('click', () => {
+                localStorage.setItem('enrollmentStatus', 'open');
+                showToast('ကျောင်းအပ်ခြင်းကို ယခု ဖွင့်လှစ်ထားပါသည်။', 'success');
+                updateEnrollmentButtonState();
+            });
+
+            enrollmentCloseBtn.addEventListener('click', () => {
+                localStorage.setItem('enrollmentStatus', 'closed');
+                showToast('ကျောင်းအပ်ခြင်းကို ယခု ပိတ်ထားပါသည်။', 'warning');
+                updateEnrollmentButtonState();
+            });
+
+            // Initial state on page load
+            updateEnrollmentButtonState();
       
             document.getElementById('clearAllDataBtn').addEventListener('click', async () => {
                 const confirmed = await showConfirm(
@@ -363,3 +404,4 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
     </script>
 </body>
 </html>
+

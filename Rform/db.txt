@@ -84,7 +84,6 @@ CREATE TABLE `students` (
   `township` VARCHAR(100),
   `student_phone` VARCHAR(20),
   `student_address` TEXT,
-   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   `date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `photo_url` VARCHAR(255)
 
