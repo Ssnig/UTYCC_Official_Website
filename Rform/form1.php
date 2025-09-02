@@ -1,6 +1,16 @@
 <?php
     // Start a new session or resume an existing one
     session_start();
+
+    // If the user is starting a new application (e.g., by visiting form1.php?new=1),
+    // clear any previously saved form data from the session.
+    if (isset($_GET['new']) && $_GET['new'] == '1') {
+        unset($_SESSION['form1_data']);
+        // Redirect to remove the "?new=1" from the URL, so a page refresh doesn't clear the form again.
+        header('Location: form1.php');
+        exit;
+    }
+
     // require_once __DIR__ . '/../config.php';
 
     // --- Academic Year Calculation ---
@@ -74,7 +84,7 @@
         $is_removal_request = !empty($_POST['remove_photo']) && $_POST['remove_photo'] == '1';
 
         if ($is_new_upload_attempt && $_FILES["photo_upload"]["error"] == UPLOAD_ERR_OK) {
-            $target_dir ="/uploads/";
+            $target_dir ="../uploads/";
             if (!is_dir($target_dir)) {
                 mkdir($target_dir, 0777, true);
             }
@@ -273,9 +283,12 @@
             }
         }
 
-        $_SESSION['form1_data'] = $_POST;
+        
 
         if (empty($errors)) {
+            // If there are no errors, save form data to the session to pass to the next page.
+            // Data is only saved to the session at this single point, right before successful redirection.
+            $_SESSION['form1_data'] = $_POST;
             header("location: form2.php");
             exit;
         }
@@ -641,7 +654,7 @@
 
             <!-- Navigation Buttons -->
             <div class="nav-buttons mt-8 flex justify-between items-center">
-                <a href="#" class="nav-button-back text-gray-600 hover:text-gray-900 font-medium">Back</a>
+                <a href="form1.php?new=1" class="nav-button-back text-gray-600 hover:text-gray-900 font-medium">Start Over</a>
                 <button type="submit" class="nav-button-next">Next Step</button>
             </div>
 
@@ -1070,4 +1083,3 @@
 
 </body>
 </html>
-

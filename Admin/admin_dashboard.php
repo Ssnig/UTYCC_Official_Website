@@ -2,16 +2,15 @@
 // Include the database configuration file
 require_once '../Rform/db.php';
 
-// --- FETCH ALL STUDENT DATA ON INITIAL PAGE LOAD ---
-// --- FETCH ALL STUDENT DATA ON INITIAL PAGE LOAD USING PDO ---
+// --- FETCH PENDING STUDENT DATA ON INITIAL PAGE LOAD ---
 $students = [];
-// Added s.student_photo to the SELECT statement
 $sql = "SELECT s.*, 
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
         FROM students s
         LEFT JOIN fathers f ON s.student_id = f.student_id
         LEFT JOIN mothers m ON s.student_id = m.student_id
+        WHERE s.status = 'pending'
         ORDER BY s.date DESC";
 
 try {
@@ -181,6 +180,7 @@ $pdo = null;
     .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -12px hsl(var(--fg)/0.25); }
     .btn:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
     .btn.primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--primary)); }
+    .btn.success { background: hsl(var(--success)); color: hsl(0 0% 100%); border-color: hsl(var(--success)); }
     .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
     .btn.ghost { background: transparent; border-color: hsl(var(--border)); }
 
@@ -334,34 +334,26 @@ $pdo = null;
   <div class="app" id="app">
     <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
-      <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" class="mx-auto w-20 h-20"/>
+        <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
         <h1>UTYCC Admin Panel</h1>
       </div>
       <nav>
-        <a class="nav-link active" href="#">Students</a>
+        <a class="nav-link active" href="admin_dashboard.php">Registrations</a>
         <a class="nav-link" href="#">Courses</a>
-        <a class="nav-link" href="#">Registrations</a>
+        <a class="nav-link" href="students.php">Students</a>
         <a class="nav-link" href="support.php">Support</a>
         <a class="nav-link" href="settings.php">Settings</a>
       </nav>
     </aside>
 
     <header class="header" id="header">
-      <form class="search" role="search" aria-label="Search students" onsubmit="event.preventDefault()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/></svg>
-        <input id="search" name="q" placeholder="Search by name, email, or seat no..." autocomplete="off" />
-      </form>
-      <div class="userbar">
-        <button class="btn ghost" id="importBtn" title="Import CSV" aria-label="Import CSV">Import</button>
-        <button class="btn ghost" id="exportBtn" title="Export CSV" aria-label="Export CSV">Export</button>
-        <button class="btn primary" id="addBtn" aria-label="Add student">Add Student</button>
-      </div>
+        <h1>Dashboard</h1>
     </header>
 
     <main class="main" id="main">
       <section class="cards" aria-label="Overview">
         <article class="card" aria-live="polite">
-          <h3>Total Students</h3>
+          <h3>Pending Applications</h3>
           <div class="value" id="statTotal">0</div>
         </article>
         <article class="card">
@@ -369,17 +361,16 @@ $pdo = null;
             <div class="value" id="statDormitory">0</div>
         </article>
         <article class="card">
-          <h3>Today's Entries</h3>
+          <h3>Today's Applications</h3>
           <div class="value" id="statToday">0</div>
         </article>
       </section>
 
       <section class="section" id="students">
         <div class="section-header">
-          <h2>Students</h2>
+          <h2>စာရင်းသွင်းထားသော ကျောင်းသား/သူများ</h2>
           <div class="toolbar">
-            <div class="spacer"></div>
-            <button class="btn ghost" id="bulkDeleteBtn" disabled>Delete Selected</button>
+             <button class="btn success" id="bulkApproveBtn" disabled>Approve Selected</button>
           </div>
         </div>
 
@@ -407,18 +398,17 @@ $pdo = null;
       </section>
     </main>
   </div>
-
+  
   <!-- Modal: Add/Edit Student -->
   <dialog id="studentModal" aria-modal="true">
     <form method="dialog" id="studentForm">
       <div class="modal-header">
-        <strong id="modalTitle">Add Student</strong>
+        <strong id="modalTitle">Edit Student</strong>
         <button class="btn ghost" type="button" id="closeModal" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="student_id" name="student_id" />
         <div class="form-grid">
-            <!-- NEW: Image Upload Section -->
             <div style="grid-column: 1 / -1; text-align: center; margin-bottom: 12px;">
                 <img id="photo_preview" src="https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo" alt="Student Photo Preview" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border)); cursor: pointer;">
                 <input type="file" id="student_photo" name="student_photo" accept="image/*" style="display: none;">
@@ -605,11 +595,9 @@ $pdo = null;
     </div>
     <div class="modal-footer">
         <button class="btn ghost" id="confirmCancel">Cancel</button>
-        <button class="btn destructive" id="confirmOK">Confirm</button>
+        <button class="btn" id="confirmOK">Confirm</button>
     </div>
   </dialog>
-
-  <input type="file" id="fileInput" accept=".csv" hidden />
   
   <div class="toast-wrap"></div>
 
@@ -625,34 +613,18 @@ $pdo = null;
       selected: new Set(),
     };
     
-    /**
-     * [ပြင်ဆင်ပြီးသော Function]
-     * ဤ function သည် database ထဲတွင်ရှိသော path ပုံစံအမျိုးမျိုးကို (ဥပမာ 'uploads/...', '../uploads/...')
-     * browser ကနားလည်သော ပုံစံအမှန် ('/uploads/...') ဖြစ်အောင် ပြောင်းလဲပေးသည်။
-     */
     function getSafePhotoUrl(path) {
-        if (!path) {
-            return PHOTO_PLACEHOLDER;
-        }
-
+        if (!path) return PHOTO_PLACEHOLDER;
         const uploadsIndex = path.indexOf('uploads/');
-
-        if (uploadsIndex !== -1) {
-            const correctPart = path.substring(uploadsIndex);
-            return `/${correctPart}`;
-        }
-        
-        // '/uploads/' ဆိုသော စာသားမပါဝင်ပါက၊ မူရင်း path ကိုသာ ပြန်ပေးမည်။
+        if (uploadsIndex !== -1) return `/${path.substring(uploadsIndex)}`;
         return path;
     }
 
     function todayStr(d = new Date()) { return d.toISOString().split('T')[0]; }
-
     function formatDate(iso) {
       if (!iso) return 'N/A';
       try { const d = new Date(iso); return d.toLocaleDateString(); } catch { return iso; }
     }
-
     function cmp(a, b, key) {
       const av = a[key] || ''; 
       const bv = b[key] || '';
@@ -695,23 +667,27 @@ $pdo = null;
         formElements[el.name] = el;
     });
 
-    function showConfirm(title, message) {
+    function showConfirm(title, message, confirmClass = 'destructive') {
       return new Promise(resolve => {
         const confirmModal = document.getElementById('confirmModal');
         document.getElementById('confirmTitle').textContent = title;
         document.getElementById('confirmMessage').textContent = message;
+        const confirmBtn = document.getElementById('confirmOK');
+        
+        confirmBtn.className = `btn ${confirmClass}`;
+        
         confirmModal.showModal();
         const handleConfirm = () => { confirmModal.close(); resolve(true); };
         const handleCancel = () => { confirmModal.close(); resolve(false); };
-        document.getElementById('confirmOK').addEventListener('click', handleConfirm, { once: true });
+        confirmBtn.addEventListener('click', handleConfirm, { once: true });
         document.getElementById('confirmCancel').addEventListener('click', handleCancel, { once: true });
       });
     }
-
+    
     function openModal(mode, student = null) {
       const modal = document.getElementById('studentModal');
       const form = document.getElementById('studentForm');
-      document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Edit Student' : 'Add Student';
+      document.getElementById('modalTitle').textContent = 'Edit Student Application';
       
       form.reset();
       document.getElementById('photo_preview').src = PHOTO_PLACEHOLDER;
@@ -728,7 +704,6 @@ $pdo = null;
                   }
               }
           }
-          // [ပြင်ဆင်မှု] getSafePhotoUrl function ကိုသုံးပြီး ပုံရဲ့ path ကို ပြန်စစ်ဆေးခြင်း
           document.getElementById('photo_preview').src = getSafePhotoUrl(student.photo_url);
       } 
       modal.showModal();
@@ -736,11 +711,10 @@ $pdo = null;
     }
     
     function closeModalSafe() { document.getElementById('studentModal').close(); }
-    
+
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
-        // [ပြင်ဆင်မှု] getSafePhotoUrl function ကိုသုံးပြီး ပုံရဲ့ path ကို ပြန်စစ်ဆေးခြင်း
         const photoUrl = getSafePhotoUrl(s.photo_url);
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
@@ -845,9 +819,10 @@ $pdo = null;
           <td>${formatDate(s.date)}</td>
           <td>
             <div style="display:flex; gap:6px;">
+              <button class="btn success" data-approve="${s.student_id}">လက်ခံမည်</button>
+              <button class="btn ghost" data-edit="${s.student_id}">ပြင်ရန်</button>
               <button class="btn ghost" data-details="${s.student_id}">Details</button>
-              <button class="btn ghost" data-edit="${s.student_id}">Edit</button>
-              <button class="btn destructive" data-del="${s.student_id}">Delete</button>
+              <button class="btn destructive" data-del="${s.student_id}">ပယ်ချမည်</button>
             </div>
           </td>`;
         tbody.appendChild(tr);
@@ -856,6 +831,7 @@ $pdo = null;
       document.getElementById('pageInfo').textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
       document.getElementById('prevPage').disabled = state.page <= 1;
       document.getElementById('nextPage').disabled = state.page >= totalPages;
+      document.getElementById('bulkApproveBtn').disabled = state.selected.size === 0;
     }
 
     function render() {
@@ -864,16 +840,13 @@ $pdo = null;
     }
     
     function addEventListeners() {
-      document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
       document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
       document.getElementById('nextPage').addEventListener('click', () => { state.page++; render(); });
-      document.getElementById('addBtn').addEventListener('click', () => openModal('add'));
       document.getElementById('closeModal').addEventListener('click', closeModalSafe);
       document.getElementById('cancelModal').addEventListener('click', closeModalSafe);
       document.getElementById('closeDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
       document.getElementById('okDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
-
-      // --- NEW: Event listeners for photo upload ---
+      
       document.getElementById('photo_preview').addEventListener('click', () => {
           document.getElementById('student_photo').click();
       });
@@ -887,7 +860,6 @@ $pdo = null;
               reader.readAsDataURL(file);
           }
       });
-
 
       document.querySelectorAll('th.sortable').forEach(th => {
         th.addEventListener('click', () => {
@@ -907,7 +879,6 @@ $pdo = null;
             if (e.target.checked) state.selected.add(s.student_id);
             else state.selected.delete(s.student_id);
         });
-        document.getElementById('bulkDeleteBtn').disabled = state.selected.size === 0;
         render();
       });
 
@@ -917,7 +888,7 @@ $pdo = null;
             const id = parseInt(e.target.dataset.id, 10);
             if (e.target.checked) state.selected.add(id);
             else state.selected.delete(id);
-            document.getElementById('bulkDeleteBtn').disabled = state.selected.size === 0;
+            document.getElementById('bulkApproveBtn').disabled = state.selected.size === 0;
         }
       });
       
@@ -925,14 +896,28 @@ $pdo = null;
           const targetButton = e.target.closest('button');
           if (!targetButton) return;
 
-          const id = parseInt(targetButton.dataset.details || targetButton.dataset.edit || targetButton.dataset.del, 10);
+          const id = parseInt(targetButton.dataset.approve || targetButton.dataset.edit || targetButton.dataset.details || targetButton.dataset.del, 10);
           const student = state.students.find(s => s.student_id === id);
           if (!student) return;
 
           if (targetButton.dataset.details !== undefined) openDetailsModal(student);
           if (targetButton.dataset.edit !== undefined) openModal('edit', student);
+          
+          if (targetButton.dataset.approve !== undefined) {
+              const confirmed = await showConfirm('Approve Student', `Are you sure you want to approve "${student.student_name_en}"?`, 'success');
+              if (!confirmed) return;
+              
+              const response = await apiRequest('approve_students', { ids: [id] });
+              if (response.status === 'success') {
+                  state.students = state.students.filter(s => s.student_id !== id);
+                  state.selected.delete(id);
+                  render();
+                  showToast(`Student "${student.student_name_en}" approved.`, 'success');
+              }
+          }
+
           if (targetButton.dataset.del !== undefined) {
-              const confirmed = await showConfirm('Delete Student', `Are you sure you want to delete "${student.student_name_en}"? This action cannot be undone.`);
+              const confirmed = await showConfirm('Reject Student', `Are you sure you want to reject and delete the application for "${student.student_name_en}"?`);
               if (!confirmed) return;
               
               const response = await apiRequest('delete', { ids: [id] });
@@ -940,26 +925,26 @@ $pdo = null;
                   state.students = state.students.filter(s => s.student_id !== id);
                   state.selected.delete(id);
                   render();
-                  showToast(`Student "${student.student_name_en}" deleted.`, 'success');
+                  showToast(`Application for "${student.student_name_en}" deleted.`, 'success');
               }
           }
       });
 
-      document.getElementById('bulkDeleteBtn').addEventListener('click', async () => {
+      document.getElementById('bulkApproveBtn').addEventListener('click', async () => {
         if (!state.selected.size) return;
-        const confirmed = await showConfirm('Delete Selected', `Delete ${state.selected.size} student(s)? This cannot be undone.`);
+        const confirmed = await showConfirm('Approve Selected', `Approve ${state.selected.size} student(s)?`, 'success');
         if (!confirmed) return;
         
         const ids = Array.from(state.selected);
-        const response = await apiRequest('delete', { ids });
+        const response = await apiRequest('approve_students', { ids });
         if (response.status === 'success') {
             state.students = state.students.filter(s => !state.selected.has(s.student_id));
             state.selected.clear();
             render();
-            showToast(`${ids.length} student(s) deleted.`, 'success');
+            showToast(`${ids.length} student(s) approved.`, 'success');
         }
       });
-
+      
       document.getElementById('saveStudent').addEventListener('click', async (e) => {
         e.preventDefault();
         
@@ -971,10 +956,8 @@ $pdo = null;
             return;
         }
         
-        // Use FormData to send both file and text data
         const formData = new FormData(form);
-        const action = studentId ? 'update' : 'add';
-        formData.append('action', action);
+        formData.append('action', 'update');
 
         try {
             const response = await fetch('api.php', {
@@ -990,17 +973,13 @@ $pdo = null;
             const result = await response.json();
 
             if (result.status === 'success' && result.student) {
-                if (action === 'add') {
-                    state.students.unshift(result.student);
-                } else {
-                    const index = state.students.findIndex(s => s.student_id === studentId);
-                    if (index !== -1) state.students[index] = result.student;
-                }
+                const index = state.students.findIndex(s => s.student_id === studentId);
+                if (index !== -1) state.students[index] = result.student;
                 render();
                 closeModalSafe();
-                showToast(`Student "${result.student.student_name_en}" saved.`, 'success');
+                showToast(`Student "${result.student.student_name_en}" updated.`, 'success');
             } else {
-                showToast(result.message || 'Failed to save student.', 'error');
+                showToast(result.message || 'Failed to save student data.', 'error');
             }
         } catch (error) {
             console.error('Save Student Failed:', error);
@@ -1016,3 +995,4 @@ $pdo = null;
   </script>
 </body>
 </html>
+
