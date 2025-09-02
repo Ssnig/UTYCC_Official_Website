@@ -137,6 +137,20 @@ CREATE TABLE `mothers` (
 
 
 
+CREATE TABLE `preferences` (
+  `preference_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `student_id` INT NOT NULL,
+  `preference_order` TINYINT NOT NULL,  -- 1 to 5
+  `major_code` VARCHAR(10) NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT `fk_preferences_student`
+    FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+
+
+
 
 for feedback
 

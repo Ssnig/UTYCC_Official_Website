@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
     // Start a new session or resume an existing one
     session_start();
@@ -1083,3 +1084,5 @@
 
 </body>
 </html>
+=======
+>>>>>>> 18e257c77078e73cdb3118551500004d9259c5c9
