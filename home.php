@@ -992,7 +992,7 @@
                     </h3>
                     <ul class="space-y-2 text-sm text-blue-200">
                         <li>
-                            <a href="./term.html" class="hover:text-white shine_text"
+                            <a href="./terms.html" class="hover:text-white shine_text"
                                 data-lang-key="footer_link_terms">Terms &
                                 Policies</a>
                         </li>
@@ -1004,7 +1004,7 @@
                                 Us</a>
                         </li>
                         <li>
-                            <a href="./rr.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules &
+                            <a href="./randr.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules &
                                 Regulations</a>
 
                         </li>
