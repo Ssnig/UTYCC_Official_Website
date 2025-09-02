@@ -261,6 +261,7 @@ if (isset($_GET['status'])) {
   <body
     class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen opacity-0 animate-fade-in"
   >
+    <?php include 'feedPartials/header.php'; ?>
     <header
         class="text-center mb-12 opacity-0 animate-fade-up"
         style="animation-delay: 0.2s"
@@ -362,7 +363,7 @@ if (isset($_GET['status'])) {
           </div>
         </form>
       </div>
-
+<?php include 'feedPartials/footer.php'; ?> 
 
 
        <script>
