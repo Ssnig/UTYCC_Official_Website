@@ -1,8 +1,8 @@
 <?php 
 session_start();
 
-echo "pre";
-print_r($_SESSION);
+// echo "pre";
+// print_r($_SESSION);
 
 include "db.php"; // DB connection
 
@@ -30,16 +30,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $form2 = $_SESSION['form2_data']; // preferences က ဒီထဲမှာရှိတယ်လို့ ယူဆပါတယ်
         $option = $_SESSION['option_data'];
 
+        // Encode preferences as JSON
+        $preferences_json = json_encode($form2['preferences']);
+
         // =================================================================
         // အဆင့် (၁) - students table ထဲကို အရင်ထည့်ပါ
         // =================================================================
         $stmt_student = $pdo->prepare("
             INSERT INTO students 
-            (year, academic_year, seat_no, entry_year, student_email, dormitory_preference,
+            (year, academic_year, seat_no, entry_year, student_email, dormitory_preference,preferences,
              student_name_mm, student_name_en, student_race, student_religion, student_nrc, 
              student_dob, student_birthplace, state_region, township, student_phone, student_address, 
              date, photo_url)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)
         ");
 
          // Get the photo URL from the session and remove any '..' from the path.
@@ -56,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $form1['entry_year'],
             $form1['student_email'],
             $option['dormitory_preference'],// Dormitory preference
+              $preferences_json,          // Preferences as JSON
             $form1['student_name_mm'],
             $form1['student_name_en'],
             $form1['student_race'],
