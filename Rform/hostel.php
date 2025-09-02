@@ -18,7 +18,6 @@
         if (isset($_FILES['student_photo']) && $_FILES['student_photo']['error'] == UPLOAD_ERR_OK) {
             $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
             $max_size = 5 * 1024 * 1024; // 5MB
-            $uploadOk = 1;
 
             if (in_array($_FILES['student_photo']['type'], $allowed_types) && $_FILES['student_photo']['size'] <= $max_size) {
                 
@@ -33,8 +32,8 @@
                 if (move_uploaded_file($_FILES["student_photo"]["tmp_name"], $target_file)) {
                     // Successfully uploaded new photo, now delete the old one
                     $old_photo_url = $_SESSION['form1_data']['photo_url'] ?? '';
-                    if (!empty($old_photo_url) && file_exists($old_photo_url)) {
-                        unlink($old_photo_url);
+                    if (!empty($old_photo_url) && file_exists(__DIR__ . $old_photo_url)) {
+                        unlink(__DIR__ . $old_photo_url);
                     }
                     
                     // Save the new file path into session
