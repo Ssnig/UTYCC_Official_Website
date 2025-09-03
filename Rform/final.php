@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $form1['father_deceased_year'] ?? null,
             $form1['father_address']
         ]);
-
+        
         // =================================================================
         // Step 3: Insert into the 'mothers' table with the student_id.
         // =================================================================
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Clear all session data after successful submission.
         session_destroy();
-
+        
         // Show success message and redirect.
         echo "<script>
             alert('Registration is successful!');
@@ -148,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Display a user-friendly error message.
         $error_message = "❌ Submission failed due to a system error. Please try again later. Error: " . $e->getMessage();
+        // You can display this $error_message in the HTML if you want.
         echo "<script>alert('{$error_message}');</script>";
     }
 }
@@ -155,61 +156,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Final Submission</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f1f5f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #1e293b;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Submission</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+    </style>
 </head>
-<body class="p-4">
+<body class="p-4 bg-gray-50 flex flex-col items-center justify-center min-h-screen">
 
-<div class="container w-full max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl p-8 md:p-12 space-y-8">
-  <div class="text-center space-y-2">
-    <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" class="mx-auto w-20 h-20"/>
-    <h2 class="text-4xl font-extrabold">UTYCC</h2>
-    <p class="text-gray-500">You are at the final step of your submission.</p>
-  </div>
+<div class="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl py-12 px-8 md:px-12 space-y-8">
+    <div class="text-center space-y-2 mb-6">
+        <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" class="mx-auto w-20 h-20"/>
+        <h2 class="text-4xl font-extrabold text-gray-800">UTYCC</h2>
+        <p class="text-gray-500">You're one step away from completing your submission.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Card 1: Personal Details -->
+        <a href="form1.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+            <span class="text-3xl text-green-500 mb-2">✔</span>
+            <p class="text-xs font-medium text-gray-400 mb-1">Step 1</p>
+            <p class="font-semibold text-lg text-gray-700 text-center">Personal Details</p>
+        </a>
+        <!-- Card 2: Major Preferences -->
+        <a href="form2.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+            <span class="text-3xl text-green-500 mb-2">✔</span>
+            <p class="text-xs font-medium text-gray-400 mb-1">Step 2</p>
+            <p class="font-semibold text-lg text-gray-700 text-center">Major Preferences</p>
+        </a>
+        <!-- Card 3: Accommodation -->
+        <a href="option.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+            <span class="text-3xl text-green-500 mb-2">✔</span>
+            <p class="text-xs font-medium text-gray-400 mb-1">Step 3</p>
+            <p class="font-semibold text-lg text-gray-700 text-center">Accommodation</p>
+        </a>
+    </div>
 
-  <div class="space-y-6">
-    <a href="form1.php" class="bg-gray-50 p-6 rounded-xl flex justify-between items-center shadow-sm hover:bg-gray-100 transition-colors">
-      <div>
-        <p class="text-gray-400 text-sm font-medium">Personal Details</p>
-        <p class="font-semibold text-lg">Form 1 Completed</p>
-      </div>
-      <div class="text-green-500 font-bold">✔</div>
-    </a>
-    <a href="form2.php" class="bg-gray-50 p-6 rounded-xl flex justify-between items-center shadow-sm hover:bg-gray-100 transition-colors">
-      <div>
-        <p class="text-gray-400 text-sm font-medium">Major Preferences</p>
-        <p class="font-semibold text-lg">Form 2 Completed</p>
-      </div>
-      <div class="text-green-500 font-bold">✔</div>
-    </a>
-    <a href="option.php" class="bg-gray-50 p-6 rounded-xl flex justify-between items-center shadow-sm hover:bg-gray-100 transition-colors">
-      <div>
-        <p class="text-gray-400 text-sm font-medium">Accommodation</p>
-        <p class="font-semibold text-lg">Options Completed</p>
-      </div>
-      <div class="text-green-500 font-bold">✔</div>
-    </a>
-  </div>
-
-  <div class="flex justify-between items-center gap-4 pt-4">
-    <a href="option.php" class="px-6 py-3 rounded-full border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition-colors">Back</a>
-    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
-      <button type="submit" class="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105">Submit Application</button>
-    </form>
-  </div>
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
+        <a href="option.php" class="w-full sm:w-auto px-6 py-3 rounded-full border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition-colors text-center shadow-sm hover:shadow-md">Back</a>
+        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="w-full sm:w-auto">
+            <button type="submit" class="w-full sm:w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105 shadow-md">Submit</button>
+        </form>
+    </div>
 </div>
 
 </body>
