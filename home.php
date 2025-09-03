@@ -933,7 +933,7 @@
             <div id="enrollment-open" class="flex flex-col md:flex-row">
                 <!-- New Students Card -->
                 <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
-                    <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4 shine-text"
+                    <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4 "
                         data-lang-key="enroll_new_title">
                         New Students
                     </h3>
