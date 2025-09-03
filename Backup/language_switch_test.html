@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./CSS/star-layout.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="./CSS/footer.css" />
+  <script src="./JS/star-layout.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
+  <title>University of Technology - Yatanarpon Cyber City (UTYCC)</title>
+  <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="./CSS/hero-carousel.css" />
+  <script src="./JS/hero-carousel.js"></script>
+  <link rel="stylesheet" href="CSS/font.css" />
+  <style>
+    :root {
+      --primary: #0350a3;
+      --primary-dark: #02356a;
+      --accent: #ff6b35;
+      --light: #f4f4f4;
+      --dark: #333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+      font-family: "Inter", sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Header and Navigation */
+    .bg-white {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .nav-link {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 0%;
+    }
+
+    /* Hero Section */
+    header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    header h1 {
+      color: #e1e8ef;
+      font-family: "Times New Roman", Times, serif;
+      font-weight: lighter;
+      font-style: italic;
+    }
+
+    header p {
+      color: #dde2e8;
+    }
+
+    .hero-bg {
+      background-image: linear-gradient(rgba(0, 51, 102, 0.75),
+          rgba(0, 51, 102, 0.75)),
+        url("https://placehold.co/1600x800/003366/FFFFFF?text=UTYCC+Campus");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .stat-card {
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .program-card {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .program-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Accordion */
+    .accordion .accordion-item {
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .accordion .accordion-item:hover {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .accordion .accordion-header {
+      background: linear-gradient(to right, #f8f9fa, #e9ecef);
+      padding: 18px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    .accordion .accordion-header:hover {
+      background: linear-gradient(to right, #e9ecef, #dee2e6);
+    }
+
+    .accordion .accordion-content {
+      padding: 0 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      background-color: #fdfdfd;
+    }
+
+    .accordion .accordion-content.active {
+      padding: 20px;
+      max-height: 500px;
+    }
+
+    .accordion .accordion-header::after {
+      content: "+";
+      font-size: 1.5em;
+      transition: transform 0.3s ease;
+    }
+
+    .accordion .accordion-header.active::after {
+      content: "-";
+      transform: rotate(0deg);
+    }
+
+    /* Call to Action (CTA) */
+    .cta-section {
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+      border-radius: 12px;
+      margin-top: 40px;
+      border: 1px solid #bee5eb;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .cta-section h2 {
+      color: #0c5460;
+      margin-bottom: 15px;
+      font-size: 28px;
+    }
+
+    .cta-section p {
+      font-size: 1.1em;
+      color: #0c5460;
+      margin-bottom: 25px;
+    }
+
+    .cta-section .btn {
+      display: inline-block;
+      background: linear-gradient(to right,
+          var(--primary),
+          var(--primary-dark));
+      color: white;
+      padding: 14px 30px;
+      text-decoration: none;
+      border-radius: 50px;
+      font-size: 1.1em;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(3, 80, 163, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(3, 80, 163, 0.4);
+    }
+
+    .cta-section .btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    .animate-pulse {
+      animation: pulse 2s infinite;
+    }
+
+    /* Floating elements */
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    /* Modern mobile menu */
+    #mobile-menu {
+      transition: max-height 0.5s ease;
+      max-height: 0;
+    }
+
+    #mobile-menu.active {
+      max-height: 500px;
+    }
+
+    /* Particle background effect */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      animation: float 15s infinite ease-in-out;
+    }
+
+    /* Back to top button */
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background: var(--primary-dark);
+      transform: translateY(-5px);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .container {
+        margin: 10px;
+        padding: 15px;
+      }
+
+      .language-selector-mobile {
+        width: 100%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .language-selector-mobile select {
+        width: 100%;
+      }
+
+      nav {
+        flex-direction: row;
+        padding: 5px 0;
+      }
+
+      .featured-list {
+        grid-template-columns: 1fr;
+      }
+
+      /* Mobile header adjustments - keeping original logo size */
+      .mobile-nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        min-width: 0;
+        /* Allow it to shrink if needed */
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        margin-left: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+        /* Allow text truncation */
+      }
+
+      .logo-text span:first-child {
+        font-size: 18px;
+      }
+
+      .logo-text span:last-child {
+        font-size: 10px;
+        /* Slightly smaller but still readable */
+        display: block;
+        /* Show on mobile but in a smaller size */
+      }
+
+      #mobile-menu-button {
+        font-size: 24px;
+        padding: 8px;
+        flex-shrink: 0;
+      }
+
+      .cta-section {
+        padding: 25px 15px;
+      }
+
+      .cta-section h2 {
+        font-size: 24px;
+      }
+
+      /* Ensure the logo and text fit in one line */
+      .mobile-nav-container>a {
+        display: flex;
+        align-items: center;
+        max-width: 70%;
+        /* Limit width to allow space for menu button */
+      }
+    }
+
+    /* For very small screens */
+    @media (max-width: 400px) {
+      .logo-text span:last-child {
+        font-size: 9px;
+        /* Even smaller for very small screens */
+      }
+
+      .logo-text span:first-child {
+        font-size: 16px;
+      }
+    }
+
+    section h1 {
+      color: #053568;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      /* Removed the padding-bottom and position that were for the line */
+    }
+
+    h2 {
+      color: #0c5460;
+      /* Clean, consistent blue color */
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <div class="bg-white shadow-md sticky top-0 z-50">
+    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <a href="./home.php" class="flex items-center space-x-3">
+        <div class="p-2 rounded-lg">
+          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+        </div>
+        <div>
+          <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
+          <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
+            City)</span>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="#about" class="nav-link no- text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_about">About Us</a>
+        <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_programs">Academic Programs</a>
+        <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_collaboration">Collaboration</a>
+        <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_contact">Contact</a>
+
+        <div class="relative ml-4">
+          <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+            <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
+            <select id="language-switcher"
+              class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="my">မြန်မာ</option>
+              <option value="en">English</option>
+            </select>
+            <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+          </div>
+        </div>
+      </div>
+      <button id="mobile-menu-button" class="md:hidden text-blue-900">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </nav>
+    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
+      <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_about_mobile">About Us</a>
+      <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_programs_mobile">Academic Programs</a>
+      <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_collaboration_mobile">Collaboration</a>
+      <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_contact_mobile">Contact</a>
+      <div class="relative mt-4 pt-4 border-t">
+        <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
+          <i class="fas fa-globe text-gray-500 absolute left-4 z-10 pointer-events-none"></i>
+          <select id="language-switcher-mobile"
+            class="w-full cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-2 pl-11 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="my">မြန်မာ</option>
+            <option value="en">English</option>
+          </select>
+          <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 z-10 pointer-events-none"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  
+
+  
+
+  <!-- Footer -->
+  <footer id="contact" class="bg-blue-900 text-white">
+    <div class="container mx-auto px-6 py-12">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
+          <h3 class="text-lg font-bold">UTYCC</h3>
+          <p class="text-blue-200 text-sm mt-4">
+            <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
+              Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay
+              Region, Myanmar
+            </a>
+          </p>
+          <div class="mt-4 text-sm text-blue-200">
+            <p>Email: info@utycc.edu.mm (example)</p>
+            <p>Phone: +95 (XX) XXX XXX (example)</p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
+            Faculties
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li>
+              <a href="./Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
+            </li>
+            <li>
+              <a href="./Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+            </li>
+            <li>
+              <a href="./Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+            </li>
+            <li>
+              <a data-lang-key="footer_faculty_pre" href="./Majors/pre.html">Precision Engineering</a>
+            </li>
+            <li>
+              <a data-lang-key="footer_faculty_ame" href="./Majors/ame.html">
+                Advanced Materials Engineering
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
+            Quick Links
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li>
+              <a href="./terms.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+            </li>
+            <li>
+              <a href="./FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+            </li>
+            <li>
+              <a href="./about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+            </li>
+            <li>
+              <a href="./randr.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+            </li>
+            <li>
+              <a href="./data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
+            Follow Us
+          </h3>
+          <div class="flex space-x-4">
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+            <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/"
+              class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
+          </div>
+          <br />
+          <br />
+          <div>
+            <div class="newtons-cradle">
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
+        data-lang-key="footer_copyright">
+        &copy; 2025 University of Technology - Yatanarpon Cyber City. All
+        Rights Reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top button -->
+  <div class="back-to-top">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+
+  <script>
+    // --- Mobile Menu and Smooth Scroll Script ---
+    const navLinks = document.querySelectorAll(".nav-link");
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        const targetId = link.getAttribute("href");
+        document
+          .querySelector(targetId)
+          .scrollIntoView({ behavior: "smooth" });
+        mobileMenu.classList.remove("active");
+        mobileMenu.classList.add("hidden");
+      });
+    });
+
+    mobileMenuButton.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+      mobileMenu.classList.toggle("active");
+    });
+
+    // Modern accordion functionality
+    document.querySelectorAll(".accordion-header").forEach((header) => {
+      header.addEventListener("click", () => {
+        const accordionItem = header.closest(".accordion-item");
+        const accordionContent =
+          accordionItem.querySelector(".accordion-content");
+
+        // Close all other accordion items
+        document.querySelectorAll(".accordion-content").forEach((item) => {
+          if (
+            item !== accordionContent &&
+            item.classList.contains("active")
+          ) {
+            item.classList.remove("active");
+            item.previousElementSibling.classList.remove("active");
+          }
+        });
+
+        // Toggle active class on header and content
+        header.classList.toggle("active");
+        accordionContent.classList.toggle("active");
+      });
+    });
+
+    // Back to top button
+    const backToTopButton = document.querySelector(".back-to-top");
+
+    window.addEventListener("scroll", () => {
+      if (window.pageYOffset > 300) {
+        backToTopButton.classList.add("visible");
+      } else {
+        backToTopButton.classList.remove("visible");
+      }
+    });
+
+    backToTopButton.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
+
+    // Create particle effect
+    function createParticles() {
+      const particlesContainer = document.createElement("div");
+      particlesContainer.classList.add("particles");
+      document.querySelector("header").appendChild(particlesContainer);
+
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement("div");
+        particle.classList.add("particle");
+
+        const size = Math.random() * 5 + 2;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 15;
+        const duration = 15 + Math.random() * 10;
+
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.animationDuration = `${duration}s`;
+
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Initialize particles when page loads
+    window.addEventListener("load", createParticles);
+
+    // --- Translation Script ---
+    const translations = {
+      my: {
+        faq: "အမေးများသော မေးခွန်းများ",
+        faq2: "အောက်တွင် အများဆုံးမေးလေ့ရှိသော မေးခွန်းများကို ရှာဖွေပါ။",
+        p8: "အထောက်အပံ့ဌာနများ<br>စောင့်ရှောက်ထိန်းသိမ်း ရေးဌာန၊<br>အုပ်ချုပ်ရေးဌာန၊<br>ငွေကြေးဌာန၊<br>ကျောင်းသားရေးရာဌာန<br>သင်ကြားရေးဌာနမျာ<br>မြန်မာစာဌာန၊<br>အင်္ဂလိပ်စာဌာန၊<br>အင်ဂျင်နီယာသင်္ချာဌာန၊<br>အင်ဂျင်နီယာရူပဗေဒဌာန၊<br>အင်ဂျင်နီယာဓာတုဗေဒဌာန",
+        q8: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ရဲ့ ကျောင်းသား/သူတွေကို ထောက်ပံ့‌ကူညီပေးတဲ့ ဌာနတွေက ဘာတွေလဲ။",
+        p7: "Dr. ဦးအောင်ဆန်းလင်း (ပါမောက္ခ၊ UYTCC ၏ ပါမောက္ခချုပ်)",
+        q7: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ရဲ့ လက်ရှိ ပါမောက္ခချုပ်က ဘယ်သူလဲ။",
+        p6: "B.E. & M.E.<br>သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာ (IST)<br>ကွန်ပျူတာအင်ဂျင်နီယာ (CE)<br>အီလက်ထရောနစ်အင်ဂျင်နီယာ (EcE)<br>တိကျစက်မှု အင်ဂျင်နီယာ (PrE)<br>အဆင့်မြင့်ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ (AME)<br><br>Ph.D.<br> သတင်းအချက်အလက်နည်းပညာ (IT)<br>အီလက်ထရောနစ်အင်ဂျင်နီယာ (EcE)",
+        q6: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) မှာ ဘယ်လို မေဂျာဘာသာရပ်တွေကို သင်ကြားသလဲ။",
+        p5: "သင်တန်းကြာချိန်<br>၃ နှစ် (၁ နှစ် သင်တန်း + ၂ နှစ် သုတေသနစာတမ်း)<br><br>လိုအပ်ချက်<br>သုတေသနစာတမ်း",
+        q5: "Ph.D. (ဘွဲ့လွန်ဒေါက်တာဘွဲ့) သင်တန်းကြာချိန် ဘယ်လောက်လဲ။ ဘွဲ့ရဖို့အတွက် ဘာလိုအပ်ချက်တွေရှိမလဲ။",
+        p4: "သင်တန်းကြာချိန်<br>၂ နှစ် (၁ နှစ် သင်တန်း + ၁ နှစ် သုတေသနစာတမ်း)<br><br>လိုအပ်ချက်<br>သုတေသနစာတမ်း",
+        q4: "M.E.(ဘွဲ့လွန် မဟာဘွဲ့) သင်တန်းကြာချိန် ဘယ်လောက်လဲ။ ဘွဲ့ရဖို့အတွက် ဘာလိုအပ်ချက်တွေရှိမလဲ။",
+        p3: "သင်တန်းကြာချိန်<br>G10 – ၆ နှစ်<br>G12 – ၅ နှစ်<br><br>လိုအပ်ချက်<br>အသေးစား သုတေသနစာတမ်း",
+        q3: "B.E.(ဘွဲ့ကြို) သင်တန်းကြာချိန် ဘယ်လောက်လဲ။ ဘွဲ့ရဖို့ အတွက် ဘာလိုအပ်ချက်တွေရှိမလဲ။",
+        p2: "လိပ်စာ –  နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)၊ ပြင်ဦးလွင်မြို့နယ်၊  မန္တလေး တိုင်းဒေသကြီး။<br>ဖုန်း – +959445767834<br>Fax – +959445767834<br>Email – hr.admin@utycc.edu.mm",
+        q2: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ရဲ့ လိပ်စာနှင့် ဆက်သွယ်ရန် နည်းလမ်းတွေက ဘာတွေလဲ။",
+        p1: "အောက်တိုဘာလ ၁၇ ရက်၊ ၂၀၁၀ ခုနှစ်။",
+        q1: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ဘယ်နှခုနှစ်မှာ တည်ထောင်ခဲ့တာလဲ။",
+        g_quest: "ယေဘုယျမေးခွန်းများ",
+        utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+        nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+        nav_programs: "ပညာရေးအစီအစဉ်များ",
+        nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
+        nav_contact: "ဆက်သွယ်ရန်",
+        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+        nav_programs_mobile: "ပညာရေးအစီအစဉ် များ",
+        nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက် မှု",
+        nav_contact_mobile: "ဆက်သွယ်ရန်",
+        footer_address:
+          "ရတနာပုံဆိုက်ဘာစီးတီး၊ \nပြင်ဦးလွင်မြို့အနီး၊ \nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+        footer_faculties_title: "မဟာဌာနများ",
+        footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+        footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+        footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင် နီယာ",
+        footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+        footer_contact_title: "ဆက်သွယ် ရန်",
+        footer_follow_title: "Follow Us",
+        footer_copyright:
+          "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။  မူပိုင်ခွင့်များ ရယူပြီး။",
+        footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+        footer_link_terms: "စည်း မျဉ်းများ နှင့် မူဝါဒများ",
+        footer_link_faq: "အမေးများသော မေးခွန်း များ",
+        footer_link_about: "ကျွန်ုပ် တို့အကြောင်း",
+        footer_link_rules: "စည်းကမ်း များနှင့်  စည်းမျဉ်းများ",
+        ca1: "သင်၏ အဖြေကို မတွေ့နိုင်သေးပါသလား။",
+        ca2: "ကျွန်ုပ်တို့၏ အဖွဲ့သည် ကူညီရန် ရှိသည်။ ကိုယ်ပိုင် အကူအညီ ရယူရန် တိုက်ရိုက် ဆက်သွယ်ပါ။",
+        ca3: "အထောက်အပံ့ ဆက်သွယ်ရန်",
+        footer_link_dp: "ဒေတာကာကွယ်ရေး",
+      },
+      en: {
+        faq: "Frequently Asked Questions",
+        faq2: "Find answers to your most common questions below.",
+        p8: " Supporting Departments<br>Maintenance<br>Administration<br>Finance<br>Student Affairs Department<br><br>Academic Departments<br>Myanmar<br>English<br>Engineering Mathematics<br>Engineering Physics<br>Engineering Chemistry",
+        q8: "What are departments supporting and academic departments UTYCC students?",
+        p7: "Dr. Aung Sann Lin (Professor, Rector of UTYCC)",
+        q7: " Who is the current Rector of UTYCC?",
+        p6: "B.E. & M.E.<br>Information Science and Technology<br>Computer Engineering<br>Electronics Engineering<br>Precision Engineering<br>Advanced Materials Engineering<br><br>Ph.D.<br>Information Technology (IT)<br>Electronics Engineering",
+        q6: " What majors are offered at UTYCC?",
+        p5: "Duration<br>3 years (1 year coursework + 2 years dissertation )<br><br>Requirements<br>Dissertation",
+        q5: " How long is the Ph.D. (IT) program? What are the requirements for graduation?",
+        p4: "Duration<br>2 years (1 year coursework + 1 year thesis)<br><br>Requirements<br>Thesis",
+        q4: " How long is the M.E. (Postgraduate) program? What are therequirements for graduation?",
+        p3: "Duration<br>G10 – 6 years<br>G12 – 5 years<br><br>Requirements<br>Mini thesis",
+        q3: "How long is the B.E. (Undergraduate) program? What are therequirements for graduation?",
+        p2: "Address – Yadanapon Cyber City, Pyin Oo Lwin, Mandalay Region<br>Phone – +959445767834<br>Fax – +959445767834<br>Email – hr.admin@utycc.edu.mm",
+        q2: "What is the address and contact informations of UTYCC?",
+        p1: "October 17, 2010",
+        q1: "In which year was the University of Technology (Yatanarpon Cyber City) founded?",
+        g_quest: "General Questions",
+        utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+        nav_about: "About Us",
+        nav_programs: "Academic Programs",
+        nav_collaboration: "Collaboration",
+        nav_contact: "Contact",
+        nav_about_mobile: "About Us",
+        nav_programs_mobile: "Academic Programs",
+        nav_collaboration_mobile: "Collaboration",
+        nav_contact_mobile: "Contact",
+        footer_address:
+          "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+        footer_faculties_title: "Faculties",
+        footer_faculty_ist: "Information Science Technology",
+        footer_faculty_ce: "Computer Engineering",
+        footer_faculty_ece: "Electronics Engineering",
+        footer_faculty_ame: "Advanced Materials Engineering",
+        footer_faculty_pre: "Precision Engineering",
+        footer_contact_title: "Contact Us",
+        footer_follow_title: "Follow Us",
+        footer_copyright:
+          "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+        footer_quick_links_title: "Quick Links",
+        footer_link_terms: "Terms & Policies",
+        footer_link_faq: "FAQs",
+        footer_link_about: "About Us",
+        footer_link_rules: "Rules & Regulations",
+        ca1: "Still Can't Find Your Answer?",
+        ca2: "Our team is here to help! Reach out to us directly for personalized assistance.",
+        ca3: "Contact Support",
+        footer_link_dp: "Data Protection",
+      },
+    };
+
+    // Language switching functionality
+    const languageSwitcher = document.getElementById("language-switcher");
+    const languageSwitcherMobile = document.getElementById(
+      "language-switcher-mobile"
+    );
+
+    // Function to change language
+    const changeLanguage = (lang) => {
+      // Store the selected language
+      localStorage.setItem("language", lang);
+
+      // Set the dropdown to the correct value
+      if (languageSwitcher) languageSwitcher.value = lang;
+      if (languageSwitcherMobile) languageSwitcherMobile.value = lang;
+
+      // Translate all elements with the data-lang-key attribute
+      document.querySelectorAll("[data-lang-key]").forEach((element) => {
+        const key = element.getAttribute("data-lang-key");
+        if (translations[lang] && translations[lang][key]) {
+          element.innerHTML = translations[lang][key].replace(/\n/g, "<br>");
+        }
+      });
+    };
+
+    // Event listener for the language switcher
+    if (languageSwitcher) {
+      languageSwitcher.addEventListener("change", (event) => {
+        changeLanguage(event.target.value);
+      });
+    }
+
+    if (languageSwitcherMobile) {
+      languageSwitcherMobile.addEventListener("change", (event) => {
+        changeLanguage(event.target.value);
+      });
+    }
+
+    // Function to run when the page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check for a saved language in localStorage, otherwise default to 'en'
+      const savedLang = localStorage.getItem("language") || "en";
+      changeLanguage(savedLang);
+
+      // Animate elements on scroll
+      const animatedElements = document.querySelectorAll(".animate-fadeIn");
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = 1;
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      animatedElements.forEach((element) => {
+        element.style.opacity = 0;
+        element.style.transform = "translateY(20px)";
+        element.style.transition = "opacity 0.8s ease, transform 0.8s ease";
+        observer.observe(element);
+      });
+    });
+  </script>
+</body>
+
+</html>
