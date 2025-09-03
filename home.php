@@ -705,6 +705,7 @@
                 </div>
             </div>
         </section>
+        
 
         <!-- Main Content -->
         <main id="about" class="container mx-auto px-6 py-16">
@@ -779,6 +780,7 @@
                     </div>
                 </div>
             </section>
+            
 
             <!-- Academic Programs Section -->
             <section id="programs" class="mb-20 bg-white p-8 md:p-12 rounded-lg shadow-lg animate-on-scroll">
@@ -838,6 +840,7 @@
                         </a>
                     </div>
                 </div>
+                
                 <div class="grid md:grid-cols-2 gap-8">
                     <div>
                         <h3 class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2"
@@ -859,7 +862,27 @@
                         </p>
                     </div>
                 </div>
+                <br>
+                <br>
+                <!-- Exam Results Section -->
+    <div class="relative overflow-hidden shadow-lg group ">
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image: url('./Img/utycc_buildings/roadmap.JPG');"></div>
+    <div class="absolute inset-0 bg-black opacity-60"></div>
+    
+    <!-- Content (Text and Button) -->
+    <div class="relative z-10 p-6 md:p-10 text-white flex flex-col items-center justify-center text-center min-h-[250px]">
+        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-md">View Your Exam Results</h2>
+        <p class="max-w-md mb-8 text-sm md:text-base drop-shadow-sm">
+            Access your academic performance and check your latest exam results from all years and semesters.
+        </p>
+        <a href="./exam_results.html" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
+            Check Results
+        </a>
+    </div>
+</div>
             </section>
+            
 
             <!-- International Collaboration Section -->
             <section id="collaboration" class="mb-16 animate-on-scroll">
@@ -961,22 +984,7 @@
             </div>
         </div>
     </section>
-    <div class="relative overflow-hidden  shadow-lg group">
-    <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image: url('https://placehold.co/1200x800/2563eb/ffffff?text=EXAM+RESULTS');"></div>
-    <div class="absolute inset-0 bg-black opacity-60 rounded-xl"></div>
     
-    <!-- Content (Text and Button) -->
-    <div class="relative z-10 p-6 md:p-10 text-white flex flex-col items-center justify-center text-center min-h-[250px]">
-        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-md">View Your Exam Results</h2>
-        <p class="max-w-md mb-8 text-sm md:text-base drop-shadow-sm">
-            Access your academic performance and check your latest exam results from all years and semesters.
-        </p>
-        <a href="./exam_results.html" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
-            Check Results
-        </a>
-    </div>
-</div>
 
 
     <div id="gameContainer" class="game-toast">
