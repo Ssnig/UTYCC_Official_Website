@@ -4,12 +4,7 @@ session_start();
 // URL မှ တိုက်ရိုက်ဝင်ရောက်ခြင်းကို ပြန်လည်ခွင့်ပြုရန် session data စစ်ဆေးခြင်းကို ဖယ်ရှားလိုက်ပါပြီ။
 // ၎င်းကို အောက်တွင် UI ပြသမှုအတွက်သာ အသုံးပြုထားပါသည်။
 
-<<<<<<< HEAD
 include "db.php"; // DB connection - Make sure this line is uncommented and the path is correct.
-=======
-include "db.php"; 
-// // DB connection - Make sure this line is uncommented and the path is correct.
->>>>>>> 188b1ea5f9c542d156d43387afb8516ef843be56
 
 $success_message = null;
 
@@ -125,18 +120,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // =================================================================
         // Step 4: Insert into the 'preferences' table.
         // =================================================================
-        // if (!empty($form2['preferences'])) {
-        //     $stmt_pref = $pdo->prepare("
-        //         INSERT INTO preferences (student_id, preference_order, major_code)
-        //         VALUES (?, ?, ?)
-        //     ");
+        if (!empty($form2['preferences'])) {
+            $stmt_pref = $pdo->prepare("
+                INSERT INTO preferences (student_id, preference_order, major_code)
+                VALUES (?, ?, ?)
+            ");
 
-        //     foreach ($form2['preferences'] as $order => $major_code) {
-        //         if (!empty($major_code)) {
-        //             $stmt_pref->execute([$student_id, $order, $major_code]);
-        //         }
-        //     }
-        // }
+            foreach ($form2['preferences'] as $order => $major_code) {
+                if (!empty($major_code)) {
+                    $stmt_pref->execute([$student_id, $order, $major_code]);
+                }
+            }
+        }
 
         // 2. If everything is successful, commit the transaction.
         $pdo->commit();
@@ -155,13 +150,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 3. If an error occurs, roll back the transaction.
         $pdo->rollBack();
 
-        // Log the detailed error for debugging purposes.
-        error_log("Database submission error: " . $e->getMessage());
+        // Check for specific duplicate entry error code (SQLSTATE 23000).
+        if ($e->getCode() == '23000') {
+            $error_message = "အချက်အလက် မှတ်ပုံတင်ခြင်း မအောင်မြင်ပါ ❌\\n";
+            if (strpos($e->getMessage(), 'seat_no') !== false) {
+                $error_message .= "သင်၏ ထိုင်ခုံနံပါတ် (Seat No) သည် မှတ်ပုံတင်ပြီးသားဖြစ်ပါသည်။";
+            } else if (strpos($e->getMessage(), 'student_nrc') !== false) {
+                $error_message .= "သင်၏ မှတ်ပုံတင်အမှတ် (NRC) သည် မှတ်ပုံတင်ပြီးသားဖြစ်ပါသည်။";
+            } else {
+                $error_message .= "အချက်အလက်ထည့်သွင်းမှုတွင် ထပ်နေသော အချက်အလက်များ ရှိနေပါသည်။";
+            }
+            echo "<script>alert('{$error_message}');</script>";
+        } else {
+            // Log the detailed error for debugging purposes.
+            error_log("Database submission error: " . $e->getMessage());
 
-        // Display a user-friendly error message.
-        $error_message = "❌ Submission failed due to a system error. Please try again later. Error: " . $e->getMessage();
-        // You can display this $error_message in the HTML if you want.
-        echo "<script>alert('{$error_message}');</script>";
+            // Display a user-friendly error message.
+            $error_message = "❌ Submission failed due to a system error. Please try again later. Error: " . $e->getMessage();
+            echo "<script>alert('{$error_message}');</script>";
+        }
     }
 }
 ?>
@@ -186,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl py-12 px-8 md:px-12 space-y-8">
     <div class="text-center space-y-2 mb-6">
         <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" class="mx-auto w-20 h-20"/>
-        <h2 class="text-4xl font-extrabold text-gray-800">UTYCC</h2>
+        <h2 class="text-4xl font-extrabold text-gray-800">Your Application</h2>
         <p class="text-gray-500">You're one step away from completing your submission.</p>
     </div>
     
@@ -226,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
         <a href="option.php" class="w-full sm:w-auto px-6 py-3 rounded-full border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition-colors text-center shadow-sm hover:shadow-md">Back</a>
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="w-full sm:w-auto">
-            <button type="submit" class="w-full sm:w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105 shadow-md">Submit</button>
+            <button type="submit" class="w-full sm:w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105 shadow-md">Submit Application</button>
         </form>
     </div>
 </div>
