@@ -1,15 +1,22 @@
 <?php
 session_start();
 
+// URL မှ တိုက်ရိုက်ဝင်ရောက်ခြင်းကို ပြန်လည်ခွင့်ပြုရန် session data စစ်ဆေးခြင်းကို ဖယ်ရှားလိုက်ပါပြီ။
+// ၎င်းကို အောက်တွင် UI ပြသမှုအတွက်သာ အသုံးပြုထားပါသည်။
+
 // include "db.php"; // DB connection - Make sure this line is uncommented and the path is correct.
 
 $success_message = null;
 
 // Check if the form was submitted using the POST method.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Ensure session data exists before proceeding.
+    // Session data မရှိသေးရင် submit လုပ်လို့မရအောင် စစ်ဆေးပါ။
     if (!isset($_SESSION['form1_data']) || !isset($_SESSION['form2_data']) || !isset($_SESSION['option_data'])) {
-        header("Location: form1.php");
+        // data မရှိပါက error message ပြသပြီး ပြန်လည် redirect လုပ်ရန်
+        echo "<script>
+            alert('အချက်အလက်ပြည့်စုံစွာ ဖြည့်စွက်ထားခြင်းမရှိသေးပါ!');
+            window.location.href = 'form1.php';
+        </script>";
         exit;
     }
 
@@ -181,19 +188,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Card 1: Personal Details -->
         <a href="form1.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-            <span class="text-3xl text-green-500 mb-2">✔</span>
+            <?php if (isset($_SESSION['form1_data'])): ?>
+                <span class="text-3xl text-green-500 mb-2">✔</span>
+            <?php else: ?>
+                <span class="text-3xl text-red-500 mb-2">❌</span>
+            <?php endif; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 1</p>
             <p class="font-semibold text-lg text-gray-700 text-center">Personal Details</p>
         </a>
         <!-- Card 2: Major Preferences -->
         <a href="form2.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-            <span class="text-3xl text-green-500 mb-2">✔</span>
+            <?php if (isset($_SESSION['form2_data'])): ?>
+                <span class="text-3xl text-green-500 mb-2">✔</span>
+            <?php else: ?>
+                <span class="text-3xl text-red-500 mb-2">❌</span>
+            <?php endif; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 2</p>
             <p class="font-semibold text-lg text-gray-700 text-center">Major Preferences</p>
         </a>
         <!-- Card 3: Accommodation -->
         <a href="option.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-            <span class="text-3xl text-green-500 mb-2">✔</span>
+            <?php if (isset($_SESSION['option_data'])): ?>
+                <span class="text-3xl text-green-500 mb-2">✔</span>
+            <?php else: ?>
+                <span class="text-3xl text-red-500 mb-2">❌</span>
+            <?php endif; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 3</p>
             <p class="font-semibold text-lg text-gray-700 text-center">Accommodation</p>
         </a>
