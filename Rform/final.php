@@ -4,7 +4,8 @@ session_start();
 // URL မှ တိုက်ရိုက်ဝင်ရောက်ခြင်းကို ပြန်လည်ခွင့်ပြုရန် session data စစ်ဆေးခြင်းကို ဖယ်ရှားလိုက်ပါပြီ။
 // ၎င်းကို အောက်တွင် UI ပြသမှုအတွက်သာ အသုံးပြုထားပါသည်။
 
-// include "db.php"; // DB connection - Make sure this line is uncommented and the path is correct.
+include "db.php"; 
+// // DB connection - Make sure this line is uncommented and the path is correct.
 
 $success_message = null;
 
@@ -120,18 +121,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // =================================================================
         // Step 4: Insert into the 'preferences' table.
         // =================================================================
-        if (!empty($form2['preferences'])) {
-            $stmt_pref = $pdo->prepare("
-                INSERT INTO preferences (student_id, preference_order, major_code)
-                VALUES (?, ?, ?)
-            ");
+        // if (!empty($form2['preferences'])) {
+        //     $stmt_pref = $pdo->prepare("
+        //         INSERT INTO preferences (student_id, preference_order, major_code)
+        //         VALUES (?, ?, ?)
+        //     ");
 
-            foreach ($form2['preferences'] as $order => $major_code) {
-                if (!empty($major_code)) {
-                    $stmt_pref->execute([$student_id, $order, $major_code]);
-                }
-            }
-        }
+        //     foreach ($form2['preferences'] as $order => $major_code) {
+        //         if (!empty($major_code)) {
+        //             $stmt_pref->execute([$student_id, $order, $major_code]);
+        //         }
+        //     }
+        // }
 
         // 2. If everything is successful, commit the transaction.
         $pdo->commit();

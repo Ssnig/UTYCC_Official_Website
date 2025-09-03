@@ -163,6 +163,7 @@ CREATE TABLE feedback (
 
 
 
+ALTER TABLE `students` ADD UNIQUE (`seat_no`);
 
 
 
