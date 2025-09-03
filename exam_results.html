@@ -41,10 +41,10 @@
                 </div>
             </a>
             <div class="hidden md:flex items-center space-x-6">
-                <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_about">About Us</a>
+                <!-- <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_about">About Us</a>
                 <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_programs">Academic Programs</a>
                 <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_collaboration">Collaboration</a>
-                <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_contact">Contact</a>
+                <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_contact">Contact</a> -->
                 <div class="relative ml-4">
                     <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
                         <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
@@ -81,44 +81,44 @@
     <!-- Main Content for Exam Results -->
     <div class="container mx-auto p-4 md:p-8">
         <div class="bg-white rounded-xl shadow-lg p-6 md:p-10 my-8">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-900 mb-6 text-center">Student Exam Results</h1>
-            <p class="text-gray-600 text-center mb-8">Select your academic details to view your results.</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-900 mb-6 text-center" data-lang-key="exam_result">Student Exam Results</h1>
+            <p class="text-gray-600 text-center mb-8" data-lang-key="exam_exp">Select your academic details to view your results.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <!-- Year Dropdown -->
                 <div>
-                    <label for="year-select" class="block text-gray-700 font-semibold mb-2">Year</label>
-                    <select id="year-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                        <option value="">Select Year</option>
-                        <option value="1">1st Year</option>
-                        <option value="2">2nd Year</option>
-                        <option value="3">3rd Year</option>
-                        <option value="4">4th Year</option>
-                        <option value="5">5th Year</option>
-                        <option value="6">Final Year</option>
+                    <label for="year-select" class="block text-gray-700 font-semibold mb-2" data-lang-key="yr">Year</label>
+                    <select id="year-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition" >
+                        <option value="" data-lang-key="yrs">Select Year</option>
+                        <option value="1" data-lang-key="firsty">1st Year</option>
+                        <option value="2" data-lang-key="secondy">2nd Year</option>
+                        <option value="3" data-lang-key="thirdy">3rd Year</option>
+                        <option value="4" data-lang-key="fourthy">4th Year</option>
+                        <option value="5" data-lang-key="fifthy">5th Year</option>
+                        <option value="6" data-lang-key="sixthy">Final Year</option>
                     </select>
                 </div>
                 
                 <!-- Semester Dropdown -->
                 <div>
-                    <label for="semester-select" class="block text-gray-700 font-semibold mb-2">Semester</label>
+                    <label for="semester-select" class="block text-gray-700 font-semibold mb-2" data-lang-key="sem">Semester</label>
                     <select id="semester-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                        <option value="">Select Semester</option>
-                        <option value="1">1st Semester</option>
-                        <option value="2">2nd Semester</option>
+                        <option value="" data-lang-key="sems">Select Semester</option>
+                        <option value="1"data-lang-key="firsts">1st Semester</option>
+                        <option value="2"data-lang-key="seconds">2nd Semester</option>
                     </select>
                 </div>
                 
                 <!-- Major Dropdown -->
                 <div>
-                    <label for="major-select" class="block text-gray-700 font-semibold mb-2">Major</label>
+                    <label for="major-select" class="block text-gray-700 font-semibold mb-2" data-lang-key="major">Major</label>
                     <select id="major-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                        <option value="">Select Major</option>
-                        <option value="ist">Information Science Technology</option>
-                        <option value="ce">Computer Engineering</option>
-                        <option value="ece">Electronics Engineering</option>
-                        <option value="pre">Precision Engineering</option>
-                        <option value="ame">Advanced Materials Engineering</option>
+                        <option value="" data-lang-key="maj">Select Major</option>
+                        <option value="ist" data-lang-key="ist">Information Science Technology</option>
+                        <option value="ce"  data-lang-key="ce">Computer Engineering</option>
+                        <option value="ece" data-lang-key="ece">Electronics Engineering</option>
+                        <option value="pre" data-lang-key="pre">Precision Engineering</option>
+                        <option value="ame" data-lang-key="ame">Advanced Materials Engineering</option>
                     </select>
                 </div>
             </div>
@@ -142,6 +142,16 @@
             </div>
         </div>
     </div>
+    <div class="container mx-auto px-8 py-12">
+    <link rel="stylesheet" href="./CSS/bbbtn.css">
+
+    <a href="javascript:history.back()">
+      <button class="bbbtn " data-lang-key="Go_Back">
+        Go Back
+      </button>
+
+    </a>
+  </div>
     
     <!-- Footer -->
     <footer id="contact" class="bg-blue-900 text-white">
@@ -257,6 +267,29 @@
                 footer_link_about: "ကျွန်ုပ် တို့အကြောင်း",
                 footer_link_rules: "စည်းကမ်း များနှင့်  စည်းမျဉ်းများ",
                 footer_link_dp: "ဒေတာကာကွယ်ရေး",
+                exam_result: "ကျောင်းသား စာမေးပွဲ ရလဒ်များ",
+                exam_exp: "သင်၏ ပညာရေး အသေးစိတ်ကို ရွေးချယ်၍ သင်၏ ရလဒ်များကို ကြည့်ရှုပါ။",
+                yr:"စာသင်နှစ်",
+                yrs:"စာသင်နှစ် ရွေးချယ်ပါ",
+                ist:"သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+                ce:"ကွန်ပျူတာ အင်ဂျင်နီယာ",
+                ece:"အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+                pre:"တိကျစက်မှု အင်ဂျင်နီယာ",
+                ame:"အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင် နီယာ",
+                sem:"သင်တန်း",
+                sems:"သင်တန်း ရွေးချယ်ပါ",
+                major:"အထူးပြုဘာသာရပ်",
+                maj:"အထူးပြုဘာသာရပ် ရွေးချယ်ပါ",
+                firsty:"ပထမနှစ်",
+                secondy:"ဒုတိယနှစ်",
+                thirdy:"တတိယနှစ်",
+                fourthy:"စတုတ္ထနှစ်",
+                fifthy:"ပဉ္စမနှစ်",
+                sixthy:"နောက်ဆုံးနှစ်",
+                firsts:"ပထမသင်တန်း",
+                seconds:"ဒုတိယသင်တန်း",
+                Go_Back: "နောက်သို့ ပြန်သွားရန်",
+
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -284,6 +317,29 @@
                 footer_link_about: "About Us",
                 footer_link_rules: "Rules & Regulations",
                 footer_link_dp: "Data Protection",
+                exam_result: "Student Exam Results",
+                exam_exp: "Select your academic details to view your results.",
+                yr:"Year",
+                yrs:"Select Year",
+                ist:"Information Science Technology",
+                ce:"Computer Engineering",
+                ece:"Electronics Engineering",
+                pre:"Precision Engineering",
+                ame:"Advanced Materials Engineering",
+                sem:"Semester",
+                sems:"Select Semester",
+                major:"Major",
+                maj:"Select Major",
+                firsty:"1st Year",
+                secondy:"2nd Year",
+                thirdy:"3rd Year",
+                fourthy:"4th Year",
+                fifthy:"5th Year",
+                sixthy:"Final Year",
+                firsts:"1st Semester",
+                seconds:"2nd Semester",
+                Go_Back: "Go Back",
+
             },
         };
 
