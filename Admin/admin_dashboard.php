@@ -4,7 +4,8 @@ require_once '../Rform/db.php';
 
 // --- FETCH PENDING STUDENT DATA ON INITIAL PAGE LOAD ---
 $students = [];
-$sql = "SELECT s.*, 
+// MODIFICATION: Added s.preferences to the SELECT statement
+$sql = "SELECT s.*, s.preferences,
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
         FROM students s
@@ -23,6 +24,10 @@ try {
         $row['dormitory_preference'] = (bool)$row['dormitory_preference'];
         if($row['father_deceased_year']) $row['father_deceased_year'] = (int)$row['father_deceased_year'];
         if($row['mother_deceased_year']) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
+        
+        // MODIFICATION: Decode the JSON preferences string into an array
+        $row['preferences'] = $row['preferences'] ? json_decode($row['preferences'], true) : null;
+
         $students[] = $row;
     }
 } catch (PDOException $e) {
@@ -266,6 +271,7 @@ $pdo = null;
     .field label { font-size: 13px; color: hsl(var(--muted-foreground)); }
     .field input, .field select, .field textarea { padding: 10px 12px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--bg)); color: hsl(var(--fg)); outline: none; font: inherit; }
     .field input:focus, .field select:focus, .field textarea:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 3px hsl(var(--ring)/0.25); }
+    .field input:disabled, .field select:disabled { background: hsl(var(--muted)); cursor: not-allowed; }
     .field textarea { min-height: 60px; resize: vertical; }
     .field-checkbox { display: flex; align-items: center; gap: 8px; }
     .field-checkbox label { margin: 0; }
@@ -487,6 +493,30 @@ $pdo = null;
                 <input id="entry_year" name="entry_year" />
             </div>
 
+            <!-- MODIFICATION START: Added Major Preferences Section -->
+            <h3 class="detail-section-header">Major Preferences</h3>
+            <div class="field">
+                <label for="preference1">ဦးစားပေး ၁</label>
+                <select id="preference1" name="preference1" disabled></select>
+            </div>
+             <div class="field">
+                <label for="preference2">ဦးစားပေး ၂</label>
+                <select id="preference2" name="preference2" disabled></select>
+            </div>
+             <div class="field">
+                <label for="preference3">ဦးစားပေး ၃</label>
+                <select id="preference3" name="preference3" disabled></select>
+            </div>
+             <div class="field">
+                <label for="preference4">ဦးစားပေး ၄</label>
+                <select id="preference4" name="preference4" disabled></select>
+            </div>
+             <div class="field">
+                <label for="preference5">ဦးစားပေး ၅</label>
+                <select id="preference5" name="preference5" disabled></select>
+            </div>
+            <!-- MODIFICATION END -->
+
             <h3 class="detail-section-header">Father's Information</h3>
             <div class="field">
                 <label for="father_name_en">Name (EN)</label>
@@ -604,6 +634,15 @@ $pdo = null;
   <script>
     const PAGE_SIZE = 8;
     const PHOTO_PLACEHOLDER = 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
+    
+    // MODIFICATION: Added available majors map
+    const availableMajors = {
+        'IST': 'သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာအင်ဂျင်နီယာဘာသာရပ်(IST)',
+        'CE' : 'ကွန်ပျူတာအင်ဂျင်နီယာ ဘာသာရပ်(CE)',
+        'EcE': 'အီလက်ထရောနစ် အင်ဂျင်နီယာ ဘာသာရပ်(EcE)',
+        'PrE': 'တိကျပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ ဘာသာရပ်(PrE)',
+        'AME': 'အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ ဘာသာရပ်(AME)',
+    };
 
     const state = {
       students: <?php echo json_encode($students); ?>,
@@ -699,12 +738,35 @@ $pdo = null;
               if (element) {
                   if (element.type === 'checkbox') {
                       element.checked = !!student[key];
-                  } else if (element.type !== 'file') {
+                  } else if (element.type !== 'file' && !element.name.startsWith('preference')) { // MODIFICATION: Don't auto-fill preferences here
                       element.value = student[key] || '';
                   }
               }
           }
           document.getElementById('photo_preview').src = getSafePhotoUrl(student.photo_url);
+
+          // MODIFICATION: Manually populate and set preference dropdowns
+          for (let i = 1; i <= 5; i++) {
+              const selectEl = document.getElementById(`preference${i}`);
+              selectEl.innerHTML = ''; // Clear previous options
+
+              // Add all possible majors as options
+              for (const code in availableMajors) {
+                  let option = document.createElement('option');
+                  option.value = code;
+                  option.text = availableMajors[code];
+                  selectEl.add(option);
+              }
+
+              // Set the value from the student's data
+              const prefValue = student.preferences ? student.preferences[i] : null;
+              if (prefValue) {
+                  selectEl.value = prefValue;
+              } else {
+                  selectEl.selectedIndex = -1; // No selection if not available
+              }
+          }
+
       } 
       modal.showModal();
       formElements.student_name_en.focus();
@@ -716,6 +778,21 @@ $pdo = null;
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
         const photoUrl = getSafePhotoUrl(s.photo_url);
+
+        // MODIFICATION: Generate HTML for Major Preferences
+        let preferencesHtml = '';
+        if (s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0) {
+            preferencesHtml += `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
+            // Assuming preferences are stored with keys "1", "2", ...
+            for (let i = 1; i <= 5; i++) {
+                const prefCode = s.preferences[i];
+                if (prefCode) {
+                    preferencesHtml += `<dt>ဦးစားပေး ${i}</dt><dd>${availableMajors[prefCode] || 'Unknown Major'}</dd>`;
+                }
+            }
+            preferencesHtml += `</dl>`;
+        }
+        
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
                  <img src="${photoUrl}" alt="Student Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border));">
@@ -744,6 +821,7 @@ $pdo = null;
                 <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
                 <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
             </dl>
+            ${preferencesHtml} <!-- MODIFICATION: Insert preferences HTML here -->
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
@@ -974,7 +1052,11 @@ $pdo = null;
 
             if (result.status === 'success' && result.student) {
                 const index = state.students.findIndex(s => s.student_id === studentId);
-                if (index !== -1) state.students[index] = result.student;
+                if (index !== -1) {
+                     // MODIFICATION: The API response doesn't include decoded preferences, so we copy them from the old record
+                    result.student.preferences = state.students[index].preferences;
+                    state.students[index] = result.student;
+                }
                 render();
                 closeModalSafe();
                 showToast(`Student "${result.student.student_name_en}" updated.`, 'success');
@@ -995,4 +1077,3 @@ $pdo = null;
   </script>
 </body>
 </html>
-
