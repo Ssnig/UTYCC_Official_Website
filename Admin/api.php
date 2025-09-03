@@ -62,6 +62,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                 }
 
+                // ===== CHECK FOR DUPLICATES (for both add and update) =====
+                $studentIdToExclude = ($action === 'update' && !empty($student['student_id'])) ? $student['student_id'] : 0;
+
+                // Check for duplicate NRC
+                if (!empty($student['student_nrc'])) {
+                    $sqlCheckNrc = "SELECT COUNT(*) FROM students WHERE student_nrc = ? AND student_id != ?";
+                    $stmtCheckNrc = $pdo->prepare($sqlCheckNrc);
+                    $stmtCheckNrc->execute([$student['student_nrc'], $studentIdToExclude]);
+                    if ($stmtCheckNrc->fetchColumn() > 0) {
+                        throw new Exception('ဤမှတ်ပုံတင်နံပါတ်သည် အခြားကျောင်းသားတစ်ဦးမှ အသုံးပြုပြီးဖြစ်သည်။');
+                    }
+                }
+                
+                // Check for duplicate Seat No
+                if (!empty($student['seat_no'])) {
+                    $sqlCheckSeatNo = "SELECT COUNT(*) FROM students WHERE seat_no = ? AND student_id != ?";
+                    $stmtCheckSeatNo = $pdo->prepare($sqlCheckSeatNo);
+                    $stmtCheckSeatNo->execute([$student['seat_no'], $studentIdToExclude]);
+                    if ($stmtCheckSeatNo->fetchColumn() > 0) {
+                        throw new Exception('ဤခုံနံပါတ်သည် အခြားကျောင်းသားတစ်ဦးမှ အသုံးပြုပြီးဖြစ်သည်။');
+                    }
+                }
+                // ===== END OF DUPLICATE CHECK =====
+
                 $pdo->beginTransaction();
 
                 $photoUrl = null; 
@@ -299,7 +323,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->rollBack();
         }
         http_response_code(500);
-        $response['message'] = 'Server error: ' . $e->getMessage();
+        // Return the specific exception message for frontend display
+        $response['message'] = $e->getMessage();
     }
 }
 
