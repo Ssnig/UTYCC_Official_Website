@@ -4,7 +4,7 @@ session_start();
 // URL မှ တိုက်ရိုက်ဝင်ရောက်ခြင်းကို ပြန်လည်ခွင့်ပြုရန် session data စစ်ဆေးခြင်းကို ဖယ်ရှားလိုက်ပါပြီ။
 // ၎င်းကို အောက်တွင် UI ပြသမှုအတွက်သာ အသုံးပြုထားပါသည်။
 
-// include "db.php"; // DB connection - Make sure this line is uncommented and the path is correct.
+include "db.php"; // DB connection - Make sure this line is uncommented and the path is correct.
 
 $success_message = null;
 
