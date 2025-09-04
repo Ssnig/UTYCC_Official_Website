@@ -1,3 +1,26 @@
+<?php
+require_once './Rform/db.php'; 
+$announcement_text = '';
+$announcement_status = 'disabled';
+
+try {
+    
+    $stmt = $pdo->prepare("SELECT 1 FROM site_settings LIMIT 1");
+    $stmt->execute();
+    
+    if ($stmt->rowCount() > 0) {
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status')");
+        $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        
+        $announcement_text = $settings['announcement_text'] ?? '';
+        $announcement_status = $settings['announcement_status'] ?? 'disabled';
+    }
+
+} catch (PDOException $e) {
+    // Table does not exist, ignore and use default values
+}
+$pdo = null; 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,6 +43,8 @@
     <link rel="stylesheet" href="CSS/font.css" />
     <script src="./JS/GSAP.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         /* --- Preloader Styles --- */
         #preloader {
             position: fixed;
@@ -601,18 +626,33 @@
                     data-lang-key="nav_contact">ဆက်သွယ်ရန်</a>
                 <!-- Language Switcher Dropdown - Updated Style -->
                 <div class="relative ml-4">
-                    <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-                        <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
-                        <select id="language-switcher-desktop"
-                            class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="my">မြန်မာ</option>
-                            <option value="en">English</option>
-                        </select>
-                        <i
-                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+                    <div id="lang-switcher-container-desktop">
+                        <!-- Custom Button -->
+                        <button class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+                            <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
+                            <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
+                            <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
+                        </button>
+                        <!-- Custom Dropdown Menu -->
+                        <div class="lang-switcher-menu hidden absolute mt-1 w-auto min-w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+                            <a href="#" class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="my">
+                                <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                                <span>မြန်မာ</span>
+                            </a>
+                            <a href="#" class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="en">
+                                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                                <span>English</span>
+                            </a>
+                        </div>
                     </div>
+                    <!-- Hidden original select to maintain JS compatibility -->
+                    <select id="language-switcher-desktop" class="hidden">
+                        <option value="my">မြန်မာ</option>
+                        <option value="en">English</option>
+                    </select>
                 </div>
             </div>
+            
             <button id="mobile-menu-button" class="md:hidden text-blue-900">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
@@ -628,18 +668,41 @@
             <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
                 data-lang-key="nav_contact_mobile">ဆက်သွယ်ရန်</a>
             <div class="relative mt-4 pt-4 border-t">
-                <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-                    <i class="fas fa-globe text-gray-500 absolute left-4 z-10 pointer-events-none"></i>
-                    <select id="language-switcher-mobile"
-                        class="w-full cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-2 pl-11 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="my">မြန်မာ</option>
-                        <option value="en">English</option>
-                    </select>
-                    <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 z-10 pointer-events-none"></i>
+                <div id="lang-switcher-container-mobile" class="relative">
+                    <!-- Custom Button -->
+                    <button class="lang-switcher-button relative flex items-center w-full bg-gray-100 hover:bg-gray-200 rounded-md transition py-2 pl-4 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+                        <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
+                        <span id="selected-lang-text-mobile" class="ml-3">မြန်မာ</span>
+                        <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 pointer-events-none"></i>
+                    </button>
+                    <!-- Custom Dropdown Menu -->
+                    <div class="lang-switcher-menu hidden absolute mt-1 w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+                        <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="my">
+                            <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                            <span>မြန်မာ</span>
+                        </a>
+                        <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="en">
+                            <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                            <span>English</span>
+                        </a>
+                    </div>
                 </div>
+                <!-- Hidden original select to maintain JS compatibility -->
+                <select id="language-switcher-mobile" class="hidden">
+                    <option value="my">မြန်မာ</option>
+                    <option value="en">English</option>
+                </select>
             </div>
         </div>
     </div>
+     <?php if ($announcement_status === 'enabled' && !empty($announcement_text)): ?>
+    <div id="announcement-banner" class="bg-yellow-400 border-b-4 border-yellow-500 text-yellow-900 text-center p-4 shadow-lg">
+        <div class="container mx-auto flex items-center justify-center space-x-4">
+            <i class="fas fa-bullhorn fa-2x animate-pulse"></i>
+            <p class="font-semibold"><?php echo nl2br(htmlspecialchars($announcement_text)); ?></p>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <div id="main-content">
         <!-- Hero Section -->
@@ -705,7 +768,7 @@
                 </div>
             </div>
         </section>
-        
+
 
         <!-- Main Content -->
         <main id="about" class="container mx-auto px-6 py-16">
@@ -780,7 +843,7 @@
                     </div>
                 </div>
             </section>
-            
+
 
             <!-- Academic Programs Section -->
             <section id="programs" class="mb-20 bg-white p-8 md:p-12 rounded-lg shadow-lg animate-on-scroll">
@@ -840,7 +903,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="grid md:grid-cols-2 gap-8">
                     <div>
                         <h3 class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2"
@@ -865,24 +928,24 @@
                 <br>
                 <br>
                 <!-- Exam Results Section -->
-    <div class="relative overflow-hidden shadow-lg group ">
-    <!-- Background Image with Overlay -->
-    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image: url('./Img/utycc_buildings/roadmap.JPG');"></div>
-    <div class="absolute inset-0 bg-black opacity-60"></div>
-    
-    <!-- Content (Text and Button) -->
-    <div class="relative z-10 p-6 md:p-10 text-white flex flex-col items-center justify-center text-center min-h-[250px]">
-        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-md">View Your Exam Results</h2>
-        <p class="max-w-md mb-8 text-sm md:text-base drop-shadow-sm">
-            Access your academic performance and check your latest exam results from all years and semesters.
-        </p>
-        <a href="./exam_results.html" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
-            Check Results
-        </a>
-    </div>
-</div>
+                <div class="relative overflow-hidden shadow-lg group ">
+                    <!-- Background Image with Overlay -->
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image: url('./Img/utycc_buildings/roadmap.JPG');"></div>
+                    <div class="absolute inset-0 bg-black opacity-60"></div>
+
+                    <!-- Content (Text and Button) -->
+                    <div class="relative z-10 p-6 md:p-10 text-white flex flex-col items-center justify-center text-center min-h-[250px]">
+                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-md">View Your Exam Results</h2>
+                        <p class="max-w-md mb-8 text-sm md:text-base drop-shadow-sm">
+                            Access your academic performance and check your latest exam results from all years and semesters.
+                        </p>
+                        <a href="./exam_results.html" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
+                            Check Results
+                        </a>
+                    </div>
+                </div>
             </section>
-            
+
 
             <!-- International Collaboration Section -->
             <section id="collaboration" class="mb-16 animate-on-scroll">
@@ -920,7 +983,7 @@
             </section>
         </main>
     </div>
-    
+
 
     <!-- Enrollment Section -->
     <section id="enrollment-card" class="relative bg-cover bg-center py-12 sm:py-20 px-4"
@@ -984,7 +1047,7 @@
             </div>
         </div>
     </section>
-    
+
 
 
     <div id="gameContainer" class="game-toast">
@@ -1064,9 +1127,9 @@
                                 Regulations</a>
 
                         </li>
-                         <li>
-              <a href="./data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
-            </li>
+                        <li>
+                            <a href="./data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="animate-on-scroll" style="--i:4;">
@@ -1345,7 +1408,7 @@
                 admission_closed_title: "ကျောင်းအပ်လက်ခံခြင်း ယာယီပိတ်ထားပါသည်",
                 admission_closed_text: "တက္ကသိုလ်မှ ကျောင်းသား/သူအသစ်များ လက်ခံခြင်းကို လက်ရှိတွင် ရပ်ဆိုင်းထားပါသည်။",
                 footer_link_dp: "ဒေတာကာကွယ်ရေး",
-                
+
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -1723,6 +1786,77 @@
         };
 
         document.addEventListener("DOMContentLoaded", () => {
+            // --- Custom Language Switcher Logic ---
+            function setupLangSwitcher(type) { // type is 'desktop' or 'mobile'
+                const container = document.getElementById(`lang-switcher-container-${type}`);
+                if (!container) return;
+
+                const button = container.querySelector('.lang-switcher-button');
+                const menu = container.querySelector('.lang-switcher-menu');
+                const options = container.querySelectorAll('.lang-switcher-option');
+                const selectedFlag = document.getElementById(`selected-lang-flag-${type}`);
+                const selectedText = document.getElementById(`selected-lang-text-${type}`);
+                const hiddenSelect = document.getElementById(`language-switcher-${type}`);
+                
+                const optionDetails = {
+                    my: { text: 'မြန်မာ', flag: 'https://flagcdn.com/w20/mm.png' },
+                    en: { text: 'English', flag: 'https://flagcdn.com/w20/gb.png' }
+                };
+
+                // Function to update the button's appearance
+                function updateButton(lang) {
+                    if (optionDetails[lang]) {
+                        selectedFlag.src = optionDetails[lang].flag;
+                        selectedText.textContent = optionDetails[lang].text;
+                    }
+                }
+
+                // Toggle menu visibility
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Close other switcher if open
+                    const otherType = type === 'desktop' ? 'mobile' : 'desktop';
+                    const otherMenu = document.querySelector(`#lang-switcher-container-${otherType} .lang-switcher-menu`);
+                    if (otherMenu) otherMenu.classList.add('hidden');
+
+                    menu.classList.toggle('hidden');
+                });
+
+                // Handle option selection
+                options.forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const lang = option.getAttribute('data-lang');
+                        
+                        // Update the hidden select and trigger its change event
+                        hiddenSelect.value = lang;
+                        hiddenSelect.dispatchEvent(new Event('change'));
+                        
+                        // Close menu
+                        menu.classList.add('hidden');
+                    });
+                });
+
+                // Listen to the original select's changes to update the custom button
+                // This keeps everything in sync, even if something else changes the select's value
+                hiddenSelect.addEventListener('change', () => {
+                    updateButton(hiddenSelect.value);
+                });
+
+                // Set initial state from the hidden select
+                updateButton(hiddenSelect.value);
+            }
+            
+            setupLangSwitcher('desktop');
+            setupLangSwitcher('mobile');
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.lang-switcher-menu').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            });
+
             const savedLang = localStorage.getItem("selectedLanguage") || "my";
             setLanguage(savedLang);
 
@@ -1852,6 +1986,9 @@
             ease: "back.out(1.7)",
         });
     </script>
+
+   
+    
 </body>
 
 </html>

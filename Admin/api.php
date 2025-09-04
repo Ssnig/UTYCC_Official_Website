@@ -188,7 +188,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtFetch->execute([$student_id]);
                 $finalStudent = $stmtFetch->fetch(PDO::FETCH_ASSOC);
 
-                // **FIX**: Process the student row for consistent data types
                 $response = ['status' => 'success', 'student' => processStudentRow($finalStudent)];
                 break;
 
@@ -317,6 +316,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $response['message'] = 'Import failed: ' . $e->getMessage();
                 }
                 break;
+            
+            case 'get_settings':
+                $sql = "SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status')";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+                
+                $defaults = [
+                    'announcement_text' => '',
+                    'announcement_status' => 'disabled'
+                ];
+                
+                $response = ['status' => 'success', 'settings' => array_merge($defaults, $settings)];
+                break;
+
+            case 'save_announcement':
+                $data = json_decode(file_get_contents('php://input'), true);
+                $text = $data['text'] ?? '';
+                $status = $data['status'] ?? 'disabled';
+
+                if (!in_array($status, ['enabled', 'disabled'])) {
+                    $status = 'disabled';
+                }
+                
+                $pdo->beginTransaction();
+                
+                $sqlText = "INSERT INTO site_settings (setting_key, setting_value) VALUES ('announcement_text', ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)";
+                $stmtText = $pdo->prepare($sqlText);
+                $stmtText->execute([$text]);
+
+                $sqlStatus = "INSERT INTO site_settings (setting_key, setting_value) VALUES ('announcement_status', ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)";
+                $stmtStatus = $pdo->prepare($sqlStatus);
+                $stmtStatus->execute([$status]);
+
+                $pdo->commit();
+                
+                $response = ['status' => 'success', 'message' => 'Announcement settings saved.'];
+                break;
+
+            case 'delete_feedback':
+                $data = json_decode(file_get_contents('php://input'), true);
+                $id = $data['id'] ?? 0;
+                if ($id > 0) {
+                    $stmt = $pdo->prepare("DELETE FROM feedback WHERE feedback_id = ?");
+                    $stmt->execute([$id]);
+                    $response = ['status' => 'success', 'message' => 'Feedback deleted.'];
+                } else {
+                    $response['message'] = 'Invalid feedback ID.';
+                }
+                break;
+                
+            case 'clear_all_data':
+                $pdo->beginTransaction();
+                $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+                $pdo->exec('TRUNCATE TABLE mothers');
+                $pdo->exec('TRUNCATE TABLE fathers');
+                $pdo->exec('TRUNCATE TABLE students');
+                $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+                $pdo->commit();
+                $response = ['status' => 'success', 'message' => 'All student data has been cleared.'];
+                break;
         }
     } catch (Exception $e) {
         if ($pdo->inTransaction()) {
@@ -332,3 +392,4 @@ ob_end_clean(); // Clean any stray output
 echo json_encode($response);
 $pdo = null; // Close connection
 ?>
+
