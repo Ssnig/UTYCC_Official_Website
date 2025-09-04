@@ -623,6 +623,16 @@
 
 
     document.addEventListener('DOMContentLoaded', function() {
+        // --- Academic Year from Settings (ADDED) ---
+        // settings.php မှာ သတ်မှတ်ထားတဲ့ academic year ကို localStorage ကနေရယူပါ။
+        const savedAcademicYear = localStorage.getItem('academicYear');
+        const yearInput = document.getElementById('year');
+
+        // အကယ်၍ localStorage မှာ တန်ဖိုးရှိနေခဲ့ရင်၊ form ထဲက ခုနှစ်ကို အဲ့ဒီတန်ဖိုးနဲ့ အစားထိုးပါ။
+        if (savedAcademicYear && yearInput) {
+            yearInput.value = savedAcademicYear;
+        }
+        
         // --- Photo Upload & Preview Logic ---
         const photoUploadInput = document.getElementById('photo_upload');
         const photoPreview = document.getElementById('photo-preview');
