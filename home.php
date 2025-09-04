@@ -1,3 +1,26 @@
+<?php
+require_once './Rform/db.php'; 
+$announcement_text = '';
+$announcement_status = 'disabled';
+
+try {
+    
+    $stmt = $pdo->prepare("SELECT 1 FROM site_settings LIMIT 1");
+    $stmt->execute();
+    
+    if ($stmt->rowCount() > 0) {
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status')");
+        $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        
+        $announcement_text = $settings['announcement_text'] ?? '';
+        $announcement_status = $settings['announcement_status'] ?? 'disabled';
+    }
+
+} catch (PDOException $e) {
+    // Table does not exist, ignore and use default values
+}
+$pdo = null; 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -672,6 +695,14 @@
             </div>
         </div>
     </div>
+     <?php if ($announcement_status === 'enabled' && !empty($announcement_text)): ?>
+    <div id="announcement-banner" class="bg-yellow-400 border-b-4 border-yellow-500 text-yellow-900 text-center p-4 shadow-lg">
+        <div class="container mx-auto flex items-center justify-center space-x-4">
+            <i class="fas fa-bullhorn fa-2x animate-pulse"></i>
+            <p class="font-semibold"><?php echo nl2br(htmlspecialchars($announcement_text)); ?></p>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <div id="main-content">
         <!-- Hero Section -->
