@@ -348,7 +348,7 @@ $pdo = null;
       </div>
       <nav>
         <a class="nav-link active" href="admin_dashboard.php">Registrations</a>
-        <a class="nav-link" href="#">Courses</a>
+        <a class="nav-link" href="upload_result.php">TO upload Results</a>
         <a class="nav-link" href="students.php">Students</a>
         <a class="nav-link" href="support.php">Support</a>
         <a class="nav-link" href="settings.php">Settings</a>
