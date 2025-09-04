@@ -170,7 +170,39 @@ ALTER TABLE `students` ADD UNIQUE (`seat_no`);
 
 
 
+CREATE TABLE exam_results (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    year VARCHAR(10) NOT NULL,
+    semester VARCHAR(10) NOT NULL,
+    major VARCHAR(50) NOT NULL,
+    image_path VARCHAR(255) NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
+
+
+
+
+
+
+
+
+
+
+-- Create a table to store student exam result information.
+-- This table replaces the results_db.json file.
+CREATE TABLE exam_results (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    year VARCHAR(10) NOT NULL COMMENT 'The academic year (e.g., "1", "2")',
+    semester VARCHAR(10) NOT NULL COMMENT 'The semester (e.g., "1", "2")',
+    major VARCHAR(50) NOT NULL COMMENT 'The student\'s major (e.g., "ist", "ce")',
+    image_path VARCHAR(255) NOT NULL COMMENT 'The file path to the uploaded result image',
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'The timestamp when the result was uploaded'
+);
+
+-- Add an index to speed up searches by year, semester, and major,
+-- as this is how the results will be retrieved.
+CREATE INDEX idx_search ON exam_results (year, semester, major);
 
 
 

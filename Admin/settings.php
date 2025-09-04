@@ -218,7 +218,7 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
             </div>
             <nav>
                 <a class="nav-link" href="admin_dashboard.php">Registrations</a>
-                <a class="nav-link" href="#">Courses</a>
+               <a class="nav-link" href="upload_result.php">To upload result</a>
                 <a class="nav-link" href="students.php">Students</a>
                 <a class="nav-link" href="support.php">Support</a>
                 <a class="nav-link active" href="#">Settings</a>
@@ -260,6 +260,26 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
                             <button class="btn" id="enrollmentOpenBtn">ဖွင့်ရန်</button>
                             <button class="btn" id="enrollmentCloseBtn">ပိတ်ရန်</button>
                         </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>ကြေညာချက်များ စီမံခန့်ခွဲခြင်း (Announcement)</h3>
+                    <p style="font-size: 14px; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                        ကျောင်းသားများ၏ ပင်မစာမျက်နှာတွင် ကြေညာချက်များ ဖော်ပြရန် (သို့) ပိတ်ထားရန်။
+                    </p>
+                    <div class="field">
+                        <label for="announcementText">ကြေညာချက် စာသား</label>
+                        <textarea id="announcementText" rows="4" placeholder="ကျောင်းအပ်ခြင်းကို ... ရက်နေ့တွင် ပိတ်ပါမည်။"></textarea>
+                    </div>
+                    <div class="field" style="margin-top: 16px;">
+                        <label>ကြေညာချက် အခြေအနေ</label>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn" id="announcementEnableBtn">Enable</button>
+                            <button class="btn" id="announcementDisableBtn">Disable</button>
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 16px;">
+                        <button class="btn primary" id="saveAnnouncementBtn">Save Announcement</button>
                     </div>
                 </div>
                 <div class="card" style="border-color: hsl(var(--danger)/0.5);">
@@ -400,7 +420,55 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
                     showToast('All student data has been cleared.', 'success');
                 }
             });
+
+            // --- Announcement Settings ---
+            const announcementText = document.getElementById('announcementText');
+            const announcementEnableBtn = document.getElementById('announcementEnableBtn');
+            const announcementDisableBtn = document.getElementById('announcementDisableBtn');
+            const saveAnnouncementBtn = document.getElementById('saveAnnouncementBtn');
+            let currentAnnouncementStatus = 'disabled';
+
+            function updateAnnouncementButtonState() {
+                if (currentAnnouncementStatus === 'enabled') {
+                    announcementEnableBtn.classList.add('primary');
+                    announcementDisableBtn.classList.remove('destructive');
+                } else {
+                    announcementEnableBtn.classList.remove('primary');
+                    announcementDisableBtn.classList.add('destructive');
+                }
+            }
+
+            async function loadSettings() {
+                const response = await apiRequest('get_settings');
+                if (response.status === 'success' && response.settings) {
+                    announcementText.value = response.settings.announcement_text || '';
+                    currentAnnouncementStatus = response.settings.announcement_status || 'disabled';
+                    updateAnnouncementButtonState();
+                }
+            }
+            
+            announcementEnableBtn.addEventListener('click', () => {
+                currentAnnouncementStatus = 'enabled';
+                updateAnnouncementButtonState();
+            });
+
+            announcementDisableBtn.addEventListener('click', () => {
+                currentAnnouncementStatus = 'disabled';
+                updateAnnouncementButtonState();
+            });
+
+            saveAnnouncementBtn.addEventListener('click', async () => {
+                const text = announcementText.value;
+                const status = currentAnnouncementStatus;
+                const response = await apiRequest('save_announcement', { text, status });
+                if (response.status === 'success') {
+                    showToast('Announcement settings saved successfully!', 'success');
+                }
+            });
+
+            loadSettings();
         });
     </script>
 </body>
 </html>
+
