@@ -1,6 +1,8 @@
 <?php
 // Start the session to access data from previous forms.
 session_start();
+// Set the default timezone to Myanmar time to ensure correct date formatting
+date_default_timezone_set('Asia/Yangon');
 
 // Ensure form1_data exists, otherwise redirect back to form1.
 // This prevents users from accessing this page directly.
@@ -10,6 +12,22 @@ if (!isset($_SESSION['form1_data'])) {
 }
 
 $form1_data = $_SESSION['form1_data'];
+
+// --- Date Formatting for Display ---
+// The date from session is now a full timestamp (e.g., '2025-09-04 13:30:00').
+// For display purposes, we only want to show the date part in the user-friendly 'd-m-Y' format.
+$display_date = '';
+if (!empty($form1_data['date'])) {
+    try {
+        $date_obj = new DateTime($form1_data['date']);
+        $display_date = $date_obj->format('d-m-Y');
+    } catch (Exception $e) {
+        // If the date is somehow invalid, just show the raw data to avoid errors.
+        $display_date = $form1_data['date'];
+    }
+}
+
+
 // --- Configuration ---
 // echo '<pre>';
 // print_r($form1_data);
@@ -104,7 +122,7 @@ include 'formPartial/header.php';
                 <div class="flex justify-between items-center mt-4 text-sm">
                     <span>သင်တန်းရေးရာ- 09445767834</span>
                     <!-- Displaying the date from the first form's session data -->
-                    <span>ရက်စွဲ: <?php echo htmlspecialchars($_SESSION['form1_data']['date']); ?></span>
+                    <span>ရက်စွဲ: <?php echo htmlspecialchars($display_date); ?></span>
                 </div>
             </div>
 
@@ -175,3 +193,4 @@ include 'formPartial/header.php';
 
 <!-- Include the footer partial -->
 <?php include 'formPartial/footer.php'; ?>
+

@@ -1,6 +1,8 @@
 <?php
     // Start a new session or resume an existing one
     session_start();
+    // Set the default timezone to Myanmar time
+    date_default_timezone_set('Asia/Yangon');
 
     // If the user is starting a new application (e.g., by visiting form1.php?new=1),
     // clear any previously saved form data from the session.
@@ -48,6 +50,15 @@
         }
         // If not in POST (e.g., after a refresh/GET request), check the session data from a previous submission.
         if (isset($_SESSION['form1_data'][$fieldName])) {
+            // Special handling for date to display it in d-m-Y format
+            if ($fieldName === 'date') {
+                try {
+                    $date_obj = new DateTime($_SESSION['form1_data']['date']);
+                    return htmlspecialchars(trim($date_obj->format('d-m-Y')));
+                } catch (Exception $e) {
+                     return htmlspecialchars(trim($_SESSION['form1_data'][$fieldName]));
+                }
+            }
             return htmlspecialchars(trim($_SESSION['form1_data'][$fieldName]));
         }
         // If in neither, return the default value.
@@ -283,12 +294,28 @@
             }
         }
 
-        
-
         if (empty($errors)) {
-            // If there are no errors, save form data to the session to pass to the next page.
-            // Data is only saved to the session at this single point, right before successful redirection.
+            // --- Date and Time Conversion for MySQL ---
+            // The date from the form is in 'd-m-Y' format.
+            // We need to convert it to 'Y-m-d H:i:s' for the database.
+            
+            $date_from_form = $_POST['date'];
+            // Create a DateTime object from the user's input format
+            $date_obj = DateTime::createFromFormat('d-m-Y', $date_from_form);
+
+            if ($date_obj) {
+                // If the date is valid, format it to Y-m-d and add the current time.
+                $mysql_datetime = $date_obj->format('Y-m-d') . ' ' . date('H:i:s');
+            } else {
+                // As a fallback if the user input is invalid, use the current server date and time.
+                $mysql_datetime = date('Y-m-d H:i:s');
+            }
+
+            // Save all POST data to the session.
             $_SESSION['form1_data'] = $_POST;
+            // Now, specifically overwrite the 'date' field in the session with our MySQL-friendly timestamp.
+            $_SESSION['form1_data']['date'] = $mysql_datetime;
+
             header("location: form2.php");
             exit;
         }
@@ -1094,3 +1121,4 @@
 
 </body>
 </html>
+

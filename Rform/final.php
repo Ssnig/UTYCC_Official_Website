@@ -1,10 +1,13 @@
 <?php
 session_start();
+// Set the default timezone to Myanmar time for consistency
+date_default_timezone_set('Asia/Yangon');
 
 // URL မှ တိုက်ရိုက်ဝင်ရောက်ခြင်းကို ပြန်လည်ခွင့်ပြုရန် session data စစ်ဆေးခြင်းကို ဖယ်ရှားလိုက်ပါပြီ။
 // ၎င်းကို အောက်တွင် UI ပြသမှုအတွက်သာ အသုံးပြုထားပါသည်။
 
-include "db.php"; // DB connection - Make sure this line is uncommented and the path is correct.
+// Use require_once for database connection to prevent multiple inclusions and ensure it's present.
+require_once "db.php"; 
 
 $success_message = null;
 
@@ -14,8 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_SESSION['form1_data']) || !isset($_SESSION['form2_data']) || !isset($_SESSION['option_data'])) {
         // data မရှိပါက error message ပြသပြီး ပြန်လည် redirect လုပ်ရန်
         echo "<script>
-            alert('အချက်အလက်ပြည့်စုံစွာ ဖြည့်စွက်ထားခြင်းမရှိသေးပါ!');
-            window.location.href = 'form1.php';
+            alert('Your session has expired or data is incomplete. Please start over. အချက်အလက်ပြည့်စုံစွာ ဖြည့်စွက်ထားခြင်းမရှိသေးပါ!');
+            window.location.href = 'form1.php?new=1';
         </script>";
         exit;
     }
@@ -25,13 +28,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 1. Begin the transaction.
         $pdo->beginTransaction();
 
-        // Assign session data to variables.
-        $form1 = $_SESSION['form1_data'];
-        $form2 = $_SESSION['form2_data'];
-        $option = $_SESSION['option_data'];
+        // Assign session data to variables with null fallback for safety.
+        $form1 = $_SESSION['form1_data'] ?? [];
+        $form2 = $_SESSION['form2_data'] ?? [];
+        $option = $_SESSION['option_data'] ?? [];
 
-        // Encode preferences as JSON to store in the students table (optional, but can be useful for a quick overview).
-        $preferences_json = json_encode($form2['preferences']);
+        // Encode preferences as JSON to store in the students table.
+        $preferences_json = json_encode($form2['preferences'] ?? []);
+
+        // --- Safety Check for Date ---
+        // Re-validate and ensure the date is in the correct format before inserting.
+        $submission_date = null;
+        if (!empty($form1['date'])) {
+            try {
+                // The date should already be in 'Y-m-d H:i:s' format from form1.php
+                $date_obj = new DateTime($form1['date']);
+                $submission_date = $date_obj->format('Y-m-d H:i:s');
+            } catch (Exception $e) {
+                // If it's invalid for some reason, fallback to the current time.
+                $submission_date = date('Y-m-d H:i:s');
+            }
+        } else {
+            // If it's missing entirely from the session, use the current time.
+            $submission_date = date('Y-m-d H:i:s');
+        }
+
 
         // =================================================================
         // Step 1: Insert into the 'students' table.
@@ -46,25 +67,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
 
         $stmt_student->execute([
-            $form1['year'],
-            $form1['academic_year'],
-            $form1['seat_no'],
-            $form1['entry_year'],
-            $form1['student_email'],
-            $option['dormitory_preference'],
+            $form1['year'] ?? null,
+            $form1['academic_year'] ?? null,
+            $form1['seat_no'] ?? null,
+            $form1['entry_year'] ?? null,
+            $form1['student_email'] ?? null,
+            $option['dormitory_preference'] ?? null,
             $preferences_json,
-            $form1['student_name_mm'],
-            $form1['student_name_en'],
-            $form1['student_race'],
-            $form1['student_religion'],
-            $form1['student_nrc'],
-            $form1['student_dob'],
-            $form1['student_birthplace'],
-            $form1['state_region'],
-            $form1['township'],
-            $form1['student_phone'],
-            $form1['student_address'],
-            date("Y-m-d"), // Use Y-m-d for standard SQL date format
+            $form1['student_name_mm'] ?? null,
+            $form1['student_name_en'] ?? null,
+            $form1['student_race'] ?? null,
+            $form1['student_religion'] ?? null,
+            $form1['student_nrc'] ?? null,
+            $form1['student_dob'] ?? null,
+            $form1['student_birthplace'] ?? null,
+            $form1['state_region'] ?? null,
+            $form1['township'] ?? null,
+            $form1['student_phone'] ?? null,
+            $form1['student_address'] ?? null,
+            $submission_date, // Use the validated and formatted date
             $form1['photo_url'] ?? null
         ]);
 
@@ -83,15 +104,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt_father->execute([
             $student_id,
-            $form1['father_name_mm'],
-            $form1['father_name_en'],
-            $form1['father_race'],
-            $form1['father_religion'],
-            $form1['father_nrc'],
-            $form1['father_phone'],
-            $form1['father_info'],
+            $form1['father_name_mm'] ?? null,
+            $form1['father_name_en'] ?? null,
+            $form1['father_race'] ?? null,
+            $form1['father_religion'] ?? null,
+            $form1['father_nrc'] ?? null,
+            $form1['father_phone'] ?? null,
+            $form1['father_info'] ?? null,
             $form1['father_deceased_year'] ?? null,
-            $form1['father_address']
+            $form1['father_address'] ?? null
         ]);
         
         // =================================================================
@@ -106,32 +127,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt_mother->execute([
             $student_id,
-            $form1['mother_name_mm'],
-            $form1['mother_name_en'],
-            $form1['mother_race'],
-            $form1['mother_religion'],
-            $form1['mother_nrc'],
-            $form1['mother_phone'],
-            $form1['mother_info'],
+            $form1['mother_name_mm'] ?? null,
+            $form1['mother_name_en'] ?? null,
+            $form1['mother_race'] ?? null,
+            $form1['mother_religion'] ?? null,
+            $form1['mother_nrc'] ?? null,
+            $form1['mother_phone'] ?? null,
+            $form1['mother_info'] ?? null,
             $form1['mother_deceased_year'] ?? null,
-            $form1['mother_address']
+            $form1['mother_address'] ?? null
         ]);
 
         // =================================================================
         // Step 4: Insert into the 'preferences' table.
         // =================================================================
-        if (!empty($form2['preferences'])) {
-            $stmt_pref = $pdo->prepare("
-                INSERT INTO preferences (student_id, preference_order, major_code)
-                VALUES (?, ?, ?)
-            ");
-
-            foreach ($form2['preferences'] as $order => $major_code) {
-                if (!empty($major_code)) {
-                    $stmt_pref->execute([$student_id, $order, $major_code]);
-                }
-            }
-        }
 
         // 2. If everything is successful, commit the transaction.
         $pdo->commit();
@@ -150,25 +159,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 3. If an error occurs, roll back the transaction.
         $pdo->rollBack();
 
+        // Prepare the error message for JavaScript alert
+        $raw_error_message = $e->getMessage();
+        // Sanitize the message to prevent breaking the script tag
+        $sanitized_error_message = str_replace(["'", "\n", "\r"], ["\\'", "\\n", "\\r"], $raw_error_message);
+
         // Check for specific duplicate entry error code (SQLSTATE 23000).
         if ($e->getCode() == '23000') {
             $error_message = "အချက်အလက် မှတ်ပုံတင်ခြင်း မအောင်မြင်ပါ ❌\\n";
-            if (strpos($e->getMessage(), 'seat_no') !== false) {
+            if (strpos($raw_error_message, 'seat_no') !== false) {
                 $error_message .= "သင်၏ ထိုင်ခုံနံပါတ် (Seat No) သည် မှတ်ပုံတင်ပြီးသားဖြစ်ပါသည်။";
-            } else if (strpos($e->getMessage(), 'student_nrc') !== false) {
+            } else if (strpos($raw_error_message, 'student_nrc') !== false) {
                 $error_message .= "သင်၏ မှတ်ပုံတင်အမှတ် (NRC) သည် မှတ်ပုံတင်ပြီးသားဖြစ်ပါသည်။";
             } else {
                 $error_message .= "အချက်အလက်ထည့်သွင်းမှုတွင် ထပ်နေသော အချက်အလက်များ ရှိနေပါသည်။";
             }
-            echo "<script>alert('{$error_message}');</script>";
+             echo "<script>alert('{$error_message}'); window.history.back();</script>";
         } else {
-            // Log the detailed error for debugging purposes.
-            error_log("Database submission error: " . $e->getMessage());
+            // Log the detailed error for server-side debugging.
+            error_log("Database submission error: " . $raw_error_message);
 
-            // Display a user-friendly error message.
-            $error_message = "❌ Submission failed due to a system error. Please try again later. Error: " . $e->getMessage();
-            echo "<script>alert('{$error_message}');</script>";
+            // Display a detailed, user-friendly error message in an alert.
+            $error_message = "❌ Submission failed due to a system error.\\nPlease contact support.\\n\\nError Details: " . $sanitized_error_message;
+            echo "<script>alert('{$error_message}'); window.history.back();</script>";
         }
+        exit; // Stop script execution after handling the error
     }
 }
 ?>
@@ -240,3 +255,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </body>
 </html>
+

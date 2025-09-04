@@ -2,6 +2,9 @@
 // Include the database configuration file
 require_once '../Rform/db.php';
 
+// Set the default timezone to ensure date comparisons are accurate
+date_default_timezone_set('Asia/Yangon');
+
 // --- FETCH PENDING STUDENT DATA ON INITIAL PAGE LOAD ---
 $students = [];
 // MODIFICATION: Added s.preferences to the SELECT statement
@@ -889,7 +892,9 @@ $pdo = null;
       const filteredStudents = getFilteredSorted();
       const total = filteredStudents.length;
       const dormitory = filteredStudents.filter(s => s.dormitory_preference).length;
-      const today = filteredStudents.filter(s => s.date === todayStr()).length;
+      // FIX: Check if the datetime string from the DB starts with today's date string (YYYY-MM-DD).
+      const today_string = todayStr();
+      const today = filteredStudents.filter(s => s.date && s.date.startsWith(today_string)).length;
       document.getElementById('statTotal').textContent = total;
       document.getElementById('statDormitory').textContent = dormitory;
       document.getElementById('statToday').textContent = today;
@@ -1102,4 +1107,3 @@ $pdo = null;
   </script>
 </body>
 </html>
-
