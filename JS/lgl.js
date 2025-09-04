@@ -69,3 +69,4 @@ document.addEventListener('click', () => {
         menu.classList.add('hidden');
     });
 });
+
