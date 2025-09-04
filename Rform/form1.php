@@ -292,6 +292,13 @@
         border-color: #93c5fd;
         background-color: #eff6ff;
     }
+    /* Style for highlighting the first error field */
+    .error-highlight {
+        background-color: #fef3c7 !important; /* Light yellow */
+        transition: background-color 0.5s ease-out;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 0 2px #fcd34d;
+    }
 </style>
     <br>
 
@@ -603,14 +610,16 @@
         include 'formPartial/footer.php';
         $repopulate_state    = getValue('state_region');
         $repopulate_township = getValue('township');
+        $first_error_key = !empty($errors) ? array_key_first($errors) : '';
     ?>
 
 <script>
     // Pass PHP values to JavaScript
     const previouslySelectedState = '<?php echo $repopulate_state; ?>';
     const previouslySelectedTownship = '<?php echo $repopulate_township; ?>';
-    const repopulateNrcData =                                           <?php echo json_encode($repopulate_nrc); ?>;
+    const repopulateNrcData = <?php echo json_encode($repopulate_nrc); ?>;
     const photoUrlFromServer = '<?php echo getValue('photo_url', ''); ?>';
+    const firstErrorKeyFromServer = '<?php echo $first_error_key; ?>';
 
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -1011,9 +1020,55 @@
         setupNameValidation('mother_name_mm', true);
         setupNameValidation('mother_name_en', false);
 
+
+        // --- Auto-scroll to first error on page load ---
+        if (firstErrorKeyFromServer) {
+            let errorElement;
+            
+            // Use a switch for cleaner special case handling
+            switch (firstErrorKeyFromServer) {
+                case 'photo_upload':
+                    errorElement = document.getElementById('photo-upload-area');
+                    break;
+                case 'student_nrc':
+                case 'father_nrc':
+                case 'mother_nrc':
+                    const prefix = firstErrorKeyFromServer.split('_')[0]; // 'student', 'father', or 'mother'
+                    errorElement = document.getElementById(`${prefix}_nrc_group`);
+                    break;
+                case 'student_birthplace':
+                    // Target the first dropdown for birthplace
+                    errorElement = document.getElementById('state_region');
+                    break;
+                default:
+                    // Default behavior for simple inputs
+                    errorElement = document.querySelector(`[name="${firstErrorKeyFromServer}"]`);
+            }
+
+            if (errorElement) {
+                // A short delay can help ensure the page is fully rendered before scrolling
+                setTimeout(() => {
+                    errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Try to focus the element if it's focusable
+                    if (typeof errorElement.focus === 'function') {
+                        errorElement.focus({ preventScroll: true }); // preventScroll avoids a second jump
+                    }
+                    
+                    // Find a good parent container to add a temporary highlight
+                    const fieldContainer = errorElement.closest('.relative.pb-5, #photo-upload-area');
+                    if (fieldContainer) {
+                        fieldContainer.classList.add('error-highlight');
+                        setTimeout(() => {
+                            fieldContainer.classList.remove('error-highlight');
+                        }, 2500); // Highlight lasts for 2.5 seconds
+                    }
+                }, 100); // 100ms delay
+            }
+        }
+
     });
 </script>
 
 </body>
 </html>
-
