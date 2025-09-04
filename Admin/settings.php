@@ -217,9 +217,9 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
                 <h1>UTYCC Admin Panel</h1>
             </div>
             <nav>
-                <a class="nav-link" href="admin_dashboard.php">Students</a>
+                <a class="nav-link" href="admin_dashboard.php">Registrations</a>
                 <a class="nav-link" href="#">Courses</a>
-                <a class="nav-link" href="#">Registrations</a>
+                <a class="nav-link" href="students.php">Students</a>
                 <a class="nav-link" href="support.php">Support</a>
                 <a class="nav-link active" href="#">Settings</a>
             </nav>

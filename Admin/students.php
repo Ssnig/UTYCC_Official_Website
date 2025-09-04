@@ -206,7 +206,7 @@ $pdo = null;
     th, td { padding: 12px 14px; border-bottom: 1px solid hsl(var(--border)); }
     tbody tr:hover { background: hsl(var(--muted)); }
 
-    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; width: 100%;}
     .toolbar .spacer { flex: 1; }
 
     /* Toast Notifications */
@@ -362,6 +362,19 @@ $pdo = null;
       <section class="section" id="students">
         <div class="section-header">
           <div class="toolbar">
+             <!-- START: Year Filter Dropdown -->
+             <div class="field" style="min-width: 200px;">
+                <select id="yearFilter" aria-label="Filter by Year">
+                    <option value="all">All Years</option>
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+                    <option value="Fifth Year">Fifth Year</option>
+                    <option value="Sixth Year">Sixth Year (Final)</option>
+                </select>
+             </div>
+             <!-- END: Year Filter Dropdown -->
             <div class="spacer"></div>
             <button class="btn destructive" id="bulkDeleteBtn" disabled>Delete Selected</button>
           </div>
@@ -637,6 +650,7 @@ $pdo = null;
     const state = {
       students: <?php echo json_encode($students); ?>,
       q: '',
+      year: 'all', // Add year for filtering
       page: 1,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
@@ -846,9 +860,13 @@ $pdo = null;
 
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
-      const base = state.students.filter(s =>
-        (!q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q)))
-      );
+      const selectedYear = state.year;
+      const base = state.students.filter(s => {
+          const matchesSearch = !q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q));
+          const matchesYear = selectedYear === 'all' || s.academic_year === selectedYear;
+          return matchesSearch && matchesYear;
+      });
+
       const { key, dir } = state.sort;
       base.sort((a,b) => {
         const res = cmp(a,b,key);
@@ -896,6 +914,12 @@ $pdo = null;
     }
     
     function addEventListeners() {
+      document.getElementById('yearFilter').addEventListener('change', (e) => {
+          state.year = e.target.value;
+          state.page = 1; // Reset page to 1 when filter changes
+          render();
+      });
+
       document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
       document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
       document.getElementById('nextPage').addEventListener('click', () => { state.page++; render(); });

@@ -211,7 +211,7 @@ $pdo = null;
     .badge.success { background: hsl(var(--success)/0.12); color: hsl(var(--success)); border-color: hsl(var(--success)/0.3); }
     .badge.warning { background: hsl(var(--warning)/0.12); color: hsl(var(--warning)); border-color: hsl(var(--warning)/0.3); }
 
-    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; width: 100%;}
     .toolbar .spacer { flex: 1; }
 
     /* Toast Notifications */
@@ -376,6 +376,20 @@ $pdo = null;
         <div class="section-header">
           <h2>စာရင်းသွင်းထားသော ကျောင်းသား/သူများ</h2>
           <div class="toolbar">
+             <!-- START: Year Filter Dropdown -->
+             <div class="field" style="min-width: 200px; margin-right: 12px;">
+                <select id="yearFilter" aria-label="Filter by Year">
+                    <option value="all">All Years</option>
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+                    <option value="Fifth Year">Fifth Year</option>
+                    <option value="Sixth Year">Sixth Year (Final)</option>
+                </select>
+             </div>
+             <!-- END: Year Filter Dropdown -->
+             <div class="spacer"></div>
              <button class="btn success" id="bulkApproveBtn" disabled>Approve Selected</button>
           </div>
         </div>
@@ -647,6 +661,7 @@ $pdo = null;
     const state = {
       students: <?php echo json_encode($students); ?>,
       q: '',
+      year: 'all', // Add year for filtering
       page: 1,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
@@ -856,9 +871,12 @@ $pdo = null;
 
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
-      const base = state.students.filter(s =>
-        (!q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q)))
-      );
+      const selectedYear = state.year;
+      const base = state.students.filter(s => {
+        const matchesSearch = !q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q));
+        const matchesYear = selectedYear === 'all' || s.academic_year === selectedYear;
+        return matchesSearch && matchesYear;
+      });
       const { key, dir } = state.sort;
       base.sort((a,b) => {
         const res = cmp(a,b,key);
@@ -868,9 +886,10 @@ $pdo = null;
     }
 
     function renderStats() {
-      const total = state.students.length;
-      const dormitory = state.students.filter(s => s.dormitory_preference).length;
-      const today = state.students.filter(s => s.date === todayStr()).length;
+      const filteredStudents = getFilteredSorted();
+      const total = filteredStudents.length;
+      const dormitory = filteredStudents.filter(s => s.dormitory_preference).length;
+      const today = filteredStudents.filter(s => s.date === todayStr()).length;
       document.getElementById('statTotal').textContent = total;
       document.getElementById('statDormitory').textContent = dormitory;
       document.getElementById('statToday').textContent = today;
@@ -918,6 +937,12 @@ $pdo = null;
     }
     
     function addEventListeners() {
+      document.getElementById('yearFilter').addEventListener('change', (e) => {
+          state.year = e.target.value;
+          state.page = 1; // Reset page to 1 when filter changes
+          render();
+      });
+
       document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
       document.getElementById('nextPage').addEventListener('click', () => { state.page++; render(); });
       document.getElementById('closeModal').addEventListener('click', closeModalSafe);
@@ -1077,3 +1102,4 @@ $pdo = null;
   </script>
 </body>
 </html>
+
