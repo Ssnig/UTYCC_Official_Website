@@ -8,6 +8,7 @@
     // clear any previously saved form data from the session.
     if (isset($_GET['new']) && $_GET['new'] == '1') {
         unset($_SESSION['form1_data']);
+        unset($_SESSION['form1_errors']); // Also clear any leftover errors
         // Redirect to remove the "?new=1" from the URL, so a page refresh doesn't clear the form again.
         header('Location: form1.php');
         exit;
@@ -25,6 +26,10 @@
         $academic_year_value = ($current_year - 1) . '-' . $current_year;
     }
 
+    // --- Retrieve errors from session if they exist, then clear them ---
+    $errors = $_SESSION['form1_errors'] ?? [];
+    unset($_SESSION['form1_errors']);
+
     // Define variables and initialize with empty values
     $year               = $academic_year        = $seat_no              = $student_email           = $entry_year           = "";
     $student_name_mm    = $father_name_mm       = $mother_name_mm       = "";
@@ -39,20 +44,16 @@
     $state_region       = $township       = ""; // Added for birthplace dropdowns
     $photo_url          = "";
     $date               = date('d-m-Y');
-    $errors             = [];
-
-    // --- Repopulate fields from POST data if available, otherwise from session ---
+    
+    // --- Repopulate fields from session data ---
     function getValue($fieldName, $default = '')
     {
-        // Prioritize POST data first, as it's the most recent user submission.
-        if (isset($_POST[$fieldName])) {
-            return htmlspecialchars(trim($_POST[$fieldName]));
-        }
-        // If not in POST (e.g., after a refresh/GET request), check the session data from a previous submission.
+        // Data is always retrieved from the session now
         if (isset($_SESSION['form1_data'][$fieldName])) {
             // Special handling for date to display it in d-m-Y format
             if ($fieldName === 'date') {
                 try {
+                    // It might be in Y-m-d H:i:s format, so we parse and reformat
                     $date_obj = new DateTime($_SESSION['form1_data']['date']);
                     return htmlspecialchars(trim($date_obj->format('d-m-Y')));
                 } catch (Exception $e) {
@@ -61,7 +62,6 @@
             }
             return htmlspecialchars(trim($_SESSION['form1_data'][$fieldName]));
         }
-        // If in neither, return the default value.
         return $default;
     }
 
@@ -89,8 +89,21 @@
     // Processing form data when the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+        // --- PRG Pattern Step 1: Preserve existing data and process new data ---
+        
+        // Preserve the existing photo URL from the session before overwriting.
+        $existing_photo_url = $_SESSION['form1_data']['photo_url'] ?? '';
+
+        // Store all incoming text POST data into the session.
+        $_SESSION['form1_data'] = $_POST;
+
+        // Restore the preserved photo URL. If a new photo is uploaded, this will be replaced later.
+        $_SESSION['form1_data']['photo_url'] = $existing_photo_url;
+
+        $validation_errors = [];
+
         // --- Handle Photo Upload ---
-        $original_photo_on_load = $_POST['original_photo_url'] ?? '';
+        $original_photo_on_load = $_SESSION['form1_data']['photo_url']; // Now it gets the correct existing path
         $is_new_upload_attempt = isset($_FILES["photo_upload"]) && $_FILES["photo_upload"]["error"] != UPLOAD_ERR_NO_FILE;
         $is_removal_request = !empty($_POST['remove_photo']) && $_POST['remove_photo'] == '1';
 
@@ -107,216 +120,101 @@
 
             $check = getimagesize($_FILES["photo_upload"]["tmp_name"]);
             if ($check === false) {
-                $errors['photo_upload'] = "File is not an image.";
+                $validation_errors['photo_upload'] = "File is not an image.";
                 $uploadOk = 0;
             }
             if ($_FILES["photo_upload"]["size"] > 5000000) {
-                $errors['photo_upload'] = "Sorry, your file is too large (Max 5MB).";
+                $validation_errors['photo_upload'] = "Sorry, your file is too large (Max 5MB).";
                 $uploadOk = 0;
             }
             if (!in_array($imageFileType, ["jpg", "png", "jpeg"])) {
-                $errors['photo_upload'] = "Sorry, only JPG, JPEG, & PNG files are allowed.";
+                $validation_errors['photo_upload'] = "Sorry, only JPG, JPEG, & PNG files are allowed.";
                 $uploadOk = 0;
             }
 
             if ($uploadOk == 1) {
                 if (move_uploaded_file($_FILES["photo_upload"]["tmp_name"], $target_file)) {
+                    // If a new photo is uploaded, delete the old one
                     if (!empty($original_photo_on_load) && file_exists($original_photo_on_load)) {
                         unlink($original_photo_on_load);
                     }
-                    $_POST['photo_url'] = $target_file;
+                    $_SESSION['form1_data']['photo_url'] = $target_file; // Save new path to session
                 } else {
-                    $errors['photo_upload'] = "Sorry, there was an error uploading your file.";
-                    $_POST['photo_url'] = $original_photo_on_load;
+                    $validation_errors['photo_upload'] = "Sorry, there was an error uploading your file.";
                 }
-            } else {
-                $_POST['photo_url'] = $original_photo_on_load;
             }
         } elseif ($is_removal_request) {
+            // If photo removal is requested
             if (!empty($original_photo_on_load) && file_exists($original_photo_on_load)) {
                 unlink($original_photo_on_load);
             }
-            $_POST['photo_url'] = '';
+            $_SESSION['form1_data']['photo_url'] = ''; // Clear photo URL from session
         }
 
-
-        $sanitized_post = [];
-        foreach ($_POST as $key => $value) {
-            $sanitized_post[$key] = htmlspecialchars(trim($value));
-        }
-
-        // --- Assign sanitized values to variables ---
-        $year               = $sanitized_post["year"] ?? '';
-        $academic_year      = $sanitized_post["academic_year"] ?? '';
-        $student_email      = $sanitized_post["student_email"] ?? '';
-        $seat_no            = $sanitized_post["seat_no"] ?? '';
-        $entry_year         = $sanitized_post["entry_year"] ?? '';
-        $student_name_mm    = $sanitized_post["student_name_mm"] ?? '';
-        $father_name_mm     = $sanitized_post["father_name_mm"] ?? '';
-        $mother_name_mm     = $sanitized_post["mother_name_mm"] ?? '';
-        $student_name_en    = $sanitized_post["student_name_en"] ?? '';
-        $father_name_en     = $sanitized_post["father_name_en"] ?? '';
-        $mother_name_en     = $sanitized_post["mother_name_en"] ?? '';
-        $student_race       = $sanitized_post["student_race"] ?? '';
-        $father_race        = $sanitized_post["father_race"] ?? '';
-        $mother_race        = $sanitized_post["mother_race"] ?? '';
-        $student_religion   = $sanitized_post["student_religion"] ?? '';
-        $father_religion    = $sanitized_post["father_religion"] ?? '';
-        $mother_religion    = $sanitized_post["mother_religion"] ?? '';
-        $student_nrc        = $sanitized_post["student_nrc"] ?? '';
-        $father_nrc         = $sanitized_post["father_nrc"] ?? '';
-        $mother_nrc         = $sanitized_post["mother_nrc"] ?? '';
-        $student_dob        = $sanitized_post["student_dob"] ?? '';
-        $student_birthplace = $sanitized_post["student_birthplace"] ?? '';
-        $state_region       = $sanitized_post["state_region"] ?? '';
-        $township           = $sanitized_post["township"] ?? '';
-        $student_phone      = $sanitized_post["student_phone"] ?? '';
-        $father_phone       = $sanitized_post["father_phone"] ?? '';
-        $mother_phone       = $sanitized_post["mother_phone"] ?? '';
-        $father_info        = $sanitized_post["father_info"] ?? '';
-        $mother_info        = $sanitized_post["mother_info"] ?? '';
-        $father_deceased_year = $sanitized_post["father_deceased_year"] ?? '';
-        $mother_deceased_year = $sanitized_post["mother_deceased_year"] ?? '';
-        $student_address    = $sanitized_post["student_address"] ?? '';
-        $father_address     = $sanitized_post["father_address"] ?? '';
-        $mother_address     = $sanitized_post["mother_address"] ?? '';
-        $date               = $sanitized_post["date"] ?? date('d-m-Y');
-        $photo_url          = $sanitized_post["photo_url"] ?? '';
 
         // --- Validate Required Fields ----
-        if (empty($photo_url)) {
-            $errors['photo_upload'] = "ကျေးဇူးပြု၍ ဓာတ်ပုံထည့်သွင်းပါ။";
+        // We validate based on the session data which now includes the latest POST and photo info
+        if (empty($_SESSION['form1_data']['photo_url'])) {
+            $validation_errors['photo_upload'] = "ကျေးဇူးပြု၍ ဓာတ်ပုံထည့်သွင်းပါ။";
         }
-
-        if (empty($academic_year)) {
-            $errors['academic_year'] = "သင်တန်းနှစ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_email)) {
-            $errors['student_email'] = "emailထည့်ပေးပါရန်";
-        }
-
-        if (empty($seat_no)) {
-            $errors['seat_no'] = "ခုံအမှတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_name_mm)) {
-            $errors['student_name_mm'] = "ကျောင်းသား/သူ၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_name_en)) {
-            $errors['student_name_en'] = "ကျောင်းသား/သူ၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_race)) {
-            $errors['student_race'] = "ကျောင်းသား/သူ၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_religion)) {
-            $errors['student_religion'] = "ကိုးကွယ်သည့်ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_nrc)) {
-            $errors['student_nrc'] = "ကျောင်းသား/သူ၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_dob)) {
-            $errors['student_dob'] = "ကျောင်းသား/သူ၏ မွေးသက္ကရာဇ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_birthplace)) {
-            $errors['student_birthplace'] = "မွေးဖွားရာဇာတိထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_phone)) {
-            $errors['student_phone'] = "ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($student_address)) {
-            $errors['student_address'] = "ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
-        if (empty($date)) {
-            $errors['date'] = "ရက်စွဲထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        }
-
+        
+        if (empty($_POST['academic_year'])) $validation_errors['academic_year'] = "သင်တန်းနှစ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_email'])) $validation_errors['student_email'] = "emailထည့်ပေးပါရန်";
+        if (empty($_POST['seat_no'])) $validation_errors['seat_no'] = "ခုံအမှတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_name_mm'])) $validation_errors['student_name_mm'] = "ကျောင်းသား/သူ၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_name_en'])) $validation_errors['student_name_en'] = "ကျောင်းသား/သူ၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_race'])) $validation_errors['student_race'] = "ကျောင်းသား/သူ၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_religion'])) $validation_errors['student_religion'] = "ကိုးကွယ်သည့်ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_nrc'])) $validation_errors['student_nrc'] = "ကျောင်းသား/သူ၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_dob'])) $validation_errors['student_dob'] = "ကျောင်းသား/သူ၏ မွေးသက္ကရာဇ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_birthplace'])) $validation_errors['student_birthplace'] = "မွေးဖွားရာဇာတိထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_phone'])) $validation_errors['student_phone'] = "ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['student_address'])) $validation_errors['student_address'] = "ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        if (empty($_POST['date'])) $validation_errors['date'] = "ရက်စွဲထည့်သွင်းရန်လိုအပ်ပါသည်။";
         // --- Conditional Parent Validation ---
-        if (empty($father_deceased_year)) {
-            if (empty($father_name_mm)) {
-                $errors['father_name_mm'] = "အဘ(အရင်း)၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($father_name_en)) {
-                $errors['father_name_en'] = "အဘ(အရင်း)၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($father_religion)) {
-                $errors['father_religion'] = "အဘ(အရင်း)၏ ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($father_race)) {
-                $errors['father_race'] = "အဘ(အရင်း)၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($father_info)) {
-                $errors['father_info'] = "အဘ(အရင်း)၏ အလုပ်အကိုင်/ပညာအရည်အချင်း ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($father_nrc)) {
-                $errors['father_nrc'] = "အဘ(အရင်း)၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($father_address)) {
-                $errors['father_address'] = "အဘ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($father_phone)) {
-                $errors['father_phone'] = "အဘ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
+        if (empty($_POST['father_deceased_year'])) {
+            if (empty($_POST['father_name_mm'])) $validation_errors['father_name_mm'] = "အဘ(အရင်း)၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['father_name_en'])) $validation_errors['father_name_en'] = "အဘ(အရင်း)၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['father_religion'])) $validation_errors['father_religion'] = "အဘ(အရင်း)၏ ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['father_race'])) $validation_errors['father_race'] = "အဘ(အရင်း)၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['father_info'])) $validation_errors['father_info'] = "အဘ(အရင်း)၏ အလုပ်အကိုင်/ပညာအရည်အချင်း ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['father_nrc'])) $validation_errors['father_nrc'] = "အဘ(အရင်း)၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['father_address'])) $validation_errors['father_address'] = "အဘ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['father_phone'])) $validation_errors['father_phone'] = "အဘ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
-        if (empty($mother_deceased_year)) {
-            if (empty($mother_name_mm)) {
-                $errors['mother_name_mm'] = "အမိ(အရင်း)၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($mother_name_en)) {
-                $errors['mother_name_en'] = "အမိ(အရင်း)၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($mother_religion)) {
-                $errors['mother_religion'] = "အမိ(အရင်း)၏ ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($mother_race)) {
-                $errors['mother_race'] = "အမိ(အရင်း)၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($mother_info)) {
-                $errors['mother_info'] = "အမိ(အရင်း)၏ အလုပ်အကိုင်/ပညာအရည်အချင်း ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($mother_nrc)) {
-                $errors['mother_nrc'] = "အမိ(အရင်း)၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($mother_address)) {
-                $errors['mother_address'] = "အမိ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
-            if (empty($mother_phone)) {
-                $errors['mother_phone'] = "အမိ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            }
+        if (empty($_POST['mother_deceased_year'])) {
+            if (empty($_POST['mother_name_mm'])) $validation_errors['mother_name_mm'] = "အမိ(အရင်း)၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['mother_name_en'])) $validation_errors['mother_name_en'] = "အမိ(အရင်း)၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['mother_religion'])) $validation_errors['mother_religion'] = "အမိ(အရင်း)၏ ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['mother_race'])) $validation_errors['mother_race'] = "အမိ(အရင်း)၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['mother_info'])) $validation_errors['mother_info'] = "အမိ(အရင်း)၏ အလုပ်အကိုင်/ပညာအရည်အချင်း ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['mother_nrc'])) $validation_errors['mother_nrc'] = "အမိ(အရင်း)၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['mother_address'])) $validation_errors['mother_address'] = "အမိ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['mother_phone'])) $validation_errors['mother_phone'] = "အမိ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
-        if (empty($errors)) {
-            // --- Date and Time Conversion for MySQL ---
-            // The date from the form is in 'd-m-Y' format.
-            // We need to convert it to 'Y-m-d H:i:s' for the database.
-            
-            $date_from_form = $_POST['date'];
-            // Create a DateTime object from the user's input format
+
+        // --- PRG Pattern Step 2: Redirect based on validation result ---
+        if (empty($validation_errors)) {
+            // --- Date Conversion for MySQL (Only when moving to next page) ---
+            $date_from_form = $_SESSION['form1_data']['date'];
             $date_obj = DateTime::createFromFormat('d-m-Y', $date_from_form);
-
             if ($date_obj) {
-                // If the date is valid, format it to Y-m-d and add the current time.
                 $mysql_datetime = $date_obj->format('Y-m-d') . ' ' . date('H:i:s');
+                $_SESSION['form1_data']['date'] = $mysql_datetime;
             } else {
-                // As a fallback if the user input is invalid, use the current server date and time.
-                $mysql_datetime = date('Y-m-d H:i:s');
+                 $_SESSION['form1_data']['date'] = date('Y-m-d H:i:s');
             }
 
-            // Save all POST data to the session.
-            $_SESSION['form1_data'] = $_POST;
-            // Now, specifically overwrite the 'date' field in the session with our MySQL-friendly timestamp.
-            $_SESSION['form1_data']['date'] = $mysql_datetime;
-
+            // No errors, proceed to form2.php
             header("location: form2.php");
+            exit;
+        } else {
+            // Errors found, store them in the session
+            $_SESSION['form1_errors'] = $validation_errors;
+
+            // Redirect back to the same page to show errors and repopulated data
+            header("Location: form1.php");
             exit;
         }
     }
@@ -455,8 +353,6 @@
                         <div id="remove-photo-btn" title="Remove Photo">×</div>
                     </div>
                     <input type="file" class="hidden" id="photo_upload" name="photo_upload" accept="image/*">
-                    <input type="hidden" name="original_photo_url" value="<?php echo getValue('photo_url'); ?>">
-                    <input type="hidden" name="photo_url" id="photo_url_hidden" value="<?php echo getValue('photo_url'); ?>">
                     <input type="hidden" name="remove_photo" id="remove_photo_flag" value="0">
                     <?php if (isset($errors['photo_upload'])): ?><p class="error-message mt-2 server-error-message"><?php echo $errors['photo_upload']; ?></p><?php endif; ?>
                 </div>
@@ -724,7 +620,7 @@
         const previewContainer = document.getElementById('photo-preview-container');
         const placeholder = document.getElementById('photo-placeholder');
         const removeBtn = document.getElementById('remove-photo-btn');
-        const photoUrlHidden = document.getElementById('photo_url_hidden');
+        // We no longer need photo_url_hidden because the session handles it
         const removePhotoFlag = document.getElementById('remove_photo_flag');
 
         // Create a dedicated container for client-side photo validation messages
@@ -744,11 +640,10 @@
             placeholder.style.display = 'block';
             previewContainer.style.display = 'none';
             photoUploadInput.value = ''; // Clear the file input
-            photoUrlHidden.value = ''; // Clear the hidden URL field
             removePhotoFlag.value = '1'; // Set flag to remove on server
         }
 
-        // On page load, check for an existing photo from the server
+        // On page load, check for an existing photo from the server session
         if (photoUrlFromServer) {
             showPhotoPreview(photoUrlFromServer);
         }
