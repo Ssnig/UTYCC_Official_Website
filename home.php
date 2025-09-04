@@ -694,15 +694,81 @@ $pdo = null;
                 </select>
             </div>
         </div>
-    </div>
-     <?php if ($announcement_status === 'enabled' && !empty($announcement_text)): ?>
-    <div id="announcement-banner" class="bg-yellow-400 border-b-4 border-yellow-500 text-yellow-900 text-center p-4 shadow-lg">
-        <div class="container mx-auto flex items-center justify-center space-x-4">
-            <i class="fas fa-bullhorn fa-2x animate-pulse"></i>
-            <p class="font-semibold"><?php echo nl2br(htmlspecialchars($announcement_text)); ?></p>
+<?php if (isset($announcement_status) && $announcement_status === 'enabled' && !empty($announcement_text)): ?>
+    <!-- Announcement Banner V10 (Important Notice) - Updated Icon -->
+    <div id="announcement-banner" class="relative bg-blue-50 border-b border-blue-200 transition-all duration-500 ease-in-out overflow-hidden" style="max-height: 0; opacity: 0;" role="alert">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="flex items-center justify-between gap-4 py-3">
+                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500"></div>
+                <!-- Left side: Icon and Text -->
+                <div class="flex items-center gap-4 min-w-0 pl-4">
+                    <div class="flex-shrink-0 text-blue-600">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="text-sm sm:text-base flex-grow text-blue-900">
+                        <p><?php echo htmlspecialchars($announcement_text); ?></p>
+                    </div>
+                </div>
+                
+                <!-- Right side: Close Button -->
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button
+                        type="button"
+                        id="close-announcement-btn"
+                        class="p-1 text-blue-700 rounded-full hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                        aria-label="Close"
+                    >
+                        <span class="sr-only">Close</span>
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-    <?php endif; ?>
+    <!-- Announcement Banner V10 End -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const banner = document.getElementById('announcement-banner');
+            const closeBtn = document.getElementById('close-announcement-btn');
+
+            if (banner && closeBtn) {
+                // Function to show the banner with a smooth animation
+                const showBanner = () => {
+                    banner.style.maxHeight = banner.scrollHeight + 'px';
+                    banner.style.opacity = '1';
+                };
+
+                // Function to hide the banner with a smooth animation
+                const hideBanner = () => {
+                    banner.style.maxHeight = '0';
+                    banner.style.opacity = '0';
+                    setTimeout(() => {
+                        if (banner.style.maxHeight === '0px') {
+                             // This is not strictly necessary with max-height but can be good for accessibility.
+                        }
+                    }, 500); // This duration should match the CSS transition duration
+                };
+                
+                // Check if the banner was already closed in this session
+                if (sessionStorage.getItem('announcementClosed') !== 'true') {
+                    // Show the banner after a short delay
+                    setTimeout(showBanner, 300);
+                }
+
+                // Event listener for the close button
+                closeBtn.addEventListener('click', function() {
+                    hideBanner();
+                    // Remember that the user closed the banner for this session
+                    sessionStorage.setItem('announcementClosed', 'true');
+                });
+            }
+        });
+    </script>
+<?php endif; ?>
+    </div>
 
     <div id="main-content">
         <!-- Hero Section -->
