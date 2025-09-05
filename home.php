@@ -1069,11 +1069,11 @@ $pdo = null;
                         Start your journey with us! Click here to enroll for the upcoming
                         academic year.
                     </p>
-                    <button id="new-student-enroll-trigger"
+                    <a href="./Rform/form1.php"
                         class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect"
                         data-lang-key="enroll_new_button">
                         Enroll as a Fresher
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Divider -->
@@ -1242,50 +1242,16 @@ $pdo = null;
             <div class="shell">
                 <header class="g-head">
                     <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="brand-logo" />
-                    <h1 class="modal-h1" id="modal-title" data-lang-key="signup_title">
-                        Create Account
+                    <h1 class="modal-h1" id="modal-title" data-lang-key="login_title">
+                        Sign In
                     </h1>
-                    <p class="sub" id="modal-subtitle" data-lang-key="signup_subtitle">
-                        to enroll at UTYCC
+                    <p class="sub" id="modal-subtitle" data-lang-key="login_subtitle">
+                        to your account
                     </p>
                 </header>
 
-                <!-- View for Sign Up -->
-                <div id="view-signup" class="view active">
-                    <form id="signup-form">
-                        <div class="field">
-                            <label for="signup-name" data-lang-key="signup_name_label">Name</label>
-                            <input type="text" id="signup-name" class="input" placeholder="Your Full Name" required />
-                        </div>
-                        <div class="field">
-                            <label for="signup-email" data-lang-key="signup_email_label">Email</label>
-                            <input type="email" id="signup-email" class="input" placeholder="your.email@example.com"
-                                required />
-                        </div>
-                        <div class="field">
-                            <label for="signup-phone" data-lang-key="signup_phone_label">Phone Number</label>
-                            <input type="tel" id="signup-phone" class="input" placeholder="e.g., 09xxxxxxxxx"
-                                required />
-                        </div>
-                        <div class="terms">
-                            <input type="checkbox" id="signup-terms" required />
-                            <label for="signup-terms">
-                                <span data-lang-key="signup_terms_agree">I agree to the</span>
-                                <a href="/policy/policy_create.html" target="_blank" data-lang-key="signup_terms_link">Terms &
-                                    Policy</a>
-                            </label>
-                        </div>
-                        <button type="submit" id="signup-submit-btn" class="btn" disabled data-lang-key="signup_button">
-                            Create Account
-                        </button>
-                    </form>
-                    <p class="auth-toggle" data-lang-key="signup_toggle">
-                        Already have an account? <a id="toggle-to-login-btn">Sign In</a>
-                    </p>
-                </div>
-
                 <!-- View for Login -->
-                <div id="view-login" class="view">
+                <div id="view-login" class="view active">
                     <form id="login-form">
                         <div class="field">
                             <label for="login-id" data-lang-key="login_id_label">Student ID</label>
@@ -1300,9 +1266,6 @@ $pdo = null;
                             Sign In
                         </button>
                     </form>
-                    <p class="auth-toggle" data-lang-key="login_toggle">
-                        Don't have an account? <a id="toggle-to-signup-btn">Create one</a>
-                    </p>
                 </div>
             </div>
             <div class="image-panel">
@@ -1324,9 +1287,6 @@ $pdo = null;
             "language-switcher-mobile"
         );
 
-        const newStudentEnrollTrigger = document.getElementById(
-            "new-student-enroll-trigger"
-        );
         const currentStudentEnrollTrigger = document.getElementById(
             "current-student-enroll-trigger"
         );
@@ -1339,13 +1299,7 @@ $pdo = null;
         const modalSubtitle = document.getElementById("modal-subtitle");
 
         // Views
-        const viewSignup = document.getElementById("view-signup");
         const viewLogin = document.getElementById("view-login");
-
-        // Signup Form
-        const signupForm = document.getElementById("signup-form");
-        const signupTerms = document.getElementById("signup-terms");
-        const signupSubmitBtn = document.getElementById("signup-submit-btn");
 
         // Login Form
         const loginForm = document.getElementById("login-form");
@@ -1576,14 +1530,7 @@ $pdo = null;
                     el.innerHTML = translations[lang][key];
                 }
             });
-            // Re-add event listeners for toggles after innerHTML is changed
-            document
-                .getElementById("toggle-to-login-btn")
-                .addEventListener("click", () => switchView("login"));
-            document
-                .getElementById("toggle-to-signup-btn")
-                .addEventListener("click", () => switchView("signup"));
-
+            
             langSwitcherDesktop.value = lang;
             langSwitcherMobile.value = lang;
         }
@@ -1602,22 +1549,6 @@ $pdo = null;
 
         function isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        function switchView(viewName) {
-            if (viewName === "login") {
-                viewSignup.classList.remove("active");
-                viewLogin.classList.add("active");
-                modalTitle.setAttribute("data-lang-key", "login_title");
-                modalSubtitle.setAttribute("data-lang-key", "login_subtitle");
-            } else {
-                viewLogin.classList.remove("active");
-                viewSignup.classList.add("active");
-                modalTitle.setAttribute("data-lang-key", "signup_title");
-                modalSubtitle.setAttribute("data-lang-key", "signup_subtitle");
-            }
-            // Re-translate the modal title and subtitle
-            setLanguage(currentLang);
         }
 
         // --- Game Functions ---
@@ -1709,14 +1640,8 @@ $pdo = null;
         );
 
         // --- Modal Logic ---
-        newStudentEnrollTrigger.addEventListener("click", () => {
-            verificationModal.classList.remove("hidden");
-            switchView("signup");
-        });
-
         currentStudentEnrollTrigger.addEventListener("click", () => {
             verificationModal.classList.remove("hidden");
-            switchView("login");
         });
 
         closeModalBtn.addEventListener("click", () => {
@@ -1727,43 +1652,6 @@ $pdo = null;
             if (e.target === verificationModal) {
                 verificationModal.classList.add("hidden");
             }
-        });
-
-        document
-            .getElementById("toggle-to-login-btn")
-            .addEventListener("click", () => switchView("login"));
-        document
-            .getElementById("toggle-to-signup-btn")
-            .addEventListener("click", () => switchView("signup"));
-
-        signupTerms.addEventListener("input", () => {
-            signupSubmitBtn.disabled = !signupTerms.checked;
-        });
-
-        signupForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const name = document.getElementById("signup-name").value.trim();
-            const email = document.getElementById("signup-email").value.trim();
-            const phone = document.getElementById("signup-phone").value.trim();
-
-            if (!name) {
-                showToast("Please enter your name.", "error");
-                return;
-            }
-            if (!isValidEmail(email)) {
-                showToast("Please enter a valid email.", "error");
-                return;
-            }
-            if (!phone) {
-                showToast("Please enter your phone number.", "error");
-                return;
-            }
-
-            showToast(
-                "Account creation successful! Please wait for admin approval.",
-                "success"
-            );
-            setTimeout(() => verificationModal.classList.add("hidden"), 2000);
         });
 
         loginForm.addEventListener("submit", (e) => {

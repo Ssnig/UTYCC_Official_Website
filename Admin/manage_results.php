@@ -265,7 +265,7 @@ try {
         const formData = new FormData(this);
         formData.append('action', 'update');
 
-        const response = await fetch('api_handler.php', { method: 'POST', body: formData });
+        const response = await fetch('mrhandler.php', { method: 'POST', body: formData });
         const result = await response.json();
         
         showStatus(result.message, result.success);
@@ -294,7 +294,7 @@ try {
         formData.append('action', 'delete');
         formData.append('id', deleteId);
 
-        const response = await fetch('api_handler.php', { method: 'POST', body: formData });
+        const response = await fetch('mrhandler.php', { method: 'POST', body: formData });
         const result = await response.json();
         
         showStatus(result.message, result.success);
