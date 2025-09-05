@@ -401,7 +401,13 @@
                         </div>
                         <!-- NRC -->
                         <div class="relative pb-5 md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                            <div class="flex justify-between items-center">
+                                <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="student_nrc_applying" name="student_nrc_applying" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <label for="student_nrc_applying" class="ml-2 block text-sm text-gray-900">လျှောက်ထားဆဲ</label>
+                                </div>
+                            </div>
                             <div id="student_nrc_group" class="mt-1"></div>
                             <input type="hidden" name="student_nrc" id="student_nrc_hidden" value="<?php echo getValue('student_nrc'); ?>">
                             <?php if (isset($errors['student_nrc'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_nrc']; ?></p><?php endif; ?>
@@ -493,7 +499,9 @@
                             </div>
                             <!-- Father NRC -->
                             <div class="relative pb-5">
-                                <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                                <div class="flex justify-between items-center">
+                                    <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                                </div>
                                 <div id="father_nrc_group" class="mt-1 father-field-group"></div>
                                 <input type="hidden" name="father_nrc" id="father_nrc_hidden" value="<?php echo getValue('father_nrc'); ?>">
                                 <?php if (isset($errors['father_nrc'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['father_nrc']; ?></p><?php endif; ?>
@@ -552,7 +560,9 @@
                             </div>
                             <!-- Mother NRC -->
                             <div class="relative pb-5">
-                                <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                                <div class="flex justify-between items-center">
+                                    <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                                </div>
                                 <div id="mother_nrc_group" class="mt-1 mother-field-group"></div>
                                 <input type="hidden" name="mother_nrc" id="mother_nrc_hidden" value="<?php echo getValue('mother_nrc'); ?>">
                                 <?php if (isset($errors['mother_nrc'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['mother_nrc']; ?></p><?php endif; ?>
@@ -960,6 +970,50 @@
         createNrcInputGroup('student_nrc_group', 'student_nrc', repopulateNrcData.student);
         createNrcInputGroup('father_nrc_group', 'father_nrc', repopulateNrcData.father);
         createNrcInputGroup('mother_nrc_group', 'mother_nrc', repopulateNrcData.mother);
+        
+        // --- NRC Applying Logic ---
+        function setupNrcApplyingLogic(prefix) {
+            const checkbox = document.getElementById(`${prefix}_nrc_applying`);
+            const nrcGroup = document.getElementById(`${prefix}_nrc_group`);
+            const hiddenInput = document.getElementById(`${prefix}_nrc_hidden`);
+            if (!checkbox || !nrcGroup || !hiddenInput) return;
+
+            const nrcInputs = nrcGroup.querySelectorAll('select, input');
+
+            const toggleNrcFields = (isApplying) => {
+                nrcInputs.forEach(input => {
+                    input.disabled = isApplying;
+                });
+
+                if (isApplying) {
+                    hiddenInput.value = 'လျှောက်ထားဆဲ';
+                } else {
+                    // When unchecking, trigger an input event on the number field
+                    // to force the hidden field's value to be recalculated by its existing listener.
+                    const numberInput = nrcGroup.querySelector(`input[name="${prefix}_nrc_number"]`);
+                    if (numberInput) {
+                        numberInput.dispatchEvent(new Event('input', { 'bubbles': true }));
+                    } else {
+                        hiddenInput.value = ''; // fallback
+                    }
+                }
+            };
+
+            checkbox.addEventListener('change', function() {
+                toggleNrcFields(this.checked);
+            });
+
+            // Initial state on page load based on session data
+            if (hiddenInput.value === 'လျှောက်ထားဆဲ') {
+                checkbox.checked = true;
+                toggleNrcFields(true);
+            }
+        }
+        
+        setupNrcApplyingLogic('student');
+        setupNrcApplyingLogic('father');
+        setupNrcApplyingLogic('mother');
+
 
         // --- Deceased Parent Logic ---
         const fatherDeceasedInput = document.getElementById('father_deceased_year');

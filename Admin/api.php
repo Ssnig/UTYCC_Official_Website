@@ -377,6 +377,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->commit();
                 $response = ['status' => 'success', 'message' => 'All student data has been cleared.'];
                 break;
+
+            case 'get_analytics_data':
+                $sqlMajors = "SELECT academic_year, COUNT(student_id) as student_count FROM students GROUP BY academic_year ORDER BY student_count DESC";
+                $stmtMajors = $pdo->prepare($sqlMajors);
+                $stmtMajors->execute();
+                $byMajor = $stmtMajors->fetchAll(PDO::FETCH_ASSOC);
+                
+                $sqlRegions = "SELECT state_region, COUNT(student_id) as student_count FROM students WHERE state_region IS NOT NULL AND state_region != '' GROUP BY state_region ORDER BY student_count DESC LIMIT 15";
+                $stmtRegions = $pdo->prepare($sqlRegions);
+                $stmtRegions->execute();
+                $byRegion = $stmtRegions->fetchAll(PDO::FETCH_ASSOC);
+
+                $response = [
+                    'status' => 'success',
+                    'data' => [
+                        'byMajor' => $byMajor,
+                        'byRegion' => $byRegion,
+                    ]
+                ];
+                break;
         }
     } catch (Exception $e) {
         if ($pdo->inTransaction()) {
