@@ -1,88 +1,109 @@
 <?php
-
-
-require_once '../Rform/db.php';
+// Include the database connection file
+require_once '../Rform/db.php'; 
 
 header('Content-Type: application/json');
 
-$uploadsDir = 'uploads/';
-$dataFile = 'data/results_db.json';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate and sanitize inputs
+    $year = filter_input(INPUT_POST, 'year', FILTER_VALIDATE_INT);
+    $semester = filter_input(INPUT_POST, 'semester', FILTER_VALIDATE_INT);
+    $major = filter_input(INPUT_POST, 'major', FILTER_SANITIZE_SPECIAL_CHARS);
 
-// Create directories if they don't exist
-if (!is_dir($uploadsDir)) {
-    mkdir($uploadsDir, 0777, true);
-}
-if (!is_dir('data')) {
-    mkdir('data', 0777, true);
-}
-
-// Check if all necessary POST data and file are present
-if (!isset($_POST['year']) || !isset($_POST['semester']) || !isset($_POST['major']) || !isset($_FILES['result_image'])) {
-    echo json_encode(['success' => false, 'message' => 'Missing required data.']);
-    exit;
-}
-
-$year = $_POST['year'];
-$semester = $_POST['semester'];
-$major = $_POST['major'];
-$file = $_FILES['result_image'];
-
-// Validate file
-$allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-$maxFileSize = 5 * 1024 * 1024; // 5MB
-
-if (!in_array($file['type'], $allowedTypes)) {
-    echo json_encode(['success' => false, 'message' => 'Invalid file type. Only JPG, PNG, and GIF are allowed.']);
-    exit;
-}
-
-if ($file['size'] > $maxFileSize) {
-    echo json_encode(['success' => false, 'message' => 'File size exceeds the 5MB limit.']);
-    exit;
-}
-
-// Generate a unique filename to prevent conflicts
-$extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-$fileName = uniqid() . '.' . $extension;
-$destination = $uploadsDir . $fileName;
-
-// Move the uploaded file to the destination folder
-if (!move_uploaded_file($file['tmp_name'], $destination)) {
-    echo json_encode(['success' => false, 'message' => 'Failed to move the uploaded file.']);
-    exit;
-}
-
-// Prepare data to save to JSON file
-$newResult = [
-    'year' => $year,
-    'semester' => $semester,
-    'major' => $major,
-    'image_path' => $destination,
-    'uploaded_at' => date('Y-m-d H:i:s')
-];
-
-// Read existing data from the JSON file
-$resultsData = [];
-if (file_exists($dataFile)) {
-    $json = file_get_contents($dataFile);
-    $resultsData = json_decode($json, true);
-    if ($resultsData === null) {
-        // Handle malformed JSON
-        $resultsData = [];
+    if (!$year || !$semester || !$major) {
+        echo json_encode(['success' => false, 'message' => 'Invalid form data.']);
+        exit;
     }
+
+    // Define the public-facing uploads directory.
+    $targetDir = __DIR__ . "/../uploads/";
+
+    // Create the uploads directory if it doesn't exist
+    if (!is_dir($targetDir)) {
+        if (!mkdir($targetDir, 0755, true)) {
+            echo json_encode(['success' => false, 'message' => 'Failed to create uploads directory. Please check server permissions.']);
+            exit;
+        }
+    }
+
+    $files_uploaded_count = 0;
+    $errors = [];
+
+    // Check if multiple files were uploaded
+    if (is_array($_FILES["result_image"]["name"])) {
+        // Loop through each file
+        for ($i = 0; $i < count($_FILES["result_image"]["name"]); $i++) {
+            $file = [
+                'name' => $_FILES["result_image"]["name"][$i],
+                'type' => $_FILES["result_image"]["type"][$i],
+                'tmp_name' => $_FILES["result_image"]["tmp_name"][$i],
+                'error' => $_FILES["result_image"]["error"][$i],
+                'size' => $_FILES["result_image"]["size"][$i],
+            ];
+
+            // Validate the file
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                $errors[] = "File " . htmlspecialchars($file['name']) . " failed to upload.";
+                continue;
+            }
+
+            // Check if file is an actual image
+            $check = getimagesize($file["tmp_name"]);
+            if($check === false) {
+                $errors[] = "File " . htmlspecialchars($file['name']) . " is not an image.";
+                continue;
+            }
+
+            // Check file size (5MB limit)
+            if ($file["size"] > 5000000) {
+                $errors[] = "File " . htmlspecialchars($file['name']) . " is too large. Max 5MB allowed.";
+                continue;
+            }
+
+            // Allow certain file formats
+            $fileType = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+            if($fileType != "jpg" && $fileType != "png" && $fileType != "jpeg" && $fileType != "gif") {
+                $errors[] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                continue;
+            }
+
+            // Try to upload file
+            $targetFile = $targetDir . uniqid() . '.' . $fileType;
+            if (move_uploaded_file($file["tmp_name"], $targetFile)) {
+                // File uploaded successfully, now insert data into database
+                try {
+                    $imagePathForDB = "../uploads/" . basename($targetFile);
+                    $stmt = $pdo->prepare("INSERT INTO exam_results (year, semester, major, image_path) VALUES (?, ?, ?, ?)");
+                    $stmt->execute([$year, $semester, $major, $imagePathForDB]);
+                    $files_uploaded_count++;
+                } catch (PDOException $e) {
+                    $errors[] = 'Database error: ' . $e->getMessage();
+                    break;
+                }
+            } else {
+                $errors[] = "Sorry, there was an error uploading file " . htmlspecialchars($file['name']) . ".";
+            }
+        }
+    } else {
+        // Handle single file upload (fallback)
+        $file = $_FILES["result_image"];
+        // ... (same logic as before, just for one file)
+        // For simplicity, this example will just return an error if multiple files are expected but not received.
+        echo json_encode(['success' => false, 'message' => 'Unexpected file upload format. Please try again.']);
+        exit;
+    }
+
+    if ($files_uploaded_count > 0) {
+        $message = "Successfully uploaded " . $files_uploaded_count . " file(s).";
+        if (!empty($errors)) {
+            $message .= " Some files had errors: " . implode(", ", $errors);
+        }
+        echo json_encode(['success' => true, 'message' => $message]);
+    } else {
+        echo json_encode(['success' => false, 'message' => "No files were uploaded. " . implode(", ", $errors)]);
+    }
+
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
 }
-
-// Add the new result to the data
-$resultsData[] = $newResult;
-
-// Write the updated data back to the JSON file
-if (file_put_contents($dataFile, json_encode($resultsData, JSON_PRETTY_PRINT)) === false) {
-    // If saving fails, delete the uploaded image
-    unlink($destination);
-    echo json_encode(['success' => false, 'message' => 'Failed to save result information.']);
-    exit;
-}
-
-echo json_encode(['success' => true, 'message' => 'Result uploaded and saved successfully!']);
-
 ?>

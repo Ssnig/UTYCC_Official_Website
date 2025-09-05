@@ -45,6 +45,26 @@
     }
   </style>
   <style>
+ body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+    .card { background-color: white; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+    .form-select, .form-input {
+        border-color: #d1d5db;
+    }
+    .loading-spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .dragover {
+        border-color: #3b82f6;
+    }
+
        :root {
           /* Light Theme */
           --bg: 220 20% 98%; --fg: 222 47% 11%; --muted: 214 32% 91%;
@@ -116,19 +136,15 @@
     </aside>
 
   <main class="flex-1 p-8">
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Upload Exam Results</h1>
-        
-        <!-- Status Message Placeholder -->
-        <div id="status-message" class="hidden mb-6 p-4 rounded-lg"></div>
-
-        <div class="card p-8">
-            <form id="uploadForm" enctype="multipart/form-data">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <!-- Year -->
+         <div class="flex items-center justify-center min-h-screen p-6">
+        <div class="flex items-center justify-center min-h-screen p-6">
+        <div class="card w-full max-w-4xl p-8">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">Upload Exam Results</h2>
+            <form id="uploadForm" class="space-y-6" enctype="multipart/form-data">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <label for="year" class="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                        <select id="year" name="year" required class="w-full p-3 border rounded-lg form-select">
+                        <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
+                        <select id="year" name="year" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
                             <option value="">Select Year</option>
                             <option value="1">1st Year</option>
                             <option value="2">2nd Year</option>
@@ -138,19 +154,17 @@
                             <option value="6">Final Year</option>
                         </select>
                     </div>
-                    <!-- Semester -->
                     <div>
-                        <label for="semester" class="block text-sm font-medium text-gray-700 mb-1">Semester</label>
-                        <select id="semester" name="semester" required class="w-full p-3 border rounded-lg form-select">
+                        <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
+                        <select id="semester" name="semester" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
                             <option value="">Select Semester</option>
                             <option value="1">1st Semester</option>
                             <option value="2">2nd Semester</option>
                         </select>
                     </div>
-                    <!-- Major -->
                     <div>
-                        <label for="major" class="block text-sm font-medium text-gray-700 mb-1">Major</label>
-                        <select id="major" name="major" required class="w-full p-3 border rounded-lg form-select">
+                        <label for="major" class="block text-sm font-medium text-gray-700">Major</label>
+                        <select id="major" name="major" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
                             <option value="">Select Major</option>
                             <option value="ist">Information Science Technology</option>
                             <option value="ce">Computer Engineering</option>
@@ -161,143 +175,169 @@
                     </div>
                 </div>
 
-                <!-- File Upload Area -->
-                <div class="mt-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Result Image</label>
-                    <div id="preview-box" class="preview-box mt-1 flex justify-center items-center w-full h-64 rounded-lg">
-                        <div id="upload-prompt" class="text-center text-gray-500">
-                            <svg class="mx-auto h-12 w-12" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                            <p class="mt-2">Drag & drop a file here or <span class="font-medium text-blue-600 cursor-pointer hover:underline">click to upload</span></p>
-                            <p class="text-xs mt-1">PNG, JPG, GIF up to 5MB</p>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Exam Result Images</label>
+                    <div id="preview-box" class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 cursor-pointer hover:border-blue-500 transition-colors duration-200">
+                        <div class="space-y-1 text-center" id="upload-prompt">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <p class="text-sm text-gray-600">
+                                <span class="font-medium text-blue-600 cursor-pointer hover:underline">Click to upload</span> or drag and drop
+                            </p>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB each</p>
                         </div>
-                        <img id="image-preview" src="" alt="Image Preview" class="hidden h-full w-full object-contain rounded-lg p-2" />
+                        <div id="image-previews-container" class="hidden image-preview-container"></div>
                     </div>
-                    <input type="file" id="result_image" name="result_image" class="hidden" accept="image/png, image/jpeg, image/gif" required>
+                    <!-- The 'multiple' attribute is added here -->
+                    <input type="file" id="result_image" name="result_image[]" accept="image/*" class="sr-only" multiple required>
                 </div>
 
-                <div class="mt-8 text-right">
-                    <button type="submit" id="submit-btn" class="btn-primary font-bold py-3 px-8 rounded-lg shadow-md">
-                        <span id="btn-text">Upload Result</span>
-                        <span id="btn-spinner" class="hidden loading-spinner"></span>
+                <div>
+                    <button type="submit" id="submit-btn" class="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+                        <span id="btn-text">Upload Results</span>
+                        <div id="btn-spinner" class="loading-spinner hidden"></div>
                     </button>
                 </div>
+
+                <div id="status-message" class="mt-4 p-3 rounded-lg text-center hidden" role="alert"></div>
             </form>
         </div>
     </div>
-  </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadForm = document.getElementById('uploadForm');
+            const statusMessage = document.getElementById('status-message');
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnSpinner = document.getElementById('btn-spinner');
+            const resultImageInput = document.getElementById('result_image');
+            const uploadPrompt = document.getElementById('upload-prompt');
+            const previewBox = document.getElementById('preview-box');
+            const imagePreviewsContainer = document.getElementById('image-previews-container');
+            let filesToUpload = [];
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const uploadForm = document.getElementById('uploadForm');
-        const previewBox = document.getElementById('preview-box');
-        const uploadPrompt = document.getElementById('upload-prompt');
-        const imagePreview = document.getElementById('image-preview');
-        const fileInput = document.getElementById('result_image');
-        const statusMessage = document.getElementById('status-message');
-        const submitBtn = document.getElementById('submit-btn');
-        const btnText = document.getElementById('btn-text');
-        const btnSpinner = document.getElementById('btn-spinner');
-
-        // Handle click to upload
-        previewBox.addEventListener('click', () => fileInput.click());
-
-        // Handle file selection
-        fileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                displayPreview(file);
-            }
-        });
-
-        // Handle drag and drop
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            previewBox.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            previewBox.addEventListener(eventName, () => previewBox.classList.add('dragover'), false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            previewBox.addEventListener(eventName, () => previewBox.classList.remove('dragover'), false);
-        });
-
-        previewBox.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const file = dt.files[0];
-            if (file) {
-                fileInput.files = dt.files; // Assign dropped file to input
-                displayPreview(file);
-            }
-        }, false);
-
-        function displayPreview(file) {
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.classList.remove('hidden');
+            function renderPreviews() {
+                imagePreviewsContainer.innerHTML = '';
+                if (filesToUpload.length > 0) {
                     uploadPrompt.classList.add('hidden');
+                    imagePreviewsContainer.classList.remove('hidden');
+                    filesToUpload.forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const previewItem = document.createElement('div');
+                            previewItem.className = 'image-preview-item';
+                            previewItem.innerHTML = `
+                                <img src="${e.target.result}" alt="Image Preview">
+                                <svg class="remove-btn h-5 w-5 text-gray-500 hover:text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                </svg>
+                            `;
+                            imagePreviewsContainer.appendChild(previewItem);
+                            previewItem.querySelector('.remove-btn').addEventListener('click', () => {
+                                filesToUpload.splice(index, 1);
+                                if (filesToUpload.length === 0) {
+                                    uploadForm.reset();
+                                    uploadPrompt.classList.remove('hidden');
+                                    imagePreviewsContainer.classList.add('hidden');
+                                } else {
+                                    renderPreviews();
+                                }
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                } else {
+                    uploadPrompt.classList.remove('hidden');
+                    imagePreviewsContainer.classList.add('hidden');
                 }
-                reader.readAsDataURL(file);
             }
-        }
-        
-        // Handle form submission
-        uploadForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Show loading state
-            submitBtn.disabled = true;
-            btnText.classList.add('hidden');
-            btnSpinner.classList.remove('hidden');
-            statusMessage.classList.add('hidden');
 
-            const formData = new FormData(uploadForm);
-            
-            try {
-                // Send the data to the backend script
-                const response = await fetch('handle_upload.php', {
-                    method: 'POST',
-                    body: formData,
+            // Handle file input click
+            previewBox.addEventListener('click', (e) => {
+                if (e.target.closest('.image-preview-item')) return;
+                resultImageInput.click();
+            });
+
+            // Handle file drag and drop
+            previewBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                previewBox.classList.add('dragover');
+            });
+
+            previewBox.addEventListener('dragleave', () => {
+                previewBox.classList.remove('dragover');
+            });
+
+            previewBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                previewBox.classList.remove('dragover');
+                const newFiles = Array.from(e.dataTransfer.files);
+                filesToUpload = filesToUpload.concat(newFiles);
+                renderPreviews();
+            });
+
+            // Handle file selection via input
+            resultImageInput.addEventListener('change', (e) => {
+                const newFiles = Array.from(e.target.files);
+                filesToUpload = newFiles; // Reset files to new selection
+                renderPreviews();
+            });
+
+            // Handle form submission via AJAX
+            uploadForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                if (filesToUpload.length === 0) {
+                    statusMessage.textContent = 'Please select at least one image to upload.';
+                    statusMessage.classList.remove('hidden', 'bg-green-200', 'text-green-800');
+                    statusMessage.classList.add('bg-red-200', 'text-red-800');
+                    return;
+                }
+
+                const formData = new FormData(uploadForm);
+                filesToUpload.forEach(file => {
+                    formData.append('result_image[]', file);
                 });
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                // Show loading state
+                submitBtn.disabled = true;
+                btnText.classList.add('hidden');
+                btnSpinner.classList.remove('hidden');
+                statusMessage.classList.add('hidden');
 
-                const result = await response.json();
-                
-                if (result.success) {
-                    showStatusMessage(result.message, 'success');
-                    uploadForm.reset();
-                    imagePreview.classList.add('hidden');
-                    uploadPrompt.classList.remove('hidden');
-                } else {
-                    throw new Error(result.message);
-                }
+                try {
+                    const response = await fetch('upload.php', {
+                        method: 'POST',
+                        body: formData
+                    });
 
-            } catch (error) {
-                showStatusMessage(error.message, 'error');
-            } finally {
-                // Restore button state
-                submitBtn.disabled = false;
-                btnText.classList.remove('hidden');
-                btnSpinner.classList.add('hidden');
-            }
+                    const result = await response.json();
+
+                    // Display status message
+                    statusMessage.textContent = result.message;
+                    statusMessage.classList.remove('hidden');
+                    if (result.success) {
+                        statusMessage.classList.remove('bg-red-200', 'text-red-800');
+                        statusMessage.classList.add('bg-green-200', 'text-green-800');
+                        uploadForm.reset();
+                        filesToUpload = []; // Reset the file array
+                        renderPreviews(); // Clear previews
+                    } else {
+                        statusMessage.classList.remove('bg-green-200', 'text-green-800');
+                        statusMessage.classList.add('bg-red-200', 'text-red-800');
+                    }
+                } catch (error) {
+                    statusMessage.textContent = 'An unexpected error occurred. Please try again.';
+                    statusMessage.classList.remove('bg-green-200', 'text-green-800');
+                    statusMessage.classList.add('bg-red-200', 'text-red-800');
+                    statusMessage.classList.remove('hidden');
+                } finally {
+                    // Hide loading state
+                    submitBtn.disabled = false;
+                    btnText.classList.remove('hidden');
+                    btnSpinner.classList.add('hidden');
+                }
+            });
         });
-
-        function showStatusMessage(message, type) {
-            statusMessage.textContent = message;
-            statusMessage.className = `p-4 rounded-lg mb-6 ${type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
-            statusMessage.classList.remove('hidden');
-        }
-    });
-  </script>
+    </script>
 </body>
 </html>

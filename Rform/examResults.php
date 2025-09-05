@@ -6,7 +6,6 @@
     <title>Exam Results - UTYCC</title>
     <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -49,58 +48,100 @@
     </div>
 
     <!-- Main Content -->
-    <div class="container mx-auto p-4 md:p-8">
-        <div class="bg-white rounded-xl shadow-lg p-6 md:p-10 my-8">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-900 mb-6 text-center">Student Exam Results</h1>
-            <p class="text-gray-600 text-center mb-8">Select your academic details to view your results.</p>
-            
-            <!-- Update the form to send data to results.php -->
-            <form method="POST" action="examResult.php">
+    <!-- <div class="container mx-auto p-4 md:p-8"> -->
+       
+    <div class="container mx-auto px-6 py-12">
+        <div class="bg-white rounded-xl shadow-lg p-8 md:p-12 max-w-2xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-6">View Exam Results</h2>
+            <form method="GET" action="">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <!-- Year -->
                     <div>
                         <label class="block text-gray-700 font-semibold mb-2" for="year">Year</label>
                         <select name="year" id="year" class="w-full p-3 border border-gray-300 rounded-lg">
                             <option value="">Select Year</option>
-                            <option value="1">1st Year</option>
-                            <option value="2">2nd Year</option>
-                            <option value="3">3rd Year</option>
-                            <option value="4">4th Year</option>
-                            <option value="5">5th Year</option>
-                            <option value="6">Final Year</option>
+                            <option value="1" <?= (isset($_GET['year']) && $_GET['year'] == '1') ? 'selected' : '' ?>>1st Year</option>
+                            <option value="2" <?= (isset($_GET['year']) && $_GET['year'] == '2') ? 'selected' : '' ?>>2nd Year</option>
+                            <option value="3" <?= (isset($_GET['year']) && $_GET['year'] == '3') ? 'selected' : '' ?>>3rd Year</option>
+                            <option value="4" <?= (isset($_GET['year']) && $_GET['year'] == '4') ? 'selected' : '' ?>>4th Year</option>
+                            <option value="5" <?= (isset($_GET['year']) && $_GET['year'] == '5') ? 'selected' : '' ?>>5th Year</option>
+                            <option value="6" <?= (isset($_GET['year']) && $_GET['year'] == '6') ? 'selected' : '' ?>>Final Year</option>
                         </select>
                     </div>
-                    <!-- Semester -->
                     <div>
                         <label class="block text-gray-700 font-semibold mb-2" for="semester">Semester</label>
                         <select name="semester" id="semester" class="w-full p-3 border border-gray-300 rounded-lg">
                             <option value="">Select Semester</option>
-                            <option value="1">1st Semester</option>
-                            <option value="2">2nd Semester</option>
+                            <option value="1" <?= (isset($_GET['semester']) && $_GET['semester'] == '1') ? 'selected' : '' ?>>1st Semester</option>
+                            <option value="2" <?= (isset($_GET['semester']) && $_GET['semester'] == '2') ? 'selected' : '' ?>>2nd Semester</option>
                         </select>
                     </div>
-                    <!-- Major -->
                     <div>
                         <label class="block text-gray-700 font-semibold mb-2" for="major">Major</label>
                         <select name="major" id="major" class="w-full p-3 border border-gray-300 rounded-lg">
                             <option value="">Select Major</option>
-                            <option value="ist">Information Science Technology</option>
-                            <option value="ce">Computer Engineering</option>
-                            <option value="ece">Electronics Engineering</option>
-                            <option value="pre">Precision Engineering</option>
-                            <option value="ame">Advanced Materials Engineering</option>
+                            <option value="ist" <?= (isset($_GET['major']) && $_GET['major'] == 'ist') ? 'selected' : '' ?>>Information Science Technology</option>
+                            <option value="ce" <?= (isset($_GET['major']) && $_GET['major'] == 'ce') ? 'selected' : '' ?>>Computer Engineering</option>
+                            <option value="ece" <?= (isset($_GET['major']) && $_GET['major'] == 'ece') ? 'selected' : '' ?>>Electronics Engineering</option>
+                            <option value="pre" <?= (isset($_GET['major']) && $_GET['major'] == 'pre') ? 'selected' : '' ?>>Precision Engineering</option>
+                            <option value="ame" <?= (isset($_GET['major']) && $_GET['major'] == 'ame') ? 'selected' : '' ?>>Advanced Materials Engineering</option>
                         </select>
                     </div>
                 </div>
-                <div class="flex justify-center">
-                    <!-- to show image form upload from admin dashboard -->
-
-
-
-                    
+                
+                <div class="mt-4 text-center">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-colors">
+                        Show Results
+                    </button>
                 </div>
             </form>
+
+            <div class="mt-8">
+            <?php
+            // Include the database connection file
+            require_once  'db.php';
+
+            // Check if form has been submitted
+            if (isset($_GET['year']) && isset($_GET['semester']) && isset($_GET['major'])) {
+                $year = $_GET['year'];
+                $semester = $_GET['semester'];
+                $major = $_GET['major'];
+
+                if (!empty($year) && !empty($semester) && !empty($major)) {
+                    try {
+                        // Prepare and execute the query to find the result image
+                        $stmt = $pdo->prepare("SELECT image_path FROM exam_results WHERE year = ? AND semester = ? AND major = ? ORDER BY uploaded_at DESC LIMIT 1");
+                        $stmt->execute([$year, $semester, $major]);
+                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                        if ($result) {
+                            // Display the image
+                            echo '<div class="bg-gray-100 p-4 rounded-lg shadow-inner text-center">';
+                            echo '<h3 class="text-2xl font-bold text-gray-800 mb-4">Your Exam Result</h3>';
+                            echo '<img src="' . htmlspecialchars($result['image_path']) . '" alt="Exam Result" class="max-w-full h-auto mx-auto rounded-lg shadow-lg" />';
+                            echo '</div>';
+                        } else {
+                            // No result found
+                            echo '<div class="bg-yellow-100 p-4 rounded-lg shadow-inner text-center text-yellow-800">';
+                            echo '<p class="font-bold">No exam result found for the selected criteria.</p>';
+                            echo '</div>';
+                        }
+                    } catch (PDOException $e) {
+                        // Database error
+                        echo '<div class="bg-red-100 p-4 rounded-lg shadow-inner text-center text-red-800">';
+                        echo '<p class="font-bold">Database error: ' . htmlspecialchars($e->getMessage()) . '</p>';
+                        echo '</div>';
+                    }
+                } else {
+                    // Form fields are empty
+                    echo '<div class="bg-red-100 p-4 rounded-lg shadow-inner text-center text-red-800">';
+                    echo '<p class="font-bold">Please select all fields to view the result.</p>';
+                    echo '</div>';
+                }
+            }
+            ?>
+            </div>
         </div>
+    <!-- </div> -->
     </div>
 
     <!-- Footer -->
