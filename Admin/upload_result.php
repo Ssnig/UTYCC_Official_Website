@@ -177,7 +177,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Exam Result Images</label>
-                    <div id="preview-box" class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 cursor-pointer hover:border-blue-500 transition-colors duration-200">
+                    <div id="preview-box" class="mt-1 flex justify-center items-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 min-h-[150px] cursor-pointer hover:border-blue-500 transition-colors duration-200">
                         <div class="space-y-1 text-center" id="upload-prompt">
                             <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                             <p class="text-sm text-gray-600">
@@ -187,8 +187,7 @@
                         </div>
                         <div id="image-previews-container" class="hidden image-preview-container"></div>
                     </div>
-                    <!-- The 'multiple' attribute is added here -->
-                    <input type="file" id="result_image" name="result_image[]" accept="image/*" class="sr-only" multiple required>
+                    <input type="file" id="result_image" accept="image/*" class="sr-only" multiple>
                 </div>
 
                 <div>
@@ -203,141 +202,138 @@
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const uploadForm = document.getElementById('uploadForm');
-            const statusMessage = document.getElementById('status-message');
-            const submitBtn = document.getElementById('submit-btn');
-            const btnText = document.getElementById('btn-text');
-            const btnSpinner = document.getElementById('btn-spinner');
-            const resultImageInput = document.getElementById('result_image');
-            const uploadPrompt = document.getElementById('upload-prompt');
-            const previewBox = document.getElementById('preview-box');
-            const imagePreviewsContainer = document.getElementById('image-previews-container');
-            let filesToUpload = [];
+document.addEventListener('DOMContentLoaded', () => {
+    const uploadForm = document.getElementById('uploadForm');
+    const statusMessage = document.getElementById('status-message');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const resultImageInput = document.getElementById('result_image');
+    const uploadPrompt = document.getElementById('upload-prompt');
+    const previewBox = document.getElementById('preview-box');
+    const imagePreviewsContainer = document.getElementById('image-previews-container');
+    let filesToUpload = [];
 
-            function renderPreviews() {
-                imagePreviewsContainer.innerHTML = '';
-                if (filesToUpload.length > 0) {
-                    uploadPrompt.classList.add('hidden');
-                    imagePreviewsContainer.classList.remove('hidden');
-                    filesToUpload.forEach((file, index) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            const previewItem = document.createElement('div');
-                            previewItem.className = 'image-preview-item';
-                            previewItem.innerHTML = `
-                                <img src="${e.target.result}" alt="Image Preview">
-                                <svg class="remove-btn h-5 w-5 text-gray-500 hover:text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                </svg>
-                            `;
-                            imagePreviewsContainer.appendChild(previewItem);
-                            previewItem.querySelector('.remove-btn').addEventListener('click', () => {
-                                filesToUpload.splice(index, 1);
-                                if (filesToUpload.length === 0) {
-                                    uploadForm.reset();
-                                    uploadPrompt.classList.remove('hidden');
-                                    imagePreviewsContainer.classList.add('hidden');
-                                } else {
-                                    renderPreviews();
-                                }
-                            });
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                } else {
-                    uploadPrompt.classList.remove('hidden');
-                    imagePreviewsContainer.classList.add('hidden');
-                }
+    function renderPreviews() {
+        imagePreviewsContainer.innerHTML = '';
+        if (filesToUpload.length > 0) {
+            uploadPrompt.classList.add('hidden');
+            imagePreviewsContainer.classList.remove('hidden');
+            filesToUpload.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'image-preview-item';
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Image Preview">
+                        <svg class="remove-btn h-5 w-5" data-index="${index}" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                    `;
+                    imagePreviewsContainer.appendChild(previewItem);
+                };
+                reader.readAsDataURL(file);
+            });
+        } else {
+            uploadPrompt.classList.remove('hidden');
+            imagePreviewsContainer.classList.add('hidden');
+        }
+    }
+
+    imagePreviewsContainer.addEventListener('click', (e) => {
+        if (e.target.closest('.remove-btn')) {
+            const indexToRemove = parseInt(e.target.closest('.remove-btn').dataset.index, 10);
+            filesToUpload.splice(indexToRemove, 1);
+            renderPreviews();
+        }
+    });
+
+    previewBox.addEventListener('click', (e) => {
+        if (e.target.closest('.image-preview-item')) return;
+        resultImageInput.click();
+    });
+
+    previewBox.addEventListener('dragover', (e) => { e.preventDefault(); previewBox.classList.add('dragover'); });
+    previewBox.addEventListener('dragleave', () => { previewBox.classList.remove('dragover'); });
+
+    previewBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        previewBox.classList.remove('dragover');
+        const newFiles = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+        filesToUpload.push(...newFiles);
+        renderPreviews();
+    });
+
+    resultImageInput.addEventListener('change', (e) => {
+        const newFiles = Array.from(e.target.files);
+        filesToUpload.push(...newFiles);
+        renderPreviews();
+        resultImageInput.value = ''; // Clear the input
+    });
+
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (filesToUpload.length === 0) {
+            statusMessage.textContent = 'Please select at least one image to upload.';
+            statusMessage.classList.remove('hidden', 'bg-green-200', 'text-green-800');
+            statusMessage.classList.add('bg-red-200', 'text-red-800');
+            return;
+        }
+
+        // --- FIXED PART ---
+        // Build FormData from scratch to prevent duplicate files
+        const formData = new FormData();
+        formData.append('year', document.getElementById('year').value);
+        formData.append('semester', document.getElementById('semester').value);
+        formData.append('major', document.getElementById('major').value);
+        
+        filesToUpload.forEach(file => {
+            formData.append('result_image[]', file, file.name);
+        });
+        // --- END OF FIX ---
+
+        submitBtn.disabled = true;
+        btnText.classList.add('hidden');
+        btnSpinner.classList.remove('hidden');
+        statusMessage.classList.add('hidden');
+
+        try {
+            const response = await fetch('upload.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.statusText}`);
             }
 
-            // Handle file input click
-            previewBox.addEventListener('click', (e) => {
-                if (e.target.closest('.image-preview-item')) return;
-                resultImageInput.click();
-            });
+            const result = await response.json();
 
-            // Handle file drag and drop
-            previewBox.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                previewBox.classList.add('dragover');
-            });
-
-            previewBox.addEventListener('dragleave', () => {
-                previewBox.classList.remove('dragover');
-            });
-
-            previewBox.addEventListener('drop', (e) => {
-                e.preventDefault();
-                previewBox.classList.remove('dragover');
-                const newFiles = Array.from(e.dataTransfer.files);
-                filesToUpload = filesToUpload.concat(newFiles);
+            statusMessage.textContent = result.message;
+            statusMessage.classList.remove('hidden');
+            if (result.success) {
+                statusMessage.classList.add('bg-green-200', 'text-green-800');
+                statusMessage.classList.remove('bg-red-200', 'text-red-800');
+                uploadForm.reset();
+                filesToUpload = [];
                 renderPreviews();
-            });
-
-            // Handle file selection via input
-            resultImageInput.addEventListener('change', (e) => {
-                const newFiles = Array.from(e.target.files);
-                filesToUpload = newFiles; // Reset files to new selection
-                renderPreviews();
-            });
-
-            // Handle form submission via AJAX
-            uploadForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                if (filesToUpload.length === 0) {
-                    statusMessage.textContent = 'Please select at least one image to upload.';
-                    statusMessage.classList.remove('hidden', 'bg-green-200', 'text-green-800');
-                    statusMessage.classList.add('bg-red-200', 'text-red-800');
-                    return;
-                }
-
-                const formData = new FormData(uploadForm);
-                filesToUpload.forEach(file => {
-                    formData.append('result_image[]', file);
-                });
-
-                // Show loading state
-                submitBtn.disabled = true;
-                btnText.classList.add('hidden');
-                btnSpinner.classList.remove('hidden');
-                statusMessage.classList.add('hidden');
-
-                try {
-                    const response = await fetch('upload.php', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-
-                    // Display status message
-                    statusMessage.textContent = result.message;
-                    statusMessage.classList.remove('hidden');
-                    if (result.success) {
-                        statusMessage.classList.remove('bg-red-200', 'text-red-800');
-                        statusMessage.classList.add('bg-green-200', 'text-green-800');
-                        uploadForm.reset();
-                        filesToUpload = []; // Reset the file array
-                        renderPreviews(); // Clear previews
-                    } else {
-                        statusMessage.classList.remove('bg-green-200', 'text-green-800');
-                        statusMessage.classList.add('bg-red-200', 'text-red-800');
-                    }
-                } catch (error) {
-                    statusMessage.textContent = 'An unexpected error occurred. Please try again.';
-                    statusMessage.classList.remove('bg-green-200', 'text-green-800');
-                    statusMessage.classList.add('bg-red-200', 'text-red-800');
-                    statusMessage.classList.remove('hidden');
-                } finally {
-                    // Hide loading state
-                    submitBtn.disabled = false;
-                    btnText.classList.remove('hidden');
-                    btnSpinner.classList.add('hidden');
-                }
-            });
-        });
-    </script>
+            } else {
+                statusMessage.classList.add('bg-red-200', 'text-red-800');
+                statusMessage.classList.remove('bg-green-200', 'text-green-800');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            statusMessage.textContent = 'An unexpected error occurred. Please check the console and try again.';
+            statusMessage.classList.remove('hidden', 'bg-green-200', 'text-green-800');
+            statusMessage.classList.add('bg-red-200', 'text-red-800');
+        } finally {
+            submitBtn.disabled = false;
+            btnText.classList.remove('hidden');
+            btnSpinner.classList.add('hidden');
+        }
+    });
+});
+</script>
 </body>
 </html>
