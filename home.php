@@ -1,3 +1,26 @@
+<?php
+require_once './Rform/db.php'; 
+$announcement_text = '';
+$announcement_status = 'disabled';
+
+try {
+    
+    $stmt = $pdo->prepare("SELECT 1 FROM site_settings LIMIT 1");
+    $stmt->execute();
+    
+    if ($stmt->rowCount() > 0) {
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status')");
+        $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        
+        $announcement_text = $settings['announcement_text'] ?? '';
+        $announcement_status = $settings['announcement_status'] ?? 'disabled';
+    }
+
+} catch (PDOException $e) {
+    // Table does not exist, ignore and use default values
+}
+$pdo = null; 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,6 +43,8 @@
     <link rel="stylesheet" href="CSS/font.css" />
     <script src="./JS/GSAP.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         /* --- Preloader Styles --- */
         #preloader {
             position: fixed;
@@ -43,8 +68,10 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 5px solid #e0e0e0; /* light grey */
-            border-top-color: #3b82f6; /* blue-500 */
+            border: 5px solid #e0e0e0;
+            /* light grey */
+            border-top-color: #3b82f6;
+            /* blue-500 */
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -54,7 +81,7 @@
                 transform: rotate(360deg);
             }
         }
-        
+
         /* --- Smooth Scrolling --- */
         html {
             scroll-behavior: smooth;
@@ -76,12 +103,14 @@
         .animate-on-scroll.is-visible .program-card {
             transition-delay: calc(0.1s * var(--i));
         }
-        
+
         /* --- Hero Slideshow Styles --- */
         .hero-container {
             position: relative;
-            height: 80vh; /* Adjust height as needed */
-            color: #1e3a8a; /* Tailwind blue-900 for text */
+            height: 80vh;
+            /* Adjust height as needed */
+            color: #1e3a8a;
+            /* Tailwind blue-900 for text */
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         }
 
@@ -110,7 +139,7 @@
         .hero-slide.active {
             opacity: 1;
         }
-        
+
         .hero-overlay {
             position: absolute;
             top: 0;
@@ -175,7 +204,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition:  0.3s;
+            transition: 0.3s;
         }
 
         .close_button2:hover {
@@ -186,8 +215,10 @@
         /* Style the canvas to fill the container */
         .game-toast canvas {
             width: 100%;
-            flex: 1; /* Make canvas fill remaining space */
-            background-color: #f0f8ff; /* AliceBlue, nice and light */
+            flex: 1;
+            /* Make canvas fill remaining space */
+            background-color: #f0f8ff;
+            /* AliceBlue, nice and light */
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
         }
@@ -204,7 +235,7 @@
             background-color: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
         }
-        
+
         /* --- Styles for Verification Modal --- */
         :root {
             --bg-light: #ecf0f1;
@@ -475,7 +506,7 @@
         .view.active {
             display: block;
         }
-        
+
         /* --- Back to Top Button --- */
         #back-to-top-btn {
             position: fixed;
@@ -491,11 +522,12 @@
             opacity: 1;
             visibility: visible;
         }
-        
+
         /* --- Photo Gallery & Lightbox Styles --- */
         .gallery-item {
             cursor: pointer;
         }
+
         .lightbox {
             position: fixed;
             top: 0;
@@ -512,16 +544,19 @@
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
+
         .lightbox.show {
             opacity: 1;
             visibility: visible;
         }
+
         .lightbox img {
             max-width: 90%;
             max-height: 90%;
             border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
+
         .lightbox-close {
             position: absolute;
             top: 20px;
@@ -536,6 +571,7 @@
         .card-hover-effect {
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
+
         .card-hover-effect:hover {
             transform: translateY(-8px);
             box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1), 0 8px 16px -8px rgba(0, 0, 0, 0.1);
@@ -544,6 +580,7 @@
         .btn-hover-effect {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
+
         .btn-hover-effect:hover {
             transform: scale(1.05) translateY(-2px);
             box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
@@ -552,6 +589,7 @@
         .icon-hover-effect {
             transition: transform 0.3s ease;
         }
+
         .icon-hover-effect:hover {
             transform: scale(1.1);
         }
@@ -563,7 +601,7 @@
     <div id="preloader">
         <div class="spinner"></div>
     </div>
-    
+
     <!-- Header -->
     <div id="header" class="bg-white shadow-md sticky top-0 z-50 transition-colors duration-300">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
@@ -588,18 +626,33 @@
                     data-lang-key="nav_contact">ဆက်သွယ်ရန်</a>
                 <!-- Language Switcher Dropdown - Updated Style -->
                 <div class="relative ml-4">
-                    <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-                        <i class="fas fa-globe text-gray-500 absolute left-3 z-10 pointer-events-none"></i>
-                        <select id="language-switcher-desktop"
-                            class="cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-1.5 pl-9 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="my">မြန်မာ</option>
-                            <option value="en">English</option>
-                        </select>
-                        <i
-                            class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 z-10 pointer-events-none"></i>
+                    <div id="lang-switcher-container-desktop">
+                        <!-- Custom Button -->
+                        <button class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+                            <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
+                            <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
+                            <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
+                        </button>
+                        <!-- Custom Dropdown Menu -->
+                        <div class="lang-switcher-menu hidden absolute mt-1 w-auto min-w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+                            <a href="#" class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="my">
+                                <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                                <span>မြန်မာ</span>
+                            </a>
+                            <a href="#" class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="en">
+                                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                                <span>English</span>
+                            </a>
+                        </div>
                     </div>
+                    <!-- Hidden original select to maintain JS compatibility -->
+                    <select id="language-switcher-desktop" class="hidden">
+                        <option value="my">မြန်မာ</option>
+                        <option value="en">English</option>
+                    </select>
                 </div>
             </div>
+            
             <button id="mobile-menu-button" class="md:hidden text-blue-900">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
@@ -615,17 +668,106 @@
             <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
                 data-lang-key="nav_contact_mobile">ဆက်သွယ်ရန်</a>
             <div class="relative mt-4 pt-4 border-t">
-                <div class="relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-full transition">
-                    <i class="fas fa-globe text-gray-500 absolute left-4 z-10 pointer-events-none"></i>
-                    <select id="language-switcher-mobile"
-                        class="w-full cursor-pointer appearance-none bg-transparent text-gray-700 font-medium rounded-full py-2 pl-11 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="my">မြန်မာ</option>
-                        <option value="en">English</option>
-                    </select>
-                    <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 z-10 pointer-events-none"></i>
+                <div id="lang-switcher-container-mobile" class="relative">
+                    <!-- Custom Button -->
+                    <button class="lang-switcher-button relative flex items-center w-full bg-gray-100 hover:bg-gray-200 rounded-md transition py-2 pl-4 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+                        <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
+                        <span id="selected-lang-text-mobile" class="ml-3">မြန်မာ</span>
+                        <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 pointer-events-none"></i>
+                    </button>
+                    <!-- Custom Dropdown Menu -->
+                    <div class="lang-switcher-menu hidden absolute mt-1 w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+                        <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="my">
+                            <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                            <span>မြန်မာ</span>
+                        </a>
+                        <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="en">
+                            <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                            <span>English</span>
+                        </a>
+                    </div>
+                </div>
+                <!-- Hidden original select to maintain JS compatibility -->
+                <select id="language-switcher-mobile" class="hidden">
+                    <option value="my">မြန်မာ</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+<?php if (isset($announcement_status) && $announcement_status === 'enabled' && !empty($announcement_text)): ?>
+    <!-- Announcement Banner V10 (Important Notice) - Updated Icon -->
+    <div id="announcement-banner" class="relative bg-blue-50 border-b border-blue-200 transition-all duration-500 ease-in-out overflow-hidden" style="max-height: 0; opacity: 0;" role="alert">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="flex items-center justify-between gap-4 py-3">
+                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500"></div>
+                <!-- Left side: Icon and Text -->
+                <div class="flex items-center gap-4 min-w-0 pl-4">
+                    <div class="flex-shrink-0 text-blue-600">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="text-sm sm:text-base flex-grow text-blue-900">
+                        <p><?php echo htmlspecialchars($announcement_text); ?></p>
+                    </div>
+                </div>
+                
+                <!-- Right side: Close Button -->
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button
+                        type="button"
+                        id="close-announcement-btn"
+                        class="p-1 text-blue-700 rounded-full hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                        aria-label="Close"
+                    >
+                        <span class="sr-only">Close</span>
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
+    <!-- Announcement Banner V10 End -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const banner = document.getElementById('announcement-banner');
+            const closeBtn = document.getElementById('close-announcement-btn');
+
+            if (banner && closeBtn) {
+                // Function to show the banner with a smooth animation
+                const showBanner = () => {
+                    banner.style.maxHeight = banner.scrollHeight + 'px';
+                    banner.style.opacity = '1';
+                };
+
+                // Function to hide the banner with a smooth animation
+                const hideBanner = () => {
+                    banner.style.maxHeight = '0';
+                    banner.style.opacity = '0';
+                    setTimeout(() => {
+                        if (banner.style.maxHeight === '0px') {
+                             // This is not strictly necessary with max-height but can be good for accessibility.
+                        }
+                    }, 500); // This duration should match the CSS transition duration
+                };
+                
+                // Check if the banner was already closed in this session
+                if (sessionStorage.getItem('announcementClosed') !== 'true') {
+                    // Show the banner after a short delay
+                    setTimeout(showBanner, 300);
+                }
+
+                // Event listener for the close button
+                closeBtn.addEventListener('click', function() {
+                    hideBanner();
+                    // Remember that the user closed the banner for this session
+                    sessionStorage.setItem('announcementClosed', 'true');
+                });
+            }
+        });
+    </script>
+<?php endif; ?>
     </div>
 
     <div id="main-content">
@@ -692,6 +834,7 @@
                 </div>
             </div>
         </section>
+
 
         <!-- Main Content -->
         <main id="about" class="container mx-auto px-6 py-16">
@@ -767,6 +910,7 @@
                 </div>
             </section>
 
+
             <!-- Academic Programs Section -->
             <section id="programs" class="mb-20 bg-white p-8 md:p-12 rounded-lg shadow-lg animate-on-scroll">
                 <h2 class="text-3xl font-bold text-blue-900 mb-10 text-center" data-lang-key="programs_title">
@@ -825,6 +969,7 @@
                         </a>
                     </div>
                 </div>
+
                 <div class="grid md:grid-cols-2 gap-8">
                     <div>
                         <h3 class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2"
@@ -846,7 +991,27 @@
                         </p>
                     </div>
                 </div>
+                <br>
+                <br>
+                <!-- Exam Results Section -->
+                <div class="relative overflow-hidden shadow-lg group ">
+                    <!-- Background Image with Overlay -->
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image: url('./Img/utycc_buildings/roadmap.JPG');"></div>
+                    <div class="absolute inset-0 bg-black opacity-60"></div>
+
+                    <!-- Content (Text and Button) -->
+                    <div class="relative z-10 p-6 md:p-10 text-white flex flex-col items-center justify-center text-center min-h-[250px]">
+                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-md">View Your Exam Results</h2>
+                        <p class="max-w-md mb-8 text-sm md:text-base drop-shadow-sm">
+                            Access your academic performance and check your latest exam results from all years and semesters.
+                        </p>
+                        <a href="./exam_results.html" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
+                            Check Results
+                        </a>
+                    </div>
+                </div>
             </section>
+
 
             <!-- International Collaboration Section -->
             <section id="collaboration" class="mb-16 animate-on-scroll">
@@ -885,18 +1050,19 @@
         </main>
     </div>
 
+
     <!-- Enrollment Section -->
     <section id="enrollment-card" class="relative bg-cover bg-center py-12 sm:py-20 px-4"
         style="background-image: url('./Img/utycc_buildings/front_view.JPG')">
         <div class="absolute inset-0 bg-black opacity-50"></div>
         <div
             class="relative container mx-auto max-w-5xl bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl overflow-hidden animate-on-scroll">
-            
+
             <!-- This part will be shown when enrollment is open -->
             <div id="enrollment-open" class="flex flex-col md:flex-row">
                 <!-- New Students Card -->
                 <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
-                    <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4 shine-text"
+                    <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4 "
                         data-lang-key="enroll_new_title">
                         New Students
                     </h3>
@@ -933,7 +1099,7 @@
 
             <!-- This part will be shown when enrollment is closed -->
             <div id="enrollment-closed" class="hidden">
-                 <div class="p-8 md:p-12 text-center w-full">
+                <div class="p-8 md:p-12 text-center w-full">
                     <div class="mx-auto bg-gray-200 w-32 h-32 rounded-full flex items-center justify-center mb-6">
                         <img src="./Img/logo/utycc_logo.png" alt="UTYCC Logo" class="p-2">
                     </div>
@@ -947,6 +1113,8 @@
             </div>
         </div>
     </section>
+
+
 
     <div id="gameContainer" class="game-toast">
         <button id="closeGameBtn" class="close_button2">Close Game</button>
@@ -1025,6 +1193,9 @@
                                 Regulations</a>
 
                         </li>
+                        <li>
+                            <a href="./data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="animate-on-scroll" style="--i:4;">
@@ -1056,7 +1227,7 @@
             </div>
         </div>
     </footer>
-    
+
     <!-- Back to Top Button -->
     <button id="back-to-top-btn" class="bg-blue-800 text-white w-12 h-12 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none flex items-center justify-center btn-hover-effect">
         <i class="fas fa-arrow-up"></i>
@@ -1179,7 +1350,7 @@
 
         // Login Form
         const loginForm = document.getElementById("login-form");
-        
+
         // --- Easter Egg Game Elements ---
         const headerLogo = document.getElementById('header-logo-link');
         const gameContainer = document.getElementById('gameContainer');
@@ -1191,7 +1362,7 @@
         let currentLang = "my";
         let logoClickCount = 0;
         const requiredClicks = 10;
-        
+
         // --- Game State Variables ---
         let score = 0;
         let gameActive = false;
@@ -1199,7 +1370,13 @@
         let logoSpawnerInterval;
         const logoImg = new Image();
         logoImg.src = './Img/logo/utycc_logo_favicon/favicon.ico';
-        const catcher = { x: 150, y: 350, width: 60, height: 10, color: '#3b82f6' };
+        const catcher = {
+            x: 150,
+            y: 350,
+            width: 60,
+            height: 10,
+            color: '#3b82f6'
+        };
         const fallingLogos = [];
 
 
@@ -1216,22 +1393,18 @@
                 nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
                 nav_contact_mobile: "ဆက်သွယ်ရန်",
                 hero_title: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
-                hero_subtitle:
-                    "စဉ်ဆက်မပြတ် ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ဦးဆောင်အင်ဂျင်နီယာကျောင်း",
+                hero_subtitle: "စဉ်ဆက်မပြတ် ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ဦးဆောင်အင်ဂျင်နီယာကျောင်း",
                 hero_button: "ကျောင်းအပ်ရန်",
                 stats_since: "တည်ထောင်ခဲ့သောနှစ်",
                 stats_students: "ကျောင်းသား/သူများ",
                 stats_acceptance: "ဝင်ခွင့်ရရှိနှုန်း",
                 stats_quality: "အရည်အသွေး အသိအမှတ်ပြု",
                 about_title: "ကျွန်ုပ်တို့၏ မျှော်မှန်းချက်နှင့် ရည်မှန်းချက်",
-                about_p1:
-                    "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ကို ၂၀၁၀ ခုနှစ်၊ အောက်တိုဘာလ ၁၇ ရက်နေ့တွင် သိပ္ပံနှင့်နည်းပညာဝန်ကြီးဌာန လက်အောက်၌ တည်ထောင်ခဲ့ပါသည်။ တက္ကသိုလ်သည် ပြင်ဦးလွင်မြို့အနီး၊ ရတနာပုံဆိုက်ဘာစီးတီးတွင် တည်ရှိသည်။",
+                about_p1: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ကို ၂၀၁၀ ခုနှစ်၊ အောက်တိုဘာလ ၁၇ ရက်နေ့တွင် သိပ္ပံနှင့်နည်းပညာဝန်ကြီးဌာန လက်အောက်၌ တည်ထောင်ခဲ့ပါသည်။ တက္ကသိုလ်သည် ပြင်ဦးလွင်မြို့အနီး၊ ရတနာပုံဆိုက်ဘာစီးတီးတွင် တည်ရှိသည်။",
                 vision_title: "မျှော်မှန်းချက်",
-                vision_text:
-                    "စဉ်ဆက်မပြတ် ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ဦးဆောင်အင်ဂျင်နီယာကျောင်းတစ်ကျောင်း ဖြစ်လာစေရန်။",
+                vision_text: "စဉ်ဆက်မပြတ် ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ဦးဆောင်အင်ဂျင်နီယာကျောင်းတစ်ကျောင်း ဖြစ်လာစေရန်။",
                 mission_title: "ရည်မှန်းချက်",
-                mission_text:
-                    "အရည်အသွေးမြင့်မားသော သင်ကြားရေး၊ သုတေသနနှင့် လူမှုရေးအရ တာဝန်ယူမှုရှိသော အင်ဂျင်နီယာပညာရေးကို ပံ့ပိုးပေးရန်။",
+                mission_text: "အရည်အသွေးမြင့်မားသော သင်ကြားရေး၊ သုတေသနနှင့် လူမှုရေးအရ တာဝန်ယူမှုရှိသော အင်ဂျင်နီယာပညာရေးကို ပံ့ပိုးပေးရန်။",
                 programs_title: "ပညာရေးအစီအစဉ်များ",
                 bachelor_title: "ဘွဲ့ကြိုသင်တန်းများ (၆ နှစ်)",
                 program_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
@@ -1240,18 +1413,14 @@
                 program_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
                 program_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
                 masters_title: "ဘွဲ့လွန်သင်တန်းများ (၂ နှစ်)",
-                masters_text:
-                    "IST, CE, ECE, AME, နှင့် PrE ဘာသာရပ်များတွင် မဟာဘွဲ့သင်တန်းများကို သင်ကြားလျက်ရှိပြီး သင်တန်း coursework နှင့် ကျမ်းတစ်စောင် ပြုစုရန် လိုအပ်ပါသည်။",
+                masters_text: "IST, CE, ECE, AME, နှင့် PrE ဘာသာရပ်များတွင် မဟာဘွဲ့သင်တန်းများကို သင်ကြားလျက်ရှိပြီး သင်တန်း coursework နှင့် ကျမ်းတစ်စောင် ပြုစုရန် လိုအပ်ပါသည်။",
                 phd_title: "ပါရဂူဘွဲ့ (၃ နှစ်)",
-                phd_text:
-                    "သတင်းအချက်အလက်နည်းပညာဘာသာရပ်တွင် ပါရဂူဘွဲ့ (Ph.D.) သင်တန်းကို တက်ရောက်နိုင်သည်။",
+                phd_text: "သတင်းအချက်အလက်နည်းပညာဘာသာရပ်တွင် ပါရဂူဘွဲ့ (Ph.D.) သင်တန်းကို တက်ရောက်နိုင်သည်။",
                 collab_title: "နိုင်ငံတကာ ပူးပေါင်းဆောင်ရွက်မှု",
                 collab_acu_title: "အာဆီယံ-ကိုရီးယား ဆိုက်ဘာတက္ကသိုလ် (ACU)",
-                collab_acu_text:
-                    "ဒေသတွင်း ဒစ်ဂျစ်တယ်ပညာရေး မြှင့်တင်ရန်အတွက် e-Learning ပရောဂျက်များတွင် ပါဝင်ဆောင်ရွက်လျက်ရှိသည်။",
+                collab_acu_text: "ဒေသတွင်း ဒစ်ဂျစ်တယ်ပညာရေး မြှင့်တင်ရန်အတွက် e-Learning ပရောဂျက်များတွင် ပါဝင်ဆောင်ရွက်လျက်ရှိသည်။",
                 collab_mu_title: "မီယာဇာကီ တက္ကသိုလ်၊ ဂျပန်",
-                collab_mu_text:
-                    "နိုင်ငံတကာ ပညာရေးဖလှယ်မှုကို အားပေးသည့် နှစ်နိုင်ငံ မဟာဘွဲ့ ပရိုဂရမ်ကို ဖွင့်လှစ်ထားသည်။",
+                collab_mu_text: "နိုင်ငံတကာ ပညာရေးဖလှယ်မှုကို အားပေးသည့် နှစ်နိုင်ငံ မဟာဘွဲ့ ပရိုဂရမ်ကို ဖွင့်လှစ်ထားသည်။",
                 news_title: "သတင်းနှင့် ကြေညာချက်များ",
                 news_cat_announcement: "ကြေညာချက်",
                 news_cat_event: "ပွဲလမ်းသဘင်",
@@ -1268,15 +1437,12 @@
                 news_read_more: "ဆက်လက်ဖတ်ရှုရန်",
                 gallery_title: "ကျောင်းတွင်းဘဝပုံရိပ်များ",
                 enroll_new_title: "ကျောင်းသား/သူအသစ်များ",
-                enroll_new_text:
-                    "သင်၏ ပညာရေးခရီးကို ကျွန်ုပ်တို့နှင့်အတူ စတင်လိုက်ပါ။ လာမည့် ပညာသင်နှစ်အတွက် ကျောင်းအပ်ရန် ဤနေရာကို နှိပ်ပါ။",
+                enroll_new_text: "သင်၏ ပညာရေးခရီးကို ကျွန်ုပ်တို့နှင့်အတူ စတင်လိုက်ပါ။ လာမည့် ပညာသင်နှစ်အတွက် ကျောင်းအပ်ရန် ဤနေရာကို နှိပ်ပါ။",
                 enroll_new_button: "ကျောင်းသား/သူအသစ်အဖြစ် စာရင်းသွင်းရန်",
                 enroll_current_title: "လက်ရှိကျောင်းသား/သူများ",
-                enroll_current_text:
-                    "ပြန်လည်ကြိုဆိုပါသည်။ နောက်နှစ်အတွက် ကျောင်းအပ်ခြင်းဖြင့် သင်၏ပညာရေးကို ဆက်လက်သင်ယူပါ။",
+                enroll_current_text: "ပြန်လည်ကြိုဆိုပါသည်။ နောက်နှစ်အတွက် ကျောင်းအပ်ခြင်းဖြင့် သင်၏ပညာရေးကို ဆက်လက်သင်ယူပါ။",
                 enroll_current_button: "နောက်နှစ်အတွက် စာရင်းသွင်းရန်",
-                footer_address:
-                    "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+                footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
                 footer_faculties_title: "မဟာဌာနများ",
                 footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
                 footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
@@ -1289,8 +1455,7 @@
                 footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
                 footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
                 footer_follow_title: "Follow Us",
-                footer_copyright:
-                    "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+                footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
                 signup_title: "အကောင့်ပြုလုပ်ရန်",
                 signup_subtitle: "UTYCC တွင်ကျောင်းအပ်ရန်",
                 signup_name_label: "အမည်",
@@ -1299,17 +1464,17 @@
                 signup_terms_agree: "ကျွန်ုပ်သည်",
                 signup_terms_link: "စည်းမျဉ်းများနှင့် မူဝါဒများ ကိုသဘောတူပါသည်။",
                 signup_button: "အကောင့်ပြုလုပ်မည်",
-                signup_toggle:
-                    "အကောင့်ရှိပြီးသားလား? <a id='toggle-to-login-btn'>ဝင်ရောက်ရန်</a>",
+                signup_toggle: "အကောင့်ရှိပြီးသားလား? <a id='toggle-to-login-btn'>ဝင်ရောက်ရန်</a>",
                 login_title: "ဝင်ရောက်ရန်",
                 login_subtitle: "သင်၏အကောင့်သို့",
                 login_id_label: "ကျောင်းသား ID",
                 login_password_label: "စကားဝှက်",
                 login_button: "ဝင်ရောက်မည်",
-                login_toggle:
-                    "အကောင့်မရှိသေးဘူးလား? <a id='toggle-to-signup-btn'>အသစ်ပြုလုပ်ရန်</a>",
-                    admission_closed_title: "ကျောင်းအပ်လက်ခံခြင်း ယာယီပိတ်ထားပါသည်",
+                login_toggle: "အကောင့်မရှိသေးဘူးလား? <a id='toggle-to-signup-btn'>အသစ်ပြုလုပ်ရန်</a>",
+                admission_closed_title: "ကျောင်းအပ်လက်ခံခြင်း ယာယီပိတ်ထားပါသည်",
                 admission_closed_text: "တက္ကသိုလ်မှ ကျောင်းသား/သူအသစ်များ လက်ခံခြင်းကို လက်ရှိတွင် ရပ်ဆိုင်းထားပါသည်။",
+                footer_link_dp: "ဒေတာကာကွယ်ရေး",
+
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -1322,22 +1487,18 @@
                 nav_collaboration_mobile: "Collaboration",
                 nav_contact_mobile: "Contact",
                 hero_title: "University of Technology - Yatanarpon Cyber City",
-                hero_subtitle:
-                    "A Leading Engineering Institution for Sustainable Development",
+                hero_subtitle: "A Leading Engineering Institution for Sustainable Development",
                 hero_button: "TO ENROLL",
                 stats_since: "Serving Since",
                 stats_students: "Students",
                 stats_acceptance: "Acceptance Rate",
                 stats_quality: "Certified Quality",
                 about_title: "Our Vision & Mission",
-                about_p1:
-                    "Established on 17 October 2010, UTYCC is a public university under the Ministry of Science and Technology, located in Yatanarpon Cyber City, near Pyin Oo Lwin.",
+                about_p1: "Established on 17 October 2010, UTYCC is a public university under the Ministry of Science and Technology, located in Yatanarpon Cyber City, near Pyin Oo Lwin.",
                 vision_title: "Vision",
-                vision_text:
-                    "To be a leading engineering institution for sustainable development.",
+                vision_text: "To be a leading engineering institution for sustainable development.",
                 mission_title: "Mission",
-                mission_text:
-                    "To provide high-quality teaching, research, and socially responsible engineering education.",
+                mission_text: "To provide high-quality teaching, research, and socially responsible engineering education.",
                 programs_title: "Academic Programs",
                 bachelor_title: "Bachelor's Degrees (6 Years)",
                 program_ist: "Information Science and Technology (IST)",
@@ -1346,17 +1507,14 @@
                 program_pre: "Precision Engineering (PrE)",
                 program_ame: "Advanced Materials Engineering (AME)",
                 masters_title: "Master's Degrees (2 Years)",
-                masters_text:
-                    "Master's degrees are offered in IST, CE, ECE, AME, and PrE, combining coursework and a thesis.",
+                masters_text: "Master's degrees are offered in IST, CE, ECE, AME, and PrE, combining coursework and a thesis.",
                 phd_title: "Doctoral Degree (3 Years)",
                 phd_text: "A Ph.D. program is available in Information Technology.",
                 collab_title: "International Collaboration",
                 collab_acu_title: "ASEAN-KOREA Cyber University (ACU)",
-                collab_acu_text:
-                    "Engaging in e-Learning projects to enhance digital education across the region.",
+                collab_acu_text: "Engaging in e-Learning projects to enhance digital education across the region.",
                 collab_mu_title: "Miyazaki University, Japan",
-                collab_mu_text:
-                    "Offering a Double Master's Degree program, fostering international academic exchange.",
+                collab_mu_text: "Offering a Double Master's Degree program, fostering international academic exchange.",
                 news_title: "News & Announcements",
                 news_cat_announcement: "Announcement",
                 news_cat_event: "Event",
@@ -1373,15 +1531,12 @@
                 news_read_more: "Read More",
                 gallery_title: "Campus Life Photo Gallery",
                 enroll_new_title: "New Students",
-                enroll_new_text:
-                    "Start your journey with us! Click here to enroll for the upcoming academic year.",
+                enroll_new_text: "Start your journey with us! Click here to enroll for the upcoming academic year.",
                 enroll_new_button: "Enroll as a Fresher",
                 enroll_current_title: "Current Students",
-                enroll_current_text:
-                    "Welcome back! Continue your studies by enrolling for the next year.",
+                enroll_current_text: "Welcome back! Continue your studies by enrolling for the next year.",
                 enroll_current_button: "Enroll for Next Year",
-                footer_address:
-                    "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+                footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
                 footer_faculties_title: "Faculties",
                 footer_faculty_ist: "Information Science Technology",
                 footer_faculty_ce: "Computer Engineering",
@@ -1394,8 +1549,7 @@
                 footer_link_about: "About Us",
                 footer_link_rules: "Rules & Regulations",
                 footer_follow_title: "Follow Us",
-                footer_copyright:
-                    "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+                footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
                 signup_title: "Create Account",
                 signup_subtitle: "to enroll at UTYCC",
                 signup_name_label: "Name",
@@ -1404,17 +1558,16 @@
                 signup_terms_agree: "I agree to the",
                 signup_terms_link: "Terms & Policy",
                 signup_button: "Create Account",
-                signup_toggle:
-                    "Already have an account? <a id='toggle-to-login-btn'>Sign In</a>",
+                signup_toggle: "Already have an account? <a id='toggle-to-login-btn'>Sign In</a>",
                 login_title: "Sign In",
                 login_subtitle: "to your account",
                 login_id_label: "Student ID",
                 login_password_label: "Password",
                 login_button: "Sign In",
-                login_toggle:
-                    "Don't have an account? <a id='toggle-to-signup-btn'>Create one</a>",
-                    admission_closed_title: "ADMISSIONS ARE CURRENTLY CLOSED",
+                login_toggle: "Don't have an account? <a id='toggle-to-signup-btn'>Create one</a>",
+                admission_closed_title: "ADMISSIONS ARE CURRENTLY CLOSED",
                 admission_closed_text: "Our university is not accepting new student applications at this time.",
+                footer_link_dp: "Data Protection",
             },
         };
 
@@ -1471,7 +1624,7 @@
             // Re-translate the modal title and subtitle
             setLanguage(currentLang);
         }
-        
+
         // --- Game Functions ---
         function resizeCanvas() {
             const gameToast = document.getElementById('gameContainer');
@@ -1546,7 +1699,7 @@
             cancelAnimationFrame(animationFrameId);
             clearInterval(logoSpawnerInterval);
         }
-        
+
         // --- Event Listeners ---
 
         mobileMenuButton.addEventListener("click", () => {
@@ -1638,7 +1791,9 @@
         const acceptanceRateStat = document.getElementById('acceptance-rate-stat');
 
         const animateStat = (element, endValue, prefix = '', suffix = '', decimals = 0) => {
-            const counter = { value: 0 };
+            const counter = {
+                value: 0
+            };
             gsap.to(counter, {
                 value: endValue,
                 duration: 2,
@@ -1665,12 +1820,12 @@
 
         // --- Easter Egg Game Logic ---
         headerLogo.addEventListener('click', (event) => {
-            event.preventDefault(); 
+            event.preventDefault();
             logoClickCount++;
             if (logoClickCount >= requiredClicks) {
                 gameContainer.classList.add('show');
                 startGame();
-                logoClickCount = 0; 
+                logoClickCount = 0;
             }
         });
 
@@ -1679,7 +1834,7 @@
             stopGame();
             logoClickCount = 0;
         });
-        
+
         canvas.addEventListener('mousemove', e => {
             if (!gameActive) return;
             const rect = canvas.getBoundingClientRect();
@@ -1696,7 +1851,78 @@
             preloader.classList.add('hidden');
         };
 
-         document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
+            // --- Custom Language Switcher Logic ---
+            function setupLangSwitcher(type) { // type is 'desktop' or 'mobile'
+                const container = document.getElementById(`lang-switcher-container-${type}`);
+                if (!container) return;
+
+                const button = container.querySelector('.lang-switcher-button');
+                const menu = container.querySelector('.lang-switcher-menu');
+                const options = container.querySelectorAll('.lang-switcher-option');
+                const selectedFlag = document.getElementById(`selected-lang-flag-${type}`);
+                const selectedText = document.getElementById(`selected-lang-text-${type}`);
+                const hiddenSelect = document.getElementById(`language-switcher-${type}`);
+                
+                const optionDetails = {
+                    my: { text: 'မြန်မာ', flag: 'https://flagcdn.com/w20/mm.png' },
+                    en: { text: 'English', flag: 'https://flagcdn.com/w20/gb.png' }
+                };
+
+                // Function to update the button's appearance
+                function updateButton(lang) {
+                    if (optionDetails[lang]) {
+                        selectedFlag.src = optionDetails[lang].flag;
+                        selectedText.textContent = optionDetails[lang].text;
+                    }
+                }
+
+                // Toggle menu visibility
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Close other switcher if open
+                    const otherType = type === 'desktop' ? 'mobile' : 'desktop';
+                    const otherMenu = document.querySelector(`#lang-switcher-container-${otherType} .lang-switcher-menu`);
+                    if (otherMenu) otherMenu.classList.add('hidden');
+
+                    menu.classList.toggle('hidden');
+                });
+
+                // Handle option selection
+                options.forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const lang = option.getAttribute('data-lang');
+                        
+                        // Update the hidden select and trigger its change event
+                        hiddenSelect.value = lang;
+                        hiddenSelect.dispatchEvent(new Event('change'));
+                        
+                        // Close menu
+                        menu.classList.add('hidden');
+                    });
+                });
+
+                // Listen to the original select's changes to update the custom button
+                // This keeps everything in sync, even if something else changes the select's value
+                hiddenSelect.addEventListener('change', () => {
+                    updateButton(hiddenSelect.value);
+                });
+
+                // Set initial state from the hidden select
+                updateButton(hiddenSelect.value);
+            }
+            
+            setupLangSwitcher('desktop');
+            setupLangSwitcher('mobile');
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.lang-switcher-menu').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            });
+
             const savedLang = localStorage.getItem("selectedLanguage") || "my";
             setLanguage(savedLang);
 
@@ -1736,7 +1962,7 @@
             animatedElements.forEach(el => {
                 scrollObserver.observe(el);
             });
-            
+
             // --- Hero Slideshow Logic ---
             const slides = document.querySelectorAll('.hero-slide');
             let currentSlide = 0;
@@ -1775,7 +2001,7 @@
                     behavior: 'smooth'
                 });
             });
-            
+
             // --- Lightbox Logic ---
             const lightbox = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightbox-img');
@@ -1826,7 +2052,9 @@
             ease: "back.out(1.7)",
         });
     </script>
+
+   
+    
 </body>
 
 </html>
-

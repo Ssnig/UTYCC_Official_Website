@@ -2,8 +2,8 @@
 /**
  * api.php
  *
- * Handles all backend data manipulation (Create, Update, Delete) using PDO.
- * This script now handles both JSON (for delete) and multipart/form-data (for add/update with photo).
+ * Handles all backend data manipulation (Create, Update, Delete, Import) using PDO.
+ * This script now handles both JSON and multipart/form-data.
  * Added output buffering to prevent corrupted JSON responses.
  */
 
@@ -16,13 +16,30 @@ require_once '../Rform/db.php'; // Provides the $pdo object
 $action = $_POST['action'] ?? (json_decode(file_get_contents('php://input'), true)['action'] ?? null);
 $response = ['status' => 'error', 'message' => 'Invalid Request'];
 
-// [ပြင်ဆင်မှု] Path များကို web root directory အောက်သို့ ပြောင်းလဲ သတ်မှတ်ထားခြင်း။
-$fileSystemUploadDir = '../uploads/'; // 'rform' folder မှ အပြင်သို့ထုတ်လိုက်သည်။
-$urlUploadDir = '/uploads/'; // URL path ကိုလည်း တိုက်ရိုက် root အောက်သို့ ပြောင်းထားသည်။
+// Define a helper function to process student data for consistent output
+function processStudentRow($studentRow) {
+    if (!$studentRow) return null;
+
+    $studentRow['student_id'] = (int)$studentRow['student_id'];
+    $studentRow['dormitory_preference'] = (bool)$studentRow['dormitory_preference'];
+    if(isset($studentRow['father_deceased_year']) && $studentRow['father_deceased_year']) {
+        $studentRow['father_deceased_year'] = (int)$studentRow['father_deceased_year'];
+    }
+    if(isset($studentRow['mother_deceased_year']) && $studentRow['mother_deceased_year']) {
+        $studentRow['mother_deceased_year'] = (int)$studentRow['mother_deceased_year'];
+    }
+    if (isset($studentRow['preferences'])) {
+        $studentRow['preferences'] = $studentRow['preferences'] ? json_decode($studentRow['preferences'], true) : null;
+    }
+    return $studentRow;
+}
+
+
+$fileSystemUploadDir = '../uploads/';
+$urlUploadDir = '/uploads/'; 
 
 
 if (!is_dir($fileSystemUploadDir)) {
-    // The `true` parameter creates nested directories if they don't exist.
     if (!mkdir($fileSystemUploadDir, 0775, true)) {
         http_response_code(500);
         $response['message'] = 'Failed to create uploads directory.';
@@ -35,55 +52,50 @@ if (!is_dir($fileSystemUploadDir)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         switch ($action) {
-
-            // delete_feedback
-case 'delete_feedback':
-    $data = json_decode(file_get_contents("php://input"), true);
-    $id = $data['id'] ?? null;
-
-    if ($id) {
-        $stmt = $pdo->prepare("DELETE FROM feedback WHERE feedback_id = ?");
-        $stmt->execute([$id]);
-
-        if ($stmt->rowCount() > 0) {
-            $response = ['status' => 'success', 'message' => 'Feedback deleted successfully'];
-        } else {
-            $response = ['status' => 'error', 'message' => 'Feedback not found'];
-        }
-    } else {
-        $response = ['status' => 'error', 'message' => 'Feedback ID required'];
-    }
-    break;
-
-
-
-
-            // end
             
             case 'add':
             case 'update':
-                // For add/update, data comes from $_POST because of FormData
                 $student = $_POST;
                 
-                // Basic validation
                 if (empty($student['student_name_en']) || empty($student['seat_no'])) {
                     $response['message'] = 'Required fields are missing.';
                     break;
                 }
 
+                // ===== CHECK FOR DUPLICATES (for both add and update) =====
+                $studentIdToExclude = ($action === 'update' && !empty($student['student_id'])) ? $student['student_id'] : 0;
+
+                // Check for duplicate NRC
+                if (!empty($student['student_nrc'])) {
+                    $sqlCheckNrc = "SELECT COUNT(*) FROM students WHERE student_nrc = ? AND student_id != ?";
+                    $stmtCheckNrc = $pdo->prepare($sqlCheckNrc);
+                    $stmtCheckNrc->execute([$student['student_nrc'], $studentIdToExclude]);
+                    if ($stmtCheckNrc->fetchColumn() > 0) {
+                        throw new Exception('ဤမှတ်ပုံတင်နံပါတ်သည် အခြားကျောင်းသားတစ်ဦးမှ အသုံးပြုပြီးဖြစ်သည်။');
+                    }
+                }
+                
+                // Check for duplicate Seat No
+                if (!empty($student['seat_no'])) {
+                    $sqlCheckSeatNo = "SELECT COUNT(*) FROM students WHERE seat_no = ? AND student_id != ?";
+                    $stmtCheckSeatNo = $pdo->prepare($sqlCheckSeatNo);
+                    $stmtCheckSeatNo->execute([$student['seat_no'], $studentIdToExclude]);
+                    if ($stmtCheckSeatNo->fetchColumn() > 0) {
+                        throw new Exception('ဤခုံနံပါတ်သည် အခြားကျောင်းသားတစ်ဦးမှ အသုံးပြုပြီးဖြစ်သည်။');
+                    }
+                }
+                // ===== END OF DUPLICATE CHECK =====
+
                 $pdo->beginTransaction();
 
-                // --- Handle Photo Upload ---
-                $photoUrl = null; // This will be the URL path for the database
+                $photoUrl = null; 
                 if ($action === 'update') {
-                    // Fetch existing photo URL to keep it if no new photo is uploaded
                     $stmt = $pdo->prepare("SELECT photo_url FROM students WHERE student_id = ?");
                     $stmt->execute([$student['student_id']]);
                     $photoUrl = $stmt->fetchColumn();
                 }
 
                 if (isset($_FILES['student_photo']) && $_FILES['student_photo']['error'] === UPLOAD_ERR_OK) {
-                    // If an old photo exists, delete it from the file system.
                     if ($action === 'update' && !empty($photoUrl)) {
                         $oldFileName = basename($photoUrl);
                         $oldFileSystemPath = $fileSystemUploadDir . $oldFileName;
@@ -92,12 +104,10 @@ case 'delete_feedback':
                         }
                     }
                     
-                    // Sanitize filename and create a unique name
                     $fileName = uniqid() . '-' . basename(preg_replace("/[^a-zA-Z0-9\.\-\_]/", "", $_FILES['student_photo']['name']));
                     $newFileSystemPath = $fileSystemUploadDir . $fileName;
 
                     if (move_uploaded_file($_FILES['student_photo']['tmp_name'], $newFileSystemPath)) {
-                        // Store the web-accessible, root-relative URL path in the database
                         $photoUrl = $urlUploadDir . $fileName; 
                     } else {
                         throw new Exception('Failed to move uploaded file.');
@@ -116,7 +126,7 @@ case 'delete_feedback':
                         :dormitory_preference, :student_name_mm, :student_name_en, 
                         :student_race, :student_religion, :student_nrc, :student_dob, 
                         :student_birthplace, :state_region, :township, :student_phone, 
-                        :student_address, :photo_url, CURDATE(), 'pending'
+                        :student_address, :photo_url, CURDATE(), 'approved'
                     )";
                     $stmtStudent = $pdo->prepare($sqlStudent);
                 } else { // update
@@ -131,7 +141,6 @@ case 'delete_feedback':
                     $stmtStudent->bindValue(':student_id', $student['student_id']);
                 }
                 
-                // Bind values
                 $stmtStudent->bindValue(':year', $student['year'] ?? null);
                 $stmtStudent->bindValue(':academic_year', $student['academic_year'] ?? null);
                 $stmtStudent->bindValue(':seat_no', $student['seat_no'] ?? null);
@@ -154,7 +163,6 @@ case 'delete_feedback':
 
                 $student_id = ($action === 'add') ? $pdo->lastInsertId() : $student['student_id'];
 
-                // Upsert father/mother info (same logic as your original file)
                 foreach (['father', 'mother'] as $parent) {
                     $stmtCheck = $pdo->prepare("SELECT {$parent}_id FROM {$parent}s WHERE student_id = ?");
                     $stmtCheck->execute([$student_id]);
@@ -175,13 +183,12 @@ case 'delete_feedback':
 
                 $pdo->commit();
                 
-                // Fetch the full record to return
                 $fullRecordSql = "SELECT s.*, f.*, m.* FROM students s LEFT JOIN fathers f ON s.student_id = f.student_id LEFT JOIN mothers m ON s.student_id = m.student_id WHERE s.student_id = ?";
                 $stmtFetch = $pdo->prepare($fullRecordSql);
                 $stmtFetch->execute([$student_id]);
                 $finalStudent = $stmtFetch->fetch(PDO::FETCH_ASSOC);
 
-                $response = ['status' => 'success', 'student' => $finalStudent];
+                $response = ['status' => 'success', 'student' => processStudentRow($finalStudent)];
                 break;
 
             case 'approve_students':
@@ -208,17 +215,14 @@ case 'delete_feedback':
                     $sanitized_ids = array_map('intval', $ids);
                     $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
                     
-                    // First, get photo URLs to delete files
                     $stmtSelect = $pdo->prepare("SELECT photo_url FROM students WHERE student_id IN ($placeholders)");
                     $stmtSelect->execute($sanitized_ids);
                     $photoUrls = $stmtSelect->fetchAll(PDO::FETCH_COLUMN);
 
-                    // Then, delete student records (cascading should handle parents)
                     $sql = "DELETE FROM students WHERE student_id IN ($placeholders)";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute($sanitized_ids);
                     
-                    // Finally, delete the actual files from the file system
                     foreach ($photoUrls as $url) {
                         if (!empty($url)) {
                            $fileName = basename($url);
@@ -234,15 +238,153 @@ case 'delete_feedback':
                     $response['message'] = 'No student IDs provided for deletion.';
                 }
                 break;
+
+            case 'import_students':
+                $data = json_decode(file_get_contents('php://input'), true);
+                $studentsToImport = $data['students'] ?? [];
+                $importedStudents = [];
                 
-            // Keep your other cases like delete_feedback if needed
+                if (empty($studentsToImport)) {
+                    $response['message'] = 'No student data provided for import.';
+                    break;
+                }
+
+                $pdo->beginTransaction();
+                try {
+                    $stmtFindStudent = $pdo->prepare("SELECT student_id FROM students WHERE seat_no = ?");
+                    
+                    foreach ($studentsToImport as $s) {
+                        if (empty($s['seat_no'])) continue;
+
+                        $stmtFindStudent->execute([$s['seat_no']]);
+                        $existingStudentId = $stmtFindStudent->fetchColumn();
+
+                        $studentData = [
+                            'year' => $s['year'] ?? null, 'academic_year' => $s['academic_year'] ?? null, 'seat_no' => $s['seat_no'], 'entry_year' => $s['entry_year'] ?? null, 'student_email' => $s['student_email'] ?? null,
+                            'dormitory_preference' => (isset($s['dormitory_preference']) && $s['dormitory_preference'] == '1') ? 1 : 0,
+                            'student_name_mm' => $s['student_name_mm'] ?? null, 'student_name_en' => $s['student_name_en'] ?? null, 'student_race' => $s['student_race'] ?? null, 'student_religion' => $s['student_religion'] ?? null, 'student_nrc' => $s['student_nrc'] ?? null, 'student_dob' => empty($s['student_dob']) ? null : $s['student_dob'],
+                            'student_birthplace' => $s['student_birthplace'] ?? null, 'state_region' => $s['state_region'] ?? null, 'township' => $s['township'] ?? null, 'student_phone' => $s['student_phone'] ?? null, 'student_address' => $s['student_address'] ?? null, 'photo_url' => $s['photo_url'] ?? null,
+                            'date' => empty($s['date']) ? date('Y-m-d') : $s['date'], 'status' => 'approved'
+                        ];
+                        
+                        $prefs = [];
+                        for ($i=1; $i<=5; $i++) { if (!empty($s["preference$i"])) $prefs[$i] = $s["preference$i"]; }
+                        $studentData['preferences'] = !empty($prefs) ? json_encode($prefs) : null;
+
+                        if ($existingStudentId) {
+                            $studentData['student_id'] = $existingStudentId;
+                            $sqlStudent = "UPDATE students SET year=:year, academic_year=:academic_year, entry_year=:entry_year, student_email=:student_email, dormitory_preference=:dormitory_preference, student_name_mm=:student_name_mm, student_name_en=:student_name_en, student_race=:student_race, student_religion=:student_religion, student_nrc=:student_nrc, student_dob=:student_dob, student_birthplace=:student_birthplace, state_region=:state_region, township=:township, student_phone=:student_phone, student_address=:student_address, photo_url=:photo_url, date=:date, status=:status, preferences=:preferences WHERE student_id=:student_id";
+                        } else {
+                            $sqlStudent = "INSERT INTO students (year, academic_year, seat_no, entry_year, student_email, dormitory_preference, student_name_mm, student_name_en, student_race, student_religion, student_nrc, student_dob, student_birthplace, state_region, township, student_phone, student_address, photo_url, date, status, preferences) VALUES (:year, :academic_year, :seat_no, :entry_year, :student_email, :dormitory_preference, :student_name_mm, :student_name_en, :student_race, :student_religion, :student_nrc, :student_dob, :student_birthplace, :state_region, :township, :student_phone, :student_address, :photo_url, :date, :status, :preferences)";
+                        }
+
+                        $stmtStudent = $pdo->prepare($sqlStudent);
+                        $stmtStudent->execute($studentData);
+                        $student_id = $existingStudentId ?: $pdo->lastInsertId();
+
+                        foreach (['father', 'mother'] as $parent) {
+                            $stmtCheck = $pdo->prepare("SELECT {$parent}_id FROM {$parent}s WHERE student_id = ?");
+                            $stmtCheck->execute([$student_id]);
+                            $params = [
+                                $s["{$parent}_name_mm"] ?? null, $s["{$parent}_name_en"] ?? null, $s["{$parent}_race"] ?? null, $s["{$parent}_religion"] ?? null, $s["{$parent}_nrc"] ?? null, $s["{$parent}_phone"] ?? null, $s["{$parent}_info"] ?? null, empty($s["{$parent}_deceased_year"]) ? null : $s["{$parent}_deceased_year"], $s["{$parent}_address"] ?? null, $student_id
+                            ];
+                            if ($stmtCheck->fetch()) {
+                                $sql = "UPDATE {$parent}s SET {$parent}_name_mm = ?, {$parent}_name_en = ?, {$parent}_race = ?, {$parent}_religion = ?, {$parent}_nrc = ?, {$parent}_phone = ?, {$parent}_info = ?, {$parent}_deceased_year = ?, {$parent}_address = ? WHERE student_id = ?";
+                            } else {
+                                $sql = "INSERT INTO {$parent}s ({$parent}_name_mm, {$parent}_name_en, {$parent}_race, {$parent}_religion, {$parent}_nrc, {$parent}_phone, {$parent}_info, {$parent}_deceased_year, {$parent}_address, student_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            }
+                            $stmtParent = $pdo->prepare($sql);
+                            $stmtParent->execute($params);
+                        }
+
+                        $fullRecordSql = "SELECT s.*, f.*, m.* FROM students s LEFT JOIN fathers f ON s.student_id = f.student_id LEFT JOIN mothers m ON s.student_id = m.student_id WHERE s.student_id = ?";
+                        $stmtFetch = $pdo->prepare($fullRecordSql);
+                        $stmtFetch->execute([$student_id]);
+                        $finalStudent = $stmtFetch->fetch(PDO::FETCH_ASSOC);
+
+                        if ($finalStudent) {
+                            $importedStudents[] = processStudentRow($finalStudent);
+                        }
+                    }
+                    
+                    $pdo->commit();
+                    $response = ['status' => 'success', 'imported_students' => $importedStudents];
+
+                } catch (Exception $e) {
+                    $pdo->rollBack();
+                    http_response_code(500);
+                    $response['message'] = 'Import failed: ' . $e->getMessage();
+                }
+                break;
+            
+            case 'get_settings':
+                $sql = "SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status')";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+                
+                $defaults = [
+                    'announcement_text' => '',
+                    'announcement_status' => 'disabled'
+                ];
+                
+                $response = ['status' => 'success', 'settings' => array_merge($defaults, $settings)];
+                break;
+
+            case 'save_announcement':
+                $data = json_decode(file_get_contents('php://input'), true);
+                $text = $data['text'] ?? '';
+                $status = $data['status'] ?? 'disabled';
+
+                if (!in_array($status, ['enabled', 'disabled'])) {
+                    $status = 'disabled';
+                }
+                
+                $pdo->beginTransaction();
+                
+                $sqlText = "INSERT INTO site_settings (setting_key, setting_value) VALUES ('announcement_text', ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)";
+                $stmtText = $pdo->prepare($sqlText);
+                $stmtText->execute([$text]);
+
+                $sqlStatus = "INSERT INTO site_settings (setting_key, setting_value) VALUES ('announcement_status', ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)";
+                $stmtStatus = $pdo->prepare($sqlStatus);
+                $stmtStatus->execute([$status]);
+
+                $pdo->commit();
+                
+                $response = ['status' => 'success', 'message' => 'Announcement settings saved.'];
+                break;
+
+            case 'delete_feedback':
+                $data = json_decode(file_get_contents('php://input'), true);
+                $id = $data['id'] ?? 0;
+                if ($id > 0) {
+                    $stmt = $pdo->prepare("DELETE FROM feedback WHERE feedback_id = ?");
+                    $stmt->execute([$id]);
+                    $response = ['status' => 'success', 'message' => 'Feedback deleted.'];
+                } else {
+                    $response['message'] = 'Invalid feedback ID.';
+                }
+                break;
+                
+            case 'clear_all_data':
+                $pdo->beginTransaction();
+                $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+                $pdo->exec('TRUNCATE TABLE mothers');
+                $pdo->exec('TRUNCATE TABLE fathers');
+                $pdo->exec('TRUNCATE TABLE students');
+                $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+                $pdo->commit();
+                $response = ['status' => 'success', 'message' => 'All student data has been cleared.'];
+                break;
         }
     } catch (Exception $e) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }
         http_response_code(500);
-        $response['message'] = 'Server error: ' . $e->getMessage();
+        // Return the specific exception message for frontend display
+        $response['message'] = $e->getMessage();
     }
 }
 
@@ -250,3 +392,4 @@ ob_end_clean(); // Clean any stray output
 echo json_encode($response);
 $pdo = null; // Close connection
 ?>
+

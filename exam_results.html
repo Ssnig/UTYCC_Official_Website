@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exam Results - UTYCC</title>
+    <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="bg-white shadow-md sticky top-0 z-50">
+    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <a href="./home.php" class="flex items-center space-x-3">
+        <div class="p-2 rounded-lg">
+          <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+        </div>
+        <div>
+          <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
+          <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
+            City)</span>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center space-x-6">
+        <!-- <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_about">About Us</a>
+        <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_programs">Academic Programs</a>
+        <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_collaboration">Collaboration</a>
+        <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_contact">Contact</a> -->
+
+        <!-- Language Switcher Dropdown - Updated Style -->
+        <div class="relative ml-4">
+          <div id="lang-switcher-container-desktop">
+            <!-- Custom Button -->
+            <button
+              class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+              <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
+                class="h-4 w-6 object-cover flex-shrink-0">
+              <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
+              <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
+            </button>
+            <!-- Custom Dropdown Menu -->
+            <div
+              class="lang-switcher-menu hidden absolute mt-1 w-auto min-w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+              <a href="#"
+                class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                data-lang="my">
+                <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
+                  class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                <span>မြန်မာ</span>
+              </a>
+              <a href="#"
+                class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                data-lang="en">
+                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                <span>English</span>
+              </a>
+            </div>
+          </div>
+          <!-- Hidden original select to maintain JS compatibility -->
+          <select id="language-switcher-desktop" class="hidden">
+            <option value="my">မြန်မာ</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+      <button id="mobile-menu-button" class="md:hidden text-blue-900">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </nav>
+    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
+      <!-- <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_about_mobile">About Us</a>
+      <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_programs_mobile">Academic Programs</a>
+      <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_collaboration_mobile">Collaboration</a>
+      <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
+        data-lang-key="nav_contact_mobile">Contact</a> -->
+      <div class="relative mt-4 pt-4 border-t">
+        <!-- Language Switcher for Mobile -->
+        <div id="lang-switcher-container-mobile" class="relative">
+          <!-- Custom Button -->
+          <button
+            class="lang-switcher-button relative flex items-center w-full bg-gray-100 hover:bg-gray-200 rounded-md transition py-2 pl-4 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+            <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
+              class="h-4 w-6 object-cover flex-shrink-0">
+            <span id="selected-lang-text-mobile" class="ml-3">မြန်မာ</span>
+            <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 pointer-events-none"></i>
+          </button>
+          <!-- Custom Dropdown Menu -->
+          <div
+            class="lang-switcher-menu hidden absolute mt-1 w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+            <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              data-lang="my">
+              <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
+                class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+              <span>မြန်မာ</span>
+            </a>
+            <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              data-lang="en">
+              <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+              <span>English</span>
+            </a>
+          </div>
+        </div>
+        <!-- Hidden original select to maintain JS compatibility -->
+        <select id="language-switcher-mobile" class="hidden">
+          <option value="my">မြန်မာ</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+    <!-- Main Content for Exam Results -->
+    <div class="container mx-auto p-4 md:p-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-10 my-8">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-900 mb-6 text-center" data-lang-key="exam_result">Student Exam Results</h1>
+            <p class="text-gray-600 text-center mb-8" data-lang-key="exam_exp">Select your academic details to view your results.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Year Dropdown -->
+                <div>
+                    <label for="year-select" class="block text-gray-700 font-semibold mb-2" data-lang-key="yr">Year</label>
+                    <select id="year-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition" >
+                        <option value="" data-lang-key="yrs">Select Year</option>
+                        <option value="1" data-lang-key="firsty">1st Year</option>
+                        <option value="2" data-lang-key="secondy">2nd Year</option>
+                        <option value="3" data-lang-key="thirdy">3rd Year</option>
+                        <option value="4" data-lang-key="fourthy">4th Year</option>
+                        <option value="5" data-lang-key="fifthy">5th Year</option>
+                        <option value="6" data-lang-key="sixthy">Final Year</option>
+                    </select>
+                </div>
+                
+                <!-- Semester Dropdown -->
+                <div>
+                    <label for="semester-select" class="block text-gray-700 font-semibold mb-2" data-lang-key="sem">Semester</label>
+                    <select id="semester-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="" data-lang-key="sems">Select Semester</option>
+                        <option value="1"data-lang-key="firsts">1st Semester</option>
+                        <option value="2"data-lang-key="seconds">2nd Semester</option>
+                    </select>
+                </div>
+                
+                <!-- Major Dropdown -->
+                <div>
+                    <label for="major-select" class="block text-gray-700 font-semibold mb-2" data-lang-key="major">Major</label>
+                    <select id="major-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="" data-lang-key="maj">Select Major</option>
+                        <option value="ist" data-lang-key="ist">Information Science Technology</option>
+                        <option value="ce"  data-lang-key="ce">Computer Engineering</option>
+                        <option value="ece" data-lang-key="ece">Electronics Engineering</option>
+                        <option value="pre" data-lang-key="pre">Precision Engineering</option>
+                        <option value="ame" data-lang-key="ame">Advanced Materials Engineering</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Display Results Section -->
+            <div id="results-container" class="mt-8 flex flex-col items-center justify-center min-h-[400px]">
+                <div class="text-center text-gray-500">
+                    <i class="fas fa-info-circle text-4xl mb-4"></i>
+                    <p>Please select your year, semester, and major to view your results.</p>
+                </div>
+            </div>
+
+            <!-- Modal for full-screen image view -->
+            <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden z-[60] flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+                <div class="relative w-full max-w-5xl h-full flex items-center justify-center">
+                    <button id="close-modal" class="absolute top-4 right-4 text-white text-3xl font-bold p-2 z-50">
+                        &times;
+                    </button>
+                    <img id="modal-image" src="" alt="Full-screen result" class="max-w-full max-h-full rounded-lg shadow-xl" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mx-auto px-8 py-12">
+    <link rel="stylesheet" href="./CSS/bbbtn.css">
+
+    <a href="javascript:history.back()">
+      <button class="bbbtn " data-lang-key="Go_Back">
+        Go Back
+      </button>
+
+    </a>
+  </div>
+    
+    <!-- Footer -->
+    <footer id="contact" class="bg-blue-900 text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
+                    <h3 class="text-lg font-bold">UTYCC</h3>
+                    <p class="text-blue-200 text-sm mt-4">
+                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
+                            Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay Region, Myanmar
+                        </a>
+                    </p>
+                    <div class="mt-4 text-sm text-blue-200">
+                        <p>Email: info@utycc.edu.mm (example)</p>
+                        <p>Phone: +95 (XX) XXX XXX (example)</p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">Faculties</h3>
+                    <ul class="space-y-2 text-sm text-blue-200">
+                        <li>
+                            <a href="./Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
+                        </li>
+                        <li>
+                            <a href="./Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+                        </li>
+                        <li>
+                            <a href="./Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+                        </li>
+                        <li>
+                            <a data-lang-key="footer_faculty_pre" href="./Majors/pre.html">Precision Engineering</a>
+                        </li>
+                        <li>
+                            <a data-lang-key="footer_faculty_ame" href="./Majors/ame.html">
+                                Advanced Materials Engineering
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">Quick Links</h3>
+                    <ul class="space-y-2 text-sm text-blue-200">
+                        <li>
+                            <a href="./terms.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+                        </li>
+                        <li>
+                            <a href="./FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+                        </li>
+                        <li>
+                            <a href="./about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+                        </li>
+                        <li>
+                            <a href="./randr.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+                        </li>
+                        <li>
+                            <a href="./data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">Follow Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+                        <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                    <br />
+                    <br />
+                    <div>
+                        <div class="newtons-cradle">
+                            <div class="newtons-cradle__dot"></div>
+                            <div class="newtons-cradle__dot"></div>
+                            <div class="newtons-cradle__dot"></div>
+                            <div class="newtons-cradle__dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300" data-lang-key="footer_copyright">
+                &copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+    
+    
+    <script>
+        const translations = {
+            my: {
+                utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+                nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+                nav_programs: "ပညာရေးအစီအစဉ်များ",
+                nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
+                nav_contact: "ဆက်သွယ်ရန်",
+                nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+                nav_programs_mobile: "ပညာရေးအစီအစဉ် များ",
+                nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက် မှု",
+                nav_contact_mobile: "ဆက်သွယ်ရန်",
+                footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊ \nပြင်ဦးလွင်မြို့အနီး၊ \nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+                footer_faculties_title: "မဟာဌာနများ",
+                footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+                footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+                footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+                footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင် နီယာ",
+                footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+                footer_contact_title: "ဆက်သွယ် ရန်",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။  မူပိုင်ခွင့်များ ရယူပြီး။",
+                footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+                footer_link_terms: "စည်း မျဉ်းများ နှင့် မူဝါဒများ",
+                footer_link_faq: "အမေးများသော မေးခွန်း များ",
+                footer_link_about: "ကျွန်ုပ် တို့အကြောင်း",
+                footer_link_rules: "စည်းကမ်း များနှင့်  စည်းမျဉ်းများ",
+                footer_link_dp: "ဒေတာကာကွယ်ရေး",
+                exam_result: "ကျောင်းသား စာမေးပွဲ ရလဒ်များ",
+                exam_exp: "သင်၏ ပညာရေး အသေးစိတ်ကို ရွေးချယ်၍ သင်၏ ရလဒ်များကို ကြည့်ရှုပါ။",
+                yr:"စာသင်နှစ်",
+                yrs:"စာသင်နှစ် ရွေးချယ်ပါ",
+                ist:"သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+                ce:"ကွန်ပျူတာ အင်ဂျင်နီယာ",
+                ece:"အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+                pre:"တိကျစက်မှု အင်ဂျင်နီယာ",
+                ame:"အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင် နီယာ",
+                sem:"သင်တန်း",
+                sems:"သင်တန်း ရွေးချယ်ပါ",
+                major:"အထူးပြုဘာသာရပ်",
+                maj:"အထူးပြုဘာသာရပ် ရွေးချယ်ပါ",
+                firsty:"ပထမနှစ်",
+                secondy:"ဒုတိယနှစ်",
+                thirdy:"တတိယနှစ်",
+                fourthy:"စတုတ္ထနှစ်",
+                fifthy:"ပဉ္စမနှစ်",
+                sixthy:"နောက်ဆုံးနှစ်",
+                firsts:"ပထမသင်တန်း",
+                seconds:"ဒုတိယသင်တန်း",
+                Go_Back: "နောက်သို့ ပြန်သွားရန်",
+
+            },
+            en: {
+                utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+                nav_about: "About Us",
+                nav_programs: "Academic Programs",
+                nav_collaboration: "Collaboration",
+                nav_contact: "Contact",
+                nav_about_mobile: "About Us",
+                nav_programs_mobile: "Academic Programs",
+                nav_collaboration_mobile: "Collaboration",
+                nav_contact_mobile: "Contact",
+                footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+                footer_faculties_title: "Faculties",
+                footer_faculty_ist: "Information Science Technology",
+                footer_faculty_ce: "Computer Engineering",
+                footer_faculty_ece: "Electronics Engineering",
+                footer_faculty_ame: "Advanced Materials Engineering",
+                footer_faculty_pre: "Precision Engineering",
+                footer_contact_title: "Contact Us",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+                footer_quick_links_title: "Quick Links",
+                footer_link_terms: "Terms & Policies",
+                footer_link_faq: "FAQs",
+                footer_link_about: "About Us",
+                footer_link_rules: "Rules & Regulations",
+                footer_link_dp: "Data Protection",
+                exam_result: "Student Exam Results",
+                exam_exp: "Select your academic details to view your results.",
+                yr:"Year",
+                yrs:"Select Year",
+                ist:"Information Science Technology",
+                ce:"Computer Engineering",
+                ece:"Electronics Engineering",
+                pre:"Precision Engineering",
+                ame:"Advanced Materials Engineering",
+                sem:"Semester",
+                sems:"Select Semester",
+                major:"Major",
+                maj:"Select Major",
+                firsty:"1st Year",
+                secondy:"2nd Year",
+                thirdy:"3rd Year",
+                fourthy:"4th Year",
+                fifthy:"5th Year",
+                sixthy:"Final Year",
+                firsts:"1st Semester",
+                seconds:"2nd Semester",
+                Go_Back: "Go Back",
+
+            },
+        };
+
+        const languageSwitcher = document.getElementById("language-switcher-desktop");
+        const languageSwitcherMobile = document.getElementById("language-switcher-mobile");
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        
+        const yearSelect = document.getElementById('year-select');
+        const semesterSelect = document.getElementById('semester-select');
+        const majorSelect = document.getElementById('major-select');
+        const resultsContainer = document.getElementById('results-container');
+        const imageModal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image');
+        const closeModal = document.getElementById('close-modal');
+
+        const languageData = {}; // This would be where you fetch your translation JSON
+
+        // Placeholder for exam result data - This would come from an admin upload
+        const examResults = {
+            '1_1_ist': 'https://placehold.co/1200x1600/f0f9ff/1d4ed8?text=1st+Year+1st+Sem+IST+Results',
+            '2_2_ce': 'https://placehold.co/1200x1600/f0f9ff/1d4ed8?text=2nd+Year+2nd+Sem+CE+Results',
+            '3_1_ece': 'https://placehold.co/1200x1600/f0f9ff/1d4ed8?text=3rd+Year+1st+Sem+ECE+Results',
+            '4_2_pre': 'https://placehold.co/1200x1600/f0f9ff/1d4ed8?text=4th+Year+2nd+Sem+PRE+Results',
+            '5_1_ame': 'https://placehold.co/1200x1600/f0f9ff/1d4ed8?text=5th+Year+1st+Sem+AME+Results',
+            '6_2_ist': 'https://placehold.co/1200x1600/f0f9ff/1d4ed8?text=Final+Year+2nd+Sem+IST+Results',
+            '1_2_ist': 'https://placehold.co/1200x1600/f0f9ff/1d4ed8?text=1st+Year+2nd+Sem+IST+Results',
+            '2_1_ce': 'https://placehold.co/1200x1600/f0f9ff/1d4ed8?text=2nd+Year+1st+Sem+CE+Results',
+            '3_2_ece': 'https://placehold.co/1200x1200/f0f9ff/1d4ed8?text=3rd+Year+2nd+Sem+ECE+Results',
+        };
+
+        const updateResults = () => {
+            const year = yearSelect.value;
+            const semester = semesterSelect.value;
+            const major = majorSelect.value;
+
+            if (year && semester && major) {
+                const key = `${year}_${semester}_${major}`;
+                const resultUrl = examResults[key];
+                
+                resultsContainer.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    <p class="mt-4 text-gray-500">Loading results...</p>
+                `;
+
+                setTimeout(() => {
+                    if (resultUrl) {
+                        resultsContainer.innerHTML = `
+                            <h2 class="text-2xl font-semibold text-blue-800 mb-4">Results for ${yearSelect.options[yearSelect.selectedIndex].text}, ${semesterSelect.options[semesterSelect.selectedIndex].text}, ${majorSelect.options[majorSelect.selectedIndex].text}</h2>
+                            <div class="w-full max-w-4xl p-4 bg-gray-100 rounded-lg shadow-inner flex flex-col items-center cursor-pointer" id="result-image-card">
+                                <img src="${resultUrl}" alt="Exam Result" class="w-full h-auto rounded-lg shadow-md transition-transform duration-300 hover:scale-105" />
+                                <p class="mt-4 text-gray-600 font-medium text-center">Click the image to view full size.</p>
+                            </div>
+                        `;
+                        document.getElementById('result-image-card').addEventListener('click', () => {
+                            modalImage.src = resultUrl;
+                            imageModal.classList.remove('hidden');
+                            setTimeout(() => {
+                                imageModal.classList.add('opacity-100');
+                            }, 10);
+                        });
+                    } else {
+                        resultsContainer.innerHTML = `
+                            <div class="text-center text-gray-500">
+                                <i class="fas fa-exclamation-circle text-4xl mb-4 text-red-500"></i>
+                                <p class="font-semibold">No results found for this selection.</p>
+                                <p>Please check your choices or contact the administration for more details.</p>
+                            </div>
+                        `;
+                    }
+                }, 1000); // Simulate network delay
+            } else {
+                resultsContainer.innerHTML = `
+                    <div class="text-center text-gray-500">
+                        <i class="fas fa-info-circle text-4xl mb-4"></i>
+                        <p>Please select your year, semester, and major to view your results.</p>
+                    </div>
+                `;
+            }
+        };
+
+        const attachEventListeners = () => {
+            yearSelect.addEventListener('change', updateResults);
+            semesterSelect.addEventListener('change', updateResults);
+            majorSelect.addEventListener('change', updateResults);
+            
+            closeModal.addEventListener('click', () => {
+                imageModal.classList.remove('opacity-100');
+                setTimeout(() => {
+                    imageModal.classList.add('hidden');
+                }, 300);
+            });
+            imageModal.addEventListener('click', (e) => {
+                if(e.target === imageModal) {
+                    imageModal.classList.remove('opacity-100');
+                    setTimeout(() => {
+                        imageModal.classList.add('hidden');
+                    }, 300);
+                }
+            });
+        };
+
+        const changeLanguage = (lang) => {
+            localStorage.setItem("language", lang);
+            if (languageSwitcher) languageSwitcher.value = lang;
+            if (languageSwitcherMobile) languageSwitcherMobile.value = lang;
+            document.querySelectorAll("[data-lang-key]").forEach((element) => {
+                const key = element.getAttribute("data-lang-key");
+                if (translations[lang] && translations[lang][key]) {
+                    element.innerHTML = translations[lang][key].replace(/\n/g, "<br>");
+                }
+            });
+        };
+
+        const setupLanguageSwitchers = () => {
+            if (languageSwitcher) {
+                languageSwitcher.addEventListener("change", (event) => {
+                    changeLanguage(event.target.value);
+                });
+            }
+            if (languageSwitcherMobile) {
+                languageSwitcherMobile.addEventListener("change", (event) => {
+                    changeLanguage(event.target.value);
+                });
+            }
+        };
+
+        const setupMobileMenu = () => {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedLang = localStorage.getItem("language") || "en";
+            changeLanguage(savedLang);
+            setupLanguageSwitchers();
+            setupMobileMenu();
+            attachEventListeners();
+        });
+    </script>
+    <script src="./JS/lgl.js"></script>
+</body>
+</html>

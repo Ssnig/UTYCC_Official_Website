@@ -4,7 +4,8 @@ require_once '../Rform/db.php';
 
 // --- FETCH ALL APPROVED STUDENT DATA ---
 $students = [];
-$sql = "SELECT s.*, 
+// MODIFICATION: Added s.preferences to the SELECT statement
+$sql = "SELECT s.*, s.preferences,
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
         FROM students s
@@ -23,6 +24,10 @@ try {
         $row['dormitory_preference'] = (bool)$row['dormitory_preference'];
         if($row['father_deceased_year']) $row['father_deceased_year'] = (int)$row['father_deceased_year'];
         if($row['mother_deceased_year']) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
+
+        // MODIFICATION: Decode the JSON preferences string into an array
+        $row['preferences'] = $row['preferences'] ? json_decode($row['preferences'], true) : null;
+
         $students[] = $row;
     }
 } catch (PDOException $e) {
@@ -201,7 +206,7 @@ $pdo = null;
     th, td { padding: 12px 14px; border-bottom: 1px solid hsl(var(--border)); }
     tbody tr:hover { background: hsl(var(--muted)); }
 
-    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; width: 100%;}
     .toolbar .spacer { flex: 1; }
 
     /* Toast Notifications */
@@ -261,6 +266,7 @@ $pdo = null;
     .field label { font-size: 13px; color: hsl(var(--muted-foreground)); }
     .field input, .field select, .field textarea { padding: 10px 12px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--bg)); color: hsl(var(--fg)); outline: none; font: inherit; }
     .field input:focus, .field select:focus, .field textarea:focus { border-color: hsl(var(--ring)); box-shadow: 0 0 0 3px hsl(var(--ring)/0.25); }
+    .field input:disabled, .field select:disabled { background: hsl(var(--muted)); cursor: not-allowed; }
     .field textarea { min-height: 60px; resize: vertical; }
     .field-checkbox { display: flex; align-items: center; gap: 8px; }
     .field-checkbox label { margin: 0; }
@@ -327,12 +333,12 @@ $pdo = null;
   <div class="app" id="app">
     <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
-      <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" class="mx-auto w-20 h-20"/>
+      <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
         <h1>UTYCC Admin Panel</h1>
       </div>
       <nav>
         <a class="nav-link" href="admin_dashboard.php">Registrations</a>
-        <a class="nav-link" href="#">Courses</a>
+       <a class="nav-link" href="upload_result.php">To upload result</a>
         <a class="nav-link active" href="students.php">Students</a>
         <a class="nav-link" href="support.php">Support</a>
         <a class="nav-link" href="settings.php">Settings</a>
@@ -356,8 +362,21 @@ $pdo = null;
       <section class="section" id="students">
         <div class="section-header">
           <div class="toolbar">
+             <!-- START: Year Filter Dropdown -->
+             <div class="field" style="min-width: 200px;">
+                <select id="yearFilter" aria-label="Filter by Year">
+                    <option value="all">All Years</option>
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+                    <option value="Fifth Year">Fifth Year</option>
+                    <option value="Sixth Year">Sixth Year (Final)</option>
+                </select>
+             </div>
+             <!-- END: Year Filter Dropdown -->
             <div class="spacer"></div>
-            <button class="btn ghost" id="bulkDeleteBtn" disabled>Delete Selected</button>
+            <button class="btn destructive" id="bulkDeleteBtn" disabled>Delete Selected</button>
           </div>
         </div>
 
@@ -474,6 +493,30 @@ $pdo = null;
                 <label for="entry_year">Entry Year</label>
                 <input id="entry_year" name="entry_year" />
             </div>
+            
+            <!-- MODIFICATION START: Added Major Preferences Section -->
+            <h3 class="detail-section-header">Major Preferences</h3>
+            <div class="field">
+                <label for="preference1">ဦးစားပေး ၁</label>
+                <select id="preference1" name="preference1" disabled></select>
+            </div>
+             <div class="field">
+                <label for="preference2">ဦးစားပေး ၂</label>
+                <select id="preference2" name="preference2" disabled></select>
+            </div>
+             <div class="field">
+                <label for="preference3">ဦးစားပေး ၃</label>
+                <select id="preference3" name="preference3" disabled></select>
+            </div>
+             <div class="field">
+                <label for="preference4">ဦးစားပေး ၄</label>
+                <select id="preference4" name="preference4" disabled></select>
+            </div>
+             <div class="field">
+                <label for="preference5">ဦးစားပေး ၅</label>
+                <select id="preference5" name="preference5" disabled></select>
+            </div>
+            <!-- MODIFICATION END -->
 
             <h3 class="detail-section-header">Father's Information</h3>
             <div class="field">
@@ -594,10 +637,20 @@ $pdo = null;
   <script>
     const PAGE_SIZE = 8;
     const PHOTO_PLACEHOLDER = 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
+    
+    // MODIFICATION: Added available majors map
+    const availableMajors = {
+        'IST': 'သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာအင်ဂျင်နီယာဘာသာရပ်(IST)',
+        'CE' : 'ကွန်ပျူတာအင်ဂျင်နီယာ ဘာသာရပ်(CE)',
+        'EcE': 'အီလက်ထရောနစ် အင်ဂျင်နီယာ ဘာသာရပ်(EcE)',
+        'PrE': 'တိကျပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ ဘာသာရပ်(PrE)',
+        'AME': 'အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ ဘာသာရပ်(AME)',
+    };
 
     const state = {
       students: <?php echo json_encode($students); ?>,
       q: '',
+      year: 'all', // Add year for filtering
       page: 1,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
@@ -663,15 +716,19 @@ $pdo = null;
         formElements[el.name] = el;
     });
 
-    function showConfirm(title, message) {
+    function showConfirm(title, message, confirmClass = 'destructive') {
       return new Promise(resolve => {
         const confirmModal = document.getElementById('confirmModal');
         document.getElementById('confirmTitle').textContent = title;
         document.getElementById('confirmMessage').textContent = message;
+        const confirmBtn = document.getElementById('confirmOK');
+        
+        confirmBtn.className = `btn ${confirmClass}`;
+
         confirmModal.showModal();
         const handleConfirm = () => { confirmModal.close(); resolve(true); };
         const handleCancel = () => { confirmModal.close(); resolve(false); };
-        document.getElementById('confirmOK').addEventListener('click', handleConfirm, { once: true });
+        confirmBtn.addEventListener('click', handleConfirm, { once: true });
         document.getElementById('confirmCancel').addEventListener('click', handleCancel, { once: true });
       });
     }
@@ -691,12 +748,31 @@ $pdo = null;
               if (element) {
                   if (element.type === 'checkbox') {
                       element.checked = !!student[key];
-                  } else if (element.type !== 'file') {
+                  } else if (element.type !== 'file' && !element.name.startsWith('preference')) {
                       element.value = student[key] || '';
                   }
               }
           }
           document.getElementById('photo_preview').src = getSafePhotoUrl(student.photo_url);
+          
+          for (let i = 1; i <= 5; i++) {
+              const selectEl = document.getElementById(`preference${i}`);
+              selectEl.innerHTML = ''; 
+
+              for (const code in availableMajors) {
+                  let option = document.createElement('option');
+                  option.value = code;
+                  option.text = availableMajors[code];
+                  selectEl.add(option);
+              }
+
+              const prefValue = student.preferences ? student.preferences[i] : null;
+              if (prefValue) {
+                  selectEl.value = prefValue;
+              } else {
+                  selectEl.selectedIndex = -1; 
+              }
+          }
       } 
       modal.showModal();
       formElements.student_name_en.focus();
@@ -708,6 +784,19 @@ $pdo = null;
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
         const photoUrl = getSafePhotoUrl(s.photo_url);
+
+        let preferencesHtml = '';
+        if (s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0) {
+            preferencesHtml += `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
+            for (let i = 1; i <= 5; i++) {
+                const prefCode = s.preferences[i];
+                if (prefCode) {
+                    preferencesHtml += `<dt>ဦးစားပေး ${i}</dt><dd>${availableMajors[prefCode] || 'Unknown Major'}</dd>`;
+                }
+            }
+            preferencesHtml += `</dl>`;
+        }
+
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
                  <img src="${photoUrl}" alt="Student Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border));">
@@ -736,6 +825,7 @@ $pdo = null;
                 <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
                 <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
             </dl>
+            ${preferencesHtml}
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
@@ -770,9 +860,13 @@ $pdo = null;
 
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
-      const base = state.students.filter(s =>
-        (!q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q)))
-      );
+      const selectedYear = state.year;
+      const base = state.students.filter(s => {
+          const matchesSearch = !q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q));
+          const matchesYear = selectedYear === 'all' || s.academic_year === selectedYear;
+          return matchesSearch && matchesYear;
+      });
+
       const { key, dir } = state.sort;
       base.sort((a,b) => {
         const res = cmp(a,b,key);
@@ -820,6 +914,12 @@ $pdo = null;
     }
     
     function addEventListeners() {
+      document.getElementById('yearFilter').addEventListener('change', (e) => {
+          state.year = e.target.value;
+          state.page = 1; // Reset page to 1 when filter changes
+          render();
+      });
+
       document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
       document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
       document.getElementById('nextPage').addEventListener('click', () => { state.page++; render(); });
@@ -947,10 +1047,16 @@ $pdo = null;
 
             if (result.status === 'success' && result.student) {
                 if (action === 'add') {
+                    // MODIFICATION: Add placeholder for preferences on new student
+                    result.student.preferences = null;
                     state.students.unshift(result.student);
                 } else {
                     const index = state.students.findIndex(s => s.student_id === studentId);
-                    if (index !== -1) state.students[index] = result.student;
+                    if (index !== -1) {
+                         // MODIFICATION: The API response doesn't include decoded preferences, so we copy them from the old record
+                        result.student.preferences = state.students[index].preferences;
+                        state.students[index] = result.student;
+                    }
                 }
                 render();
                 closeModalSafe();
@@ -963,7 +1069,129 @@ $pdo = null;
             showToast(`Error: ${error.message}`, 'error');
         }
       });
+      
+      // --- IMPORT/EXPORT LISTENERS ---
+      document.getElementById('exportBtn').addEventListener('click', handleExport);
+      document.getElementById('importBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+      document.getElementById('fileInput').addEventListener('change', handleImport);
     }
+    
+    // --- IMPORT/EXPORT FUNCTIONS ---
+    
+    function handleExport() {
+        if (state.students.length === 0) {
+            showToast('No students to export.', 'warning');
+            return;
+        }
+
+        const headers = [
+            'student_id', 'seat_no', 'student_name_en', 'student_name_mm', 'student_email', 'student_phone', 'student_nrc', 'student_dob', 'student_birthplace', 'student_race', 'student_religion', 'student_address', 'township', 'state_region', 'dormitory_preference', 'year', 'academic_year', 'entry_year', 'date', 'photo_url',
+            'preference1', 'preference2', 'preference3', 'preference4', 'preference5',
+            'father_name_en', 'father_name_mm', 'father_nrc', 'father_race', 'father_religion', 'father_info', 'father_address', 'father_phone', 'father_deceased_year',
+            'mother_name_en', 'mother_name_mm', 'mother_nrc', 'mother_race', 'mother_religion', 'mother_info', 'mother_address', 'mother_phone', 'mother_deceased_year'
+        ];
+
+        const csvRows = [headers.join(',')];
+
+        const escapeCSV = (str) => {
+            if (str === null || str === undefined) return '';
+            const val = String(str);
+            if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+                return `"${val.replace(/"/g, '""')}"`;
+            }
+            return val;
+        };
+
+        for (const s of state.students) {
+            const row = [
+                s.student_id, s.seat_no, s.student_name_en, s.student_name_mm, s.student_email, s.student_phone, s.student_nrc, s.student_dob, s.student_birthplace, s.student_race, s.student_religion, s.student_address, s.township, s.state_region, s.dormitory_preference ? '1' : '0', s.year, s.academic_year, s.entry_year, s.date, s.photo_url,
+                s.preferences ? (s.preferences['1'] || '') : '',
+                s.preferences ? (s.preferences['2'] || '') : '',
+                s.preferences ? (s.preferences['3'] || '') : '',
+                s.preferences ? (s.preferences['4'] || '') : '',
+                s.preferences ? (s.preferences['5'] || '') : '',
+                s.father_name_en, s.father_name_mm, s.father_nrc, s.father_race, s.father_religion, s.father_info, s.father_address, s.father_phone, s.father_deceased_year,
+                s.mother_name_en, s.mother_name_mm, s.mother_nrc, s.mother_race, s.mother_religion, s.mother_info, s.mother_address, s.mother_phone, s.mother_deceased_year
+            ];
+            csvRows.push(row.map(escapeCSV).join(','));
+        }
+
+        const csvString = csvRows.join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `students_${todayStr()}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        showToast('Student data exported.', 'success');
+    }
+
+    async function handleImport(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const text = e.target.result;
+            const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+            if (lines.length < 2) {
+                showToast('CSV file is empty or has no data rows.', 'warning');
+                return;
+            }
+            
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+            const studentsToImport = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                // This is a simple parser. It won't work correctly if fields contain commas.
+                // For a robust solution, a proper CSV parsing library would be needed.
+                const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+                if (values.length !== headers.length) continue; // Skip malformed rows
+                
+                const student = {};
+                headers.forEach((header, index) => {
+                    student[header] = values[index];
+                });
+                studentsToImport.push(student);
+            }
+            
+            if(studentsToImport.length > 0) {
+                const confirmed = await showConfirm('Import Students', `Are you sure you want to import ${studentsToImport.length} student(s)? This may overwrite existing data if seat numbers match.`, 'primary');
+                if(!confirmed) {
+                     event.target.value = ''; // Reset file input
+                    return;
+                }
+
+                showToast('Importing students... Please wait.', 'warning', 10000);
+                const response = await apiRequest('import_students', { students: studentsToImport });
+                if (response.status === 'success') {
+                    // Prepend new/updated students to the state and re-render
+                    response.imported_students.forEach(s => {
+                        const index = state.students.findIndex(existing => existing.student_id === s.student_id);
+                        if (index !== -1) {
+                            state.students[index] = s; // Update
+                        } else {
+                            state.students.unshift(s); // Add
+                        }
+                    });
+                    render();
+                    showToast(`${response.imported_students.length} students imported successfully.`, 'success');
+                } else {
+                    showToast(response.message || 'Import failed.', 'error');
+                }
+            } else {
+                showToast('No valid student data found in the file.', 'warning');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = ''; // Reset file input
+    }
+
 
     document.addEventListener('DOMContentLoaded', () => {
       addEventListeners();

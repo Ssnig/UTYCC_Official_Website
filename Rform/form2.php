@@ -1,6 +1,8 @@
 <?php
 // Start the session to access data from previous forms.
 session_start();
+// Set the default timezone to Myanmar time to ensure correct date formatting
+date_default_timezone_set('Asia/Yangon');
 
 // Ensure form1_data exists, otherwise redirect back to form1.
 // This prevents users from accessing this page directly.
@@ -10,6 +12,22 @@ if (!isset($_SESSION['form1_data'])) {
 }
 
 $form1_data = $_SESSION['form1_data'];
+
+// --- Date Formatting for Display ---
+// The date from session is now a full timestamp (e.g., '2025-09-04 13:30:00').
+// For display purposes, we only want to show the date part in the user-friendly 'd-m-Y' format.
+$display_date = '';
+if (!empty($form1_data['date'])) {
+    try {
+        $date_obj = new DateTime($form1_data['date']);
+        $display_date = $date_obj->format('d-m-Y');
+    } catch (Exception $e) {
+        // If the date is somehow invalid, just show the raw data to avoid errors.
+        $display_date = $form1_data['date'];
+    }
+}
+
+
 // --- Configuration ---
 // echo '<pre>';
 // print_r($form1_data);
@@ -104,7 +122,7 @@ include 'formPartial/header.php';
                 <div class="flex justify-between items-center mt-4 text-sm">
                     <span>သင်တန်းရေးရာ- 09445767834</span>
                     <!-- Displaying the date from the first form's session data -->
-                    <span>ရက်စွဲ: <?php echo htmlspecialchars($_SESSION['form1_data']['date']); ?></span>
+                    <span>ရက်စွဲ: <?php echo htmlspecialchars($display_date); ?></span>
                 </div>
             </div>
 
@@ -122,11 +140,19 @@ include 'formPartial/header.php';
                 <!-- Left Column: List of Available Courses -->
                 <div>
                     <h4 class="font-semibold mb-2">ဤတက္ကသိုလ်တွင် တက်ရောက်နိုင်သောသင်တန်းများ</h4>
-                    <ol class="list-decimal list-inside space-y-2">
+                    <div class="space-y-2 bg-gray-50 p-4 rounded-lg border">
                         <?php foreach ($available_majors as $major_full_name) : ?>
-                            <li><?php echo $major_full_name; ?></li>
+                            <p class="text-sm text-gray-700">- <?php echo $major_full_name; ?></p>
                         <?php endforeach; ?>
-                    </ol>
+                    </div>
+                    <div class="mt-4">
+                        <a href="../about.html" target="_blank" class="inline-block text-blue-600 hover:text-blue-800 hover:underline font-semibold transition-colors duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                            Major များအကြောင်း အသေးစိတ်ကြည့်ရန်
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Right Column: User's Preferences -->
@@ -175,3 +201,4 @@ include 'formPartial/header.php';
 
 <!-- Include the footer partial -->
 <?php include 'formPartial/footer.php'; ?>
+
