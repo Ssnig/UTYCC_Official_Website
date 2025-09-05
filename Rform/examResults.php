@@ -79,11 +79,11 @@
                         <label class="block text-gray-700 font-semibold mb-2" for="major">Major</label>
                         <select name="major" id="major" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Select Major</option>
-                            <option value="ist" <?= (isset($_GET['major']) && $_GET['major'] == 'ist') ? 'selected' : '' ?>>Information Science Technology</option>
-                            <option value="ce" <?= (isset($_GET['major']) && $_GET['major'] == 'ce') ? 'selected' : '' ?>>Computer Engineering</option>
-                            <option value="ece" <?= (isset($_GET['major']) && $_GET['major'] == 'ece') ? 'selected' : '' ?>>Electronics Engineering</option>
-                            <option value="pre" <?= (isset($_GET['major']) && $_GET['major'] == 'pre') ? 'selected' : '' ?>>Precision Engineering</option>
-                            <option value="ame" <?= (isset($_GET['major']) && $_GET['major'] == 'ame') ? 'selected' : '' ?>>Advanced Materials Engineering</option>
+                            <option value="ist" <?= (isset($_GET['major']) && $_GET['major'] == 'ist') ? 'selected' : '' ?>>IST</option>
+                            <option value="ce" <?= (isset($_GET['major']) && $_GET['major'] == 'ce') ? 'selected' : '' ?>>CE</option>
+                            <option value="ece" <?= (isset($_GET['major']) && $_GET['major'] == 'ece') ? 'selected' : '' ?>>ECE</option>
+                            <option value="pre" <?= (isset($_GET['major']) && $_GET['major'] == 'pre') ? 'selected' : '' ?>>PRE</option>
+                            <option value="ame" <?= (isset($_GET['major']) && $_GET['major'] == 'ame') ? 'selected' : '' ?>>AME</option>
                         </select>
                     </div>
                 </div>
