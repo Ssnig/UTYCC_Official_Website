@@ -616,14 +616,12 @@ $pdo = null;
                 </div>
             </a>
             <div class="hidden md:flex items-center space-x-6">
-                <a href="#about" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
-                <a href="#programs" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_programs">ပညာရေးအစီအစဉ်များ</a>
-                <a href="#collaboration" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_collaboration">ပူးပေါင်းဆောင်ရွက်မှု</a>
-                <a href="#contact" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-                    data-lang-key="nav_contact">ဆက်သွယ်ရန်</a>
+                <a href="./activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                    data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
+                <a href="./exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                    data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
                 <!-- Language Switcher Dropdown - Updated Style -->
                 <div class="relative ml-4">
                     <div id="lang-switcher-container-desktop">
@@ -659,14 +657,15 @@ $pdo = null;
         </nav>
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden px-6 pb-4 border-t md:hidden">
-            <a href="#about" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
-            <a href="#programs" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_programs_mobile">ပညာရေးအစီအစဉ်များ</a>
-            <a href="#collaboration" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_collaboration_mobile">ပူးပေါင်းဆောင်ရွက်မှု</a>
-            <a href="#contact" class="nav-link block py-2 text-gray-700 hover:text-blue-800"
-                data-lang-key="nav_contact_mobile">ဆက်သွယ်ရန်</a>
+                <a href="./about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                    data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+                    <br>
+                <a href="./activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                    data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+                    <br>
+                <a href="./exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                    data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+                    <br>
             <div class="relative mt-4 pt-4 border-t">
                 <div id="lang-switcher-container-mobile" class="relative">
                     <!-- Custom Button -->
@@ -1385,13 +1384,11 @@ $pdo = null;
             my: {
                 utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
                 nav_about: "ကျွန်ုပ်တို့အကြောင်း",
-                nav_programs: "ပညာရေးအစီအစဉ်များ",
-                nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
-                nav_contact: "ဆက်သွယ်ရန်",
+                nav_activity: "လှုပ်ရှားမှုများ",
+                nav_examresult: "အောင်စာရင်း",
                 nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
-                nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
-                nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
-                nav_contact_mobile: "ဆက်သွယ်ရန်",
+                nav_activity_mobile: "လှုပ်ရှားမှုများ",
+                nav_examresult_mobile: "အောင်စာရင်း",
                 hero_title: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
                 hero_subtitle: "စဉ်ဆက်မပြတ် ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ဦးဆောင်အင်ဂျင်နီယာကျောင်း",
                 hero_button: "ကျောင်းအပ်ရန်",
@@ -1479,13 +1476,11 @@ $pdo = null;
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
                 nav_about: "About Us",
-                nav_programs: "Academic Programs",
-                nav_collaboration: "Collaboration",
-                nav_contact: "Contact",
+                nav_activity: "Activities",
+                nav_examresult: "Exam Results",
                 nav_about_mobile: "About Us",
-                nav_programs_mobile: "Academic Programs",
-                nav_collaboration_mobile: "Collaboration",
-                nav_contact_mobile: "Contact",
+                nav_activity_mobile: "Activities",
+                nav_examresult_mobile: "Exam Results",
                 hero_title: "University of Technology - Yatanarpon Cyber City",
                 hero_subtitle: "A Leading Engineering Institution for Sustainable Development",
                 hero_button: "TO ENROLL",
