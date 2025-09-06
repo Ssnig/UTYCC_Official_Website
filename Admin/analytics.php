@@ -1,5 +1,11 @@
 <?php
 // You can add session validation here if needed
+session_start();
+if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
+    header("location: ./signin.php"); // Corrected path to signin.php in the same directory
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

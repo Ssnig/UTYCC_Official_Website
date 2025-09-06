@@ -556,427 +556,105 @@
   </div>
 
   <script>
-    // Activities data with multilingual support
-    const activities = [
-      {
-        image: './Img/activity/football.jpg',
-        titles: {
-          en: 'Football Champion',
-          my: 'ဘောလုံးချန်ပီယံ'
-        },
-        descriptions: {
-          en: 'IST beat EcE in an exciting championship match.',
-          my: 'IST က EcE ကို စိတ် လှုပ်ရှားဖွယ်ချန်ပီယံပွဲတွင် အနိုင်ရခဲ့သည်။'
-        },
-        date: 'Aug 1, 2025'
-      },
-      {
-        image: './Img/activity/htamanay.jpg',
-        titles: {
-          en: 'Htamanè Festival',
-          my: 'ထမနဲပွဲတော်'
-        },
-        descriptions: {
-          en: 'Htamanè is a traditional Myanmar snack made with glutinous rice, often celebrated and prepared together at school festivals in Tabodwe.',
-          my: 'ထမနဲသည် ကြက်သွန်ဖြူနှင့် ဆန်ကြမ်းဖြင့် ပြုလုပ်ထားသော ရိုးရာမြန်မာရေစာဖြစ်ပြီး တန်ခူးလတွင် ကျောင်းပွဲတော်များတွင် အတူတကွ ကျင်းပြုလုပ်လေ့ရှိသည်။'
-        },
-        date: 'Feb 10, 2025'
-      },
-      {
-        image: './Img/activity/trip.jpg',
-        titles: {
-          en: '7 Mile Trip',
-          my: '၇မိုင် ခရီးစဉ်'
-        },
-        descriptions: {
-          en: 'A university trip is an educational and fun journey where students travel together outside the classroom to learn, explore, and create memorable experiences.',
-          my: 'တက္ကသိုလ်ခရီးစဉ်သည် ကျောင်းသားများ  စာသင်ခန်းအပြင်ဘက်တွင် အတူတကွ ခရီးထွက်၍ သင်ယူရန်၊ စူးစမ်းရှာဖွေရန်နှင့် မမေ့နိုင်သော အတွေ့အကြုံများ ဖန်တီးရန် ပညာရေးနှင့် ပျော်ရွှင်ဖွယ် ခရီးစဉ်တစ်ခုဖြစ်သည်။'
-        },
-        date: 'November 5, 2023'
-      },
-      {
-        image: './Img/activity/badminton.jpg',
-        titles: {
-          en: 'Badminton Days',
-          my: 'တင်း နစ်နေ့များ'
-        },
-        descriptions: {
-          en: 'There are several categories of clubs at Ycc. This is one of them',
-          my: 'Ycc တွင် ကလပ်များစွာ ရှိပါသည်။ ၎င်းတို့ထဲမှ တစ်ခုဖြစ်သည်။'
-        },
-        date: 'September 12, 2024'
-      }
-      ,
-      {
-        image: './Img/activity/kahtane.jpg',
-        titles: {
-          en: 'Kahtane festival',
-          my: 'ကထိန်ပွဲတော်'
-        },
-        descriptions: {
-          en: 'The Kahtain Festival was successfully held at our school, completing a meritorious ceremony for the benefit of the Buddha’s teachings.',
-          my: 'ကျောင်းတွင် ကထိန်ပွဲတော်ကြီး ကျင်းပပြီးစီးခဲ့ပြီး သာသနာတော်အတွက် အကျိုးရှိစေသော အလှူတော်တစ်ရပ် အောင်မြင်စွာ ပြီးစီးခဲ့ပါသည်။'
-        },
-        date: 'Aug 1, 2025'
-      },
-      {
-        image: './Img/activity/ce_kahtane.jpg',
-        titles: {
-          en: 'Kahtane festival',
-          my: 'ကထိန်ပွဲတော်'
-        },
-        descriptions: {
-          en: 'The Computer Engineering Department successfully held the Kahtain Festival, completing a meritorious offering dedicated to the benefit of the Buddha’s teachings.',
-          my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန (Computer Engineering Department) မှ ကျင်းပသည့် ကထိန်ပွဲတော်ကြီးကို အောင်မြင်စွာ ပြီးစီးခဲ့ပြီး သာသနာတော်အတွက် အကျိုးရှိစေသော အလှူတော်တစ်ရပ် အဆုံးသတ်ခဲ့ပါသည်။'
-        },
-        date: 'Aug 1, 2025'
-      },
-      {
-        image: './Img/activity/ce_lab.jpg',
-        titles: {
-          en: 'CE Lab Activity',
-          my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန လက်တွေ့လေ့ကျင့်မှု'
-        },
-        descriptions: {
-          en: 'A glimpse of Computer Engineering students actively engaged in laboratory practices',
-          my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန လက်ခန်းတွင် ပညာရေးဆိုင်ရာ လေ့ကျင့်မှုများတွင် စူးစိုက်ပါဝင်နေသော မြင်ကွင်း။'
-        },
-        date: 'Aug 1, 2025'
-      },
-      {
-        image: './Img/activity/ce_presentation.jpg',
-        titles: {
-          en: 'CE PowerPoint Presentation',
-          my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန လက်တွေ့လေ့ကျင့်မှု'
-        },
-        descriptions: {
-          en: 'A moment of students actively presenting their research and practice activities.',
-          my: 'ကျောင်းသား/သူများမှ သုတေသန၊ လေ့ကျင့်ရေးဆိုင်ရာ Presentation များကို တက်ကြွစွာ ပြုလုပ်နေသည့် အခန်းအနား။'
-        },
-        date: 'Aug 1, 2025'
-      },
-      {
-        image: './Img/activity/ce_project.jpg',
-        titles: {
-          en: 'CE Project Gatheting',
-          my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန လက်တွေ့လေ့ကျင့်မှု'
-        },
-        descriptions: {
-          en: 'A glimpse of students collaborating and sharing ideas during the Project Gathering.',
-          my: 'ကျောင်းသား/သူများ အဖွဲ့လိုက် ပူးပေါင်းဆောင်ရွက်သည့် Project Gathering မြင်ကွင်း။'
-        },
-        date: 'Aug 1, 2025'
-      },
-      {
-        image: './Img/activity/ce_project_show.jpg',
-        titles: {
-          en: 'CE Project Show',
-          my: 'CE ပရောဂျက် ပြပွဲ'
-        },
-        descriptions: {
-          en: 'A showcase of students’ creativity and dedication during the Project Exhibition.',
-          my: 'ကျောင်းသား/သူများ၏ စွမ်းဆောင်ရည်နှင့် စိတ်ရှည်စွာ ကြိုးပမ်းမူများကို ဖော်ပြသည့် Project ပြပွဲ မြင်ကွင်း။'
-        },
-        date: 'Aug 1, 2025'
-      },
+    // This variable will hold activities, fetched dynamically.
+    let activities = [];
+
+    // This is the fallback data, used only if the database is empty or the API call fails.
+    const fallbackActivities = [
+        { image: './Img/activity/football.jpg', titles: { en: 'Football Champion', my: 'ဘောလုံးချန်ပီယံ' }, descriptions: { en: 'IST beat EcE in an exciting championship match.', my: 'IST က EcE ကို စိတ် လှုပ်ရှားဖွယ်ချန်ပီယံပွဲတွင် အနိုင်ရခဲ့သည်။' }, date: 'Aug 1, 2025' },
+        { image: './Img/activity/htamanay.jpg', titles: { en: 'Htamanè Festival', my: 'ထမနဲပွဲတော်' }, descriptions: { en: 'Htamanè is a traditional Myanmar snack made with glutinous rice...', my: 'ထမနဲသည် ကြက်သွန်ဖြူနှင့် ဆန်ကြမ်းဖြင့် ပြုလုပ်ထားသော...' }, date: 'Feb 10, 2025' },
+        { image: './Img/activity/trip.jpg', titles: { en: '7 Mile Trip', my: '၇မိုင် ခရီးစဉ်' }, descriptions: { en: 'A university trip is an educational and fun journey...', my: 'တက္ကသိုလ်ခရီးစဉ်သည် ပညာရေးနှင့် ပျော်ရွှင်ဖွယ် ခရီးစဉ်တစ်ခုဖြစ်သည်...' }, date: 'November 5, 2023' },
+        { image: './Img/activity/badminton.jpg', titles: { en: 'Badminton Days', my: 'တင်းနစ်နေ့များ' }, descriptions: { en: 'There are several categories of clubs at Ycc. This is one of them', my: 'Ycc တွင် ကလပ်များစွာ ရှိပါသည်။ ၎င်းတို့ထဲမှ တစ်ခုဖြစ်သည်။' }, date: 'September 12, 2024' },
+        { image: './Img/activity/kahtane.jpg', titles: { en: 'Kahtane festival', my: 'ကထိန်ပွဲတော်' }, descriptions: { en: 'The Kahtain Festival was successfully held at our school...', my: 'ကျောင်းတွင် ကထိန်ပွဲတော်ကြီး ကျင်းပပြီးစီးခဲ့ပြီး...' }, date: 'Aug 1, 2025' },
+        { image: './Img/activity/ce_kahtane.jpg', titles: { en: 'Kahtane festival', my: 'ကထိန်ပွဲတော်' }, descriptions: { en: 'The Computer Engineering Department successfully held the Kahtain Festival...', my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာနမှ ကျင်းပသည့် ကထိန်ပွဲတော်...' }, date: 'Aug 1, 2025' },
+        { image: './Img/activity/ce_lab.jpg', titles: { en: 'CE Lab Activity', my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန လက်တွေ့လေ့ကျင့်မှု' }, descriptions: { en: 'A glimpse of Computer Engineering students actively engaged in laboratory practices', my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန လက်တွေ့လေ့ကျင့်ခန်းများ...' }, date: 'Aug 1, 2025' },
+        { image: './Img/activity/ce_presentation.jpg', titles: { en: 'CE PowerPoint Presentation', my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန Presentation' }, descriptions: { en: 'A moment of students actively presenting their research and practice activities.', my: 'ကျောင်းသား/သူများမှ သုတေသန Presentation များ...' }, date: 'Aug 1, 2025' },
+        { image: './Img/activity/ce_project.jpg', titles: { en: 'CE Project Gathering', my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန Project' }, descriptions: { en: 'A glimpse of students collaborating and sharing ideas during the Project Gathering.', my: 'ကျောင်းသား/သူများ အဖွဲ့လိုက် ပူးပေါင်းဆောင်ရွက်သည့် Project Gathering မြင်ကွင်း။' }, date: 'Aug 1, 2025' },
+        { image: './Img/activity/ce_project_show.jpg', titles: { en: 'CE Project Show', my: 'CE ပရောဂျက် ပြပွဲ' }, descriptions: { en: 'A showcase of students’ creativity and dedication during the Project Exhibition.', my: 'ကျောင်းသား/သူများ၏ စွမ်းဆောင်ရည်ကို ဖော်ပြသည့် Project ပြပွဲ မြင်ကွင်း။' }, date: 'Aug 1, 2025' }
     ];
 
-    // Clubs and activities data with multilingual support
+    // This hardcoded data for the "Learn More" modals remains unchanged.
     const clubsData = {
       academic: {
-        title: {
-          en: "Academic Clubs & Activities",
-          my: "ပညာရေး ကလပ်များနှင့် လှုပ်ရှားမှုများ"
-        },
+        title: { en: "Academic Clubs & Activities", my: "ပညာရေး ကလပ်များနှင့် လှုပ်ရှားမှုများ" },
         clubs: [
-          {
-            name: {
-              en: "Computer Science Club",
-              my: "ကွန်ပျူတာသိပ္ပံ ကလပ်"
-            },
-            description: {
-              en: "For students interested in programming, algorithms, and software development.",
-              my: "ပရိုဂရမ်ရေးသားခြင်း၊ အယ်လ်ဂိုရီသမ်းများနှင့် ဆော့ဖ်ဝဲဖွံ့ဖြိုးရေးတို့ကို စိတ်ဝင်စားသော ကျောင်းသားများအတွက်"
-            },
-            meeting: {
-              en: "Every Tuesday, 4pm, Main Building Room",
-              my: "အင်္ဂါနေ့တိုင်း ညနေ ၄နာရီ၊ အဓိကအဆောက်အဦး အခန်း"
-            }
-          },
-          {
-            name: {
-              en: "Engineering Society",
-              my: "အင်ဂျင်နီယာအသင်း"
-            },
-            description: {
-              en: "Open to all engineering students with workshops and guest lectures.",
-              my: "အင်ဂျင်နီယာကျောင်းသားအားလုံးအတွက် ပွဲဦးထွက်သင်တန်းများနှင့် အထူးဟောပြောပွဲများဖြင့် ဖွင့်လှစ်ထားသည်။"
-            },
-            meeting: {
-              en: "Every Wednesday, 5pm, Engineering Hall",
-              my: "ဗုဒ္ဓဟူးနေ့တိုင်း ညနေ ၅နာရီ၊ အင်ဂျင်နီယာခန်းမ"
-            }
-          },
-          {
-            name: {
-              en: "Math Circle",
-              my: "သင်္ချာအသင်း"
-            },
-            description: {
-              en: "Explore advanced mathematical concepts beyond the classroom.",
-              my: "စာသင်ခန်းပြင်ပမှ အဆင့်မြင့်သင်္ချာအယူအဆများကို စူးစမ်း လေ့လာပါ။"
-            },
-            meeting: {
-              en: "Every Friday, 4pm, Main Building Room",
-              my: "သောကြာနေ့တိုင်း ညနေ ၄နာရီ၊ အဓိကအဆောက်အဦး အခန်း"
-            }
-          },
+          { name: { en: "Computer Science Club", my: "ကွန်ပျူတာသိပ္ပံ ကလပ်" }, description: { en: "For students interested in programming, algorithms, and software development.", my: "ပရိုဂရမ်ရေးသားခြင်း၊ အယ်လ်ဂိုရီသမ်းများနှင့် ဆော့ဖ်ဝဲဖွံ့ဖြိုးရေးတို့ကို စိတ်ဝင်စားသော ကျောင်းသားများအတွက်" }, meeting: { en: "Every Tuesday, 4pm, Main Building Room", my: "အင်္ဂါနေ့တိုင်း ညနေ ၄နာရီ၊ အဓိကအဆောက်အဦး အခန်း" } },
+          { name: { en: "Engineering Society", my: "အင်ဂျင်နီယာအသင်း" }, description: { en: "Open to all engineering students with workshops and guest lectures.", my: "အင်ဂျင်နီယာကျောင်းသားအားလုံးအတွက် ပွဲဦးထွက်သင်တန်းများနှင့် အထူးဟောပြောပွဲများဖြင့် ဖွင့်လှစ်ထားသည်။" }, meeting: { en: "Every Wednesday, 5pm, Engineering Hall", my: "ဗုဒ္ဓဟူးနေ့တိုင်း ညနေ ၅နာရီ၊ အင်ဂျင်နီယာခန်းမ" } },
+          { name: { en: "Math Circle", my: "သင်္ချာအသင်း" }, description: { en: "Explore advanced mathematical concepts beyond the classroom.", my: "စာသင်ခန်းပြင်ပမှ အဆင့်မြင့်သင်္ချာအယူအဆများကို စူးစမ်း လေ့လာပါ။" }, meeting: { en: "Every Friday, 4pm, Main Building Room", my: "သောကြာနေ့တိုင်း ညနေ ၄နာရီ၊ အဓိကအဆောက်အဦး အခန်း" } },
         ]
       },
       cultural: {
-        title: {
-          en: "Cultural Clubs & Events",
-          my: "ယဉ်ကျေးမှု ကလပ်များနှင့် ပွဲများ"
-        },
+        title: { en: "Cultural Clubs & Events", my: "ယဉ်ကျေးမှု ကလပ်များနှင့် ပွဲများ" },
         clubs: [
-          {
-            name: {
-              en: "International Students Association",
-              my: "နိုင်ငံတကာကျောင်းသားအသင်း"
-            },
-            description: {
-              en: "Celebrating cultural diversity with events and food festivals.",
-              my: "ပွဲများနှင့် အစားအသောက်ပွဲတော်များဖြင့် ယဉ်ကျေးမှုကွဲပြားမှုကို ဂုဏ်ပြုခြင်း။"
-            },
-            meeting: {
-              en: "First Friday of each month, 5pm, Student Hall",
-              my: "လအစသောကြာနေ့တိုင်း ညနေ ၅နာရီ၊ ကျောင်းသားခန်းမ"
-            }
-          },
-          {
-            name: {
-              en: "Film Society",
-              my: "ရုပ်ရှင်အသင်း"
-            },
-            description: {
-              en: "Weekly screenings and discussions of international cinema.",
-              my: "နိုင်ငံတကာရုပ်ရှင်များ၏ အပတ်စဉ်ပြသခြင်းနှင့် ဆွေးနွေးပွဲများ။"
-            },
-            meeting: {
-              en: "Every Thursday, 7pm, Arts Building Theater",
-              my: "ကြာသပတေးနေ့တိုင်း ည ၇နာရီ၊ အနုပညာအဆောက်အဦး ရုံး"
-            }
-          },
-          {
-            name: {
-              en: "Music Club",
-              my: "ဂီတကလပ်"
-            },
-            description: {
-              en: "To reduce stress and to keep happy at University life",
-              my: "တက္ကသိုလ်ဘဝတွင် စိတ်ဖိစီးမှုလျှော့ချရန်နှင့် ပျော်ရွှင်စေရန်"
-            },
-            meeting: {
-              en: "Every Wednesday, 4pm, Lecture Hall 4",
-              my: "ဗုဒ္ဓဟူးနေ့တိုင်း ညနေ ၄နာရီ၊ ပို့ချခန်း ၄"
-            }
-          },
-          {
-            name: {
-              en: "Dance Troupe",
-              my: "အကအဖွဲ့"
-            },
-            description: {
-              en: "Learn and perform traditional dances from around the world.",
-              my: "ကမ္ဘာတစ်ဝှမ်းမှ ရိုးရာအကများကို လေ့လာခြင်းနှင့် ဖျော်ဖြေခြင်း။"
-            },
-            meeting: {
-              en: "Every Tuesday & Thursday, 4:30pm, Lecture Hall 4",
-              my: "အင်္ဂါနှင့် ကြာသပတေးနေ့တိုင်း ညနေ ၄:၃၀နာရီ၊ ပို့ချခန်း ၄"
-            }
-          }
+          { name: { en: "International Students Association", my: "နိုင်ငံတကာကျောင်းသားအသင်း" }, description: { en: "Celebrating cultural diversity with events and food festivals.", my: "ပွဲများနှင့် အစားအသောက်ပွဲတော်များဖြင့် ယဉ်ကျေးမှုကွဲပြားမှုကို ဂုဏ်ပြုခြင်း။" }, meeting: { en: "First Friday of each month, 5pm, Student Hall", my: "လအစသောကြာနေ့တိုင်း ညနေ ၅နာရီ၊ ကျောင်းသားခန်းမ" } },
+          { name: { en: "Film Society", my: "ရုပ်ရှင်အသင်း" }, description: { en: "Weekly screenings and discussions of international cinema.", my: "နိုင်ငံတကာရုပ်ရှင်များ၏ အပတ်စဉ်ပြသခြင်းနှင့် ဆွေးနွေးပွဲများ။" }, meeting: { en: "Every Thursday, 7pm, Arts Building Theater", my: "ကြာသပတေးနေ့တိုင်း ည ၇နာရီ၊ အနုပညာအဆောက်အဦး ရုံး" } },
+          { name: { en: "Music Club", my: "ဂီတကလပ်" }, description: { en: "To reduce stress and to keep happy at University life", my: "တက္ကသိုလ်ဘဝတွင် စိတ်ဖိစီးမှုလျှော့ချရန်နှင့် ပျော်ရွှင်စေရန်" }, meeting: { en: "Every Wednesday, 4pm, Lecture Hall 4", my: "ဗုဒ္ဓဟူးနေ့တိုင်း ညနေ ၄နာရီ၊ ပို့ချခန်း ၄" } },
+          { name: { en: "Dance Troupe", my: "အကအဖွဲ့" }, description: { en: "Learn and perform traditional dances from around the world.", my: "ကမ္ဘာတစ်ဝှမ်းမှ ရိုးရာအကများကို လေ့လာခြင်းနှင့် ဖျော်ဖြေခြင်း။" }, meeting: { en: "Every Tuesday & Thursday, 4:30pm, Lecture Hall 4", my: "အင်္ဂါနှင့် ကြာသပတေးနေ့တိုင်း ညနေ ၄:၃၀နာရီ၊ ပို့ချခန်း ၄" } }
         ]
       },
       sports: {
-        title: {
-          en: "Sports Teams & Activities",
-          my: "အားကစားအသင်းများနှင့် လှုပ်ရှားမှုများ"
-        },
+        title: { en: "Sports Teams & Activities", my: "အားကစားအသင်းများနှင့် လှုပ်ရှားမှုများ" },
         clubs: [
-          {
-            name: {
-              en: "Basketball Team",
-              my: "ဘတ်စကက်ဘောအသင်း"
-            },
-            description: {
-              en: "Competitive team playing in inter-university leagues.",
-              my: "တက္ကသိုလ်ချင်းဆိုင်ရာ လိဂ်များတွင် ပြိုင်ပွဲဝင်အသင်း။"
-            },
-            meeting: {
-              en: "Monday/Wednesday/Friday, 6:30am, Beside Hall",
-              my: "တနင်္လာ/ဗုဒ္ဓဟူး/သောကြာနေ့တိုင်း မနက် ၆:၃၀နာရီ၊ ခန်းမဘေး"
-            }
-          },
-          {
-            name: {
-              en: "Badminton Club",
-              my: "တင်းနစ်ကလပ်"
-            },
-            description: {
-              en: "Beginner to advanced Badminton for all students.",
-              my: "ကျောင်းသားအားလုံးအတွက် အခြေခံမှ အဆင့်မြင့်အထိ တင်းနစ်။"
-            },
-            meeting: {
-              en: "Daily, 7am and 5pm, Wellness Center",
-              my: "နေ့တိုင်း မနက် ၇နာရီနှင့် ညနေ ၅နာရီ၊ ကျန်းမာရေးစင်တာ"
-            }
-          },
-          {
-            name: {
-              en: "Football Club",
-              my: "ဘောလုံးကလပ်"
-            },
-            description: {
-              en: "Group runs and training for football.",
-              my: "ဘောလုံးအတွက် အသုတ်လိုက်ပြေးခြင်းနှင့် လေ့ကျင့်ခြင်း။"
-            },
-            meeting: {
-              en: "Tuesday/Thursday, 6am, Main Gate",
-              my: "အင်္ဂါ/ကြာသပတေးနေ့တိုင်း မနက် ၆နာရီ၊ အဓိကတံခါး"
-            }
-          },
-          {
-            name: {
-              en: "E-sport Club",
-              my: "အီးစပို့ကလပ်"
-            },
-            description: {
-              en: "To improve team work and skill and more friendly",
-              my: "အသင်းအဖွဲ့လုပ်ဆောင်မှုနှင့် ကျွမ်းကျင်မှုတိုးတက်စေ ရန် နှင့် ပိုမိုခင်မင်ရင်း နှီးစေ ရန်"
-            },
-            meeting: {
-              en: "Saturday mornings, 9am, At Hall",
-              my: "စနေနေ့မနက်ပိုင်းတိုင်း မနက် ၉နာရီ၊ ခန်းမ၌"
-            }
-          }
+          { name: { en: "Basketball Team", my: "ဘတ်စကက်ဘောအသင်း" }, description: { en: "Competitive team playing in inter-university leagues.", my: "တက္ကသိုလ်ချင်းဆိုင်ရာ လိဂ်များတွင် ပြိုင်ပွဲဝင်အသင်း။" }, meeting: { en: "Monday/Wednesday/Friday, 6:30am, Beside Hall", my: "တနင်္လာ/ဗုဒ္ဓဟူး/သောကြာနေ့တိုင်း မနက် ၆:၃၀နာရီ၊ ခန်းမဘေး" } },
+          { name: { en: "Badminton Club", my: "တင်းနစ်ကလပ်" }, description: { en: "Beginner to advanced Badminton for all students.", my: "ကျောင်းသားအားလုံးအတွက် အခြေခံမှ အဆင့်မြင့်အထိ တင်းနစ်။" }, meeting: { en: "Daily, 7am and 5pm, Wellness Center", my: "နေ့တိုင်း မနက် ၇နာရီနှင့် ညနေ ၅နာရီ၊ ကျန်းမာရေးစင်တာ" } },
+          { name: { en: "Football Club", my: "ဘောလုံးကလပ်" }, description: { en: "Group runs and training for football.", my: "ဘောလုံးအတွက် အသုတ်လိုက်ပြေးခြင်းနှင့် လေ့ကျင့်ခြင်း။" }, meeting: { en: "Tuesday/Thursday, 6am, Main Gate", my: "အင်္ဂါ/ကြာသပတေးနေ့တိုင်း မနက် ၆နာရီ၊ အဓိကတံခါး" } },
+          { name: { en: "E-sport Club", my: "အီးစပို့ကလပ်" }, description: { en: "To improve team work and skill and more friendly", my: "အသင်းအဖွဲ့လုပ်ဆောင်မှုနှင့် ကျွမ်းကျင်မှုတိုးတက်စေ ရန် နှင့် ပိုမိုခင်မင်ရင်း နှီးစေ ရန်" }, meeting: { en: "Saturday mornings, 9am, At Hall", my: "စနေနေ့မနက်ပိုင်းတိုင်း မနက် ၉နာရီ၊ ခန်းမ၌" } }
         ]
       }
     };
 
-    // Combined translations object with all keys
     const translations = {
       my: {
-        utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
-        nav_about: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_activity: "လှုပ်ရှားမှုများ",
-        nav_examresult: "အောင်စာရင်း",
-        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_activity_mobile: "လှုပ်ရှားမှုများ",
-        nav_examresult_mobile: "အောင်စာရင်း",
-        footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
-        footer_faculties_title: "မဟာဌာနများ",
-        footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
-        footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
-        footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစင့်ည်း အင်ဂျင်နီယာ",
-        footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
-        footer_contact_title: "ဆက်သွယ်ရန်",
-        footer_follow_title: "Follow Us",
-        footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
-        footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
-        footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
-        footer_link_faq: "အမေးများသော မေးခွန်းများ",
-        footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
-        footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
-        activities_title: "တက္ကသိုလ် လှုပ်ရှားမှုများ",
-        activities_subtitle: "ကျွန်ုပ်တို့၏ စိတ်လှုပ်ရှားဖွယ် ကမ့်ပပ်ဘဝကို စူးစမ်း လေ့လာပါ",
-        academic_programs: "ပညာရေး အစီအစဉ်များ",
-        academic: "ပညာရေး ထူးချွန်မှု",
-        research: "စိတ်ကိုစိန်ခေါ်သော သုတေသနဆွေးနွေးပွဲများ၊ ဟက်ကာသွန်များနှင့် ဘာသာရပ်စုံ ပရောဂျက်များ",
-        cultural_events: "ယဉ်ကျေးမှုပွဲများ",
-        cultural_desc: "ကျွန်ုပ်တို့၏ နိုင်ငံတကာပွဲတော်များ၊ ဖျော်ဖြေပွဲများနှင့် ပြပွဲများဖြင့် ကွဲပြားမှုများကို ဂုဏ်ပြုပါ",
-        sports: "အားကစားနှင့် ကစားကွင်းများ",
-        sports_desc: "တက်ကြွစွာနေထိုင်ရန်နှင့် အသင်းအဖွဲ့ငယ်များ တည်ဆောက်ရန် ကျွန်ုပ်တို့၏ ပြိုင်ပွဲအသင်းများ သို့မဟုတ် ပျော်ပွဲစားလိဂ်များတွင် ပါဝင်ပါ",
-        learn_more: "ပိုမိုလေ့လာရန် →",
-        footer_link_dp: "ဒေတာကာကွယ်ရေး",
+        utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)", nav_about: "ကျွန်ုပ်တို့အကြောင်း", nav_activity: "လှုပ်ရှားမှုများ", nav_examresult: "အောင်စာရင်း",
+        footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ", footer_faculties_title: "မဟာဌာနများ", footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+        footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ", footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ", footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစင့်ည်း အင်ဂျင်နီယာ", footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+        footer_contact_title: "ဆက်သွယ်ရန်", footer_follow_title: "Follow Us", footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။", footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+        footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ", footer_link_faq: "အမေးများသော မေးခွန်းများ", footer_link_about: "ကျွန်ုပ်တို့အကြောင်း", footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+        activities_title: "တက္ကသိုလ် လှုပ်ရှားမှုများ", activities_subtitle: "ကျွန်ုပ်တို့၏ စိတ်လှုပ်ရှားဖွယ် ကမ့်ပပ်ဘဝကို စူးစမ်း လေ့လာပါ", academic_programs: "ပညာရေး အစီအစဉ်များ", academic: "ပညာရေး ထူးချွန်မှု",
+        research: "စိတ်ကိုစိန်ခေါ်သော သုတေသနဆွေးနွေးပွဲများ၊ ဟက်ကာသွန်များနှင့် ဘာသာရပ်စုံ ပရောဂျက်များ", cultural_events: "ယဉ်ကျေးမှုပွဲများ", cultural_desc: "ကျွန်ုပ်တို့၏ နိုင်ငံတကာပွဲတော်များ၊ ဖျော်ဖြေပွဲများနှင့် ပြပွဲများဖြင့် ကွဲပြားမှုများကို ဂုဏ်ပြုပါ",
+        sports: "အားကစားနှင့် ကစားကွင်းများ", sports_desc: "တက်ကြွစွာနေထိုင်ရန်နှင့် အသင်းအဖွဲ့ငယ်များ တည်ဆောက်ရန် ကျွန်ုပ်တို့၏ ပြိုင်ပွဲအသင်းများ သို့မဟုတ် ပျော်ပွဲစားလိဂ်များတွင် ပါဝင်ပါ", learn_more: "ပိုမိုလေ့လာရန် →", footer_link_dp: "ဒေတာကာကွယ်ရေး",
       },
       en: {
-        utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
-        nav_about: "About Us",
-        nav_activity: "Activities",
-        nav_examresult: "Exam Results",
-        nav_about_mobile: "About Us",
-        nav_activity_mobile: "Activities",
-        nav_examresult_mobile: "Exam Results",
-        footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
-        footer_faculties_title: "Faculties",
-        footer_faculty_ist: "Information Science Technology",
-        footer_faculty_ce: "Computer Engineering",
-        footer_faculty_ece: "Electronics Engineering",
-        footer_faculty_ame: "Advanced Materials Engineering",
-        footer_faculty_pre: "Precision Engineering",
-        footer_contact_title: "Contact Us",
-        footer_follow_title: "Follow Us",
-        footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
-        footer_quick_links_title: "Quick Links",
-        footer_link_terms: "Terms & Policies",
-        footer_link_faq: "FAQs",
-        footer_link_about: "About Us",
-        footer_link_rules: "Rules & Regulations",
-        activities_title: "University Activities",
-        activities_subtitle: "Explore our vibrant campus life",
-        academic_programs: "Academic Programs",
-        academic: "Academic Excellence",
-        research: "Research symposiums, hackathons, and interdisciplinary projects that challenge minds.",
-        cultural_events: "Cultural Events",
-        cultural_desc: "Celebrate diversity with our international festivals, performances, and exhibitions.",
-        sports: "Athletics & Sports",
-        sports_desc: "Join our competitive teams or recreational leagues to stay active and build teamwork.",
-        learn_more: "Learn more →",
-        footer_link_dp: "Data Protection",
+        utycc_full_name: "University of Technology (Yatanarpon Cyber City)", nav_about: "About Us", nav_activity: "Activities", nav_examresult: "Exam Results",
+        footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar", footer_faculties_title: "Faculties", footer_faculty_ist: "Information Science Technology",
+        footer_faculty_ce: "Computer Engineering", footer_faculty_ece: "Electronics Engineering", footer_faculty_ame: "Advanced Materials Engineering", footer_faculty_pre: "Precision Engineering",
+        footer_contact_title: "Contact Us", footer_follow_title: "Follow Us", footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.", footer_quick_links_title: "Quick Links",
+        footer_link_terms: "Terms & Policies", footer_link_faq: "FAQs", footer_link_about: "About Us", footer_link_rules: "Rules & Regulations",
+        activities_title: "University Activities", activities_subtitle: "Explore our vibrant campus life", academic_programs: "Academic Programs", academic: "Academic Excellence",
+        research: "Research symposiums, hackathons, and interdisciplinary projects that challenge minds.", cultural_events: "Cultural Events", cultural_desc: "Celebrate diversity with our international festivals, performances, and exhibitions.",
+        sports: "Athletics & Sports", sports_desc: "Join our competitive teams or recreational leagues to stay active and build teamwork.", learn_more: "Learn more →", footer_link_dp: "Data Protection",
       }
     };
 
-    let currentLanguage = 'en';
+    let currentLanguage = 'my';
     let currentSlide = 0;
     let slideshowInterval;
 
-    // Function to change language for the entire page
     function changeLanguage(lang) {
       currentLanguage = lang;
-      
-      // Store the selected language
       localStorage.setItem("language", lang);
-      
-      // Update dropdown selection for both desktop and mobile
       document.getElementById('language-switcher').value = lang;
       document.getElementById('language-switcher-mobile').value = lang;
-      
-      // Update UI translations for all elements
-      document.querySelectorAll("[data-lang-key]").forEach((element) => {
-        const key = element.dataset.langKey;
+      document.querySelectorAll("[data-lang-key]").forEach(el => {
+        const key = el.dataset.langKey;
         if (translations[lang] && translations[lang][key]) {
-          element.innerHTML = translations[lang][key].replace(/\\n/g, "<br>");
+          el.innerHTML = translations[lang][key].replace(/\\n/g, "<br>");
         }
       });
-      
-      // Update activities display
       updateActivitiesDisplay();
     }
 
-    // Function to update activities display based on current language
     function updateActivitiesDisplay() {
       const container = document.querySelector('.activity-container');
-      // Keep navigation buttons but remove slides
-      const buttons = container.querySelectorAll('.slide-nav-btn');
       container.querySelectorAll('.activity-slide').forEach(slide => slide.remove());
       
-      activities.forEach((activity, index) => {
+      const dataToDisplay = (activities && activities.length > 0) ? activities : fallbackActivities;
+
+      dataToDisplay.forEach((activity, index) => {
         const slide = document.createElement('div');
         slide.className = `activity-slide ${index === 0 ? 'active' : ''}`;
         slide.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url(${activity.image})`;
-
-        // Get the title and description for the selected language
+        
         const title = activity.titles[currentLanguage] || activity.titles['en'];
         const description = activity.descriptions[currentLanguage] || activity.descriptions['en'];
 
@@ -987,235 +665,115 @@
             <p class="text-blue-300 font-medium">${activity.date}</p>
           </div>
         `;
-
         container.appendChild(slide);
       });
 
-      // Reset slideshow
       currentSlide = 0;
       const slides = document.querySelectorAll('.activity-slide');
       if (slides.length > 0) {
-        slides.forEach((slide, idx) => {
-          slide.classList.remove('active');
-          if (idx === 0) slide.classList.add('active');
-        });
+        slides[0].classList.add('active');
       }
-      
-      // Restart slideshow
       startSlideshow();
     }
 
-    // Function to start slideshow
     function startSlideshow() {
-      // Clear existing interval if any
-      if (slideshowInterval) {
-        clearInterval(slideshowInterval);
-      }
-      
-      // Start new interval
-      slideshowInterval = setInterval(() => {
-        nextSlide();
-      }, 5000);
+      if (slideshowInterval) clearInterval(slideshowInterval);
+      slideshowInterval = setInterval(nextSlide, 5000);
     }
 
-    // Function to move to next slide
     function nextSlide() {
       const slides = document.querySelectorAll('.activity-slide');
-      if (slides.length === 0) return;
-      
-      // Fade out current slide
+      if (slides.length < 2) return;
       slides[currentSlide].classList.remove('active');
-
-      // Move to next slide
       currentSlide = (currentSlide + 1) % slides.length;
-
-      // Fade in next slide
       slides[currentSlide].classList.add('active');
     }
 
-    // Function to move to previous slide
     function prevSlide() {
       const slides = document.querySelectorAll('.activity-slide');
-      if (slides.length === 0) return;
-      
-      // Fade out current slide
+      if (slides.length < 2) return;
       slides[currentSlide].classList.remove('active');
-
-      // Move to previous slide
       currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-
-      // Fade in previous slide
       slides[currentSlide].classList.add('active');
     }
-
-    // Modal functionality
-    const modal = document.getElementById('clubsModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const clubsContainer = document.getElementById('clubsContainer');
-    const closeModalBtn = document.querySelector('.close-modal');
-    const learnMoreBtns = document.querySelectorAll('.learn-more-btn');
-
-    // Show modal with clubs
-    learnMoreBtns.forEach(btn => {
-      btn.addEventListener('click', function () {
-        const category = this.getAttribute('data-category');
-        showClubsModal(category);
-      });
-    });
-
-    // Close modal
-    closeModalBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', function (e) {
-      if (e.target === modal) {
-        closeModal();
-      }
-    });
+    
+    // --- All other functions (modal, etc.) are assumed to be here and correct ---
+    function closeModal() {
+      document.getElementById('clubsModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
 
     function showClubsModal(category) {
-      // Set modal title based on category and language
+      const modal = document.getElementById('clubsModal');
       const title = clubsData[category].title[currentLanguage] || clubsData[category].title['en'];
-      modalTitle.textContent = title;
-
-      // Clear previous clubs
-      clubsContainer.innerHTML = '';
-
-      // Add clubs to modal
+      document.getElementById('modalTitle').textContent = title;
+      const container = document.getElementById('clubsContainer');
+      container.innerHTML = '';
       clubsData[category].clubs.forEach((club, index) => {
-        const clubCard = document.createElement('div');
-        clubCard.className = 'club-card bg-white p-4 rounded-lg shadow-md opacity-0';
-        clubCard.style.animationDelay = `${index * 0.1}s`;
-
-        // Get club info for current language
+        const card = document.createElement('div');
+        card.className = 'club-card bg-white p-4 rounded-lg shadow-md opacity-0';
+        card.style.animationDelay = `${index * 0.1}s`;
         const name = club.name[currentLanguage] || club.name['en'];
-        const description = club.description[currentLanguage] || club.description['en'];
+        const desc = club.description[currentLanguage] || club.description['en'];
         const meeting = club.meeting[currentLanguage] || club.meeting['en'];
-
-        clubCard.innerHTML = `
-          <h4 class="text-lg font-semibold text-blue-700 mb-1">${name}</h4>
-          <p class="text-gray-600 text-sm mb-2">${description}</p>
-          <p class="text-gray-500 text-xs"><strong>Meeting:</strong> ${meeting}</p>
-        `;
-
-        // Add animation class after a small delay to allow DOM update
-        setTimeout(() => {
-          clubCard.classList.add('animate-slide-in');
-        }, 10);
-
-        clubsContainer.appendChild(clubCard);
+        card.innerHTML = `<h4 class="text-lg font-semibold text-blue-700 mb-1">${name}</h4><p class="text-gray-600 text-sm mb-2">${desc}</p><p class="text-gray-500 text-xs"><strong>Meeting:</strong> ${meeting}</p>`;
+        setTimeout(() => card.classList.add('animate-slide-in'), 10);
+        container.appendChild(card);
       });
-
-      // Show modal
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
-    function closeModal() {
-      modal.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    }
 
-    // Initialize when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-
-      // --- Custom Language Switcher Logic ---
-      function setupLangSwitcher(type) { // type is 'desktop' or 'mobile'
-        const id = type === 'desktop' ? '' : '-mobile';
-        const container = document.getElementById(`lang-switcher-container-${type}`);
-        if (!container) return;
-
-        const button = container.querySelector('.lang-switcher-button');
-        const menu = container.querySelector('.lang-switcher-menu');
-        const options = container.querySelectorAll('.lang-switcher-option');
-        const selectedFlag = document.getElementById(`selected-lang-flag-${type}`);
-        const selectedText = document.getElementById(`selected-lang-text-${type}`);
-        const hiddenSelect = document.getElementById(`language-switcher${id}`);
-        
-        const optionDetails = {
-            my: { text: 'မြန်မာ', flag: 'https://flagcdn.com/w20/mm.png' },
-            en: { text: 'English', flag: 'https://flagcdn.com/w20/gb.png' }
-        };
-
-        // Function to update the button's appearance
-        function updateButton(lang) {
-            if (optionDetails[lang]) {
-                selectedFlag.src = optionDetails[lang].flag;
-                selectedText.textContent = optionDetails[lang].text;
+    document.addEventListener('DOMContentLoaded', async function() {
+        try {
+            const response = await fetch('./Admin/activity_api.php?action=get_activities');
+            const result = await response.json();
+            if (result.status === 'success' && result.activities.length > 0) {
+                // Map API data to the format the JS expects
+                activities = result.activities.map(act => ({
+                    image: `.${act.image_url}`, // './uploads/file.jpg'
+                    titles: { en: act.title_en, my: act.title_my },
+                    descriptions: { en: act.description_en, my: act.description_my },
+                    date: new Date(act.activity_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                }));
             }
+        } catch (error) {
+            console.error("Could not fetch dynamic activities. Will use fallback data.", error);
         }
 
-        // Toggle menu visibility
-        button.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const otherType = type === 'desktop' ? 'mobile' : 'desktop';
-            const otherMenu = document.querySelector(`#lang-switcher-container-${otherType} .lang-switcher-menu`);
-            if (otherMenu) otherMenu.classList.add('hidden');
-            menu.classList.toggle('hidden');
-        });
-
-        // Handle option selection
-        options.forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.preventDefault();
-                const lang = option.getAttribute('data-lang');
-                hiddenSelect.value = lang;
-                hiddenSelect.dispatchEvent(new Event('change'));
-                menu.classList.add('hidden');
-            });
-        });
-        
-        hiddenSelect.addEventListener('change', () => {
+        function setupLangSwitcher(type) {
+            const container = document.getElementById(`lang-switcher-container-${type}`);
+            if (!container) return;
+            const button = container.querySelector('.lang-switcher-button');
+            const menu = container.querySelector('.lang-switcher-menu');
+            const options = container.querySelectorAll('.lang-switcher-option');
+            const selectedFlag = document.getElementById(`selected-lang-flag-${type}`);
+            const selectedText = document.getElementById(`selected-lang-text-${type}`);
+            const hiddenSelect = document.getElementById(`language-switcher${type === 'mobile' ? '-mobile' : ''}`);
+            const optionDetails = { my: { text: 'မြန်မာ', flag: 'https://flagcdn.com/w20/mm.png' }, en: { text: 'English', flag: 'https://flagcdn.com/w20/gb.png' } };
+            function updateButton(lang) { if (optionDetails[lang]) { selectedFlag.src = optionDetails[lang].flag; selectedText.textContent = optionDetails[lang].text; } }
+            button.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('hidden'); });
+            options.forEach(option => { option.addEventListener('click', (e) => { e.preventDefault(); const lang = option.getAttribute('data-lang'); hiddenSelect.value = lang; hiddenSelect.dispatchEvent(new Event('change')); menu.classList.add('hidden'); }); });
+            hiddenSelect.addEventListener('change', () => { updateButton(hiddenSelect.value); changeLanguage(hiddenSelect.value); });
             updateButton(hiddenSelect.value);
-            changeLanguage(hiddenSelect.value); // Ensure main language change function is called
-        });
-        
-        updateButton(hiddenSelect.value);
-      }
-      
-      setupLangSwitcher('desktop');
-      setupLangSwitcher('mobile');
-      
-      document.addEventListener('click', () => {
-          document.querySelectorAll('.lang-switcher-menu').forEach(menu => {
-              menu.classList.add('hidden');
-          });
-      });
+        }
 
-      // Set up navigation buttons
-      document.querySelector('.slide-nav-btn.prev').addEventListener('click', function() {
-        prevSlide();
-        startSlideshow(); // Reset the auto slideshow timer
-      });
+        setupLangSwitcher('desktop');
+        setupLangSwitcher('mobile');
+        document.addEventListener('click', () => document.querySelectorAll('.lang-switcher-menu').forEach(menu => menu.classList.add('hidden')));
       
-      document.querySelector('.slide-nav-btn.next').addEventListener('click', function() {
-        nextSlide();
-        startSlideshow(); // Reset the auto slideshow timer
-      });
+        document.querySelector('.slide-nav-btn.prev').addEventListener('click', () => { prevSlide(); startSlideshow(); });
+        document.querySelector('.slide-nav-btn.next').addEventListener('click', () => { nextSlide(); startSlideshow(); });
       
-      // Check for saved language preference
-      const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+        const savedLang = localStorage.getItem("language") || "my";
+        changeLanguage(savedLang);
       
-      // Initialize mobile menu
-      const mobileMenuButton = document.getElementById("mobile-menu-button");
-      const mobileMenu = document.getElementById("mobile-menu");
-      
-      mobileMenuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
-      });
-      
-      // Initialize smooth scrolling for navigation links
-      const navLinks = document.querySelectorAll(".nav-link");
-      navLinks.forEach((link) => {
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          const targetId = link.getAttribute("href");
-          const targetElement = document.querySelector(targetId);
-          if (targetElement) {
-            targetElement.scrollIntoView({ behavior: "smooth" });
-          }
-          mobileMenu.classList.add("hidden");
-        });
-      });
+        document.getElementById("mobile-menu-button").addEventListener("click", () => document.getElementById("mobile-menu").classList.toggle("hidden"));
+        
+        document.querySelectorAll('.learn-more-btn').forEach(btn => btn.addEventListener('click', (e) => showClubsModal(e.target.dataset.category)));
+        document.querySelector('.close-modal').addEventListener('click', closeModal);
+        document.getElementById('clubsModal').addEventListener('click', (e) => { if (e.target.id === 'clubsModal') closeModal(); });
     });
   </script>
 
@@ -1315,3 +873,4 @@
 </body>
 
 </html>
+
