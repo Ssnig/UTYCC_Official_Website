@@ -89,11 +89,24 @@ $pdo = null;
         .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -12px hsl(var(--fg)/0.25); }
         .btn.primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--primary)); }
         .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: var(--shadow-card); }
         .btn-link { background: none; border: none; box-shadow: none; color: hsl(var(--primary)); padding: 0; font-weight: 600; cursor: pointer; }
-        .toast-wrap { position: fixed; top: 20px; right: 20px; width: min(360px, 92vw); display: grid; gap: 12px; z-index: 9999; }
-        .toast { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--primary-foreground)); background: hsl(var(--fg)); box-shadow: var(--shadow-card); border-left: 4px solid; }
+        .toast-wrap { position: fixed; bottom: 20px; right: 20px; top: auto; width: min(360px, 92vw); display: grid; gap: 12px; z-index: 9999; }
+        .toast { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--fg)); background: hsl(var(--card)); box-shadow: 0 10px 30px -12px hsl(var(--fg)/0.25); border-left: 4px solid; }
         .toast.success { border-left-color: hsl(var(--success)); }
         .toast.error { border-left-color: hsl(var(--danger)); }
+
+        /* MODAL STYLES */
+        dialog { border: none; border-radius: 16px; padding: 0; background: hsl(var(--card)); color: hsl(var(--card-foreground)); width: min(600px, 94vw); box-shadow: 0 30px 100px -40px hsl(var(--fg)/0.5); }
+        dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2px); }
+        .modal-header { padding: 16px 18px; border-bottom: 1px solid hsl(var(--border)); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header strong { font-size: 1.1rem; }
+        .modal-body { padding: 18px; display: grid; gap: 16px; max-height: 70vh; overflow-y: auto; }
+        .modal-footer { padding: 14px 18px; border-top: 1px solid hsl(var(--border)); display: flex; justify-content: flex-end; gap: 8px; }
+        .field { display: grid; gap: 6px; }
+        .field label { font-size: 13px; color: hsl(var(--muted-foreground)); }
+        .field input, .field textarea { padding: 10px 12px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--bg)); color: hsl(var(--fg)); outline: none; font: inherit; }
+        .field textarea { min-height: 120px; resize: vertical; }
     </style>
 </head>
 <body>
@@ -134,12 +147,12 @@ $pdo = null;
                                 </span>
                             </div>
                             <div class="feedback-body">
-                                <p class="message-text"><?php echo nl2br(htmlspecialchars($item['message'])); ?></p>
+                                <p class="message-text" data-full-message="<?php echo htmlspecialchars($item['message']); ?>"><?php echo nl2br(htmlspecialchars($item['message'])); ?></p>
                             </div>
                             <div class="feedback-actions">
                                 <button class="btn-link see-more-btn" style="display: none;">See More</button>
                                 <div class="actions-right">
-                                    <a href="mailto:<?php echo htmlspecialchars($item['student_email']); ?>?subject=Re: Your Feedback" class="btn primary">Reply</a>
+                                    <button class="btn primary reply-btn" data-email="<?php echo htmlspecialchars($item['student_email']); ?>" data-name="<?php echo htmlspecialchars($item['student_name']); ?>">Reply</button>
                                     <button class="btn destructive delete-btn" data-id="<?php echo htmlspecialchars($item['feedback_id']); ?>">Delete</button>
                                 </div>
                             </div>
@@ -149,6 +162,38 @@ $pdo = null;
             </div>
         </main>
     </div>
+    
+    <!-- MODAL for Reply -->
+    <dialog id="replyModal">
+        <form id="replyForm">
+            <div class="modal-header">
+                <strong>Reply to Feedback</strong>
+                <button type="button" class="btn-link" id="closeModalBtn" style="font-size: 20px;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="reply_student_email" name="email">
+                <input type="hidden" id="reply_student_name" name="name">
+                <input type="hidden" id="reply_original_message" name="original_message">
+                
+                <div class="field">
+                    <label for="reply_to">To:</label>
+                    <input type="text" id="reply_to" disabled>
+                </div>
+                <div class="field">
+                    <label for="reply_subject">Subject</label>
+                    <input type="text" id="reply_subject" name="subject" required>
+                </div>
+                <div class="field">
+                    <label for="reply_message">Your Message</label>
+                    <textarea id="reply_message" name="message" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" id="cancelReplyBtn">Cancel</button>
+                <button type="submit" class="btn primary" id="sendReplyBtn">Send Reply</button>
+            </div>
+        </form>
+    </dialog>
     
     <div class="toast-wrap"></div>
 
@@ -182,45 +227,79 @@ $pdo = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             const feedbackGrid = document.getElementById('feedbackGrid');
+            const replyModal = document.getElementById('replyModal');
+            const replyForm = document.getElementById('replyForm');
+            const sendReplyBtn = document.getElementById('sendReplyBtn');
 
             // --- "See More" Functionality ---
             feedbackGrid.querySelectorAll('.feedback-card').forEach(card => {
                 const messageText = card.querySelector('.message-text');
                 const seeMoreBtn = card.querySelector('.see-more-btn');
 
-                // Show the "See More" button only if the text is overflowing
                 if (messageText.scrollHeight > messageText.clientHeight) {
                     seeMoreBtn.style.display = 'inline-block';
                 }
 
                 seeMoreBtn.addEventListener('click', () => {
                     messageText.classList.toggle('expanded');
-                    if (messageText.classList.contains('expanded')) {
-                        seeMoreBtn.textContent = 'See Less';
-                    } else {
-                        seeMoreBtn.textContent = 'See More';
-                    }
+                    seeMoreBtn.textContent = messageText.classList.contains('expanded') ? 'See Less' : 'See More';
                 });
             });
 
-            // --- Delete Functionality (Event Delegation) ---
+            // --- Event Delegation for Delete and Reply ---
             feedbackGrid.addEventListener('click', async (e) => {
-                if (e.target.matches('.delete-btn')) {
-                    const id = e.target.dataset.id;
+                const target = e.target;
+                if (target.matches('.delete-btn')) {
+                    const id = target.dataset.id;
                     if (!confirm('Are you sure you want to delete this feedback?')) return;
                     
                     const response = await apiRequest('delete_feedback', { id });
                     if (response.status === 'success') {
-                        const cardToRemove = document.getElementById(`feedback-${id}`);
-                        if(cardToRemove) {
-                            cardToRemove.remove();
-                        }
+                        document.getElementById(`feedback-${id}`)?.remove();
                         showToast('Feedback deleted successfully.', 'success');
                     }
                 }
+                
+                if (target.matches('.reply-btn')) {
+                    const name = target.dataset.name;
+                    const email = target.dataset.email;
+                    const originalMessage = target.closest('.feedback-card').querySelector('.message-text').dataset.fullMessage;
+
+                    document.getElementById('reply_to').value = `${name} <${email}>`;
+                    document.getElementById('reply_student_email').value = email;
+                    document.getElementById('reply_student_name').value = name;
+                    document.getElementById('reply_original_message').value = originalMessage;
+                    document.getElementById('reply_subject').value = 'Re: Your Feedback to UTYCC';
+                    document.getElementById('reply_message').value = '';
+                    
+                    replyModal.showModal();
+                }
+            });
+
+            // --- Modal Controls ---
+            document.getElementById('closeModalBtn').addEventListener('click', () => replyModal.close());
+            document.getElementById('cancelReplyBtn').addEventListener('click', () => replyModal.close());
+            
+            replyForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                sendReplyBtn.disabled = true;
+                sendReplyBtn.textContent = 'Sending...';
+
+                const formData = new FormData(replyForm);
+                const data = Object.fromEntries(formData.entries());
+
+                const response = await apiRequest('send_feedback_reply', data);
+                if (response.status === 'success') {
+                    showToast('Reply sent successfully!', 'success');
+                    replyModal.close();
+                } else {
+                     showToast(response.message || 'Failed to send reply.', 'error');
+                }
+                
+                sendReplyBtn.disabled = false;
+                sendReplyBtn.textContent = 'Send Reply';
             });
         });
     </script>
 </body>
 </html>
-

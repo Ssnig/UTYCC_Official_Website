@@ -11,6 +11,7 @@ ob_start(); // Start output buffering
 
 header('Content-Type: application/json');
 require_once '../Rform/db.php'; // Provides the $pdo object
+require_once 'send_email.php'; // Include the new email sending function
 
 // Determine action from POST data (for forms with files) or JSON payload (for simple requests)
 $action = $_POST['action'] ?? (json_decode(file_get_contents('php://input'), true)['action'] ?? null);
@@ -62,10 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                 }
 
-                // ===== CHECK FOR DUPLICATES (for both add and update) =====
                 $studentIdToExclude = ($action === 'update' && !empty($student['student_id'])) ? $student['student_id'] : 0;
 
-                // Check for duplicate NRC
                 if (!empty($student['student_nrc'])) {
                     $sqlCheckNrc = "SELECT COUNT(*) FROM students WHERE student_nrc = ? AND student_id != ?";
                     $stmtCheckNrc = $pdo->prepare($sqlCheckNrc);
@@ -75,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
                 
-                // Check for duplicate Seat No
                 if (!empty($student['seat_no'])) {
                     $sqlCheckSeatNo = "SELECT COUNT(*) FROM students WHERE seat_no = ? AND student_id != ?";
                     $stmtCheckSeatNo = $pdo->prepare($sqlCheckSeatNo);
@@ -84,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         throw new Exception('ဤခုံနံပါတ်သည် အခြားကျောင်းသားတစ်ဦးမှ အသုံးပြုပြီးဖြစ်သည်။');
                     }
                 }
-                // ===== END OF DUPLICATE CHECK =====
 
                 $pdo->beginTransaction();
 
@@ -198,11 +195,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sanitized_ids = array_map('intval', $ids);
                     $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
                     
+                    $sqlFetch = "SELECT student_id, student_name_en, student_email FROM students WHERE student_id IN ($placeholders)";
+                    $stmtFetch = $pdo->prepare($sqlFetch);
+                    $stmtFetch->execute($sanitized_ids);
+                    $students_to_email = $stmtFetch->fetchAll(PDO::FETCH_ASSOC);
+
                     $sql = "UPDATE students SET status = 'approved' WHERE student_id IN ($placeholders)";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute($sanitized_ids);
+                    $approved_count = $stmt->rowCount();
                     
-                    $response = ['status' => 'success', 'message' => $stmt->rowCount() . ' student(s) approved.'];
+                    $message = "{$approved_count} student(s) approved. Welcome emails are being sent in the background.";
+                    $response = ['status' => 'success', 'message' => $message];
+                    
+                    if (ob_get_level() > 0) ob_end_clean();
+                    
+                    header("Connection: close");
+                    header("Content-Length: " . strlen(json_encode($response)));
+                    header('Content-Type: application/json');
+
+                    echo json_encode($response);
+                    
+                    if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+                    else { ob_end_flush(); flush(); }
+                    
+                    foreach ($students_to_email as $student) {
+                        if (isset($student['student_email']) && !empty($student['student_email'])) {
+                            sendWelcomeEmail($student['student_name_en'], $student['student_email']);
+                            sleep(1); 
+                        }
+                    }
+                    exit();
                 } else {
                     $response['message'] = 'No student IDs provided for approval.';
                 }
@@ -215,6 +238,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sanitized_ids = array_map('intval', $ids);
                     $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
                     
+                    $sqlFetch = "SELECT student_id, student_name_en, student_email FROM students WHERE student_id IN ($placeholders)";
+                    $stmtFetch = $pdo->prepare($sqlFetch);
+                    $stmtFetch->execute($sanitized_ids);
+                    $students_to_email_rejection = $stmtFetch->fetchAll(PDO::FETCH_ASSOC);
+
                     $stmtSelect = $pdo->prepare("SELECT photo_url FROM students WHERE student_id IN ($placeholders)");
                     $stmtSelect->execute($sanitized_ids);
                     $photoUrls = $stmtSelect->fetchAll(PDO::FETCH_COLUMN);
@@ -222,18 +250,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sql = "DELETE FROM students WHERE student_id IN ($placeholders)";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute($sanitized_ids);
+                    $deleted_count = $stmt->rowCount();
                     
                     foreach ($photoUrls as $url) {
                         if (!empty($url)) {
                            $fileName = basename($url);
                            $fileSystemPath = $fileSystemUploadDir . $fileName;
-                           if (file_exists($fileSystemPath)) {
-                               unlink($fileSystemPath);
-                           }
+                           if (file_exists($fileSystemPath)) unlink($fileSystemPath);
                         }
                     }
                     
-                    $response = ['status' => 'success', 'message' => $stmt->rowCount() . ' student(s) deleted.'];
+                    $message = "{$deleted_count} student(s) rejected and deleted. Rejection emails are being sent in the background.";
+                    $response = ['status' => 'success', 'message' => $message];
+                    
+                    if (ob_get_level() > 0) ob_end_clean();
+                    
+                    header("Connection: close");
+                    header("Content-Length: " . strlen(json_encode($response)));
+                    header('Content-Type: application/json');
+
+                    echo json_encode($response);
+                    
+                    if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+                    else { ob_end_flush(); flush(); }
+                    
+                    foreach ($students_to_email_rejection as $student) {
+                        if (isset($student['student_email']) && !empty($student['student_email'])) {
+                            sendRejectionEmail($student['student_name_en'], $student['student_email']);
+                            sleep(1); 
+                        }
+                    }
+                    exit();
                 } else {
                     $response['message'] = 'No student IDs provided for deletion.';
                 }
@@ -355,6 +402,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response = ['status' => 'success', 'message' => 'Announcement settings saved.'];
                 break;
 
+            case 'send_feedback_reply':
+                $data = json_decode(file_get_contents('php://input'), true);
+                $email = $data['email'] ?? null;
+                $name = $data['name'] ?? 'Student';
+                $subject = $data['subject'] ?? 'No Subject';
+                $replyMessage = $data['message'] ?? '';
+                $originalMessage = $data['original_message'] ?? '';
+
+                if (!$email || !$subject || !$replyMessage) {
+                    http_response_code(400);
+                    $response['message'] = 'Missing required fields for sending reply.';
+                    break;
+                }
+
+                $response = ['status' => 'success', 'message' => 'Reply sent successfully!'];
+                
+                if (ob_get_level() > 0) ob_end_clean();
+                
+                header("Connection: close");
+                header("Content-Length: " . strlen(json_encode($response)));
+                header('Content-Type: application/json');
+
+                echo json_encode($response);
+                
+                if (function_exists('fastcgi_finish_request')) {
+                    fastcgi_finish_request();
+                } else {
+                    ob_end_flush();
+                    flush();
+                }
+                
+                sendSupportReplyEmail($name, $email, $subject, $replyMessage, $originalMessage);
+                
+                exit();
+
             case 'delete_feedback':
                 $data = json_decode(file_get_contents('php://input'), true);
                 $id = $data['id'] ?? 0;
@@ -403,7 +485,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->rollBack();
         }
         http_response_code(500);
-        // Return the specific exception message for frontend display
         $response['message'] = $e->getMessage();
     }
 }

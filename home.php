@@ -236,277 +236,6 @@ $pdo = null;
             backdrop-filter: blur(10px);
         }
 
-        /* --- Styles for Verification Modal --- */
-        :root {
-            --bg-light: #ecf0f1;
-            --bg-dark: #34495e;
-            --card-bg: #ffffff;
-            --text-primary: #2c3e50;
-            --text-muted: #7f8c8d;
-            --border-color: #bdc3c7;
-            --accent-color: #3498db;
-            --accent-hover: #2980b9;
-            --error-color: #e74c3c;
-            --success-color: #2ecc71;
-            --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.08);
-            --shadow-dark: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 16px;
-        }
-
-        .auth-wrapper {
-            width: min(900px, 95vw);
-            display: flex;
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: var(--shadow-dark);
-            overflow: hidden;
-            animation: fadeIn 0.4s ease-out both;
-            position: relative;
-            /* For the close button */
-        }
-
-        .shell {
-            flex: 1 1 50%;
-            padding: 32px 28px;
-        }
-
-        .image-panel {
-            flex: 1 1 50%;
-            display: block;
-        }
-
-        .image-panel img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .g-head {
-            display: grid;
-            justify-items: center;
-            gap: 8px;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .brand-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .modal-h1 {
-            margin: 8px 0 4px;
-            font-size: 28px;
-            font-weight: 700;
-        }
-
-        .sub {
-            color: var(--text-muted);
-            font-size: 15px;
-        }
-
-        form {
-            display: grid;
-            gap: 20px;
-            margin-top: 24px;
-        }
-
-        .field {
-            display: grid;
-            gap: 8px;
-        }
-
-        label {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .input {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-primary);
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        }
-
-        .btn {
-            appearance: none;
-            border: 0;
-            cursor: pointer;
-            border-radius: 8px;
-            padding: 12px 20px;
-            font-weight: 700;
-            color: #fff;
-            background: var(--accent-color);
-            box-shadow: var(--shadow-dark);
-            transition: background-color 0.2s ease, transform 0.1s ease,
-                opacity 0.2s ease;
-        }
-
-        .btn:hover {
-            background-color: var(--accent-hover);
-        }
-
-        .btn:disabled {
-            background-color: #bdc3c7;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .toast-wrap {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: min(360px, 92vw);
-            display: grid;
-            gap: 12px;
-            z-index: 1100;
-            /* Higher than modal */
-            pointer-events: none;
-        }
-
-        .toast {
-            pointer-events: auto;
-            display: grid;
-            grid-template-columns: 1fr auto;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 18px;
-            border-radius: 10px;
-            color: var(--card-bg);
-            background: var(--text-primary);
-            box-shadow: var(--shadow-dark);
-            border-left: 4px solid var(--accent-color);
-            animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards;
-        }
-
-        .toast.error {
-            border-left-color: var(--error-color);
-        }
-
-        .toast.success {
-            border-left-color: var(--success-color);
-        }
-
-        .toast .close-btn {
-            background: transparent;
-            border: 0;
-            color: #fff;
-            opacity: 0.7;
-            cursor: pointer;
-            font-size: 20px;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes toastIn {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes toastOut {
-            from {
-                opacity: 1;
-                transform: translateX(0);
-            }
-
-            to {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-        }
-
-        @media (max-width: 800px) {
-            .image-panel {
-                display: none;
-            }
-        }
-
-        .modal-close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--text-muted);
-            cursor: pointer;
-            z-index: 10;
-            /* This ensures the button is on top of other elements */
-        }
-
-        .terms,
-        .auth-toggle {
-            font-size: 13px;
-            color: var(--text-muted);
-            text-align: center;
-        }
-
-        .terms a,
-        .auth-toggle a {
-            color: var(--accent-color);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .terms a:hover,
-        .auth-toggle a:hover {
-            text-decoration: underline;
-        }
-
-        .view {
-            display: none;
-        }
-
-        .view.active {
-            display: block;
-        }
-
         /* --- Back to Top Button --- */
         #back-to-top-btn {
             position: fixed;
@@ -1004,7 +733,7 @@ $pdo = null;
                         <p class="max-w-md mb-8 text-sm md:text-base drop-shadow-sm">
                             Access your academic performance and check your latest exam results from all years and semesters.
                         </p>
-                        <a href="./exam_results.php" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
+                        <a href="./Rform/examResults.php" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
                             Check Results
                         </a>
                     </div>
@@ -1088,11 +817,11 @@ $pdo = null;
                         Welcome back! Continue your studies by enrolling for the next
                         year.
                     </p>
-                    <button id="current-student-enroll-trigger"
+                    <a href="./Rform/form1.php"
                         class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect"
                         data-lang-key="enroll_current_button">
                         Enroll for Next Year
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -1232,48 +961,6 @@ $pdo = null;
         <i class="fas fa-arrow-up"></i>
     </button>
 
-
-    <!-- Verification Modal -->
-    <div id="verification-modal" class="modal-overlay hidden">
-        <div class="auth-wrapper">
-            <button id="modal-close-btn" class="modal-close-btn" aria-label="Close">
-                &times;
-            </button>
-            <div class="shell">
-                <header class="g-head">
-                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="brand-logo" />
-                    <h1 class="modal-h1" id="modal-title" data-lang-key="login_title">
-                        Sign In
-                    </h1>
-                    <p class="sub" id="modal-subtitle" data-lang-key="login_subtitle">
-                        to your account
-                    </p>
-                </header>
-
-                <!-- View for Login -->
-                <div id="view-login" class="view active">
-                    <form id="login-form">
-                        <div class="field">
-                            <label for="login-id" data-lang-key="login_id_label">Student ID</label>
-                            <input type="text" id="login-id" class="input" placeholder="Your Student ID" required />
-                        </div>
-                        <div class="field">
-                            <label for="login-password" data-lang-key="login_password_label">Password</label>
-                            <input type="password" id="login-password" class="input" placeholder="Your Password"
-                                required />
-                        </div>
-                        <button type="submit" class="btn" data-lang-key="login_button">
-                            Sign In
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="image-panel">
-                <img src="./Img/hero-carousel/3.JPG" style="opacity: 70%" alt="UTYCC Photo" />
-            </div>
-        </div>
-    </div>
-
     <div class="toast-wrap"></div>
 
     <script>
@@ -1287,22 +974,7 @@ $pdo = null;
             "language-switcher-mobile"
         );
 
-        const currentStudentEnrollTrigger = document.getElementById(
-            "current-student-enroll-trigger"
-        );
-
-        // --- Modal Elements ---
-        const verificationModal = document.getElementById("verification-modal");
-        const closeModalBtn = document.getElementById("modal-close-btn");
         const toastWrap = document.querySelector(".toast-wrap");
-        const modalTitle = document.getElementById("modal-title");
-        const modalSubtitle = document.getElementById("modal-subtitle");
-
-        // Views
-        const viewLogin = document.getElementById("view-login");
-
-        // Login Form
-        const loginForm = document.getElementById("login-form");
 
         // --- Easter Egg Game Elements ---
         const headerLogo = document.getElementById('header-logo-link');
@@ -1407,21 +1079,6 @@ $pdo = null;
                 footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
                 footer_follow_title: "Follow Us",
                 footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
-                signup_title: "အကောင့်ပြုလုပ်ရန်",
-                signup_subtitle: "UTYCC တွင်ကျောင်းအပ်ရန်",
-                signup_name_label: "အမည်",
-                signup_email_label: "အီးမေးလ်",
-                signup_phone_label: "ဖုန်းနံပါတ်",
-                signup_terms_agree: "ကျွန်ုပ်သည်",
-                signup_terms_link: "စည်းမျဉ်းများနှင့် မူဝါဒများ ကိုသဘောတူပါသည်။",
-                signup_button: "အကောင့်ပြုလုပ်မည်",
-                signup_toggle: "အကောင့်ရှိပြီးသားလား? <a id='toggle-to-login-btn'>ဝင်ရောက်ရန်</a>",
-                login_title: "ဝင်ရောက်ရန်",
-                login_subtitle: "သင်၏အကောင့်သို့",
-                login_id_label: "ကျောင်းသား ID",
-                login_password_label: "စကားဝှက်",
-                login_button: "ဝင်ရောက်မည်",
-                login_toggle: "အကောင့်မရှိသေးဘူးလား? <a id='toggle-to-signup-btn'>အသစ်ပြုလုပ်ရန်</a>",
                 admission_closed_title: "ကျောင်းအပ်လက်ခံခြင်း ယာယီပိတ်ထားပါသည်",
                 admission_closed_text: "တက္ကသိုလ်မှ ကျောင်းသား/သူအသစ်များ လက်ခံခြင်းကို လက်ရှိတွင် ရပ်ဆိုင်းထားပါသည်။",
                 footer_link_dp: "ဒေတာကာကွယ်ရေး",
@@ -1499,21 +1156,6 @@ $pdo = null;
                 footer_link_rules: "Rules & Regulations",
                 footer_follow_title: "Follow Us",
                 footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
-                signup_title: "Create Account",
-                signup_subtitle: "to enroll at UTYCC",
-                signup_name_label: "Name",
-                signup_email_label: "Email",
-                signup_phone_label: "Phone Number",
-                signup_terms_agree: "I agree to the",
-                signup_terms_link: "Terms & Policy",
-                signup_button: "Create Account",
-                signup_toggle: "Already have an account? <a id='toggle-to-login-btn'>Sign In</a>",
-                login_title: "Sign In",
-                login_subtitle: "to your account",
-                login_id_label: "Student ID",
-                login_password_label: "Password",
-                login_button: "Sign In",
-                login_toggle: "Don't have an account? <a id='toggle-to-signup-btn'>Create one</a>",
                 admission_closed_title: "ADMISSIONS ARE CURRENTLY CLOSED",
                 admission_closed_text: "Our university is not accepting new student applications at this time.",
                 footer_link_dp: "Data Protection",
@@ -1638,35 +1280,6 @@ $pdo = null;
         langSwitcherMobile.addEventListener("change", (e) =>
             setLanguage(e.target.value)
         );
-
-        // --- Modal Logic ---
-        currentStudentEnrollTrigger.addEventListener("click", () => {
-            verificationModal.classList.remove("hidden");
-        });
-
-        closeModalBtn.addEventListener("click", () => {
-            verificationModal.classList.add("hidden");
-        });
-
-        verificationModal.addEventListener("click", (e) => {
-            if (e.target === verificationModal) {
-                verificationModal.classList.add("hidden");
-            }
-        });
-
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const studentId = document.getElementById("login-id").value.trim();
-            const password = document.getElementById("login-password").value.trim();
-
-            if (!studentId || !password) {
-                showToast("Please enter both ID and Password.", "error");
-                return;
-            }
-
-            showToast("Login successful! Welcome back.", "success");
-            setTimeout(() => verificationModal.classList.add("hidden"), 2000);
-        });
 
         // --- GSAP Animation for Stats ---
         const statsSection = document.getElementById('stats-section');
