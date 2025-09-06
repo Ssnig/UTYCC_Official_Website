@@ -74,17 +74,22 @@ $pdo = null;
         .header { grid-area: header; position: sticky; top: 0; z-index: 10; background: hsl(var(--card)); border-bottom: 1px solid hsl(var(--border)); display: flex; align-items: center; gap: 12px; padding: 16px 20px; }
         .header h1 { font-size: 24px; margin: 0; }
         .main { grid-area: main; padding: 20px; }
-        .feedback-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .feedback-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
         .feedback-card { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; }
-        .feedback-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .feedback-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
         .feedback-header .info { display: grid; }
         .feedback-header .name { font-weight: 700; }
         .feedback-header .email { font-size: 13px; color: hsl(var(--muted-foreground)); }
         .feedback-body { font-size: 15px; line-height: 1.6; color: hsl(var(--card-foreground)); flex-grow: 1; margin-bottom: 16px; }
-        .feedback-footer { font-size: 12px; color: hsl(var(--muted-foreground)); text-align: right; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 12px; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); color: hsl(var(--fg)); box-shadow: var(--shadow-card); cursor: pointer; transition: all var(--duration) var(--ease); }
+        .feedback-body .message-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; text-overflow: ellipsis; }
+        .feedback-body .message-text.expanded { -webkit-line-clamp: unset; }
+        .feedback-actions { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid hsl(var(--border)); }
+        .feedback-actions .actions-right { display: flex; gap: 8px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; font-size: 14px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); color: hsl(var(--fg)); box-shadow: var(--shadow-card); cursor: pointer; transition: all var(--duration) var(--ease); }
         .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 30px -12px hsl(var(--fg)/0.25); }
+        .btn.primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--primary)); }
         .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
+        .btn-link { background: none; border: none; box-shadow: none; color: hsl(var(--primary)); padding: 0; font-weight: 600; cursor: pointer; }
         .toast-wrap { position: fixed; top: 20px; right: 20px; width: min(360px, 92vw); display: grid; gap: 12px; z-index: 9999; }
         .toast { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--primary-foreground)); background: hsl(var(--fg)); box-shadow: var(--shadow-card); border-left: 4px solid; }
         .toast.success { border-left-color: hsl(var(--success)); }
@@ -99,9 +104,10 @@ $pdo = null;
                 <h1>UTYCC Admin Panel</h1>
             </div>
             <nav>
-                <a class="nav-link" href="admin_dashboard.php">Students</a>
-                <a class="nav-link" href="upload_result.php">To upload result</a>
-                <a class="nav-link" href="#">Registrations</a>
+                <a class="nav-link" href="admin_dashboard.php">Registrations</a>
+                <a class="nav-link" href="upload_result.php">Upload Results</a>
+                <a class="nav-link" href="students.php">Students</a>
+                <a class="nav-link" href="analytics.php">Analytics</a>
                 <a class="nav-link active" href="support.php">Support</a>
                 <a class="nav-link" href="settings.php">Settings</a>
             </nav>
@@ -121,15 +127,21 @@ $pdo = null;
                             <div class="feedback-header">
                                 <div class="info">
                                     <span class="name"><?php echo htmlspecialchars($item['student_name']); ?></span>
-                                    <span class="email"><?php echo htmlspecialchars($item['student_email']); ?></span>
+                                    <a href="mailto:<?php echo htmlspecialchars($item['student_email']); ?>" class="email"><?php echo htmlspecialchars($item['student_email']); ?></a>
                                 </div>
-                                <button class="btn destructive" data-id="<?php echo htmlspecialchars($item['feedback_id']); ?>">Delete</button>
+                                <span class="feedback-footer" style="font-size: 12px; color: hsl(var(--muted-foreground)); text-align: right;">
+                                    <?php echo date('M d, Y, h:i A', strtotime($item['submitted_at'])); ?>
+                                </span>
                             </div>
                             <div class="feedback-body">
-                                <?php echo nl2br(htmlspecialchars($item['message'])); ?>
+                                <p class="message-text"><?php echo nl2br(htmlspecialchars($item['message'])); ?></p>
                             </div>
-                            <div class="feedback-footer">
-                                Submitted on: <?php echo date('M d, Y, h:i A', strtotime($item['submitted_at'])); ?>
+                            <div class="feedback-actions">
+                                <button class="btn-link see-more-btn" style="display: none;">See More</button>
+                                <div class="actions-right">
+                                    <a href="mailto:<?php echo htmlspecialchars($item['student_email']); ?>?subject=Re: Your Feedback" class="btn primary">Reply</a>
+                                    <button class="btn destructive delete-btn" data-id="<?php echo htmlspecialchars($item['feedback_id']); ?>">Delete</button>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -148,7 +160,10 @@ $pdo = null;
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action, ...data }),
                 });
-                if (!response.ok) throw new Error(await response.text());
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`API Error: ${errorText}`);
+                }
                 return await response.json();
             } catch (error) {
                 showToast(`Error: ${error.message}`, 'error');
@@ -165,44 +180,47 @@ $pdo = null;
             setTimeout(() => toast.remove(), 4000);
         }
 
-        document.getElementById('feedbackGrid').addEventListener('click', async (e) => {
-            if (e.target.matches('button.destructive')) {
-                const id = e.target.dataset.id;
-                if (!confirm('Are you sure you want to delete this feedback?')) return;
-                
-                const response = await apiRequest('delete_feedback', { id });
-                if (response.status === 'success') {
-                    document.getElementById(`feedback-${id}`).remove();
-                    showToast('Feedback deleted successfully.', 'success');
+        document.addEventListener('DOMContentLoaded', () => {
+            const feedbackGrid = document.getElementById('feedbackGrid');
+
+            // --- "See More" Functionality ---
+            feedbackGrid.querySelectorAll('.feedback-card').forEach(card => {
+                const messageText = card.querySelector('.message-text');
+                const seeMoreBtn = card.querySelector('.see-more-btn');
+
+                // Show the "See More" button only if the text is overflowing
+                if (messageText.scrollHeight > messageText.clientHeight) {
+                    seeMoreBtn.style.display = 'inline-block';
                 }
-            }
+
+                seeMoreBtn.addEventListener('click', () => {
+                    messageText.classList.toggle('expanded');
+                    if (messageText.classList.contains('expanded')) {
+                        seeMoreBtn.textContent = 'See Less';
+                    } else {
+                        seeMoreBtn.textContent = 'See More';
+                    }
+                });
+            });
+
+            // --- Delete Functionality (Event Delegation) ---
+            feedbackGrid.addEventListener('click', async (e) => {
+                if (e.target.matches('.delete-btn')) {
+                    const id = e.target.dataset.id;
+                    if (!confirm('Are you sure you want to delete this feedback?')) return;
+                    
+                    const response = await apiRequest('delete_feedback', { id });
+                    if (response.status === 'success') {
+                        const cardToRemove = document.getElementById(`feedback-${id}`);
+                        if(cardToRemove) {
+                            cardToRemove.remove();
+                        }
+                        showToast('Feedback deleted successfully.', 'success');
+                    }
+                }
+            });
         });
-
-// for delete feedback
-
-function deleteFeedback(id) {
-    if (!confirm("Are you sure you want to delete this feedback?")) return;
-
-    fetch("../api.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "delete_feedback", id: id })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === "success") {
-            alert("Deleted!");
-            location.reload(); // Refresh to update list
-        } else {
-            alert("Error: " + data.message);
-        }
-    })
-    .catch(err => console.error("Fetch error:", err));
-}
-
-
-
-
     </script>
 </body>
 </html>
+

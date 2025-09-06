@@ -93,11 +93,11 @@
         </div>
       </a>
       <div class="hidden md:flex items-center space-x-6">
-        <a href="./about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
-        <a href="./activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-        <a href="./exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
@@ -142,13 +142,13 @@
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
-      <a href="./about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
           <br><br>
-        <a href="./activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
           <br><br>
-        <a href="./exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
           <br><br>
       <div class="relative mt-4 pt-4 border-t">
@@ -371,22 +371,22 @@
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
             <li>
-              <a href="#" class="hover:text-white transition duration-200" data-lang-key="footer_link_terms">Terms &
+              <a href="./terms.php" class="hover:text-white transition duration-200" data-lang-key="footer_link_terms">Terms &
                 Policies</a>
             </li>
             <li>
-              <a href="#" class="hover:text-white transition duration-200" data-lang-key="footer_link_faq">FAQs</a>
+              <a href="./FAQs.php" class="hover:text-white transition duration-200" data-lang-key="footer_link_faq">FAQs</a>
             </li>
             <li>
-              <a href="#" class="hover:text-white transition duration-200" data-lang-key="footer_link_about">About
+              <a href="./about.php" class="hover:text-white transition duration-200" data-lang-key="footer_link_about">About
                 Us</a>
             </li>
             <li>
-              <a href="#" class="hover:text-white transition duration-200" data-lang-key="footer_link_rules">Rules &
+              <a href="./randr.php" class="hover:text-white transition duration-200" data-lang-key="footer_link_rules">Rules &
                 Regulations</a>
             </li>
             <li>
-              <a href="./data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data
+              <a href="./data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data
                 Protection</a>
             </li>
           </ul>

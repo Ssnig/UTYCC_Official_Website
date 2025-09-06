@@ -220,6 +220,7 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
                 <a class="nav-link" href="admin_dashboard.php">Registrations</a>
                <a class="nav-link" href="upload_result.php">To upload result</a>
                 <a class="nav-link" href="students.php">Students</a>
+                <a class="nav-link" href="analytics.php">Analytics</a>
                 <a class="nav-link" href="support.php">Support</a>
                 <a class="nav-link active" href="#">Settings</a>
             </nav>
@@ -231,6 +232,26 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
 
         <main class="main" id="main">
             <div class="cards">
+                <div class="card" style="grid-column: 1 / -1;">
+                    <h3>ကြေညာချက်များ စီမံခန့်ခွဲခြင်း (Announcement)</h3>
+                    <p style="font-size: 14px; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
+                        ကျောင်းသားများ၏ ပင်မစာမျက်နှာတွင် ကြေညာချက်များ ဖော်ပြရန် (သို့) ပိတ်ထားရန်။
+                    </p>
+                    <div class="field">
+                        <label for="announcementText">ကြေညာချက် စာသား</label>
+                        <textarea id="announcementText" rows="4" placeholder="ကျောင်းအပ်ခြင်းကို ... ရက်နေ့တွင် ပိတ်ပါမည်။"></textarea>
+                    </div>
+                    <div class="field" style="margin-top: 16px;">
+                        <label>ကြေညာချက် အခြေအနေ</label>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn" id="announcementEnableBtn">Enable</button>
+                            <button class="btn" id="announcementDisableBtn">Disable</button>
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 16px;">
+                        <button class="btn primary" id="saveAnnouncementBtn">Save Announcement</button>
+                    </div>
+                </div>
                 <div class="card">
                     <h3>Academic Settings</h3>
                     <div class="field">
@@ -260,33 +281,6 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
                             <button class="btn" id="enrollmentOpenBtn">ဖွင့်ရန်</button>
                             <button class="btn" id="enrollmentCloseBtn">ပိတ်ရန်</button>
                         </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <h3>ကြေညာချက်များ စီမံခန့်ခွဲခြင်း (Announcement)</h3>
-                    <p style="font-size: 14px; color: hsl(var(--muted-foreground)); margin-bottom: 16px;">
-                        ကျောင်းသားများ၏ ပင်မစာမျက်နှာတွင် ကြေညာချက်များ ဖော်ပြရန် (သို့) ပိတ်ထားရန်။
-                    </p>
-                    <div class="field">
-                        <label for="announcementText">ကြေညာချက် စာသား</label>
-                        <textarea id="announcementText" rows="4" placeholder="ကျောင်းအပ်ခြင်းကို ... ရက်နေ့တွင် ပိတ်ပါမည်။"></textarea>
-                    </div>
-                    <div class="field" style="margin-top: 16px;">
-                        <label>ကြေညာချက် အခြေအနေ</label>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn" id="announcementEnableBtn">Enable</button>
-                            <button class="btn" id="announcementDisableBtn">Disable</button>
-                        </div>
-                    </div>
-                    <div style="text-align: right; margin-top: 16px;">
-                        <button class="btn primary" id="saveAnnouncementBtn">Save Announcement</button>
-                    </div>
-                </div>
-                <div class="card" style="border-color: hsl(var(--danger)/0.5);">
-                    <h3 style="color: hsl(var(--danger));">Danger Zone</h3>
-                    <p style="font-size: 14px; color: hsl(var(--muted-foreground));">This action is irreversible. Please proceed with caution.</p>
-                    <div style="text-align: right; margin-top: 16px;">
-                         <button class="btn destructive" id="clearAllDataBtn">Clear All Student Data</button>
                     </div>
                 </div>
             </div>
@@ -408,19 +402,6 @@ dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(2p
             // Initial state on page load
             updateEnrollmentButtonState();
       
-            document.getElementById('clearAllDataBtn').addEventListener('click', async () => {
-                const confirmed = await showConfirm(
-                    'Clear All Data', 
-                    'Are you absolutely sure you want to delete ALL student data? This is irreversible.'
-                );
-                if (!confirmed) return;
-          
-                const response = await apiRequest('clear_all_data');
-                if (response.status === 'success') {
-                    showToast('All student data has been cleared.', 'success');
-                }
-            });
-
             // --- Announcement Settings ---
             const announcementText = document.getElementById('announcementText');
             const announcementEnableBtn = document.getElementById('announcementEnableBtn');

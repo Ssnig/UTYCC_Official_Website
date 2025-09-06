@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us</title>
+
+  <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="./CSS/star-layout.css" />
+  <link rel="stylesheet" href="./CSS/footer.css" />
+  <link rel="stylesheet" href="./CSS/hero-carousel.css" />
+  <link rel="stylesheet" href="CSS/font.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+
+  <style>
+    /* Base styles */
+
+    /* --- Unique Uiverse Card Styles (Adapted for this site) --- */
+    .uiverse-major-card {
+      width: 100%;
+      /* Changed from fixed width for responsiveness */
+      background: #f9fafb;
+      /* Changed to a light background */
+      border: 1px solid #e5e7eb;
+      transition: all 0.5s ease-in-out;
+      clip-path: polygon(30px 0%,
+          100% 0,
+          100% calc(100% - 30px),
+          calc(100% - 30px) 100%,
+          0 100%,
+          0% 30px);
+      border-top-right-radius: 20px;
+      border-bottom-left-radius: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .uiverse-major-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .uiverse-major-card .card-image {
+      width: 100%;
+      /* height: 12rem; 192px */
+      object-fit: cover;
+      /* The clip-path is applied to the parent, so the image will conform */
+    }
+
+    .uiverse-major-card .card-content {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .uiverse-major-card .card-title {
+      font-weight: bold;
+      color: #111827;
+      /* Dark text for light background */
+      font-size: 1.25em;
+      margin-bottom: 0.5rem;
+    }
+
+    .uiverse-major-card .card-info {
+      font-weight: 400;
+      color: #4b5563;
+      /* Gray text */
+      font-size: 0.9em;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .uiverse-major-card .card-button {
+      padding: 0.8em 1.7em;
+      border-radius: 25px;
+      border: none;
+      font-weight: bold;
+      background: #1e40af;
+      /* Blue to match site theme */
+      color: white;
+      transition: 0.4s ease-in-out;
+    }
+
+    .uiverse-major-card .card-button:hover {
+      background: #1d4ed8;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+  <div class="bg-white shadow-md sticky top-0 z-50">
+    <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <a href="./home.php" class="flex items-center space-x-3">
+        <div class="p-2 rounded-lg">
+          <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+        </div>
+        <div>
+          <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
+          <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
+            City)</span>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
+        <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
+        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
+
+
+        <!-- Language Switcher Dropdown - Updated Style -->
+        <div class="relative ml-4">
+          <div id="lang-switcher-container-desktop">
+            <!-- Custom Button -->
+            <button
+              class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+              <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
+                class="h-4 w-6 object-cover flex-shrink-0">
+              <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
+              <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
+            </button>
+            <!-- Custom Dropdown Menu -->
+            <div
+              class="lang-switcher-menu hidden absolute mt-1 w-auto min-w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+              <a href="#"
+                class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                data-lang="my">
+                <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
+                  class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                <span>မြန်မာ</span>
+              </a>
+              <a href="#"
+                class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                data-lang="en">
+                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                <span>English</span>
+              </a>
+            </div>
+          </div>
+          <!-- Hidden original select to maintain JS compatibility -->
+          <select id="language-switcher-desktop" class="hidden">
+            <option value="my">မြန်မာ</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+      <button id="mobile-menu-button" class="md:hidden text-blue-900">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+    </nav>
+    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
+      <br><br>
+      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+        <br><br>
+      <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+        <br><br>
+      <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+        <br><br>
+      <div class="relative mt-4 pt-4 border-t">
+        <!-- Language Switcher for Mobile -->
+        <div id="lang-switcher-container-mobile" class="relative">
+          <!-- Custom Button -->
+          <button
+            class="lang-switcher-button relative flex items-center w-full bg-gray-100 hover:bg-gray-200 rounded-md transition py-2 pl-4 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+            <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
+              class="h-4 w-6 object-cover flex-shrink-0">
+            <span id="selected-lang-text-mobile" class="ml-3">မြန်မာ</span>
+            <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 pointer-events-none"></i>
+          </button>
+          <!-- Custom Dropdown Menu -->
+          <div
+            class="lang-switcher-menu hidden absolute mt-1 w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+            <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              data-lang="my">
+              <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
+                class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+              <span>မြန်မာ</span>
+            </a>
+            <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              data-lang="en">
+              <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+              <span>English</span>
+            </a>
+          </div>
+        </div>
+        <!-- Hidden original select to maintain JS compatibility -->
+        <select id="language-switcher-mobile" class="hidden">
+          <option value="my">မြန်မာ</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- From Uiverse.io by whoisyourdeadie -->
+
+
+
+  <main class="container mx-auto px-4 py-12">
+    <section class="text-center max-w-3xl mx-auto">
+      <h1 class="text-4xl font-bold text-blue-900 mb-4">
+        About Our University
+      </h1>
+      <p class="text-lg text-gray-600 leading-relaxed" data-lang-key="AOU">
+        At our esteemed institution, we are dedicated to fostering academic
+        excellence, critical thinking, and a vibrant community. We offer a
+        diverse range of programs designed to equip students with the skills
+        and knowledge needed to excel in their chosen fields and make a
+        meaningful impact on the world.
+      </p>
+    </section>
+
+    <section class="mt-16">
+
+    <!-- Gemini Put the game button here, the "Our major Programs" text , when clicked 10 times in a row the game will appear -->
+      <h2 class="text-3xl font-bold text-center text-blue-900 mb-8">
+        Our Major Programs
+      </h2>
+      <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6"> -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 card_1">
+        <a href="./Majors/ist.php" class="uiverse-major-card">
+          <img src="Img/logo/IST.webp" alt="Information Science and Technology"
+            class="card-image w-full h-50 object-cover" />
+          <div class="card-content">
+            <span class="card-title" data-lang-key="major_ist_title">Information Science and Technology (IST)</span>
+            <p class="card-info" data-lang-key="major_ist_desc">
+              Learn to design, implement, and manage information systems that
+              drive business success.
+            </p>
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/ist.php">
+              Learn More
+            </div>
+          </div>
+        </a>
+
+        <a href="./Majors/ce.php" class="uiverse-major-card">
+          <img src="Img/logo/CE.webp" alt="Computer Engineering" class="card-image w-full h-50 object-cover" />
+          <div class="card-content">
+            <span class="card-title" data-lang-key="major_ce_title">Computer Engineering (CE)</span>
+            <p class="card-info" data-lang-key="major_ce_desc">
+              Combine computer science and electrical engineering to build
+              hardware and software systems.
+            </p>
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/ce.php">
+              Learn More
+            </div>
+          </div>
+        </a>
+
+        <a href="./Majors/ece.php" class="uiverse-major-card">
+          <img src="Img/logo/EcE.jpg" alt="Electronics Engineering" class="card-image w-full h-50 object-cover" />
+          <div class="card-content">
+            <span class="card-title" data-lang-key="major_ece_title">Electronics Engineering (EcE)</span>
+            <p class="card-info" data-lang-key="major_ece_desc">
+              Explore the principles of electricity, electronics, and
+              computing for innovative solutions.
+            </p>
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/ece.php">
+              Learn More
+            </div>
+          </div>
+        </a>
+
+        <a href="./Majors/pre.php" class="uiverse-major-card">
+          <img src="Img/logo/PrE.png" alt="Precision Engineering" class="card-image w-full h-50 object-cover" />
+          <div class="card-content">
+            <span class="card-title" data-lang-key="major_pre_title">Precision Engineering (PrE)</span>
+            <p class="card-info" data-lang-key="major_pre_desc">
+              Focus on the exploration, drilling, production, and management
+              of oil and natural gas resources.
+            </p>
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/pre.php">
+              Learn More
+            </div>
+          </div>
+        </a>
+
+        <a href="./Majors/ame.php" class="uiverse-major-card">
+          <img src="Img/logo/AME_updated.jpg" alt="Advanced Materials Engineering"
+            class="card-image w-full h-50 object-cover" />
+          <div class="card-content">
+            <span class="card-title" data-lang-key="major_ame_title">Advanced Materials Engineering (AME)</span>
+            <p class="card-info" data-lang-key="major_ame_desc">
+              Design, analyze, and test aircraft, spacecraft, and other
+              mechanical systems.
+            </p>
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/‌ame.php">
+              Learn More
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+  <!-- Simple Back Link for Navigation Testing -->
+
+  <div class="container mx-auto px-6 py-12">
+    <link rel="stylesheet" href="./CSS/bbbtn.css">
+
+    <a href="javascript:history.back()">
+      <button class="bbbtn ">
+        Go Back
+      </button>
+
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <footer id="contact" class="bg-blue-900 text-white">
+    <div class="container mx-auto px-6 py-12">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
+          <h3 class="text-lg font-bold">UTYCC</h3>
+          <p class="text-blue-200 text-sm mt-4">
+            <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
+              Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay
+              Region, Myanmar
+            </a>
+          </p>
+          <div class="mt-4 text-sm text-blue-200">
+            <p>Email: info@utycc.edu.mm (example)</p>
+            <p>Phone: +95 (XX) XXX XXX (example)</p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
+            Faculties
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li>
+              <a href="./Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science Technology</a>
+            </li>
+            <li>
+              <a href="./Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+            </li>
+            <li>
+              <a href="./Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+            </li>
+            <li>
+              <a data-lang-key="footer_faculty_pre" href="./Majors/pre.php">Precision Engineering</a>
+            </li>
+            <li>
+              <a data-lang-key="footer_faculty_ame" href="./Majors/ame.php">
+                Advanced Materials Engineering
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
+            Quick Links
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li>
+              <a href="./term.php" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+            </li>
+            <li>
+              <a href="./FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+            </li>
+            <li>
+              <a href="./about.php" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+            </li>
+            <li>
+              <a href="./randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+            </li>
+            <li>
+              <a href="./data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data
+                Protection</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
+            Follow Us
+          </h3>
+          <div class="flex space-x-4">
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+            <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/"
+              class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
+          </div>
+          <br />
+          <br />
+          <div>
+            <div class="newtons-cradle">
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
+        data-lang-key="footer_copyright">
+        &copy; 2025 University of Technology - Yatanarpon Cyber City. All
+        Rights Reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // --- Mobile Menu Script ---
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
+    mobileMenuButton.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+    });
+  </script>
+
+  <script>
+    // --- COMPLETE TRANSLATION SCRIPT ---
+    const translations = {
+      my: {
+        AOU: "ကျွန်ုပ်တို့၏ လေးစားထိုက်သော အဖွဲ့အစည်းတွင် ကျွန်ုပ်တို့သည် ပညာရေးကို မြှင့်တင်ရန် ရည်စူးပါသည်။ထူးချွန်မှု၊ ဝေဖန်ပိုင်းခြားတွေးခေါ်မှုနှင့် တက်ကြွသောအသိုင်းအဝိုင်း။ တစ်ခုကမ်းလှမ်းတယ်။ကျောင်းသားများအား အရည်အချင်းများ ဖြည့်ဆည်းပေးနိုင်ရန် အမျိုးမျိုးသော ပရိုဂရမ်များ ရေးဆွဲထားသည်။မိမိတို့ရွေးချယ်ထားသော နယ်ပယ်တွင် ထူးချွန်ရန် လိုအပ်သော အသိပညာ၊ကမ္ဘာကြီးအပေါ် အဓိပ္ပာယ်သက်ရောက်သည် ",
+        utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+        nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+        nav_activity: "လှုပ်ရှားမှုများ",
+        nav_examresult: "အောင်စာရင်း",
+        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+        nav_activity_mobile: "လှုပ်ရှားမှုများ",
+        nav_examresult_mobile: "အောင်စာရင်း",
+        major_ist_title: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ (IST)",
+        major_ist_desc:
+          "လုပ်ငန်းအောင်မြင်မှုကို မြှင့်တင်ပေးသော သတင်းအချက်အလက်စနစ်များကို ဒီဇိုင်းဆွဲရန်၊ အကောင်အထည်ဖော်ရန်နှင့် စီမံခန့်ခွဲရန် သင်ယူနိုင်ပါသည်။",
+        major_ce_title: "ကွန်ပျူတာ အင်ဂျင်နီယာ (CE)",
+        major_ce_desc: "ကွန်ပျူတာနည်းပညာနဲ့ အင်ဂျင်နီယာသိပ္ပံကို ပေါင်းစပ်ပြီး အဆင့်မြင့် ဟာ့ဒ်ဝဲနဲ့ ဆော့ဖ်ဝဲစနစ်များ ဖန်တီးရန် သင်ယူနိုင်ပါသည်။",
+        major_ece_title: "အီလက်ထရောနစ် အင်ဂျင်နီယာ (EcE)",
+        major_ece_desc:
+          "ကွန်ပျူတာ၊ အီလက်ထရောနစ်နှင့် လျှပ်စစ်နည်းပညာများကို ပေါင်းစပ်ပြီး နည်းလမ်းသစ်များကို ဖန်တီးရန် သင်ယူနိုင်ပါသည်။",
+        major_pre_title: "တိကျစက်ပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ (PrE)",
+        major_pre_desc: "တိကျမှန်ကန်သော စက်ပစ္စည်းများနှင့် အစိတ်အပိုင်းများကို ဒီဇိုင်းဆွဲထုတ်လုပ်ပြီး အလိုအလျောက်ထိန်းချုပ်စနစ်များ ဖန်တီးနိုင်ရန် သင်ယူနိုင်ပါသည်။",
+        major_ame_title: "အဆင့်မြင့်ဒြပ်ပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ (AME)",
+        major_ame_desc:
+          "သတ္တုနှင့် သတ္တုစပ်ပစ္စည်းများကို ဒီဇိုင်းရေးဆွဲခြင်းနှင့် ဖွံ့ဖြိုးတိုးတက်စေရန် အခြေခံသိပ္ပံနှင့် နည်းပညာများကို သင်ယူနိုင်ပါသည်။",
+        card_button_text: "ပိုမိုလေ့လာရန်",
+
+        footer_address:
+          "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+        footer_faculties_title: "မဟာဌာနများ",
+        footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+        footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+        footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+        footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+        footer_contact_title: "ဆက်သွယ်ရန်",
+        footer_follow_title: "Follow Us",
+        footer_copyright:
+          "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+        footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+        footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+        footer_link_faq: "အမေးများသော မေးခွန်းများ",
+        footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
+        footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+        footer_link_dp: "ဒေတာကာကွယ်ရေး",
+      },
+      en: {
+        AOU: "At our esteemed institution, we are dedicated to fostering academic excellence, critical thinking, and a vibrant community. We offer adiverse range of programs designed to equip students with the skillsand knowledge needed to excel in their chosen fields and make ameaningful impact on the world.",
+        utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+        nav_about: "About Us",
+        nav_activity: "Activities",
+        nav_examresult: "Exam Results",
+        nav_about_mobile: "About Us",
+        nav_activity_mobile: "Activities",
+        nav_examresult_mobile: "Exam Results",
+        nav_programs_mobile: "Academic Programs",
+        nav_collaboration_mobile: "Collaboration",
+        nav_contact_mobile: "Contact",
+        major_ist_title: "Information Science and Technology (IST)",
+        major_ist_desc:
+          "Learn to design, implement, and manage information systems that drive business success.",
+        major_ce_title: "Computer Engineering (CE)",
+        major_ce_desc: "Combine computer science and electrical engineering to build hardware and software systems.",
+        major_ece_title: "Electronics Engineering (EcE)",
+        major_ece_desc:
+          "Explore the principles of electricity, electronics, and computing for innovative solutions.",
+        major_pre_title: "Precision Engineering (PrE)",
+        major_pre_desc: "Learn to design and manufacture precise machinery and components, and to create automated control systems.",
+        major_ame_title: "Advanced Materials Engineering (AME)",
+        major_ame_desc: "Learn the fundamental science and technologies to design and develop metals and metal alloy materials.",
+        card_button_text: "Learn More",
+        footer_address:
+          "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+        footer_faculties_title: "Faculties",
+        footer_faculty_ist: "Information Science Technology",
+        footer_faculty_ce: "Computer Engineering",
+        footer_faculty_ece: "Electronics Engineering",
+        footer_faculty_ame: "Advanced Materials Engineering",
+        footer_faculty_pre: "Precision Engineering",
+        footer_contact_title: "Contact Us",
+        footer_follow_title: "Follow Us",
+        footer_copyright:
+          "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+        footer_quick_links_title: "Quick Links",
+        footer_link_terms: "Terms & Policies",
+        footer_link_faq: "FAQs",
+        footer_link_about: "About Us",
+        footer_link_rules: "Rules & Regulations",
+        footer_link_dp: "Data Protection",
+      },
+    };
+
+    const languageSwitcher = document.getElementById("language-switcher-desktop");
+    const languageSwitcherMobile = document.getElementById(
+      "language-switcher-mobile"
+    );
+
+    const changeLanguage = (lang) => {
+      // Store the selected language
+      localStorage.setItem("language", lang);
+
+      // Set the dropdown to the correct value
+      languageSwitcher.value = lang;
+      languageSwitcherMobile.value = lang;
+
+      // Translate all elements with the data-lang-key attribute
+      document.querySelectorAll("[data-lang-key]").forEach((element) => {
+        const key = element.dataset.langKey;
+        const translation = translations[lang][key];
+        if (translation) {
+          element.innerHTML = translation.replace(/\\n/g, "<br>");
+        }
+      });
+    };
+
+    // Event listener for the language switcher
+    languageSwitcher.addEventListener("change", (event) => {
+      changeLanguage(event.target.value);
+    });
+
+    languageSwitcherMobile.addEventListener("change", (event) => {
+      changeLanguage(event.target.value);
+    });
+
+    // Function to run when the page loads
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check for a saved language in localStorage, otherwise default to 'en'
+      const savedLang = localStorage.getItem("language") || "en";
+      changeLanguage(savedLang);
+    });
+
+  </script>
+  <script src="./JS/lgl.js"></script>
+
+</body>
+
+</html>
