@@ -22,13 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Define the public-facing uploads directory.
-    $targetDir = __DIR__ . "/../uploads/";
+    // Define the public-facing directory for result images.
+    $targetDir = __DIR__ . "/../uploadResults/";
 
-    // Create the uploads directory if it doesn't exist
+    // Create the directory if it doesn't exist
     if (!is_dir($targetDir)) {
         if (!mkdir($targetDir, 0755, true)) {
-            echo json_encode(['success' => false, 'message' => 'Failed to create uploads directory. Please check server permissions.']);
+            echo json_encode(['success' => false, 'message' => 'Failed to create uploadResults directory. Please check server permissions.']);
             exit;
         }
     }
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (move_uploaded_file($file["tmp_name"], $targetFile)) {
                 // File uploaded successfully, now insert data into database
                 try {
-                    $imagePathForDB = "../uploads/" . basename($targetFile);
+                    $imagePathForDB = "../uploadResults/" . basename($targetFile);
                     $stmt = $pdo->prepare("INSERT INTO exam_results (year, semester, major, image_path) VALUES (?, ?, ?, ?)");
                     $stmt->execute([$year, $semester, $major, $imagePathForDB]);
                     $files_uploaded_count++;
@@ -92,10 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     } else {
-        // Handle single file upload (fallback)
-        $file = $_FILES["result_image"];
-        // ... (same logic as before, just for one file)
-        // For simplicity, this example will just return an error if multiple files are expected but not received.
         echo json_encode(['success' => false, 'message' => 'Unexpected file upload format. Please try again.']);
         exit;
     }
