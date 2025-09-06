@@ -1,6 +1,14 @@
 <?php
 // Include the database configuration file
 require_once '../Rform/db.php';
+session_start();
+
+// Security check: If the user is not logged in, redirect to the sign-in page.
+if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
+    header("location: ./signin.php"); // Corrected path to signin.php in the same directory
+    exit;
+}
+
 
 // --- FETCH ALL APPROVED STUDENT DATA ---
 $students = [];

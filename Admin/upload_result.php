@@ -1,10 +1,12 @@
 <?php
 // You can add session validation here to ensure only logged-in admins can access this page.
-// session_start();
-// if (!isset($_SESSION['admin_logged_in'])) {
-//     header('Location: login.php');
-//     exit;
-// }
+session_start();
+// Security check: If the user is not logged in, redirect to the sign-in page.
+if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
+    header("location: ./signin.php"); // Corrected path to signin.php in the same directory
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
