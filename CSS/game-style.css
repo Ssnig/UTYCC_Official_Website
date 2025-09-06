@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* =================================
+    SUPER JUMPER GAME STYLES
+    Using unique sj-game- prefix
+    =================================
+*/
+
+/* --- Toast Notification --- */
+#sj-game-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #0284c7; /* Sky Blue */
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.5s, bottom 0.5s;
+    opacity: 1;
+}
+
+#sj-game-toast.sj-game-toast-hidden {
+    opacity: 0;
+    bottom: -100px;
+    pointer-events: none;
+}
+
+#sj-game-toast p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.sj-game-toast-buttons button {
+    margin-left: 8px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+#sj-game-toast-yes {
+    background-color: #22c55e; /* Green */
+    color: white;
+}
+
+#sj-game-toast-yes:hover {
+    background-color: #16a34a;
+    transform: scale(1.05);
+}
+
+#sj-game-toast-no {
+    background-color: #ef4444; /* Red */
+    color: white;
+}
+#sj-game-toast-no:hover {
+    background-color: #dc2626;
+    transform: scale(1.05);
+}
+
+
+/* --- Game Modal --- */
+#sj-game-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1999;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#sj-game-modal-overlay.sj-game-modal-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#sj-game-modal-content {
+    position: relative;
+    width: 95%;
+    max-width: 480px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Press Start 2P', cursive;
+    transform: scale(1);
+    transition: transform 0.3s ease-in-out;
+}
+
+#sj-game-modal-overlay.sj-game-modal-hidden #sj-game-modal-content {
+    transform: scale(0.8);
+}
+
+#sj-game-modal-close-top {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ffffff;
+    color: #0284c7;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10;
+    line-height: 28px;
+    transition: transform 0.2s;
+}
+
+#sj-game-modal-close-top:hover {
+    transform: scale(1.1);
+}
+
+/* --- Game Specific Styles (inside modal) --- */
+.sj-game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #0284c7;
+    color: white;
+    border-bottom: 4px solid #0369a1;
+}
+
+.sj-game-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.sj-game-h1 {
+    font-size: 1.25rem;
+}
+
+.sj-game-score-container {
+    text-align: right;
+    font-size: 16px;
+}
+.sj-game-best-score {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+#sj-game-canvas {
+    display: block;
+    background-color: #7dd3fc;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+}
+
+/* Game Countdown Timer */
+#sj-game-countdown {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 5rem;
+    color: white;
+    text-shadow: 4px 4px 0 #000, 4px 4px 10px rgba(0,0,0,0.5);
+    z-index: 6;
+    user-select: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.sj-game-countdown-hidden {
+    display: none;
+    opacity: 0;
+}
+
+
+.sj-game-touch-controls {
+    display: none; /* Hidden by default, shown via JS on touch devices */
+    justify-content: space-between;
+    padding: 20px 40px;
+    background-color: #0284c7;
+    user-select: none;
+}
+
+.sj-game-touch-btn {
+    width: 70px;
+    height: 70px;
+    background-color: #ffffff;
+    color: #0284c7;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-weight: bold;
+    box-shadow: 0 4px 0 #cbd5e1;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.sj-game-touch-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #cbd5e1;
+}
+
+.sj-game-jump-btn {
+    background-color: #22c55e;
+    color: white;
+    box-shadow: 0 4px 0 #15803d;
+}
+
+.sj-game-jump-btn:active {
+    box-shadow: 0 2px 0 #15803d;
+}
+
+/* Game Over Screen */
+#sj-game-over-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 5;
+    ;
+}
+#sj-game-over-screen h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 0 #000;
+}
+
+#sj-game-over-screen button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+    transition: transform 0.2s;
+}
+
+#sj-game-play-again {
+    background-color: #22c55e;
+    color: white;
+}
+#sj-game-modal-close-bottom {
+    background-color: #ef4444;
+    color: white;
+}
+#sj-game-over-screen button:hover {
+    transform: scale(1.05);
+}
+
+.sj-game-over-hidden {
+    visibility: hidden;
+}
