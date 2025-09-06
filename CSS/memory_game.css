@@ -1,0 +1,226 @@
+/* * All CSS class names and IDs are prefixed with 'memoryGameToast_'
+ * to ensure they are unique and do not conflict with your existing styles.
+*/
+.memoryGameToast_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    font-family: 'Inter', sans-serif; /* Using Inter font to match your site */
+}
+
+.memoryGameToast_overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+.memoryGameToast_container {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 24px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.9);
+    transition: transform 0.3s ease-in-out;
+}
+
+.memoryGameToast_overlay.active .memoryGameToast_container {
+    transform: scale(1);
+}
+
+.memoryGameToast_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.memoryGameToast_header h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 1.5rem;
+}
+
+.memoryGameToast_stats {
+    display: flex;
+    gap: 24px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.memoryGameToast_closeBtn {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #9ca3af;
+    cursor: pointer;
+    background: none;
+    border: none;
+    line-height: 1;
+}
+.memoryGameToast_closeBtn:hover {
+    color: #1f2937;
+}
+
+.memoryGameToast_grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    flex-grow: 1;
+    perspective: 1000px; /* For 3D flip effect */
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.memoryGameToast_card {
+    background-color: transparent;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    border-radius: 8px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.memoryGameToast_card.flip {
+    transform: rotateY(180deg);
+}
+
+.memoryGameToast_card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.memoryGameToast_card-front {
+    background: #f9fafb;
+    transform: rotateY(180deg);
+}
+
+.memoryGameToast_card-front img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.memoryGameToast_card-back {
+    background: #1e40af; /* Blue to match your site's theme */
+    border: 4px solid #ffffff;
+}
+
+/* This is the placeholder for your logo */
+.memoryGameToast_logo-placeholder {
+    width: 80%; /* Adjust size as needed */
+    height: 80%; /* Adjust size as needed */
+
+    /* --- ADD YOUR LOGO HERE --- */
+    background-image: url('../Img/logo/utycc_logo.png'); /* <-- CHANGE THIS PATH */
+
+    /* --- Styles to make the logo look good --- */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+ /* .memoryGameToast_logo-placeholder::after {
+    content: 'LOGO';
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: bold;
+} */
+
+/* Modal for Win/Loss Message */
+.memoryGameToast_modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.85);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 16px;
+    z-index: 10;
+}
+
+.memoryGameToast_modal.active {
+    display: flex;
+}
+
+.memoryGameToast_modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+.memoryGameToast_modal-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #111827;
+}
+
+.memoryGameToast_playAgainBtn {
+    padding: 12px 24px;
+    border: none;
+    background-color: #1e40af;
+    color: white;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.memoryGameToast_playAgainBtn:hover {
+    background-color: #1d4ed8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .memoryGameToast_grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .memoryGameToast_header h2 {
+        font-size: 1.2rem;
+    }
+    .memoryGameToast_stats {
+        font-size: 1rem;
+    }
+}
+ @media (max-width: 480px) {
+    .memoryGameToast_container {
+        padding: 16px;
+    }
+    .memoryGameToast_grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+     .memoryGameToast_header {
+        flex-direction: column;
+        gap: 10px;
+     }
+}
