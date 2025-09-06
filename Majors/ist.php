@@ -61,11 +61,11 @@
         </div>
       </a>
       <div class="hidden md:flex items-center space-x-6">
-       <a href="../about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+       <a href="../about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
-        <a href="../activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-        <a href="../exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="../exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
@@ -110,13 +110,13 @@
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
-      <a href="./about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
         <br><br>
-      <a href="./activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
         <br><br>
-      <a href="./exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
@@ -820,16 +820,16 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
             <li>
-              <a href="../Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
+              <a href="../Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science Technology</a>
             </li>
             <li>
-              <a href="../Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+              <a href="../Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a>
             </li>
             <li>
-              <a href="../Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+              <a href="../Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
             </li>
-            <li><a data-lang-key="footer_faculty_pre" href="../Majors/pre.html">Precision Engineering</a></li>
-            <li><a data-lang-key="footer_faculty_ame" href="../Majors/ame.html">
+            <li><a data-lang-key="footer_faculty_pre" href="../Majors/pre.php">Precision Engineering</a></li>
+            <li><a data-lang-key="footer_faculty_ame" href="../Majors/ame.php">
                 Advanced Materials Engineering
               </a></li>
           </ul>
@@ -841,19 +841,19 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
             <li>
-              <a href="../term.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+              <a href="../terms.php" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
             </li>
             <li>
-              <a href="../FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+              <a href="../FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
             </li>
             <li>
-              <a href="../about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+              <a href="../about.php" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
             </li>
             <li>
-              <a href="../r&r.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+              <a href="../randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
             </li>
             <li>
-              <a href="../data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data
+              <a href="../data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data
                 Protection</a>
             </li>
           </ul>

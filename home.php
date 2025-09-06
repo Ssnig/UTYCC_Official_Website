@@ -605,7 +605,7 @@ $pdo = null;
     <!-- Header -->
     <div id="header" class="bg-white shadow-md sticky top-0 z-50 transition-colors duration-300">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="./home.html" id="header-logo-link" class="flex items-center space-x-3">
+            <a href="./home.php" id="header-logo-link" class="flex items-center space-x-3">
                 <div class="p-2 rounded-lg icon-hover-effect ">
                     <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
                 </div>
@@ -616,11 +616,11 @@ $pdo = null;
                 </div>
             </a>
             <div class="hidden md:flex items-center space-x-6">
-                <a href="./about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
-                <a href="./activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-                <a href="./exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
                 <!-- Language Switcher Dropdown - Updated Style -->
                 <div class="relative ml-4">
@@ -657,13 +657,13 @@ $pdo = null;
         </nav>
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden px-6 pb-4 border-t md:hidden">
-                <a href="./about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
                     <br>
-                <a href="./activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
                     <br>
-                <a href="./exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
                     <br>
             <div class="relative mt-4 pt-4 border-t">
@@ -880,28 +880,28 @@ $pdo = null;
                         </div>
 
                         <div class="star-point " style="--angle: 0deg">
-                            <a href="./Majors/ist.html">
+                            <a href="./Majors/ist.php">
                                 <img src="Img/logo/IST.webp" class="logo-badge static-logo" alt="IST" />
                             </a>
                         </div>
 
                         <div class="star-point" style="--angle: 72deg">
-                            <a href="./Majors/ce.html">
+                            <a href="./Majors/ce.php">
                                 <img src="Img/logo/CE.webp" class="logo-badge static-logo" alt="CE" />
                             </a>
                         </div>
                         <div class="star-point" style="--angle: 144deg">
-                            <a href="./Majors/ece.html">
+                            <a href="./Majors/ece.php">
                                 <img src="Img/logo/EcE.jpg" class="logo-badge static-logo" alt="EcE" />
                             </a>
                         </div>
                         <div class="star-point" style="--angle: 216deg">
-                            <a href="./Majors/pre.html">
+                            <a href="./Majors/pre.php">
                                 <img src="Img/logo/PrE.png" class="logo-badge static-logo" alt="PrE" />
                             </a>
                         </div>
                         <div class="star-point" style="--angle: 288deg">
-                            <a href="./Majors/ame.html">
+                            <a href="./Majors/ame.php">
                                 <img src="Img/logo/AME_updated.jpg" class="logo-badge static-logo" alt="AmE" />
                             </a>
                         </div>
@@ -921,7 +921,7 @@ $pdo = null;
                         Bachelor's Degrees (6 Years)
                     </h3>
                     <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 card_1">
-                        <a href="./Majors/ist.html" class="program-card" style="--i:1;">
+                        <a href="./Majors/ist.php" class="program-card" style="--i:1;">
                             <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="ist">
                                 <img src="Img\logo\IST.webp" alt="Information Science and Technology" />
@@ -930,7 +930,7 @@ $pdo = null;
                                 </h3>
                             </div>
                         </a>
-                        <a href="./Majors/ce.html" class="program-card" style="--i:2;">
+                        <a href="./Majors/ce.php" class="program-card" style="--i:2;">
                             <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="ce">
                                 <img src="Img\logo\CE.webp" alt="Computer Engineering" />
@@ -939,7 +939,7 @@ $pdo = null;
                                 </h3>
                             </div>
                         </a>
-                        <a href="./Majors/ece.html" class="program-card" style="--i:3;">
+                        <a href="./Majors/ece.php" class="program-card" style="--i:3;">
                             <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="ece">
                                 <img src="Img/logo/EcE.jpg" alt="Electronics Engineering" />
@@ -948,7 +948,7 @@ $pdo = null;
                                 </h3>
                             </div>
                         </a>
-                        <a href="./Majors/pre.html" class="program-card" style="--i:4;">
+                        <a href="./Majors/pre.php" class="program-card" style="--i:4;">
                             <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="pre">
                                 <img src="Img/logo/PrE.png" alt="Precision Engineering" />
@@ -957,7 +957,7 @@ $pdo = null;
                                 </h3>
                             </div>
                         </a>
-                        <a href="./Majors/ame.html" class="program-card" style="--i:5;">
+                        <a href="./Majors/ame.php" class="program-card" style="--i:5;">
                             <div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"
                                 data-program="ame">
                                 <img src="Img\logo\Ame_updated.jpg" alt="Advanced Materials Engineering" />
@@ -1004,7 +1004,7 @@ $pdo = null;
                         <p class="max-w-md mb-8 text-sm md:text-base drop-shadow-sm">
                             Access your academic performance and check your latest exam results from all years and semesters.
                         </p>
-                        <a href="./exam_results.html" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
+                        <a href="./exam_results.php" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
                             Check Results
                         </a>
                     </div>
@@ -1152,20 +1152,20 @@ $pdo = null;
                     </h3>
                     <ul class="space-y-2 text-sm text-blue-200">
                         <li>
-                            <a href="./Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science
+                            <a href="./Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science
                                 Technology</a>
                         </li>
                         <li>
-                            <a href="./Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+                            <a href="./Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a>
                         </li>
                         <li>
-                            <a href="./Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+                            <a href="./Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
                         </li>
                         <li>
-                            <a data-lang-key="footer_faculty_pre" href="./Majors/pre.html">Precision Engineering</a>
+                            <a data-lang-key="footer_faculty_pre" href="./Majors/pre.php">Precision Engineering</a>
                         </li>
                         <li>
-                            <a data-lang-key="footer_faculty_ame" href="./Majors/ame.html">Advanced Materials
+                            <a data-lang-key="footer_faculty_ame" href="./Majors/ame.php">Advanced Materials
                                 Engineering</a>
                         </li>
                     </ul>
@@ -1176,24 +1176,24 @@ $pdo = null;
                     </h3>
                     <ul class="space-y-2 text-sm text-blue-200">
                         <li>
-                            <a href="./terms.html" class="hover:text-white shine_text"
+                            <a href="./terms.php" class="hover:text-white shine_text"
                                 data-lang-key="footer_link_terms">Terms &
                                 Policies</a>
                         </li>
                         <li>
-                            <a href="./FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+                            <a href="./FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
                         </li>
                         <li>
-                            <a href="./about.html" class="hover:text-white" data-lang-key="footer_link_about">About
+                            <a href="./about.php" class="hover:text-white" data-lang-key="footer_link_about">About
                                 Us</a>
                         </li>
                         <li>
-                            <a href="./randr.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules &
+                            <a href="./randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules &
                                 Regulations</a>
 
                         </li>
                         <li>
-                            <a href="./data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
+                            <a href="./data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
                         </li>
                     </ul>
                 </div>

@@ -112,11 +112,11 @@
         </div>
       </a>
       <div class="hidden md:flex items-center space-x-6">
-        <a href="./about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
-        <a href="./activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-        <a href="./exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
 
 
@@ -162,13 +162,13 @@
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
-      <a href="./about.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
         <br><br>
-      <a href="./activity.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
         <br><br>
-      <a href="./exam_results.html" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
@@ -231,7 +231,7 @@
       </h2>
       <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6"> -->
       <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 card_1">
-        <a href="./Majors/ist.html" class="uiverse-major-card">
+        <a href="./Majors/ist.php" class="uiverse-major-card">
           <img src="Img/logo/IST.webp" alt="Information Science and Technology"
             class="card-image w-full h-50 object-cover" />
           <div class="card-content">
@@ -240,13 +240,13 @@
               Learn to design, implement, and manage information systems that
               drive business success.
             </p>
-            <div class="card-button" data-lang-key="card_button_text" href="./Majors/ist.html">
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/ist.php">
               Learn More
             </div>
           </div>
         </a>
 
-        <a href="./Majors/ce.html" class="uiverse-major-card">
+        <a href="./Majors/ce.php" class="uiverse-major-card">
           <img src="Img/logo/CE.webp" alt="Computer Engineering" class="card-image w-full h-50 object-cover" />
           <div class="card-content">
             <span class="card-title" data-lang-key="major_ce_title">Computer Engineering (CE)</span>
@@ -254,13 +254,13 @@
               Combine computer science and electrical engineering to build
               hardware and software systems.
             </p>
-            <div class="card-button" data-lang-key="card_button_text" href="./Majors/ce.html">
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/ce.php">
               Learn More
             </div>
           </div>
         </a>
 
-        <a href="./Majors/ece.html" class="uiverse-major-card">
+        <a href="./Majors/ece.php" class="uiverse-major-card">
           <img src="Img/logo/EcE.jpg" alt="Electronics Engineering" class="card-image w-full h-50 object-cover" />
           <div class="card-content">
             <span class="card-title" data-lang-key="major_ece_title">Electronics Engineering (EcE)</span>
@@ -268,13 +268,13 @@
               Explore the principles of electricity, electronics, and
               computing for innovative solutions.
             </p>
-            <div class="card-button" data-lang-key="card_button_text" href="./Majors/ece.html">
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/ece.php">
               Learn More
             </div>
           </div>
         </a>
 
-        <a href="./Majors/pre.html" class="uiverse-major-card">
+        <a href="./Majors/pre.php" class="uiverse-major-card">
           <img src="Img/logo/PrE.png" alt="Precision Engineering" class="card-image w-full h-50 object-cover" />
           <div class="card-content">
             <span class="card-title" data-lang-key="major_pre_title">Precision Engineering (PrE)</span>
@@ -282,13 +282,13 @@
               Focus on the exploration, drilling, production, and management
               of oil and natural gas resources.
             </p>
-            <div class="card-button" data-lang-key="card_button_text" href="./Majors/pre.html">
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/pre.php">
               Learn More
             </div>
           </div>
         </a>
 
-        <a href="./Majors/ame.html" class="uiverse-major-card">
+        <a href="./Majors/ame.php" class="uiverse-major-card">
           <img src="Img/logo/AME_updated.jpg" alt="Advanced Materials Engineering"
             class="card-image w-full h-50 object-cover" />
           <div class="card-content">
@@ -297,7 +297,7 @@
               Design, analyze, and test aircraft, spacecraft, and other
               mechanical systems.
             </p>
-            <div class="card-button" data-lang-key="card_button_text" href="./Majors/‌ame.html">
+            <div class="card-button" data-lang-key="card_button_text" href="./Majors/‌ame.php">
               Learn More
             </div>
           </div>
@@ -343,19 +343,19 @@
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
             <li>
-              <a href="./Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
+              <a href="./Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science Technology</a>
             </li>
             <li>
-              <a href="./Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+              <a href="./Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a>
             </li>
             <li>
-              <a href="./Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+              <a href="./Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
             </li>
             <li>
-              <a data-lang-key="footer_faculty_pre" href="./Majors/pre.html">Precision Engineering</a>
+              <a data-lang-key="footer_faculty_pre" href="./Majors/pre.php">Precision Engineering</a>
             </li>
             <li>
-              <a data-lang-key="footer_faculty_ame" href="./Majors/ame.html">
+              <a data-lang-key="footer_faculty_ame" href="./Majors/ame.php">
                 Advanced Materials Engineering
               </a>
             </li>
@@ -368,19 +368,19 @@
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
             <li>
-              <a href="./term.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+              <a href="./term.php" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
             </li>
             <li>
-              <a href="./FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+              <a href="./FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
             </li>
             <li>
-              <a href="./about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+              <a href="./about.php" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
             </li>
             <li>
-              <a href="./r&r.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+              <a href="./randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
             </li>
             <li>
-              <a href="./data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data
+              <a href="./data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data
                 Protection</a>
             </li>
           </ul>
