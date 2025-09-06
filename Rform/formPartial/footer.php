@@ -1,91 +1,96 @@
- <footer id="contact" class="bg-blue-900 text-white ">
-        <div class="container mx-auto px-6 py-12">
-            <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
-                    <h3 class="text-lg font-bold">UTYCC</h3>
-                    <p class="text-blue-200 text-sm mt-4">
-                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
-                            Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
-                            Region, Myanmar
-                        </a>
-                    </p>
-                    <div class="mt-4 text-sm text-blue-200">
-                        <p>Email: info@utycc.edu.mm (example)</p>
-                        <p>Phone: +95 (XX) XXX XXX (example)</p>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
-                        Faculties
-                    </h3>
-                    <ul class="space-y-2 text-sm text-blue-200">
-                        <li>
-                            <a href="../Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
-                        </li>
-                        <li>
-                            <a href="../Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
-                        </li>
-                        <li>
-                            <a href="../Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
-                        </li>
-                        <li><a data-lang-key="footer_faculty_pre" href="../Majors/pre.html">Precision Engineering</a></li>
-                        <li><a data-lang-key="footer_faculty_ame" href="../Majors/ame.html">
-                                Advanced Materials Engineering
-                            </a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
-                        Quick Links
-                    </h3>
-                    <ul class="space-y-2 text-sm text-blue-200">
-                        <li>
-                            <a href="../term.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
-                        </li>
-                        <li>
-                            <a href="../FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
-                        </li>
-                        <li>
-                            <a href="../about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
-                        </li>
-                        <li>
-                            <a href="../r&r.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
-                        Follow Us
-                    </h3>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
-                        <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
-                        <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
-                        <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
-                    </div>
-                    <br />
-                    <br />
-                    <div>
-                        <div class="newtons-cradle">
-                            <div class="newtons-cradle__dot"></div>
-                            <div class="newtons-cradle__dot"></div>
-                            <div class="newtons-cradle__dot"></div>
-                            <div class="newtons-cradle__dot"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
-                data-lang-key="footer_copyright">
-                © 2025 University of Technology - Yatanarpon Cyber City. All
-                Rights Reserved.
-            </div>
+<footer id="contact" class="bg-blue-900 text-white ">
+    <div class="container mx-auto px-6 py-12">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
+          <h3 class="text-lg font-bold">UTYCC</h3>
+          <p class="text-blue-200 text-sm mt-4">
+            <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
+              Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay
+              Region, Myanmar
+            </a>
+          </p>
+          <div class="mt-4 text-sm text-blue-200">
+            <p>Email: info@utycc.edu.mm (example)</p>
+            <p>Phone: +95 (XX) XXX XXX (example)</p>
+          </div>
         </div>
-    </footer>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
+            Faculties
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li>
+              <a href="../Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science Technology</a>
+            </li>
+            <li>
+              <a href="../Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+            </li>
+            <li>
+              <a href="../Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+            </li>
+            <li><a data-lang-key="footer_faculty_pre" href="../Majors/pre.php">Precision Engineering</a></li>
+            <li><a data-lang-key="footer_faculty_ame" href="../Majors/ame.php">
+                Advanced Materials Engineering
+              </a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
+            Quick Links
+          </h3>
+          <ul class="space-y-2 text-sm text-blue-200">
+            <li>
+              <a href="../terms.php" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+            </li>
+            <li>
+              <a href="../FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+            </li>
+            <li>
+              <a href="../about.php" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+            </li>
+            <li>
+              <a href="../randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+            </li>
+            <li>
+              <a href="../data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data
+                Protection</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
+            Follow Us
+          </h3>
+          <div class="flex space-x-4">
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+            <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/"
+              class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
+          </div>
+          <br />
+          <br />
+          <div>
+            <div class="newtons-cradle">
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
+        data-lang-key="footer_copyright">
+        &copy; 2025 University of Technology - Yatanarpon Cyber City. All
+        Rights Reserved.
+      </div>
+    </div>
+  </footer>
 
     <script>
         // JavaScript for Photo Upload Preview and Remove
@@ -139,13 +144,11 @@
             my: {
                 utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
                 nav_about: "ကျွန်ုပ်တို့အကြောင်း",
-                nav_programs: "ပညာရေးအစီအစဉ်များ",
-                nav_collaboration: "ပူးပေါင်းဆောင်ရွက်မှု",
-                nav_contact: "ဆက်သွယ်ရန်",
-                nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
-                nav_programs_mobile: "ပညာရေးအစီအစဉ်များ",
-                nav_collaboration_mobile: "ပူးပေါင်းဆောင်ရွက်မှု",
-                nav_contact_mobile: "ဆက်သွယ်ရန်",
+        nav_activity: "လှုပ်ရှားမှုများ",
+        nav_examresult: "အောင်စာရင်း",
+        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+        nav_activity_mobile: "လှုပ်ရှားမှုများ",
+        nav_examresult_mobile: "အောင်စာရင်း",
                 footer_address:
                     "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
                 footer_faculties_title: "မဟာဌာနများ",
@@ -167,13 +170,11 @@
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
                 nav_about: "About Us",
-                nav_programs: "Academic Programs",
-                nav_collaboration: "Collaboration",
-                nav_contact: "Contact",
-                nav_about_mobile: "About Us",
-                nav_programs_mobile: "Academic Programs",
-                nav_collaboration_mobile: "Collaboration",
-                nav_contact_mobile: "Contact",
+        nav_activity: "Activities",
+        nav_examresult: "Exam Results",
+        nav_about_mobile: "About Us",
+        nav_activity_mobile: "Activities",
+        nav_examresult_mobile: "Exam Results",
                 footer_address:
                     "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
                 footer_faculties_title: "Faculties",
@@ -194,7 +195,7 @@
             },
         };
 
-        const languageSwitcher = document.getElementById("language-switcher");
+        const languageSwitcher = document.getElementById("language-switcher-desktop");
 
         const changeLanguage = (lang) => {
             localStorage.setItem("language", lang);
@@ -218,5 +219,6 @@
             changeLanguage(savedLang);
         });
     </script>
+    <script src="../../JS/lgl.js"></script>
 </body>
 </html>

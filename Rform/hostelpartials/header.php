@@ -71,7 +71,7 @@
             border-radius: 0.5rem;
             margin-top: 1rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition:  0.2s;
         }
         
         .upload-button:hover {
