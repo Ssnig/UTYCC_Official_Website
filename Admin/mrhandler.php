@@ -43,15 +43,18 @@ function handleDelete() {
             exit;
         }
 
-        $filePath = __DIR__ . '/../' . substr($result['image_path'], 3); // '../uploads/...' မှ '../' ကိုဖြုတ်ပြီး server path နှင့်ဆက်ပါ
+        $relativePath = $result['image_path'];
+        $basePath = realpath(__DIR__ . '/..'); // Navigate one level up from the current directory (where mrhandler.php is)
+        $fullPath = $basePath . '/' . $relativePath;
+
 
         // 2. Database record ကို ဖျက်ပါ
         $deleteStmt = $pdo->prepare("DELETE FROM exam_results WHERE id = ?");
         $deleteStmt->execute([$id]);
 
         // 3. Server မှ image file ကို ဖျက်ပါ
-        if (file_exists($filePath)) {
-            unlink($filePath);
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
         }
 
         echo json_encode(['success' => true, 'message' => 'Result successfully deleted.']);

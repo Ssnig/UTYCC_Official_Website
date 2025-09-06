@@ -130,7 +130,7 @@ try {
     </div>
   </main>
 
-  <!-- Modals (Edit and Delete) remain the same -->
+  <!-- Modals (Edit and Delete) -->
   <!-- Edit Modal -->
   <div id="editModal" class="modal-backdrop">
     <div class="modal-content">
@@ -179,70 +179,60 @@ try {
   </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const filterYear = document.getElementById('filter-year');
-        const filterMajor = document.getElementById('filter-major');
-        const noResultsMessage = document.getElementById('no-results-message');
+    const filterYear = document.getElementById('filter-year');
+    const filterMajor = document.getElementById('filter-major');
+    const noResultsMessage = document.getElementById('no-results-message');
 
-        function filterResults() {
-            const selectedYear = filterYear.value;
-            const selectedMajor = filterMajor.value;
-            let resultsFound = false;
+    function filterResults() {
+        const selectedYear = filterYear.value;
+        const selectedMajor = filterMajor.value;
+        let resultsFound = false;
 
-            // Loop through each year group
-            document.querySelectorAll('.year-group').forEach(yearGroup => {
-                const year = yearGroup.dataset.year;
-                let yearHasVisibleMajors = false;
-                
-                // Loop through each major group within the year group
-                yearGroup.querySelectorAll('.major-group').forEach(majorGroup => {
-                    const major = majorGroup.dataset.major;
-                    let majorHasVisibleCards = false;
+        document.querySelectorAll('.year-group').forEach(yearGroup => {
+            const year = yearGroup.dataset.year;
+            let yearHasVisibleMajors = false;
+            
+            yearGroup.querySelectorAll('.major-group').forEach(majorGroup => {
+                const major = majorGroup.dataset.major;
+                let majorHasVisibleCards = false;
 
-                    // Loop through each result card within the major group
-                    majorGroup.querySelectorAll('.result-card').forEach(card => {
-                        const cardYear = card.dataset.year;
-                        const cardMajor = card.dataset.major;
+                majorGroup.querySelectorAll('.result-card').forEach(card => {
+                    const cardYear = card.dataset.year;
+                    const cardMajor = card.dataset.major;
+                    const yearMatch = (selectedYear === 'all' || selectedYear === cardYear);
+                    const majorMatch = (selectedMajor === 'all' || selectedMajor === cardMajor);
 
-                        const yearMatch = (selectedYear === 'all' || selectedYear === cardYear);
-                        const majorMatch = (selectedMajor === 'all' || selectedMajor === cardMajor);
-
-                        if (yearMatch && majorMatch) {
-                            card.style.display = 'block';
-                            majorHasVisibleCards = true;
-                            resultsFound = true;
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-
-                    // Hide or show major group based on visible cards
-                    if (majorHasVisibleCards) {
-                        majorGroup.style.display = 'block';
-                        yearHasVisibleMajors = true;
+                    if (yearMatch && majorMatch) {
+                        card.style.display = 'block';
+                        majorHasVisibleCards = true;
+                        resultsFound = true;
                     } else {
-                        majorGroup.style.display = 'none';
+                        card.style.display = 'none';
                     }
                 });
 
-                // Hide or show year group based on visible majors
-                if (yearHasVisibleMajors) {
-                    yearGroup.style.display = 'block';
+                if (majorHasVisibleCards) {
+                    majorGroup.style.display = 'block';
+                    yearHasVisibleMajors = true;
                 } else {
-                    yearGroup.style.display = 'none';
+                    majorGroup.style.display = 'none';
                 }
             });
 
-            // Show or hide the "no results" message
-            noResultsMessage.style.display = resultsFound ? 'none' : 'block';
-        }
+            if (yearHasVisibleMajors) {
+                yearGroup.style.display = 'block';
+            } else {
+                yearGroup.style.display = 'none';
+            }
+        });
 
-        filterYear.addEventListener('change', filterResults);
-        filterMajor.addEventListener('change', filterResults);
-    });
+        noResultsMessage.style.display = resultsFound ? 'none' : 'block';
+    }
 
-
-    // --- Modal and API call scripts remain unchanged ---
+    filterYear.addEventListener('change', filterResults);
+    filterMajor.addEventListener('change', filterResults);
+    
+    // --- Modal and API call scripts ---
     const editModal = document.getElementById('editModal');
     const deleteModal = document.getElementById('deleteModal');
     const statusMessage = document.getElementById('status-message');
@@ -290,6 +280,9 @@ try {
     document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
         if (!deleteId) return;
 
+        // Hide modal immediately
+        deleteModal.classList.remove('visible');
+
         const formData = new FormData();
         formData.append('action', 'delete');
         formData.append('id', deleteId);
@@ -301,13 +294,24 @@ try {
 
         if (result.success) {
             const cardToRemove = document.getElementById(`result-card-${deleteId}`);
-            if(cardToRemove) {
-                cardToRemove.parentElement.parentElement.parentElement.remove(); // Remove entire group if it becomes empty
-                filterResults(); // Re-evaluate groups
+            if (cardToRemove) {
+                const majorGroup = cardToRemove.closest('.major-group');
+                cardToRemove.remove(); // Remove the card
+
+                // If the major group has no more cards, remove the major group itself
+                if (majorGroup && !majorGroup.querySelector('.result-card')) {
+                    const yearGroup = majorGroup.closest('.year-group');
+                    majorGroup.remove();
+
+                    // If the year group has no more major groups, remove the year group
+                    if (yearGroup && !yearGroup.querySelector('.major-group')) {
+                        yearGroup.remove();
+                    }
+                }
             }
         }
         
-        deleteModal.classList.remove('visible');
+        // Reset the ID after operation
         deleteId = null;
     });
 
@@ -320,7 +324,9 @@ try {
             : 'mb-4 p-3 rounded-lg text-center bg-red-100 text-red-800';
         setTimeout(() => statusMessage.classList.add('hidden'), 5000);
     }
+
+    // Initial filter on page load
+    document.addEventListener('DOMContentLoaded', filterResults);
 </script>
 </body>
 </html>
-
