@@ -1240,5 +1240,4 @@ $pdo = null;
   </script>
 </body>
 </html>
-
-//game//
+game
