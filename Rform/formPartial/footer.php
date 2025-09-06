@@ -149,6 +149,7 @@
         nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
         nav_activity_mobile: "လှုပ်ရှားမှုများ",
         nav_examresult_mobile: "အောင်စာရင်း",
+        footer_link_dp: "ဒေတာကာကွယ်ရေး",
                 footer_address:
                     "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
                 footer_faculties_title: "မဟာဌာနများ",
@@ -192,6 +193,7 @@
                 footer_link_faq: "FAQs",
                 footer_link_about: "About Us",
                 footer_link_rules: "Rules & Regulations",
+                footer_link_dp: "Data Protection",
             },
         };
 

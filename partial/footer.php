@@ -301,6 +301,7 @@
                 login_button: "ဝင်ရောက်မည်",
                 login_toggle:
                     "အကောင့်မရှိသေးဘူးလား? <a id='toggle-to-signup-btn'>အသစ်ပြုလုပ်ရန်</a>",
+                    footer_link_dp: "ဒေတာကာကွယ်ရေး",
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -387,6 +388,7 @@
                 login_button: "Sign In",
                 login_toggle:
                     "Don't have an account? <a id='toggle-to-signup-btn'>Create one</a>",
+                    footer_link_dp: "Data Protection",
             },
         };
 
