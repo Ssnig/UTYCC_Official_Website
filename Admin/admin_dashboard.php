@@ -1,44 +1,9 @@
 <?php
-// For debugging purposes, you can uncomment the following two lines to see detailed PHP errors.
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
+// Include the database configuration file
+require_once '../Rform/db.php';
 
-/**
- * A function to safely encode data into a JSON string for use in JavaScript.
- * This prevents script-breaking errors if the data is invalid.
- *
- * @param mixed $value The data to encode.
- * @return string A valid JSON string (defaults to '[]' on error).
- */
-function safe_json_encode($value) {
-    try {
-        // Encode data, throwing an exception on errors like malformed UTF-8 characters.
-        $json = json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
-        return $json;
-    } catch (JsonException $e) {
-        // If encoding fails, log the error and return a valid empty JSON array string.
-        error_log("json_encode error: " . $e->getMessage());
-        return '[]';
-    }
-}
-
-$students_json = '[]'; // Default to a valid empty JSON array as a string.
-$pdo = null; // Initialize pdo to null
-
-try {
-    // --- CODE QUALITY FIX: The file path for the database connection has been made more robust. ---
-    $db_path = __DIR__ . '/../Rform/db.php';
-    if (!file_exists($db_path)) {
-        throw new Exception("Database configuration file not found at: {$db_path}");
-    }
-    require_once $db_path;
-
-    if (!isset($pdo)) {
-        throw new Exception("PDO connection object was not created in db.php.");
-    }
-
-    // Set the default timezone to ensure date comparisons are accurate.
-    date_default_timezone_set('Asia/Yangon');
+// Set the default timezone to ensure date comparisons are accurate
+date_default_timezone_set('Asia/Yangon');
 
     $students = [];
     $sql = "SELECT s.*, s.preferences,
@@ -394,30 +359,14 @@ $pdo = null;
     <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
         <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
-        <h1>UTYCC Admin</h1>
+        <h1>UTYCC Admin Panel</h1>
       </div>
       <nav>
-        <!-- --- UI FIX: Added SVG icons to nav links --- -->
-        <a class="nav-link active" href="admin_dashboard.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-          Registrations
-        </a>
-        <a class="nav-link" href="upload_result.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-          Upload Results
-        </a>
-        <a class="nav-link" href="students.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          Students
-        </a>
-        <a class="nav-link" href="support.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          Support
-        </a>
-        <a class="nav-link" href="settings.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-          Settings
-        </a>
+        <a class="nav-link active" href="admin_dashboard.php">Registrations</a>
+        <a class="nav-link" href="upload_result.php">TO upload Results</a>
+        <a class="nav-link" href="students.php">Students</a>
+        <a class="nav-link" href="support.php">Support</a>
+        <a class="nav-link" href="settings.php">Settings</a>
       </nav>
     </aside>
 

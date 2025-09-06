@@ -23,6 +23,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
+  <!-- === Game Stylesheet === -->
+  <link rel="stylesheet" href="./CSS/game-style.css" />
+  <!-- === End Game Stylesheet === -->
+
   <style>
     body {
       font-family: "Inter", sans-serif;
@@ -340,6 +344,45 @@
     </div>
   </footer>
 
+  <!-- === Game HTML Elements === -->
+  <div id="sj-game-toast" class="sj-game-toast-hidden">
+      <p>Bored, wanna play a game?</p>
+      <div class="sj-game-toast-buttons">
+          <button id="sj-game-toast-yes">Yes</button>
+          <button id="sj-game-toast-no">No</button>
+      </div>
+  </div>
+
+  <div id="sj-game-modal-overlay" class="sj-game-modal-hidden">
+      <div id="sj-game-modal-content">
+          <button id="sj-game-modal-close-top">&times;</button>
+          <div class="sj-game-header">
+              <img src="./Img/logo/utycc_logo.png" alt="UTYCC Logo">
+              <div class="sj-game-title-container">
+                  <h1 class="sj-game-h1">Super Jumper</h1>
+              </div>
+              <div class="sj-game-score-container">
+                  <div>SCORE: <span id="sj-game-score">0</span></div>
+                  <div class="sj-game-best-score">BEST: <span id="sj-game-highScore">0</span></div>
+              </div>
+          </div>
+          <canvas id="sj-game-canvas"></canvas>
+          <div id="sj-game-countdown" class="sj-game-countdown-hidden"></div>
+          <div class="sj-game-touch-controls">
+              <div id="sj-game-leftBtn" class="sj-game-touch-btn">&#9664;</div>
+              <div id="sj-game-jumpBtn" class="sj-game-touch-btn sj-game-jump-btn">&#9650;</div>
+              <div id="sj-game-rightBtn" class="sj-game-touch-btn">&#9654;</div>
+          </div>
+          <div id="sj-game-over-screen" class="sj-game-over-hidden">
+              <h2>GAME OVER</h2>
+              <button id="sj-game-play-again">Play Again</button>
+              <button id="sj-game-modal-close-bottom">Close</button>
+          </div>
+      </div>
+  </div>
+  <!-- === End Game HTML === -->
+
+
     <script>
     // --- Mobile Menu and Smooth Scroll Script ---
     const navLinks = document.querySelectorAll(".nav-link");
@@ -549,7 +592,10 @@
   </script>
   <script src="./js/lgl.js"></script>
 
-    
+  <!-- === Game Script === -->
+  <script src="./js/game-script.js"></script>
+  <!-- === End Game Script === -->
+
 </body>
 
 </html>

@@ -79,17 +79,19 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
     <div class="app" id="app">
         <aside class="sidebar">
             <div class="brand">
-                <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+                <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
                 <h1>UTYCC Admin Panel</h1>
             </div>
-            <nav>
-                <a class="nav-link" href="admin_dashboard.php">Registrations</a>
-                <a class="nav-link" href="upload_result.php">Upload Results</a>
-                <a class="nav-link" href="students.php">Students</a>
-                <a class="nav-link active" href="analytics.php">Analytics</a>
-                <a class="nav-link" href="support.php">Support</a>
-                <a class="nav-link" href="settings.php">Settings</a>
-            </nav>
+      <nav>
+        <a class="nav-link" href="admin_dashboard.php">Registrations</a>
+        <a class="nav-link" href="upload_result.php">Upload Results</a>
+        <a class="nav-link" href="manage_results.php">Manage Results</a>
+        <a class="nav-link active" href="analytics.php">Analytics</a>
+        <a class="nav-link" href="activity.php">Upload Activity</a>
+        <a class="nav-link" href="students.php">Students</a>
+        <a class="nav-link" href="support.php">Support</a>
+        <a class="nav-link" href="settings.php">Settings</a>
+      </nav>
         </aside>
 
         <header class="header">

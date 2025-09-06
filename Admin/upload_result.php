@@ -85,15 +85,15 @@ if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true)
 <body class="flex">
    <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
-        <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+        <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
         <h1>UTYCC Admin Panel</h1>
       </div>
       <nav>
         <a class="nav-link" href="admin_dashboard.php">Registrations</a>
-        <!-- "active" class ကို ဤစာမျက်နှာအတွက် ပြောင်းပေးပါ -->
         <a class="nav-link active" href="upload_result.php">Upload Results</a>
-        <!-- "Manage Results" link အသစ် ထည့်သွင်းပါ -->
         <a class="nav-link" href="manage_results.php">Manage Results</a>
+        <a class="nav-link" href="analytics.php">Analytics</a>
+        <a class="nav-link" href="activity.php">Upload Activity</a>
         <a class="nav-link" href="students.php">Students</a>
         <a class="nav-link" href="support.php">Support</a>
         <a class="nav-link" href="settings.php">Settings</a>
