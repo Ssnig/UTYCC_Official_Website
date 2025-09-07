@@ -6,20 +6,13 @@
  */
 
 ob_start(); // Start output buffering
-session_start(); // Start the session to check for login status
-
+require_once 'auth_check.php';
 header('Content-Type: application/json');
 require_once '../Rform/db.php'; // Provides the $pdo object
 
 $response = ['status' => 'error', 'message' => 'Invalid Request'];
 
 // Security Check: Ensure the user is a logged-in admin
-if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    http_response_code(401); // Unauthorized
-    $response['message'] = 'Unauthorized. Please log in to perform this action.';
-    echo json_encode($response);
-    exit;
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Admin actions are expected to be JSON
