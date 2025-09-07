@@ -1,18 +1,45 @@
 <?php
 require_once 'auth_check.php';
-
-// We need to fetch the list of current admins to display on the page.
 require_once '../Rform/db.php';
 
+// Fetch current admins
 $admins = [];
 try {
     $stmt = $pdo->query("SELECT id, admin_user FROM admins ORDER BY admin_user ASC");
     $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Handle error gracefully in a real application
     error_log("Could not fetch admins: " . $e->getMessage());
 }
-$pdo = null;
+
+// Fetch site settings from database
+$settings = [];
+try {
+    // Fetch all relevant settings in one query
+    $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status')");
+    $settings_from_db = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+    
+    // Set default values for settings that might not be in the database yet
+    $defaults = [
+        'announcement_text' => '',
+        'announcement_status' => 'disabled',
+        'enrollment_status' => 'open' // Default to open
+    ];
+
+    // Merge database values with defaults, giving precedence to database values
+    $settings = array_merge($defaults, $settings_from_db);
+
+} catch (PDOException $e) {
+    error_log("Could not fetch settings: " . $e->getMessage());
+    // In case of error, use defaults
+    $settings = [
+        'announcement_text' => 'Error loading settings.',
+        'announcement_status' => 'disabled',
+        'enrollment_status' => 'closed'
+    ];
+}
+
+
+$pdo = null; // Close the connection
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -149,7 +176,7 @@ $pdo = null;
           Support
         </a>
         <a class="nav-link active" href="settings.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           Settings
         </a>
       </nav>
@@ -257,48 +284,62 @@ $pdo = null;
     </dialog>
 
     <script>
+        // Initial state loaded from PHP
         const state = {
-            admins: <?php echo json_encode($admins); ?>
+            admins: <?php echo json_encode($admins); ?>,
+            settings: <?php echo json_encode($settings); ?>
         };
 
-        // API request function specifically for admin management
-        async function adminApiRequest(action, data) {
-            try {
-                const response = await fetch('admin_api.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action, ...data }),
-                });
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: response.statusText }));
-                    throw new Error(errorData.message || `HTTP error ${response.status}`);
-                }
-                return await response.json();
-            } catch (error) {
-                showToast(`Error: ${error.message}`, 'error');
-                return { status: 'error', message: error.message };
-            }
-        }
-        
-        // API request function for all other settings
-        async function apiRequest(action, data) {
-            try {
-                const response = await fetch('api.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action, ...data }),
-                });
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ message: response.statusText }));
-                    throw new Error(errorData.message || `HTTP error ${response.status}`);
-                }
-                return await response.json();
-            } catch (error) {
-                showToast(`Error: ${error.message}`, 'error');
-                return { status: 'error', message: error.message };
-            }
-        }
+        /**
+         * A centralized client for making API requests to the backend.
+         * It automatically handles session timeouts (401 Unauthorized errors) and other server errors.
+         */
+        const apiClient = {
+            async post(url, action, data = {}) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ action, ...data })
+                    });
 
+                    // Handle session timeout specifically
+                    if (response.status === 401) {
+                        showToast('Session expired. Redirecting to login page...', 'error', 3000);
+                        setTimeout(() => window.location.href = 'signin.php', 2500);
+                        return { status: 'unauthorized', message: 'Session expired.' };
+                    }
+                    
+                    const contentType = response.headers.get("content-type");
+                    // Check if response is JSON before parsing
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                         const responseData = await response.json();
+                        if (!response.ok) {
+                            throw new Error(responseData.message || `Server error: ${response.status}`);
+                        }
+                        return responseData;
+                    } else {
+                        // Handle non-JSON responses (like HTML error pages from PHP)
+                        const errorText = await response.text();
+                        console.error("Received non-JSON response from server:", errorText);
+                        throw new Error(`A server communication error occurred. Check the console for details.`);
+                    }
+
+                } catch (error) {
+                    // Avoid showing a toast if it's a session timeout, as it's already handled.
+                    if (error.message !== 'Session expired.') {
+                        showToast(error.message, 'error');
+                    }
+                    return { status: 'error', message: error.message };
+                }
+            },
+            admin: (action, data) => apiClient.post('admin_api.php', action, data),
+            main: (action, data) => apiClient.post('api.php', action, data)
+        };
+        
         const toastWrap = document.querySelector(".toast-wrap");
         function showToast(message, type = "success", duration = 4000) {
             const toast = document.createElement("div");
@@ -319,11 +360,21 @@ $pdo = null;
             
             confirmBtn.className = `btn ${confirmClass}`;
 
-            confirmModal.showModal();
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+            const newCancelBtn = document.getElementById('confirmCancel').cloneNode(true);
+            document.getElementById('confirmCancel').parentNode.replaceChild(newCancelBtn, document.getElementById('confirmCancel'));
+
             const handleConfirm = () => { confirmModal.close(); resolve(true); };
             const handleCancel = () => { confirmModal.close(); resolve(false); };
-            confirmBtn.addEventListener('click', handleConfirm, { once: true });
-            document.getElementById('confirmCancel').addEventListener('click', handleCancel, { once: true });
+            
+            newConfirmBtn.addEventListener('click', handleConfirm, { once: true });
+            newCancelBtn.addEventListener('click', handleCancel, { once: true });
+            
+            if (!confirmModal.open) {
+                confirmModal.showModal();
+            }
           });
         }
 
@@ -357,7 +408,7 @@ $pdo = null;
                     return;
                 }
 
-                const response = await adminApiRequest('add_admin', { username, password });
+                const response = await apiClient.admin('add_admin', { username, password });
                 
                 if (response.status === 'success' && response.admin) {
                     state.admins.push(response.admin);
@@ -378,7 +429,7 @@ $pdo = null;
                     const confirmed = await showConfirm('Delete Admin', `Are you sure you want to delete admin "${admin.admin_user}"? This action cannot be undone.`);
                     if (!confirmed) return;
 
-                    const response = await adminApiRequest('delete_admin', { id: adminId });
+                    const response = await apiClient.admin('delete_admin', { id: adminId });
                     if (response.status === 'success') {
                         state.admins = state.admins.filter(a => a.id != adminId);
                         renderAdminList();
@@ -387,32 +438,32 @@ $pdo = null;
                 }
             });
             
-            // --- Other settings event listeners ---
             const announcementText = document.getElementById('announcementText');
             const announcementEnableBtn = document.getElementById('announcementEnableBtn');
             const announcementDisableBtn = document.getElementById('announcementDisableBtn');
             const saveAnnouncementBtn = document.getElementById('saveAnnouncementBtn');
-            let currentAnnouncementStatus = 'disabled';
+            
+            announcementText.value = state.settings.announcement_text;
 
             function updateAnnouncementButtonState() {
-                announcementEnableBtn.classList.toggle('active', currentAnnouncementStatus === 'enabled');
-                announcementEnableBtn.classList.toggle('primary', currentAnnouncementStatus === 'enabled');
-                announcementDisableBtn.classList.toggle('active', currentAnnouncementStatus === 'disabled');
-                announcementDisableBtn.classList.toggle('destructive', currentAnnouncementStatus === 'disabled');
+                announcementEnableBtn.classList.toggle('active', state.settings.announcement_status === 'enabled');
+                announcementEnableBtn.classList.toggle('primary', state.settings.announcement_status === 'enabled');
+                announcementDisableBtn.classList.toggle('active', state.settings.announcement_status === 'disabled');
+                announcementDisableBtn.classList.toggle('destructive', state.settings.announcement_status === 'disabled');
             }
              announcementEnableBtn.addEventListener('click', () => {
-                currentAnnouncementStatus = 'enabled';
+                state.settings.announcement_status = 'enabled';
                 updateAnnouncementButtonState();
             });
             announcementDisableBtn.addEventListener('click', () => {
-                currentAnnouncementStatus = 'disabled';
+                state.settings.announcement_status = 'disabled';
                 updateAnnouncementButtonState();
             });
             
             saveAnnouncementBtn.addEventListener('click', async () => {
                 const text = announcementText.value;
-                const status = currentAnnouncementStatus;
-                const response = await apiRequest('save_announcement', { text, status });
+                const status = state.settings.announcement_status;
+                const response = await apiClient.main('save_announcement', { text, status });
                  if (response.status === 'success') {
                     showToast('Announcement saved successfully!', 'success');
                 }
@@ -440,25 +491,30 @@ $pdo = null;
             const enrollmentCloseBtn = document.getElementById('enrollmentCloseBtn');
 
              function updateEnrollmentButtonState() {
-                const status = localStorage.getItem('enrollmentStatus') || 'open';
+                const status = state.settings.enrollment_status;
                 enrollmentOpenBtn.classList.toggle('active', status === 'open');
                 enrollmentOpenBtn.classList.toggle('primary', status === 'open');
                 enrollmentCloseBtn.classList.toggle('active', status === 'closed');
                 enrollmentCloseBtn.classList.toggle('destructive', status === 'closed');
             }
             
-            enrollmentOpenBtn.addEventListener('click', () => {
-                localStorage.setItem('enrollmentStatus', 'open');
-                showToast('Enrollment is now open.', 'success');
-                updateEnrollmentButtonState();
+            enrollmentOpenBtn.addEventListener('click', async () => {
+                const response = await apiClient.main('save_enrollment_status', { status: 'open' });
+                if (response.status === 'success') {
+                    state.settings.enrollment_status = 'open';
+                    showToast('Enrollment is now open.', 'success');
+                    updateEnrollmentButtonState();
+                }
             });
-            enrollmentCloseBtn.addEventListener('click', () => {
-                localStorage.setItem('enrollmentStatus', 'closed');
-                showToast('Enrollment is now closed.', 'warning');
-                updateEnrollmentButtonState();
+            enrollmentCloseBtn.addEventListener('click', async () => {
+                const response = await apiClient.main('save_enrollment_status', { status: 'closed' });
+                if (response.status === 'success') {
+                    state.settings.enrollment_status = 'closed';
+                    showToast('Enrollment is now closed.', 'warning');
+                    updateEnrollmentButtonState();
+                }
             });
 
-             // --- Logout Button ---
             document.getElementById('logoutBtn').addEventListener('click', async () => {
                 const confirmed = await showConfirm(
                     'Logout',
