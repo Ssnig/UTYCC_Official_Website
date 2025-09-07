@@ -1,13 +1,7 @@
 <?php
 // Include the database connection file
-session_start();
+require_once 'auth_check.php';
 
-require_once '../Rform/db.php'; 
-// Security check: If the user is not logged in, redirect to the sign-in page.
-if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    header("location: ./signin.php"); // Corrected path to signin.php in the same directory
-    exit;
-}
 
 header('Content-Type: application/json');
 

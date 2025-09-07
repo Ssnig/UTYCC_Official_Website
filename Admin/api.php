@@ -8,6 +8,7 @@
  */
 
 ob_start(); // Start output buffering
+require_once 'auth_check.php';
 
 header('Content-Type: application/json');
 require_once '../Rform/db.php'; // Provides the $pdo object
