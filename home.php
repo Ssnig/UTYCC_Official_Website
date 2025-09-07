@@ -2,22 +2,25 @@
 require_once './Rform/db.php'; 
 $announcement_text = '';
 $announcement_status = 'disabled';
+$enrollment_status = 'open'; // Default to 'open' if setting is not in DB
 
 try {
+    // Check if the settings table exists to avoid errors
+    $stmt = $pdo->query("SELECT 1 FROM site_settings LIMIT 1");
     
-    $stmt = $pdo->prepare("SELECT 1 FROM site_settings LIMIT 1");
-    $stmt->execute();
-    
-    if ($stmt->rowCount() > 0) {
-        $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status')");
+    if ($stmt->fetch()) {
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status')");
         $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         
         $announcement_text = $settings['announcement_text'] ?? '';
         $announcement_status = $settings['announcement_status'] ?? 'disabled';
+        $enrollment_status = $settings['enrollment_status'] ?? 'open';
     }
 
 } catch (PDOException $e) {
-    // Table does not exist, ignore and use default values
+    // Table probably does not exist, so we use default values.
+    // This prevents the site from crashing on a fresh setup.
+    // error_log("Could not fetch settings for home.php: " . $e->getMessage()); // Optional for debugging
 }
 $pdo = null; 
 ?>
@@ -349,7 +352,7 @@ $pdo = null;
                     data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
                 <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-                <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./rform/examresults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
                 <!-- Language Switcher Dropdown - Updated Style -->
                 <div class="relative ml-4">
@@ -392,7 +395,7 @@ $pdo = null;
                 <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
                     <br>
-                <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
                     <br>
             <div class="relative mt-4 pt-4 border-t">
@@ -1422,15 +1425,21 @@ $pdo = null;
             const savedLang = localStorage.getItem("selectedLanguage") || "my";
             setLanguage(savedLang);
 
-            // --- Enrollment Status Check ---
-            const enrollmentStatus = localStorage.getItem('enrollmentStatus');
+            // --- MODIFICATION: Enrollment Status Check using PHP variable ---
+            const enrollmentStatus = '<?php echo $enrollment_status; ?>';
             const enrollmentOpenSection = document.getElementById('enrollment-open');
             const enrollmentClosedSection = document.getElementById('enrollment-closed');
 
-            if (enrollmentStatus === 'closed') {
-                if (enrollmentOpenSection) enrollmentOpenSection.style.display = 'none';
-                if (enrollmentClosedSection) enrollmentClosedSection.classList.remove('hidden');
+            if (enrollmentOpenSection && enrollmentClosedSection) {
+                if (enrollmentStatus === 'closed') {
+                    enrollmentOpenSection.style.display = 'none';
+                    enrollmentClosedSection.classList.remove('hidden');
+                } else {
+                    enrollmentOpenSection.style.display = 'flex';
+                    enrollmentClosedSection.classList.add('hidden');
+                }
             }
+
 
             // Close mobile menu when a nav link is clicked
             document.querySelectorAll('.nav-link').forEach(link => {

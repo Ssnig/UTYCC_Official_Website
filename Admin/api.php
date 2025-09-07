@@ -8,6 +8,7 @@
  */
 
 ob_start(); // Start output buffering
+require_once 'auth_check.php';
 
 header('Content-Type: application/json');
 require_once '../Rform/db.php'; // Provides the $pdo object
@@ -364,20 +365,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 break;
             
+            // --- MODIFIED: Fetch all settings at once ---
             case 'get_settings':
-                $sql = "SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status')";
+                $sql = "SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status')";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
                 $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
                 
                 $defaults = [
                     'announcement_text' => '',
-                    'announcement_status' => 'disabled'
+                    'announcement_status' => 'disabled',
+                    'enrollment_status' => 'open' // Default to 'open' if not in DB
                 ];
                 
                 $response = ['status' => 'success', 'settings' => array_merge($defaults, $settings)];
                 break;
 
+            // --- UNCHANGED ---
             case 'save_announcement':
                 $data = json_decode(file_get_contents('php://input'), true);
                 $text = $data['text'] ?? '';
@@ -401,6 +405,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 $response = ['status' => 'success', 'message' => 'Announcement settings saved.'];
                 break;
+            
+            // --- NEW: Handle saving enrollment status ---
+            case 'save_enrollment_status':
+                $data = json_decode(file_get_contents('php://input'), true);
+                $status = $data['status'] ?? 'open';
+
+                if (!in_array($status, ['open', 'closed'])) {
+                    $status = 'open'; // Default to a safe value
+                }
+
+                $sql = "INSERT INTO site_settings (setting_key, setting_value) VALUES ('enrollment_status', ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$status]);
+
+                $response = ['status' => 'success', 'message' => 'Enrollment status updated.'];
+                break;
+
 
             case 'send_feedback_reply':
                 $data = json_decode(file_get_contents('php://input'), true);
@@ -481,7 +502,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
         }
     } catch (Exception $e) {
-        if ($pdo->inTransaction()) {
+        if ($pdo && $pdo->inTransaction()) {
             $pdo->rollBack();
         }
         http_response_code(500);
@@ -493,4 +514,3 @@ ob_end_clean(); // Clean any stray output
 echo json_encode($response);
 $pdo = null; // Close connection
 ?>
-
