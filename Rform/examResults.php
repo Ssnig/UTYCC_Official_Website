@@ -3,21 +3,21 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="./CSS/shine_text.css">
-    <link rel="stylesheet" href="./CSS/star-layout.css" />
+    <link rel="stylesheet" href="../CSS/shine_text.css">
+    <link rel="stylesheet" href="../CSS/star-layout.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="stylesheet" href="./CSS/footer.css" />
-    <script src="./JS/star-layout.js"></script>
+    <link rel="stylesheet" href="../CSS/footer.css" />
+    <script src="../JS/star-layout.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>University of Technology - Yatanarpon Cyber City (UTYCC)</title>
-    <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="CSS/font.css" />
+    <link rel="stylesheet" href="../CSS/font.css" />
     <script src="./JS/GSAP.js"></script>
   <style>
     body {
@@ -42,66 +42,151 @@
   <!-- Navigation Bar -->
   <div class="bg-white shadow-md sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="./home.php" class="flex items-center space-x-3">
-        <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-8" />
+      <a href="../home.php" class="flex items-center space-x-3">
+        <div class="p-2 rounded-lg">
+          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+        </div>
         <div>
           <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
-          <span class="text-xs text-gray-500">University of Technology (Yatanarpon Cyber City)</span>
+          <span class="text-xs text-gray-500" data-lang-key="utycc_full_name">University of Technology (Yatanarpon Cyber
+            City)</span>
         </div>
       </a>
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="../about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_about">About Us</a>
+        <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_activity">Activities</a>
+        <a href="./Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_examresult">Exam Results</a>
+        <!-- Language Switcher Dropdown - Updated Style -->
+        <div class="relative ml-4">
+          <div id="lang-switcher-container-desktop">
+            <!-- Custom Button -->
+            <button
+              class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+              <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
+                class="h-4 w-6 object-cover flex-shrink-0">
+              <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
+              <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
+            </button>
+            <!-- Custom Dropdown Menu -->
+            <div
+              class="lang-switcher-menu hidden absolute mt-1 w-auto min-w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+              <a href="#"
+                class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                data-lang="my">
+                <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
+                  class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                <span>မြန်မာ</span>
+              </a>
+              <a href="#"
+                class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                data-lang="en">
+                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                <span>English</span>
+              </a>
+            </div>
+          </div>
+          <!-- Hidden original select to maintain JS compatibility -->
+          <select id="language-switcher-desktop" class="hidden">
+            <option value="my">မြန်မာ</option>
+            <option value="en" selected>English</option>
+          </select>
+        </div>
+      </div>
       <button id="mobile-menu-button" class="md:hidden text-blue-900">
         <i class="fas fa-bars text-2xl"></i>
       </button>
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-      <a href="./about.html" class="block py-2 text-gray-700 hover:text-blue-800">About Us</a>
-      <a href="./programs.html" class="block py-2 text-gray-700 hover:text-blue-800">Programs</a>
-      <a href="./contact.html" class="block py-2 text-gray-700 hover:text-blue-800">Contact</a>
+      <br><br>
+      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_about_mobile">About Us</a>
+          <br><br>
+        <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_activity_mobile">Activities</a>
+          <br><br>
+        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_examresult_mobile">Exam Results</a>
+          <br><br>
+      <div class="relative mt-4 pt-4 border-t">
+        <!-- Language Switcher for Mobile -->
+        <div id="lang-switcher-container-mobile" class="relative">
+          <!-- Custom Button -->
+          <button
+            class="lang-switcher-button relative flex items-center w-full bg-gray-100 hover:bg-gray-200 rounded-md transition py-2 pl-4 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
+            <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
+              class="h-4 w-6 object-cover flex-shrink-0">
+            <span id="selected-lang-text-mobile" class="ml-3">မြန်မာ</span>
+            <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 pointer-events-none"></i>
+          </button>
+          <!-- Custom Dropdown Menu -->
+          <div
+            class="lang-switcher-menu hidden absolute mt-1 w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
+            <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              data-lang="my">
+              <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
+                class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+              <span>မြန်မာ</span>
+            </a>
+            <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              data-lang="en">
+              <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+              <span>English</span>
+            </a>
+          </div>
+        </div>
+        <!-- Hidden original select to maintain JS compatibility -->
+        <select id="language-switcher-mobile" class="hidden">
+          <option value="my">မြန်မာ</option>
+          <option value="en" selected>English</option>
+        </select>
+      </div>
     </div>
   </div>
-
   <!-- Main Content for Exam Results -->
   
     <!-- Main Content -->
     <div class="container mx-auto px-6 py-12">
         <div class="bg-white rounded-xl shadow-lg p-8 md:p-12 max-w-4xl mx-auto">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-6">View Exam Results</h2>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-6" data-lang-key="exam_result">View Exam Results</h2>
             <form method="GET" action="">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2" for="year">Year</label>
+                        <label class="block text-gray-700 font-semibold mb-2" for="year" data-lang-key="yr">Year</label>
                         <select name="year" id="year" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Select Year</option>
-                            <option value="1" <?= (isset($_GET['year']) && $_GET['year'] == '1') ? 'selected' : '' ?>>1st Year</option>
-                            <option value="2" <?= (isset($_GET['year']) && $_GET['year'] == '2') ? 'selected' : '' ?>>2nd Year</option>
-                            <option value="3" <?= (isset($_GET['year']) && $_GET['year'] == '3') ? 'selected' : '' ?>>3rd Year</option>
-                            <option value="4" <?= (isset($_GET['year']) && $_GET['year'] == '4') ? 'selected' : '' ?>>4th Year</option>
-                            <option value="5" <?= (isset($_GET['year']) && $_GET['year'] == '5') ? 'selected' : '' ?>>5th Year</option>
-                            <option value="6" <?= (isset($_GET['year']) && $_GET['year'] == '6') ? 'selected' : '' ?>>Final Year</option>
+                            <option value="" data-lang-key="yrs">Select Year</option>
+                            <option value="1" data-lang-key="firsty" <?= (isset($_GET['year']) && $_GET['year'] == '1') ? 'selected' : '' ?>>1st Year</option>
+                            <option value="2" data-lang-key="secondy" <?= (isset($_GET['year']) && $_GET['year'] == '2') ? 'selected' : '' ?>>2nd Year</option>
+                            <option value="3" data-lang-key="thirdy" <?= (isset($_GET['year']) && $_GET['year'] == '3') ? 'selected' : '' ?>>3rd Year</option>
+                            <option value="4" data-lang-key="fourthy" <?= (isset($_GET['year']) && $_GET['year'] == '4') ? 'selected' : '' ?>>4th Year</option>
+                            <option value="5" data-lang-key="fifthy" <?= (isset($_GET['year']) && $_GET['year'] == '5') ? 'selected' : '' ?>>5th Year</option>
+                            <option value="6" data-lang-key="sixthy" <?= (isset($_GET['year']) && $_GET['year'] == '6') ? 'selected' : '' ?>>Final Year</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2" for="semester">Semester</label>
+                        <label class="block text-gray-700 font-semibold mb-2" for="semester"data-lang-key="sem">Semester</label>
                         <select name="semester" id="semester" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Select Semester</option>
-                            <option value="1" <?= (isset($_GET['semester']) && $_GET['semester'] == '1') ? 'selected' : '' ?>>1st Semester</option>
-                            <option value="2" <?= (isset($_GET['semester']) && $_GET['semester'] == '2') ? 'selected' : '' ?>>2nd Semester</option>
+                            <option value="" data-lang-key="sems">Select Semester</option>
+                            <option value="1" data-lang-key="firsts" <?= (isset($_GET['semester']) && $_GET['semester'] == '1') ? 'selected' : '' ?>>1st Semester</option>
+                            <option value="2" data-lang-key="seconds" <?= (isset($_GET['semester']) && $_GET['semester'] == '2') ? 'selected' : '' ?>>2nd Semester</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2" for="major">Major</label>
+                        <label class="block text-gray-700 font-semibold mb-2" for="major" data-lang-key="major">Major</label>
                         <select name="major" id="major" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Select Major</option>
-                            <option value="ist" <?= (isset($_GET['major']) && $_GET['major'] == 'ist') ? 'selected' : '' ?>>IST</option>
-                            <option value="ce" <?= (isset($_GET['major']) && $_GET['major'] == 'ce') ? 'selected' : '' ?>>CE</option>
-                            <option value="ece" <?= (isset($_GET['major']) && $_GET['major'] == 'ece') ? 'selected' : '' ?>>ECE</option>
-                            <option value="pre" <?= (isset($_GET['major']) && $_GET['major'] == 'pre') ? 'selected' : '' ?>>PRE</option>
-                            <option value="ame" <?= (isset($_GET['major']) && $_GET['major'] == 'ame') ? 'selected' : '' ?>>AME</option>
+                            <option value="" data-lang-key="maj">Select Major</option>
+                            <option value="ist" data-lang-key="ist" <?= (isset($_GET['major']) && $_GET['major'] == 'ist') ? 'selected' : '' ?>>IST</option>
+                            <option value="ce" data-lang-key="ce" <?= (isset($_GET['major']) && $_GET['major'] == 'ce') ? 'selected' : '' ?>>CE</option>
+                            <option value="ece" data-lang-key="ece" <?= (isset($_GET['major']) && $_GET['major'] == 'ece') ? 'selected' : '' ?>>ECE</option>
+                            <option value="pre" data-lang-key="pre" <?= (isset($_GET['major']) && $_GET['major'] == 'pre') ? 'selected' : '' ?>>PRE</option>
+                            <option value="ame" data-lang-key="ame" <?= (isset($_GET['major']) && $_GET['major'] == 'ame') ? 'selected' : '' ?>>AME</option>
                         </select>
                     </div>
                 </div>
                 
-                <div class="mt-4 text-center">
+                <div class="mt-4 text-center" data-lang-key="sh_re" >
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-transform transform hover:scale-105">
                         Show Results
                     </button>
@@ -224,19 +309,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">Faculties</h3>
                     <ul class="space-y-2 text-sm text-blue-200">
                         <li>
-                            <a href="./Majors/ist.html" data-lang-key="footer_faculty_ist">Information Science Technology</a>
+                            <a href="../Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science Technology</a>
                         </li>
                         <li>
-                            <a href="./Majors/ce.html" data-lang-key="footer_faculty_ce">Computer Engineering</a>
+                            <a href="../Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a>
                         </li>
                         <li>
-                            <a href="./Majors/ece.html" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
+                            <a href="../Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
                         </li>
                         <li>
-                            <a data-lang-key="footer_faculty_pre" href="./Majors/pre.html">Precision Engineering</a>
+                            <a data-lang-key="footer_faculty_pre" href="../Majors/pre.php">Precision Engineering</a>
                         </li>
                         <li>
-                            <a data-lang-key="footer_faculty_ame" href="./Majors/ame.html">
+                            <a data-lang-key="footer_faculty_ame" href="../Majors/ame.php">
                                 Advanced Materials Engineering
                             </a>
                         </li>
@@ -246,19 +331,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">Quick Links</h3>
                     <ul class="space-y-2 text-sm text-blue-200">
                         <li>
-                            <a href="./terms.html" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
+                            <a href="../terms.php" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
                         </li>
                         <li>
-                            <a href="./FAQs.html" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
+                            <a href="../FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
                         </li>
                         <li>
-                            <a href="./about.html" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
+                            <a href="../about.php" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
                         </li>
                         <li>
-                            <a href="./randr.html" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
+                            <a href="../randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
                         </li>
                         <li>
-                            <a href="./data_protection.html" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
+                            <a href="../data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
                         </li>
                     </ul>
                 </div>
@@ -287,6 +372,147 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         </div>
     </footer>
+    <script src="../JS/lgl.js"></script>
+      <script>
+    // --- Translation Script ---
+    const translations = {
+            my: {
+                utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+                nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+                nav_activity: "လှုပ်ရှားမှုများ",
+                nav_examresult: "အောင်စာရင်း",
+                nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+                nav_activity_mobile: "လှုပ်ရှားမှုများ",
+                nav_examresult_mobile: "အောင်စာရင်း",
+                footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊ \nပြင်ဦးလွင်မြို့အနီး၊ \nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+                footer_faculties_title: "မဟာဌာနများ",
+                footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+                footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+                footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+                footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင် နီယာ",
+                footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+                footer_contact_title: "ဆက်သွယ် ရန်",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။  မူပိုင်ခွင့်များ ရယူပြီး။",
+                footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+                footer_link_terms: "စည်း မျဉ်းများ နှင့် မူဝါဒများ",
+                footer_link_faq: "အမေးများသော မေးခွန်း များ",
+                footer_link_about: "ကျွန်ုပ် တို့အကြောင်း",
+                footer_link_rules: "စည်းကမ်း များနှင့်  စည်းမျဉ်းများ",
+                footer_link_dp: "ဒေတာကာကွယ်ရေး",
+                exam_result: "ကျောင်းသား စာမေးပွဲ ရလဒ်များ",
+                exam_exp: "သင်၏ ပညာရေး အသေးစိတ်ကို ရွေးချယ်၍ သင်၏ ရလဒ်များကို ကြည့်ရှုပါ။",
+                yr: "စာသင်နှစ်",
+                yrs: "စာသင်နှစ် ရွေးချယ်ပါ",
+                ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+                ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+                ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+                pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+                ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင် နီယာ",
+                sem: "သင်တန်း",
+                sems: "သင်တန်း ရွေးချယ်ပါ",
+                major: "အထူးပြုဘာသာရပ်",
+                maj: "အထူးပြုဘာသာရပ် ရွေးချယ်ပါ",
+                firsty: "ပထမနှစ်",
+                secondy: "ဒုတိယနှစ်",
+                thirdy: "တတိယနှစ်",
+                fourthy: "စတုတ္ထနှစ်",
+                fifthy: "ပဉ္စမနှစ်",
+                sixthy: "နောက်ဆုံးနှစ်",
+                firsts: "ပထမသင်တန်း",
+                seconds: "ဒုတိယသင်တန်း",
+                Go_Back: "နောက်သို့ ပြန်သွားရန်",
+                sh_re: "ရလဒ် ပြပါ",
+
+            },
+            en: {
+                utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+                nav_about: "About Us",
+                nav_activity: "Activities",
+                nav_examresult: "Exam Results",
+                nav_about_mobile: "About Us",
+                nav_activity_mobile: "Activities",
+                nav_examresult_mobile: "Exam Results",
+                footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+                footer_faculties_title: "Faculties",
+                footer_faculty_ist: "Information Science Technology",
+                footer_faculty_ce: "Computer Engineering",
+                footer_faculty_ece: "Electronics Engineering",
+                footer_faculty_ame: "Advanced Materials Engineering",
+                footer_faculty_pre: "Precision Engineering",
+                footer_contact_title: "Contact Us",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+                footer_quick_links_title: "Quick Links",
+                footer_link_terms: "Terms & Policies",
+                footer_link_faq: "FAQs",
+                footer_link_about: "About Us",
+                footer_link_rules: "Rules & Regulations",
+                footer_link_dp: "Data Protection",
+                exam_result: "Student Exam Results",
+                exam_exp: "Select your academic details to view your results.",
+                yr: "Year",
+                yrs: "Select Year",
+                ist: "Information Science Technology",
+                ce: "Computer Engineering",
+                ece: "Electronics Engineering",
+                pre: "Precision Engineering",
+                ame: "Advanced Materials Engineering",
+                sem: "Semester",
+                sems: "Select Semester",
+                major: "Major",
+                maj: "Select Major",
+                firsty: "1st Year",
+                secondy: "2nd Year",
+                thirdy: "3rd Year",
+                fourthy: "4th Year",
+                fifthy: "5th Year",
+                sixthy: "Final Year",
+                firsts: "1st Semester",
+                seconds: "2nd Semester",
+                Go_Back: "Go Back",
+                sh_re: "Show Results",
+
+            },
+        };
+
+    const desktopLanguageSwitcher = document.getElementById("language-switcher-desktop");
+    const mobileLanguageSwitcher = document.getElementById("language-switcher-mobile");
+
+    const changeLanguage = (lang) => {
+      localStorage.setItem("language", lang);
+      if (desktopLanguageSwitcher) {
+        desktopLanguageSwitcher.value = lang;
+      }
+      if (mobileLanguageSwitcher) {
+        mobileLanguageSwitcher.value = lang;
+      }
+      document.querySelectorAll("[data-lang-key]").forEach((element) => {
+        const key = element.dataset.langKey;
+        const translation = translations[lang][key];
+        if (translation) {
+          element.innerHTML = translation.replace(/\\n/g, "<br>");
+        }
+      });
+    };
+
+    if (desktopLanguageSwitcher) {
+      desktopLanguageSwitcher.addEventListener("change", (event) => {
+        changeLanguage(event.target.value);
+      });
+    }
+
+    if (mobileLanguageSwitcher) {
+      mobileLanguageSwitcher.addEventListener("change", (event) => {
+        changeLanguage(event.target.value);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedLang = localStorage.getItem("language") || "en";
+      setLanguage(savedLang);
+    });
+  </script>
 
 
   <!-- <footer> ... your footer code ... </footer> -->
