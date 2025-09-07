@@ -3,6 +3,14 @@
 // error_reporting(E_ALL);
 // ini_set('display_errors', 1);
 
+session_start();
+if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
+    header("location: ./signin.php"); // Corrected path to signin.php in the same directory
+    exit;
+}
+
+
+
 /**
  * A function to safely encode data into a JSON string for use in JavaScript.
  * This prevents script-breaking errors if the data is invalid.

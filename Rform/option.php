@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 // echo '<pre>';
@@ -40,6 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choose Your Accommodation</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+
     <style>
         * {
             margin: 0;
@@ -258,6 +259,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            flex-shrink: 0; /* Prevent radio button from shrinking */
         }
 
         .option-card.selected .radio-button {
@@ -378,25 +380,86 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             height: 1.25rem;
         }
 
-        @media (max-width: 768px) {
+        /* --- Improved Responsive Design --- */
+        @media (max-width: 640px) {
+            .container {
+                /* On small screens, align form to the top to prevent content */
+                /* from being pushed off-screen if it's taller than the viewport. */
+                align-items: flex-start;
+                padding-top: 2rem;
+                padding-bottom: 2rem;
+            }
+
             .form-card {
                 padding: 1.5rem;
+                width: 100%; /* Ensure it takes full width */
+            }
+
+            .header {
+                margin-bottom: 1.5rem;
+            }
+
+            .header-icon {
+                width: 4rem;
+                height: 4rem;
+                margin-bottom: 1rem;
+            }
+
+            .header-icon svg {
+                width: 2rem;
+                height: 2rem;
             }
 
             .header h1 {
                 font-size: 1.5rem;
+                line-height: 1.2;
             }
 
-            .option-content {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
+            .header p {
+                font-size: 0.95rem;
+            }
+
+            .options {
+                margin-bottom: 1.5rem;
+            }
+            
+            .option {
+                margin-bottom: 1rem;
+            }
+
+            .option-card {
+                padding: 1rem;
+            }
+            
+            .option-left {
+                gap: 0.75rem; /* Tighter spacing for smaller screens */
+            }
+            
+            .option-title {
+                font-size: 1rem;
+            }
+
+            .option-subtitle {
+                font-size: 0.875rem;
+                line-height: 1.4; /* Better line spacing for wrapped text */
+            }
+
+            .notice {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .notice p {
+                font-size: 0.875rem;
             }
 
             .nav-buttons {
-                flex-direction: column;
+                /* Stack buttons vertically, with 'Next' appearing first for better UX */
+                flex-direction: column-reverse; 
+                gap: 1rem;
             }
 
+            /* Hide decorative floating elements on mobile to save space and reduce clutter */
             .floating-element {
                 display: none;
             }

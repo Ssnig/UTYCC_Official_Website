@@ -349,7 +349,7 @@ $pdo = null;
                     data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
                 <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-                <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./rform/examresults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
                 <!-- Language Switcher Dropdown - Updated Style -->
                 <div class="relative ml-4">
@@ -392,7 +392,7 @@ $pdo = null;
                 <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
                     <br>
-                <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
                     <br>
             <div class="relative mt-4 pt-4 border-t">
