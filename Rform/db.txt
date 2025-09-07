@@ -198,8 +198,17 @@ CREATE TABLE admins (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+for activity
 
-
+CREATE TABLE activities (
+  activity_id int(11) NOT NULL,
+  image_url varchar(255) NOT NULL,
+  title_en varchar(255) NOT NULL,
+  title_my varchar(255) NOT NULL,
+  description_en text NOT NULL,
+  description_my text NOT NULL,
+  activity_date date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 
