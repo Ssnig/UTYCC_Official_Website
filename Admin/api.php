@@ -181,7 +181,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $pdo->commit();
                 
-                $fullRecordSql = "SELECT s.*, f.*, m.* FROM students s LEFT JOIN fathers f ON s.student_id = f.student_id LEFT JOIN mothers m ON s.student_id = m.student_id WHERE s.student_id = ?";
+                // --- FIX: Correctly fetch all aliased parent columns to avoid name collisions ---
+                $fullRecordSql = "SELECT s.*,
+                                       f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
+                                       m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
+                                FROM students s
+                                LEFT JOIN fathers f ON s.student_id = f.student_id
+                                LEFT JOIN mothers m ON s.student_id = m.student_id
+                                WHERE s.student_id = ?";
                 $stmtFetch = $pdo->prepare($fullRecordSql);
                 $stmtFetch->execute([$student_id]);
                 $finalStudent = $stmtFetch->fetch(PDO::FETCH_ASSOC);

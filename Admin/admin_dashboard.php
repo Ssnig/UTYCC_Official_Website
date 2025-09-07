@@ -5,11 +5,11 @@ require_once 'auth_check.php';
 // error_reporting(E_ALL);
 // ini_set('display_errors', 1);
 
-session_start();
-if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    header("location: ./signin.php"); // Corrected path to signin.php in the same directory
-    exit;
-}
+// session_start();
+// if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
+//     header("location: ./signin.php"); // Corrected path to signin.php in the same directory
+//     exit;
+// }
 
 
 
@@ -1226,27 +1226,36 @@ $pdo = null;
 
             const responseText = await response.text();
 
-            if (!response.ok) {
-                 throw new Error(responseText || `HTTP error ${response.status}`);
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (jsonError) {
+                // This is the most common error point: the server sent back something that wasn't JSON.
+                console.error("Failed to parse JSON from server. Response text:", responseText);
+                throw new Error("The server sent an invalid response. This is likely a PHP error. Please check the browser's developer console for the full server output.");
             }
-
-            const result = JSON.parse(responseText);
+            
+            if (!response.ok) {
+                 // The response was JSON, but the HTTP status indicates an error (e.g., 400, 500).
+                 throw new Error(result.message || `The server returned an error (Status: ${response.status}).`);
+            }
 
             if (result.status === 'success' && result.student) {
                 const index = state.students.findIndex(s => s.student_id === studentId);
                 if (index !== -1) {
-                    result.student.preferences = state.students[index].preferences;
                     state.students[index] = result.student;
                 }
                 render();
                 closeModalSafe();
                 showToast(`Student "${result.student.student_name_en}" updated.`, 'success');
             } else {
+                // The response was valid JSON with status 200, but the action failed logically.
                 throw new Error(result.message || 'Failed to save student data.');
             }
         } catch (error) {
             console.error('Save Student Failed:', error);
-            showToast(`Error: ${error.message}`, 'error', 8000);
+            // Display the caught error message directly in the toast.
+            showToast(error.message, 'error', 8000);
         }
       });
     }
@@ -1261,3 +1270,4 @@ $pdo = null;
   </script>
 </body>
 </html>
+
