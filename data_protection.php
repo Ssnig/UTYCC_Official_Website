@@ -278,7 +278,7 @@
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
             <li>
-              <a href="./term.php" class="hover:text-white " data-lang-key="footer_link_terms">Terms &
+              <a href="./terms.php" class="hover:text-white " data-lang-key="footer_link_terms">Terms &
                 Policies</a>
             </li>
             <li>
