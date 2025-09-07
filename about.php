@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About Us</title>
+  <title>About Us - UTYCC</title>
 
   <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" href="./CSS/star-layout.css" />
@@ -116,11 +116,11 @@
       </a>
       <div class="hidden md:flex items-center space-x-6">
         <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about">About Us</a>
         <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
+          data-lang-key="nav_activity">Activities</a>
+        <a href="./Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_examresult">Exam Results</a>
 
 
         <!-- Language Switcher Dropdown - Updated Style -->
@@ -129,9 +129,9 @@
             <!-- Custom Button -->
             <button
               class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
-              <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
+              <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/gb.png" alt="Selected Flag"
                 class="h-4 w-6 object-cover flex-shrink-0">
-              <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
+              <span id="selected-lang-text-desktop" class="ml-2">English</span>
               <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
             </button>
             <!-- Custom Dropdown Menu -->
@@ -155,7 +155,7 @@
           <!-- Hidden original select to maintain JS compatibility -->
           <select id="language-switcher-desktop" class="hidden">
             <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
+            <option value="en" selected>English</option>
           </select>
         </div>
       </div>
@@ -166,13 +166,13 @@
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
       <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+        data-lang-key="nav_about_mobile">About Us</a>
         <br><br>
       <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+        data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
       <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+        data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
@@ -180,9 +180,9 @@
           <!-- Custom Button -->
           <button
             class="lang-switcher-button relative flex items-center w-full bg-gray-100 hover:bg-gray-200 rounded-md transition py-2 pl-4 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
-            <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
+            <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/gb.png" alt="Selected Flag"
               class="h-4 w-6 object-cover flex-shrink-0">
-            <span id="selected-lang-text-mobile" class="ml-3">မြန်မာ</span>
+            <span id="selected-lang-text-mobile" class="ml-3">English</span>
             <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 pointer-events-none"></i>
           </button>
           <!-- Custom Dropdown Menu -->
@@ -204,7 +204,7 @@
         <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
           <option value="my">မြန်မာ</option>
-          <option value="en">English</option>
+          <option value="en" selected>English</option>
         </select>
       </div>
     </div>
@@ -309,7 +309,7 @@
   </main>
   <!-- Simple Back Link for Navigation Testing -->
 
-  <div class="container mx-auto px-6 py-12">
+  <!-- <div class="container mx-auto px-6 py-12">
     <link rel="stylesheet" href="./CSS/bbbtn.css">
 
     <a href="javascript:history.back()">
@@ -318,7 +318,7 @@
       </button>
 
     </a>
-  </div>
+  </div> -->
 
     <!-- ============================================= -->
     <!-- MEMORY GAME HTML STRUCTURE -->
@@ -584,7 +584,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       // Check for a saved language in localStorage, otherwise default to 'en'
       const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+      setLanguage(savedLang);
     });
 
   </script>

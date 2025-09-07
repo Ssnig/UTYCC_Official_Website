@@ -49,11 +49,11 @@
       </a>
       <div class="hidden md:flex items-center space-x-6">
         <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about">About Us</a>
         <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
+          data-lang-key="nav_activity">Activities</a>
+        <a href="/Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_examresult">Exam Results</a>
         <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
           <div id="lang-switcher-container-desktop">
@@ -86,7 +86,7 @@
           <!-- Hidden original select to maintain JS compatibility -->
           <select id="language-switcher-desktop" class="hidden">
             <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
+            <option value="en" selected>English</option>
           </select>
         </div>
       </div>
@@ -97,13 +97,13 @@
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
       <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about_mobile">About Us</a>
           <br><br>
         <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+          data-lang-key="nav_activity_mobile">Activities</a>
           <br><br>
         <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+          data-lang-key="nav_examresult_mobile">Exam Results</a>
           <br><br>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
@@ -135,7 +135,7 @@
         <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
           <option value="my">မြန်မာ</option>
-          <option value="en">English</option>
+          <option value="en" selected>English</option>
         </select>
       </div>
     </div>
@@ -553,7 +553,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+      setLanguage(savedLang);
     });
   </script>
   <!-- gsap animation -->

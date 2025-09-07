@@ -376,15 +376,15 @@
           data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
         <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="/Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
         <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
             <div id="lang-switcher-container-desktop">
                 <!-- Custom Button -->
                 <button class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
-                    <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
-                    <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
+                    <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/gb.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
+                    <span id="selected-lang-text-desktop" class="ml-2">English</span>
                     <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
                 </button>
                 <!-- Custom Dropdown Menu -->
@@ -402,7 +402,7 @@
             <!-- Hidden original select to maintain JS compatibility -->
             <select id="language-switcher" class="hidden">
                 <option value="my">မြန်မာ</option>
-                <option value="en">English</option>
+                <option value="en" selected>English</option>
             </select>
         </div>
       </div>
@@ -413,15 +413,15 @@
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about_mobile">About Us</a>
           <br>
           <br>
         <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+          data-lang-key="nav_activity_mobile">Activities</a>
           <br>
           <br>
-        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+        <a href="/Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_examresult_mobile">Exam Results</a>
           <br><br>
           
 
@@ -448,8 +448,8 @@
         </div>
         <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
-            <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
+            <option value="my" selected>မြန်မာ</option>
+            <option value="en" selected>English</option>
         </select>
       </div>
     </div>
@@ -613,6 +613,9 @@
         activities_title: "တက္ကသိုလ် လှုပ်ရှားမှုများ", activities_subtitle: "ကျွန်ုပ်တို့၏ စိတ်လှုပ်ရှားဖွယ် ကမ့်ပပ်ဘဝကို စူးစမ်း လေ့လာပါ", academic_programs: "ပညာရေး အစီအစဉ်များ", academic: "ပညာရေး ထူးချွန်မှု",
         research: "စိတ်ကိုစိန်ခေါ်သော သုတေသနဆွေးနွေးပွဲများ၊ ဟက်ကာသွန်များနှင့် ဘာသာရပ်စုံ ပရောဂျက်များ", cultural_events: "ယဉ်ကျေးမှုပွဲများ", cultural_desc: "ကျွန်ုပ်တို့၏ နိုင်ငံတကာပွဲတော်များ၊ ဖျော်ဖြေပွဲများနှင့် ပြပွဲများဖြင့် ကွဲပြားမှုများကို ဂုဏ်ပြုပါ",
         sports: "အားကစားနှင့် ကစားကွင်းများ", sports_desc: "တက်ကြွစွာနေထိုင်ရန်နှင့် အသင်းအဖွဲ့ငယ်များ တည်ဆောက်ရန် ကျွန်ုပ်တို့၏ ပြိုင်ပွဲအသင်းများ သို့မဟုတ် ပျော်ပွဲစားလိဂ်များတွင် ပါဝင်ပါ", learn_more: "ပိုမိုလေ့လာရန် →", footer_link_dp: "ဒေတာကာကွယ်ရေး",
+        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+        nav_activity_mobile: "လှုပ်ရှားမှုများ",
+        nav_examresult_mobile: "အောင်စာရင်း",
       },
       en: {
         utycc_full_name: "University of Technology (Yatanarpon Cyber City)", nav_about: "About Us", nav_activity: "Activities", nav_examresult: "Exam Results",
@@ -623,10 +626,14 @@
         activities_title: "University Activities", activities_subtitle: "Explore our vibrant campus life", academic_programs: "Academic Programs", academic: "Academic Excellence",
         research: "Research symposiums, hackathons, and interdisciplinary projects that challenge minds.", cultural_events: "Cultural Events", cultural_desc: "Celebrate diversity with our international festivals, performances, and exhibitions.",
         sports: "Athletics & Sports", sports_desc: "Join our competitive teams or recreational leagues to stay active and build teamwork.", learn_more: "Learn more →", footer_link_dp: "Data Protection",
+        nav_about_mobile: "About Us",
+        nav_activity_mobile: "Activities",
+        nav_examresult_mobile: "Exam Results",
+     
       }
     };
 
-    let currentLanguage = 'my';
+    let currentLanguage = 'en';
     let currentSlide = 0;
     let slideshowInterval;
 

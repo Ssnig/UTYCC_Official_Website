@@ -94,11 +94,11 @@
       </a>
       <div class="hidden md:flex items-center space-x-6">
         <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about">About Us</a>
         <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
+          data-lang-key="nav_activity">Activities</a>
+        <a href="/Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_examresult">Exam Results</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
@@ -132,7 +132,7 @@
           <!-- Hidden original select to maintain JS compatibility -->
           <select id="language-switcher-desktop" class="hidden">
             <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
+            <option value="en" selected>English</option>
           </select>
         </div>
       </div>
@@ -143,13 +143,13 @@
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
       <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about_mobile">About Us</a>
           <br><br>
         <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+          data-lang-key="nav_activity_mobile">Activities</a>
           <br><br>
-        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+        <a href="/Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+          data-lang-key="nav_examresult_mobile">Exam Results</a>
           <br><br>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
@@ -181,7 +181,7 @@
         <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
           <option value="my">မြန်မာ</option>
-          <option value="en">English</option>
+          <option value="en" selected>English</option>
         </select>
       </div>
     </div>
@@ -332,17 +332,19 @@
 
   <footer id="contact" class="bg-blue-900 text-white">
     <div class="container mx-auto px-6 py-12">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div class="flex flex-col items-start">
-          <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 w-12 mb-4" />
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
           <h3 class="text-lg font-bold">UTYCC</h3>
-          <p class="text-blue-200 text-sm mt-4 leading-relaxed" data-lang-key="footer_address">
-            Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay
-            Region, Myanmar
+          <p class="text-blue-200 text-sm mt-4">
+            <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
+              Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay
+              Region, Myanmar
+            </a>
           </p>
           <div class="mt-4 text-sm text-blue-200">
-            <p>Email: info@utycc.edu.mm</p>
-            <p>Phone: +95 (XX) XXX XXX</p>
+            <p>Email: info@utycc.edu.mm (example)</p>
+            <p>Phone: +95 (XX) XXX XXX (example)</p>
           </div>
         </div>
 
@@ -351,17 +353,23 @@
             Faculties
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
-            <li data-lang-key="footer_faculty_ist">
-              Information Science Technology
+            <li>
+              <a href="./Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science Technology</a>
             </li>
-            <li data-lang-key="footer_faculty_ce">Computer Engineering</li>
-            <li data-lang-key="footer_faculty_ece">
-              Electronics Engineering
+            <li>
+              <a href="./Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a>
             </li>
-            <li data-lang-key="footer_faculty_ame">
-              Advanced Materials Engineering
+            <li>
+              <a href="./Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
             </li>
-            <li data-lang-key="footer_faculty_pre">Precision Engineering</li>
+            <li>
+              <a data-lang-key="footer_faculty_pre" href="./Majors/pre.php">Precision Engineering</a>
+            </li>
+            <li>
+              <a data-lang-key="footer_faculty_ame" href="./Majors/ame.php">
+                Advanced Materials Engineering
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -371,23 +379,19 @@
           </h3>
           <ul class="space-y-2 text-sm text-blue-200">
             <li>
-              <a href="./terms.php" class="hover:text-white transition duration-200" data-lang-key="footer_link_terms">Terms &
-                Policies</a>
+              <a href="./terms.php" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
             </li>
             <li>
-              <a href="./FAQs.php" class="hover:text-white transition duration-200" data-lang-key="footer_link_faq">FAQs</a>
+              <a href="./FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
             </li>
             <li>
-              <a href="./about.php" class="hover:text-white transition duration-200" data-lang-key="footer_link_about">About
-                Us</a>
+              <a href="./about.php" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
             </li>
             <li>
-              <a href="./randr.php" class="hover:text-white transition duration-200" data-lang-key="footer_link_rules">Rules &
-                Regulations</a>
+              <a href="./randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
             </li>
             <li>
-              <a href="./data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data
-                Protection</a>
+              <a href="./data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
             </li>
           </ul>
         </div>
@@ -397,24 +401,28 @@
             Follow Us
           </h3>
           <div class="flex space-x-4">
-            <a href="#" class="text-blue-200 hover:text-white transition duration-200"><i
-                class="fab fa-facebook-f text-xl"></i></a>
-            <a href="#" class="text-blue-200 hover:text-white transition duration-200"><i
-                class="fab fa-linkedin-in text-xl"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+            <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/"
+              class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
           </div>
-          <div class="newtons-cradle mt-8">
-            <div class="newtons-cradle__dot"></div>
-            <div class="newtons-cradle__dot"></div>
-            <div class="newtons-cradle__dot"></div>
-            <div class="newtons-cradle__dot"></div>
+          <br />
+          <br />
+          <div>
+            <div class="newtons-cradle">
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+              <div class="newtons-cradle__dot"></div>
+            </div>
           </div>
         </div>
       </div>
-
       <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
         data-lang-key="footer_copyright">
-        © 2025 University of Technology - Yatanarpon Cyber City. All Rights
-        Reserved.
+        &copy; 2025 University of Technology - Yatanarpon Cyber City. All
+        Rights Reserved.
       </div>
     </div>
   </footer>
@@ -564,7 +572,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+      setLanguage(savedLang);
     });
   </script>
   <script src="./js/lgl.js"></script>
