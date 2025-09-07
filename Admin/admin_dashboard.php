@@ -395,7 +395,7 @@ $pdo = null;
   <div class="app" id="app">
     <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
-        <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+        <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
         <h1>UTYCC Admin</h1>
       </div>
       <nav>
