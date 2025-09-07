@@ -61,11 +61,11 @@
       </a>
       <div class="hidden md:flex items-center space-x-6">
        <a href="../about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about">About Us</a>
         <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
+          data-lang-key="nav_activity">Activities</a>
         <a href="../exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
+          data-lang-key="nav_examresult">Exam Results</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
@@ -99,7 +99,7 @@
           <!-- Hidden original select to maintain JS compatibility -->
           <select id="language-switcher-desktop" class="hidden">
             <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
+            <option value="en" selected>English</option>
           </select>
         </div>
       </div>
@@ -110,13 +110,13 @@
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
       <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+        data-lang-key="nav_about_mobile">About Us</a>
         <br><br>
       <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+        data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
       <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+        data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
@@ -148,7 +148,7 @@
         <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
           <option value="my">မြန်မာ</option>
-          <option value="en">English</option>
+          <option value="en" selected>English</option>
         </select>
       </div>
     </div>
@@ -169,8 +169,7 @@
         <a id="major-title" href="#"
           class="block mt-1 text-lg leading-tight font-medium text-black hover:underline"data-lang-key="major_Title">Advanced Materials Engineering</a>
         <p id="major-description" class="mt-2 text-slate-500"data-lang-key="major_Description">
-         နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ အဆင့်မြင့်ဒြပ်ပစ္စည်းထုတ်လုပ်မှုအင်ဂျင်နီယာဌာန (Faculty of Advanced Materials Engineering - AME) သည် သတ္တုနှင့် သတ္တုစပ်ပစ္စည်းများကို ဒီဇိုင်းရေးဆွဲခြင်းနှင့် ဖွံ့ဖြိုးတိုးတက်စေရန် အခြေခံသိပ္ပံနှင့် နည်းပညာများကို လေ့ကျင့်သင်ကြားပေးသော ဘာသာရပ်တစ်ခုဖြစ်ပါတယ်။
-        </p>
+         The Faculty of Advanced Materials Engineering (AME) at the University of Technology (Yatanarpon Cyber City) is a discipline that imparts fundamental scientific and technological knowledge for the design and development of metals and alloys. It aims to equip students with specialized expertise in Materials Science, Metallurgy, and Engineering fields, enabling them to participate in the creation and utilization of advanced materials and contribute to innovation in the industrial sector.
       </div>
     </div>
   </div>
@@ -201,18 +200,10 @@
   <div class="container mx-auto">
     <!-- အောက်ကဟာတွေက ရည်ရွယ်ချက် တာဝန်တွေ ခေါင်းစဥ်နဲ့ စာကိုယ်ခွဲထည့်  -->
     <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="objectivesH">
-      AME ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များ
+     The objectives and responsibilities
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl px-2 mx-auto" data-lang-key="objectives">
-      ပစ္စည်း၏ လက္ခဏာများ၊ ပြုပြင်လုပ်ဆောင်နည်းများ၊ နှင့် အသုံးချနည်းများကို နက်နက်ရှိုင်းရှိုင်း နားလည်စေရန်။
-      အဆင့်မြင့်ပစ္စည်းများကို ဖန်တီးအသုံးချခြင်းနှင့် စက်မှုလုပ်ငန်းတွင် တီထွင်တိုးတက်မှုတွင် ပါဝင်နိုင်စေရန်။
-      ပစ္စည်းဗေဒ၊ သတ္တုဗေဒနှင့် အင်ဂျင်နီယာနယ်ပယ်များတွင် အထူးကျွမ်းကျင်မှုများ ရရှိစေရန်။
-      ကျောင်းသား/သူများကို အလုပ်အကိုင် ရရှိနိုင်စေရန် နှင့် စက်မှုလုပ်ငန်းများတွင် ထိရောက်စွာ လုပ်ကိုင်နိုင်စေရန်။
-      စသည်တို့ ဖြစ်ပါသည်။ ထို့အပြင် တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုလေ့လာသည့်
-      ပစ္စည်းနည်းပညာနှင့် ပတ်သက်သည့် နောက်ဆုံးပေါ် သိပ္ပံနှင့် နည်းပညာများကို သင်ယူနိုင်ရန် လေ့ကျင့်သင်ကြားပေးမည်
-      ဖြစ်ပါသည်။
-      AME ဘာသာရပ်သင်တန်းသည် ကျောင်းသား/သူများကို အနာဂတ်အလုပ်အကိုင်မှာသာမက၊ သုတေသန၊ ဖန်တီးတီထွင်မှု နယ်ပယ်တွေမှာပါ
-      အောင်မြင်စွာ ပါဝင်ဆောင်ရွက်နိုင်ရန် ရည်ရွယ်ထားပြီး အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ အောက်ပါအတိုင်းဖြစ်ပါသည်။
+      To provide students with a profound understanding of the properties of materials, methods of processing, and applications; to enable them to participate in the creation and utilization of advanced materials and contribute to innovation in the industrial sector; and to acquire specialized expertise in Materials Science, Metallurgy, and Engineering fields. The program also aims to prepare students for employment opportunities and to work effectively in industries. In addition, students will be trained to learn and apply the latest scientific and technological advancements related to their specialization in materials technology. The AME program is designed not only to prepare students for future careers but also to enable them to actively and successfully engage in research and innovation. The main areas of study include the following.
     </p>
 
     <!-- Grid to hold the cards -->
@@ -402,50 +393,7 @@
         </ol>
       </div>
 
-      <!-- card 7
-        <div
-          class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div class="bg-emerald-500 text-white rounded-full p-3 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 21h4"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15a3 3 0 100-6 3 3 0 000 6z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">Project & Research Skills</h3>
-          <ol class="list-decimal list-inside space-y-2 text-gray-700">
-            <li class="font-medium text-lg">ICT Project Management</li>
-            <li class="font-medium text-lg">Research Methodology</li>
-            <li class="font-medium text-lg">
-              Final Year Project (Capstone Project)
-            </li>
-            <li class="font-medium text-lg">Teamwork & Communication Skills</li>
-          </ol>
-        </div>
-
-         -->
+     
     </div>
   </div>
 
@@ -459,8 +407,7 @@
       Where You Can Learn
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="labs_intro">
-      AME major သည် ကျောင်းသား/သူများအား သက်ဆိုင်ရာ နည်းပညာကျွမ်းကျင်မှုများ တိုးတက်စေရန်နှင့် လက်တွေ့ကျကျ
-      သုတေသနလုပ်ငန်းများ ပြုလုပ်နိုင်စေရန် —
+     In the department of Advanced Materials Engineering< laboratories have been established to allow students to enhance their relevant technical expertise and to conduct practical research activities.
     </p>
 
     <!-- Description box above the cards -->
@@ -610,83 +557,7 @@
           </h3>
         </div>
 
-        <!-- Skill Card 6: Critical Thinking 
-        <div
-          class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          data-description="Cloud-based Application Deployment နှင့် Internet of Things (IoT) Device တွေ အပြန်အလှန်ချိတ်ဆက်သုံးစွဲရန်။"
-        >
-          <div class="bg-indigo-500 text-white rounded-full p-4 mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-10 w-10"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-lg font-bold text-sm p-1">
-            Cloud Computing & IoT Lab
-          </h3>
-        </div>  -->
-
-        <!-- Skill Card 7: Data Analytics -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Extract insights and make data-driven decisions.">
-                <div class="bg-gray-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v-4m-4 4v-4m8 4v-4" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 19a4 4 0 11-8 0" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Data Analytics</h3>
-            </div> -->
-
-        <!-- Skill Card 8: Innovation & Creativity -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Cultivate an innovative mindset and build products that change the world.">
-                <div class="bg-orange-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16.5c2.485 0 4.5-2.015 4.5-4.5S14.485 7.5 12 7.5 7.5 9.515 7.5 12s2.015 4.5 4.5 4.5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a.5.5 0 110-1 .5.5 0 010 1z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Innovation & Creativity</h3>
-            </div> -->
-
-        <!-- Skill Card 9: User Experience (UX) -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Design and optimize intuitive and accessible digital interfaces.">
-                <div class="bg-teal-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6m-1-1v6m-3-3h6" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21H3a1 1 0 01-1-1V5a1 1 0 011-1h7a1 1 0 011 1v15z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">User Experience (UX)</h3>
-            </div> -->
-
-        <!-- Skill Card 10: Global Collaboration -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Work with diverse teams and contribute to projects on a global scale.">
-                <div class="bg-cyan-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a.5.5 0 110-1 .5.5 0 010 1z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Global Collaboration</h3>
-            </div> -->
+      
       </div>
     </div>
   </div>
@@ -811,9 +682,7 @@
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="jobs_info">
       <!-- ဒီမှာက စာလေးပြင် -->
-      B.E. Materials and Metallurgy ဘွဲ့ရရှိသူများသည် International Aircraft MRO Providers,
-      Aircraft Handling & Ground Support Service Companies,
-      Aviation Training & Support Services Providers, Airlines & MRO Operators စသည်တို့တွင်
+      Graduates with a B.E. Materials and Metallurgy can work in International Aircraft MRO Providers, Aircraft Handling & Ground Support Service Companies, Aviation Training & Support Services Providers, Airlines & MRO Operators, and so on.
     </p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1007,8 +876,7 @@
     const translations = {
       my: {
         major_Title: "အဆင့်မြင့်ဒြပ်ပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ",
-        major_Description:
-          "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ အဆင့်မြင့်ဒြပ်ပစ္စည်းထုတ်လုပ်မှုအင်ဂျင်နီယာဌာန (Faculty of Advanced Materials Engineering - AME) သည် သတ္တုနှင့် သတ္တုစပ်ပစ္စည်းများကို ဒီဇိုင်းရေးဆွဲခြင်းနှင့် ဖွံ့ဖြိုးတိုးတက်စေရန် အခြေခံသိပ္ပံနှင့် နည်းပညာများကို လေ့ကျင့်သင်ကြားပေးသော ဘာသာရပ်တစ်ခုဖြစ်ပါတယ်။ ကျောင်းသား/သူများကို ပစ္စည်းဗေဒ၊ သတ္တုဗေဒ၊ နှင့် အင်ဂျင်နီယာနယ်ပယ်များတွင် အထူးကျွမ်းကျင်မှုများ ရရှိစေရန် ရည်ရွယ်ထားပြီး၊ စက်မှုလုပ်ငန်းများတွင် တီထွင်တိုးတက်မှုတွင် ပါဝင်နိုင်စေရန် လေ့ကျင့်သင်ကြားပေးပါသည်။ ကျောင်းသား/သူများသည် ပစ္စည်း၏ လက္ခဏာများ၊ ပြုပြင်လုပ်ဆောင်နည်းများ၊ နှင့် အသုံးချနည်းများကို နက်နက်ရှိုင်းရှိုင်း နားလည်စေရန်၊ အဆင့်မြင့်ပစ္စည်းများကို ဖန်တီးအသုံးချခြင်းနှင့် စက်မှုလုပ်ငန်းတွင် တီထွင်တိုးတက်မှုတွင် ပါဝင်နိုင်စေရန် လေ့ကျင့်သင်ကြားပါသည်။ ထို့အပြင် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုလေ့လာသည့် ပစ္စည်းနည်းပညာနှင့် ပတ်သက်သည့် နောက်ဆုံးပေါ် သိပ္ပံနှင့် နည်းပညာများကို သင်ယူနိုင်ရန် လေ့ကျင့်သင်ကြားပါသည်။",  
+        major_Description:"နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ အဆင့်မြင့်ဒြပ်ပစ္စည်းထုတ်လုပ်မှုအင်ဂျင်နီယာဌာန (Faculty of Advanced Materials Engineering - AME) သည် သတ္တုနှင့် သတ္တုစပ်ပစ္စည်းများကို ဒီဇိုင်းရေးဆွဲခြင်းနှင့် ဖွံ့ဖြိုးတိုးတက်စေရန် အခြေခံသိပ္ပံနှင့် နည်းပညာများကို လေ့ကျင့်သင်ကြားပေးသော ဘာသာရပ်တစ်ခုဖြစ်ပါတယ်။ ကျောင်းသား/သူများကို ပစ္စည်းဗေဒ၊ သတ္တုဗေဒ၊ နှင့် အင်ဂျင်နီယာနယ်ပယ်များတွင် အထူးကျွမ်းကျင်မှုများ ရရှိစေရန် ရည်ရွယ်ထားပြီး၊ စက်မှုလုပ်ငန်းများတွင် တီထွင်တိုးတက်မှုတွင် ပါဝင်နိုင်စေရန် လေ့ကျင့်သင်ကြားပေးပါသည်။ ကျောင်းသား/သူများသည် ပစ္စည်း၏ လက္ခဏာများ၊ ပြုပြင်လုပ်ဆောင်နည်းများ၊ နှင့် အသုံးချနည်းများကို နက်နက်ရှိုင်းရှိုင်း နားလည်စေရန်၊ အဆင့်မြင့်ပစ္စည်းများကို ဖန်တီးအသုံးချခြင်းနှင့် စက်မှုလုပ်ငန်းတွင် တီထွင်တိုးတက်မှုတွင် ပါဝင်နိုင်စေရန် လေ့ကျင့်သင်ကြားပါသည်။ ထို့အပြင် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုလေ့လာသည့် ပစ္စည်းနည်းပညာနှင့် ပတ်သက်သည့် နောက်ဆုံးပေါ် သိပ္ပံနှင့် နည်းပညာများကို သင်ယူနိုင်ရန် လေ့ကျင့်သင်ကြားပါသည်။",  
      utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
         nav_about: "ကျွန်ုပ်တို့အကြောင်း",
         nav_activity: "လှုပ်ရှားမှုများ",
@@ -1221,7 +1089,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       // Check for a saved language in localStorage, otherwise default to 'en'
       const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+      setLanguage(savedLang);
     });
   </script>
   <script src="../JS/lgl.js"></script>

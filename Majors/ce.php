@@ -61,11 +61,11 @@
       </a>
       <div class="hidden md:flex items-center space-x-6">
        <a href="../about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about">About Us</a>
         <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
+          data-lang-key="nav_activity">Activities</a>
         <a href="../exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
+          data-lang-key="nav_examresult">Exam Results</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
@@ -99,7 +99,7 @@
           <!-- Hidden original select to maintain JS compatibility -->
           <select id="language-switcher-desktop" class="hidden">
             <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
+            <option value="en" selected>English</option>
           </select>
         </div>
       </div>
@@ -110,13 +110,13 @@
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
       <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+        data-lang-key="nav_about_mobile">About Us</a>
         <br><br>
       <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+        data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
       <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+        data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
@@ -148,7 +148,7 @@
         <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
           <option value="my">မြန်မာ</option>
-          <option value="en">English</option>
+          <option value="en" selected>English</option>
         </select>
       </div>
     </div>
@@ -168,7 +168,7 @@
         <a id="major-title" href="#"
           class="block mt-1 text-lg leading-tight font-medium text-black hover:underline" data-lang-key="major_Title">Computer Engineering</a>
         <p id="major-description" class="mt-2 text-slate-500" data-lang-key="major_Description">
-         နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ ကွန်ပျူတာအင်ဂျင်နီယာဌာန (Department of Computer Engineering - CE) သည် ကွန်ပျူတာ hardware (ကွန်ပျူတာစနစ်များ၊ အင်တာနက်ကွန်ယက်များ) နှင့် software (Embedded Systems နှင့် AI/Robotics) နှစ်မျိုးစလုံးကို ပေါင်းစပ်လေ့လာသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။
+        The Department of Computer Engineering (CE) at the University of Technology (Yatanarpon Cyber City) is a discipline that combines the study of both computer hardware (computer systems, internet networks) and software (Embedded Systems and AI/Robotics). Computer Engineering involves the design, creation, testing, and maintenance of systems used in computers, software, internet networks, and industrial applications. Our graduates are equipped with technical expertise and problem-solving skills to succeed in industry, research, and innovation.
         </p>
       </div>
     </div>
@@ -200,25 +200,10 @@
   <div class="container mx-auto">
     <!-- အောက်ကဟာတွေက ရည်ရွယ်ချက် တာဝန်တွေ ခေါင်းစဥ်နဲ့ စာကိုယ်ခွဲထည့်  -->
     <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="objectives_heading">
-      CE ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များမှာ
+      The objectives and responsibilities
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl px-2 mx-auto" data-lang-key="objectives">
-      ICT နယ်ပယ်တွင် ကျွမ်းကျင်ပြီး စွမ်းဆောင်ရည်ပြည့်ဝသည့်
-      တီထွင်ဆန်းသစ်နိုင်သော အင်ဂျင်နီယာများ ဖော်ဆောင်ပေးရန်။<br />
-      ခက်ခဲသည့် ပြဿနာများကို ဖြေရှင်းနိုင်သော သင်ယူမှု
-      အဆက်မပြတ်ဆောင်ရွက်နိုင်သော လူ့စွမ်းအားများ ဖန်တီးပေးရန်။<br />
-      စက်မှုလုပ်ငန်းနှင့် လူမှုအသိုင်းအဝိုင်း၏ လိုအပ်ချက်များ ဖြေရှင်းနိုင်ရန်
-      ကွန်ပျူတာအင်ဂျင်နီယာနယ်ပယ်တွင် နည်းပညာသစ်များနှင့် ပစ္စည်းကိရိယာများ
-      ပံ့ပိုးပေးရန်။<br />
-      ICT ကို အသုံးချသည့် သင်ယူမှုပတ်ဝန်းကျင် တွင် အခွင့်အလမ်းများ ပေးရန်။
-      စသည်တို့ ဖြစ်ပါသည်။<br />
-      ထို့အပြင် တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုသည့်
-      ဘာသာရပ်များတွင် ကျွမ်းကျင်စေရန် နှင့် တီထွင်ဆန်းသစ်သော သိပ္ပံသုတေသနများ
-      ဆောင်ရွက်ခြင်းတို့ကို လုပ်ဆောင်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးမည်
-      ဖြစ်ပါသည်။<br />
-      CE ဘာသာရပ်သင်တန်းသည် ကျောင်းသား/သူများကို နည်းပညာပိုင်းတွင် အခြေခံပညာမှ
-      စ၍ သုတေသနနှင့် လက်တွေ့ကျကျ အဆင့်မြင့်ပညာရရှိစေရန် ရည်ရွယ်ထားပြီး
-      အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ အောက်ပါအတိုင်းဖြစ်ပါသည်။
+      To produce innovative engineers who are highly skilled and capable in the field of ICT. To develop human resources that can continuously learn and solve complex problems. To support new technologies and tools in the field of computer engineering to meet the needs of industry and society. To provide opportunities in learning environments that utilize ICT. Additionally, students will be trained and taught to become proficient in their specialized subjects and to conduct innovative scientific research. The Computer Engineering (CE) program aims to provide students with knowledge starting from the fundamentals of technology to advanced levels involving research and practical applications. The main areas of study include the following
     </p>
 
     <!-- Grid to hold the cards -->
@@ -243,7 +228,7 @@
         </h3>
         <ol class="list-decimal list-inside space-y-2 text-gray-700">
           <li class="font-medium text-lg" data-lang-key="pdev_1">
-            Programming Languages (C, C++, Java, Python စသည်)
+            Programming Languages (C, C++, Java, Python etc.)
           </li>
           <li class="font-medium text-lg" data-lang-key="pdev_2">
             Data Structures & Algorithms
@@ -481,8 +466,7 @@
       What You Can Learn
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="lab_intro">
-      CE major တွင် သီအိုရီနဲ့ လက်တွေ့ကျကျ လေ့လာမှုများမှတစ်ဆင့်
-      နည်းပညာများကို ကျွမ်းကျင်စေရန် —
+      In the Computer Engineering major, laboratories have been established to help students master technologies through both theoretical and practical learning
     </p>
 
     <!-- Description box above the cards -->
@@ -635,57 +619,7 @@
           </h3>
         </div>
 
-        <!-- Skill Card 7: Data Analytics -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Extract insights and make data-driven decisions.">
-                <div class="bg-gray-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v-4m-4 4v-4m8 4v-4" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 19a4 4 0 11-8 0" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Data Analytics</h3>
-            </div> -->
-
-        <!-- Skill Card 8: Innovation & Creativity -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Cultivate an innovative mindset and build products that change the world.">
-                <div class="bg-orange-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16.5c2.485 0 4.5-2.015 4.5-4.5S14.485 7.5 12 7.5 7.5 9.515 7.5 12s2.015 4.5 4.5 4.5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a.5.5 0 110-1 .5.5 0 010 1z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Innovation & Creativity</h3>
-            </div> -->
-
-        <!-- Skill Card 9: User Experience (UX) -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Design and optimize intuitive and accessible digital interfaces.">
-                <div class="bg-teal-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6m-1-1v6m-3-3h6" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21H3a1 1 0 01-1-1V5a1 1 0 011-1h7a1 1 0 011 1v15z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">User Experience (UX)</h3>
-            </div> -->
-
-        <!-- Skill Card 10: Global Collaboration -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Work with diverse teams and contribute to projects on a global scale.">
-                <div class="bg-cyan-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a.5.5 0 110-1 .5.5 0 010 1z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Global Collaboration</h3>
-            </div> -->
+       
       </div>
     </div>
   </div>
@@ -816,10 +750,7 @@
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="job_info">
       <!-- ဒီမှာက စာလေးပြင် -->
-      B.E. Computer Engineering ဘွဲ့ရရှိသူများသည် IT & Telecom Companies,
-      Hardware Manufacturing Companies, Robotics & Automation Firms, Embedded
-      Systems Startups, Government Technology Departments, Telecommunications
-      စသည်တို့တွင် —
+     Graduates with a B.E. in Computer Engineering can work in IT and telecommunications companies, hardware manufacturing firms, robotics and automation companies, embedded systems startups, government technology departments, and other related organizations.
     </p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1252,7 +1183,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       // Check for a saved language in localStorage, otherwise default to 'en'
       const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+      setLanguage(savedLang);
     });
   </script>
   <script src="../js/lgl.js"></script>
