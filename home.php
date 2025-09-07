@@ -820,7 +820,7 @@ $pdo = null;
                         Welcome back! Continue your studies by enrolling for the next
                         year.
                     </p>
-                    <a href="./Rform/form1.php"
+                    <a href="./Rform/verify_student.php"
                         class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect"
                         data-lang-key="enroll_current_button">
                         Enroll for Next Year
@@ -874,8 +874,8 @@ $pdo = null;
                         </a>
                     </p>
                     <div class="mt-4 text-sm text-blue-200">
-                        <p>Email: info@utycc.edu.mm (example)</p>
-                        <p>Phone: +95 (XX) XXX XXX (example)</p>
+                        <p>Email: info@utycc.site utyccstudentaffair2010@gmail.com</p>
+                        <p>Phone: +959445767834 </p>
                     </div>
                 </div>
                 <div class="animate-on-scroll" style="--i:2;">

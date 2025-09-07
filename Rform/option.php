@@ -6,6 +6,10 @@ session_start();
 $errors = [];
 $dormitory_preference = null;
 
+// Determine the correct back page URL based on whether the student is old or new
+$back_page_url = isset($_SESSION['student_id']) ? 'cur_form.php' : 'form2.php';
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["dormitory"])) {
         $dormitory_preference = htmlspecialchars(trim($_POST["dormitory"]));
@@ -552,7 +556,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                 <div class="nav-buttons">
-                    <a href="form2.php" class="btn btn-back">
+                    <a href="<?php echo $back_page_url; ?>" class="btn btn-back">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
                             </path>
