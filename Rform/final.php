@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->commit();
             
             $student_email = htmlspecialchars($form1['student_email'] ?? 'your email');
-            $success_message = "Your application has been successfully received. We will notify you at " . $student_email . " after reviewing your information.";
+            $success_message = "သင်၏ကျောင်းဝင်ခွင့်လျှောက်လွှာကို အောင်မြင်စွာလက်ခံရရှိပါသည်။သင့်အချက်အလက်များအားစစ်ဆေးပြီးပါက".$student_email."သိုပြန်လည်အကြောင်းကြားပေးပါမည်။";
             session_destroy();
             
             $modal_data = [
