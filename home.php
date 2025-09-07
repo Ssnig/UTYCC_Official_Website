@@ -352,15 +352,15 @@ $pdo = null;
                     data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
                 <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-                <a href="./rform/examresults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
                 <!-- Language Switcher Dropdown - Updated Style -->
                 <div class="relative ml-4">
                     <div id="lang-switcher-container-desktop">
                         <!-- Custom Button -->
                         <button class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
-                            <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
-                            <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
+                            <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/gb.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
+                            <span id="selected-lang-text-desktop" class="ml-2">English</span>
                             <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
                         </button>
                         <!-- Custom Dropdown Menu -->
@@ -378,7 +378,7 @@ $pdo = null;
                     <!-- Hidden original select to maintain JS compatibility -->
                     <select id="language-switcher-desktop" class="hidden">
                         <option value="my">မြန်မာ</option>
-                        <option value="en">English</option>
+                        <option value="en" selected>English</option>
                     </select>
                 </div>
             </div>
@@ -421,7 +421,7 @@ $pdo = null;
                 <!-- Hidden original select to maintain JS compatibility -->
                 <select id="language-switcher-mobile" class="hidden">
                     <option value="my">မြန်မာ</option>
-                    <option value="en">English</option>
+                    <option value="en" selected>English</option>
                 </select>
             </div>
         </div>
@@ -1422,7 +1422,7 @@ $pdo = null;
                 });
             });
 
-            const savedLang = localStorage.getItem("selectedLanguage") || "my";
+            const savedLang = localStorage.getItem("selectedLanguage") || "en";
             setLanguage(savedLang);
 
             // --- MODIFICATION: Enrollment Status Check using PHP variable ---
