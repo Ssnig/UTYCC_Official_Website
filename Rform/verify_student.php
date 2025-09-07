@@ -28,7 +28,6 @@ function parseNrc($nrc_string, &$repopulate_array)
     }
 }
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize and retrieve POST data
     $student_name_mm = trim($_POST['student_name_mm'] ?? '');
@@ -40,7 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Repopulate NRC dropdowns on postback
     parseNrc($student_nrc, $repopulate_nrc['student']);
-
 
     // Basic validation
     if (empty($student_name_mm)) $errors[] = "ကျောင်းသား/သူ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
@@ -54,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             // Prepare a statement to find the student using the previous seat number
             $stmt = $pdo->prepare("
-                SELECT * FROM students 
+                SELECT student_id FROM students 
                 WHERE student_name_mm = :student_name_mm 
                 AND seat_no = :seat_no 
                 AND student_nrc = :student_nrc
@@ -69,40 +67,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($student) {
                 // --- Student Found ---
-                // Clear any old session data first
-                unset($_SESSION['form1_data'], $_SESSION['form2_data']);
-
-                // Fetch parent data
-                $stmt_father = $pdo->prepare("SELECT * FROM fathers WHERE student_id = :student_id");
-                $stmt_father->execute([':student_id' => $student['id']]);
-                $father = $stmt_father->fetch(PDO::FETCH_ASSOC);
-
-                $stmt_mother = $pdo->prepare("SELECT * FROM mothers WHERE student_id = :student_id");
-                $stmt_mother->execute([':student_id' => $student['id']]);
-                $mother = $stmt_mother->fetch(PDO::FETCH_ASSOC);
-
-                // Combine all data into a single array matching form1.php's structure
-                $form1_data = array_merge($student, $father ?: [], $mother ?: []);
+                // Clear any old session data first and set the student ID
+                session_unset();
+                $_SESSION['student_id'] = $student['student_id'];
                 
-                // IMPORTANT: Update the seat_no to the NEW current year's seat number for this registration
-                $form1_data['seat_no'] = $current_seat_no;
-                
-                // Update the academic year from the current form submission
-                $form1_data['academic_year'] = $academic_year;
-                
-                // Set the date to the current date for the new submission
-                $form1_data['date'] = date('Y-m-d H:i:s');
-                
-                // Store the combined data in the session
-                $_SESSION['form1_data'] = $form1_data;
-
-                // Store the major preference in the session as form2_data
-                $_SESSION['form2_data'] = [
-                    'preferences' => [1 => $major]
+                // Store the new academic data to be merged in cur_form.php
+                $_SESSION['new_data'] = [
+                    'seat_no'       => $current_seat_no,
+                    'academic_year' => $academic_year,
+                    'major'         => $major
                 ];
 
-                // Redirect to the next step
-                header("Location: option.php");
+                // Redirect to the form for review and editing
+                header("Location: cur_form.php");
                 exit;
 
             } else {
