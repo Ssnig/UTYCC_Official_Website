@@ -1,7 +1,0 @@
-{
-    "require": {
-        "phpmailer/phpmailer": "^6.10",
-        "adamlc/premailer-cli-wrapper": "^0.0.4",
-        "composer": "*"
-    }
-}

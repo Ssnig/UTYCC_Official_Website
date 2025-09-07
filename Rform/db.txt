@@ -180,6 +180,7 @@ CREATE TABLE exam_results (
     uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+for annoucement
 
 CREATE TABLE site_settings (
   setting_key varchar(255) NOT NULL,
@@ -188,7 +189,13 @@ CREATE TABLE site_settings (
 
 
 
-
+CREATE TABLE admins (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  admin_user varchar(50) NOT NULL,
+  password varchar(255) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY admin_user (admin_user)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
