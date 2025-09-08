@@ -1,13 +1,8 @@
 <?php
 // db.php - Database connection using PDO
 
-<<<<<<< HEAD
 $host = "localhost";            // Database host
-$port = 3306;                   // Database port (default is 3306, change if necessary)
-=======
-$host = "localhost";           // Database host
-$port = 3307;                // Database port (default is 3306, change if necessary)           // Database port (default is 3306, change if necessary)
->>>>>>> 3c70ff12775f3ee0dd61f00942bd42d7ecd409e8
+$port = 3307;                   // Database port (default is 3306, change if necessary)
 $dbname = "registration_db";   // Database name
 $user = "root";                // MySQL username
 $pass = "root";                // MySQL password
