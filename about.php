@@ -252,12 +252,12 @@
         <div class="max-w-3xl mx-auto">
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
-                <h3 class="text-xl font-semibold text-blue-800" data-lang-key="history_2009_title">2009 - Foundation</h3>
+                <h3 class="text-xl font-semibold text-blue-800" data-lang-key="history_2009_title">2010 - Foundation</h3>
                 <p class="text-gray-600 mt-1" data-lang-key="history_2009_text">The University of Technology (Yatanarpon Cyber City) was established to be a benchmark for technological education in Myanmar.</p>
             </div>
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
-                <h3 class="text-xl font-semibold text-blue-800" data-lang-key="history_2012_title">2012 - First Graduating Class</h3>
+                <h3 class="text-xl font-semibold text-blue-800" data-lang-key="history_2012_title">2014-2015 - First Graduating Class</h3>
                 <p class="text-gray-600 mt-1" data-lang-key="history_2012_text">Celebrated the convocation of our first batch of graduates, ready to make their mark in the tech industry.</p>
             </div>
             <div class="timeline-item">
@@ -279,22 +279,22 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div class="stat-card bg-white p-6 rounded-lg shadow-lg">
                 <i class="fas fa-graduation-cap text-4xl text-blue-500 mb-3"></i>
-                <div class="text-4xl font-bold text-blue-900" data-stat-value="5">0</div>
+                <div class="text-4xl font-bold text-blue-900" data-stat-value="5">5</div>
                 <p class="text-gray-500" data-lang-key="numbers_majors">Major Programs</p>
             </div>
             <div class="stat-card bg-white p-6 rounded-lg shadow-lg">
                 <i class="fas fa-users text-4xl text-blue-500 mb-3"></i>
-                <div class="text-4xl font-bold text-blue-900" data-stat-value="2000">0</div>
+                <div class="text-4xl font-bold text-blue-900" data-stat-value="2000">3000</div>
                 <p class="text-gray-500" data-lang-key="numbers_students">Students</p>
             </div>
             <div class="stat-card bg-white p-6 rounded-lg shadow-lg">
                 <i class="fas fa-chalkboard-teacher text-4xl text-blue-500 mb-3"></i>
-                <div class="text-4xl font-bold text-blue-900" data-stat-value="150">0</div>
+                <div class="text-4xl font-bold text-blue-900" data-stat-value="150">50</div>
                 <p class="text-gray-500" data-lang-key="numbers_faculty">Faculty Members</p>
             </div>
             <div class="stat-card bg-white p-6 rounded-lg shadow-lg">
                 <i class="fas fa-user-graduate text-4xl text-blue-500 mb-3"></i>
-                <div class="text-4xl font-bold text-blue-900" data-stat-value="5000">0</div>
+                <div class="text-4xl font-bold text-blue-900" data-stat-value="5000">1027</div>
                 <p class="text-gray-500" data-lang-key="numbers_alumni">Alumni</p>
             </div>
         </div>
@@ -446,9 +446,9 @@
         vision_title: "ကျွန်ုပ်တို့၏ မျှော်မှန်းချက်",
         vision_text: "နည်းပညာပညာရေးနှင့် သုတေသနတွင် ထိပ်တန်းထူးချွန်သော ဗဟိုဌာနတစ်ခုဖြစ်လာစေရန်၊ ဆန်းသစ်တီထွင်မှုနှင့် ရေရှည်တည်တံ့သော ဖွံ့ဖြိုးတိုးတက်မှုအတွက် ကျွန်ုပ်တို့၏ ပံ့ပိုးမှုများကို ကမ္ဘာက အသိအမှတ်ပြုစေရန်။",
         history_title: "ကျွန်ုပ်တို့၏ သမိုင်းကြောင်း",
-        history_2009_title: "၂၀၀၉ - တည်ထောင်ခြင်း",
+        history_2009_title: "၂၀၁၀ - တည်ထောင်ခြင်း",
         history_2009_text: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ကို မြန်မာနိုင်ငံ၏ နည်းပညာပညာရေးအတွက် စံတစ်ခုအဖြစ် တည်ထောင်ခဲ့သည်။",
-        history_2012_title: "၂၀၁၂ - ပထမဆုံး ဘွဲ့နှင်းသဘင်",
+        history_2012_title: "၂၀၁၄-၂၀၁၅ - ပထမဆုံး ဘွဲ့နှင်းသဘင်",
         history_2012_text: "နည်းပညာလောကတွင် မိမိတို့၏ခြေရာကို ချန်ထားရန် အဆင်သင့်ဖြစ်နေသော ကျွန်ုပ်တို့၏ ပထမဆုံး ဘွဲ့ရကျောင်းသားအသုတ်၏ ဘွဲ့နှင်းသဘင်ကို ဂုဏ်ပြုကျင်းပခဲ့သည်။",
         history_2018_title: "၂၀၁၈ - ပရိုဂရမ် တိုးချဲ့ခြင်း",
         history_2018_text: "ကမ္ဘာလုံးဆိုင်ရာ နည်းပညာအခင်းအကျင်း၏ ပြောင်းလဲလာသော လိုအပ်ချက်များကို ဖြည့်ဆည်းရန် အင်ဂျင်နီယာပရိုဂရမ်အသစ်များကို မိတ်ဆက်ခဲ့သည်။",
@@ -503,9 +503,9 @@
         vision_title: "Our Vision",
         vision_text: "To be a leading center of excellence in technology education and research, recognized globally for our contribution to innovation and sustainable development.",
         history_title: "Our History",
-        history_2009_title: "2009 - Foundation",
+        history_2009_title: "2010 - Foundation",
         history_2009_text: "The University of Technology (Yatanarpon Cyber City) was established to be a benchmark for technological education in Myanmar.",
-        history_2012_title: "2012 - First Graduating Class",
+        history_2012_title: "2014-2015 - First Graduating Class",
         history_2012_text: "Celebrated the convocation of our first batch of graduates, ready to make their mark in the tech industry.",
         history_2018_title: "2018 - Program Expansion",
         history_2018_text: "Introduced new engineering programs to meet the evolving demands of the global technology landscape.",
