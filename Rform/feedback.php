@@ -263,7 +263,7 @@ if (isset($_GET['status'])) {
   >
     <?php include 'feedPartials/header.php'; ?>
     <header
-        class="text-center mb-12 opacity-0 animate-fade-up"
+        class="text-center mb-12 opacity-0 animate-fade-up py-10"
         style="animation-delay: 0.2s"
       >
         <h1 class="text-4xl font-bold text-indigo-800 mb-3">

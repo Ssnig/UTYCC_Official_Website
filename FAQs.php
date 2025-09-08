@@ -500,7 +500,7 @@
     <section id="contact" class="cta-section mt-16 animate-fadeIn">
       <h2 data-lang-key="ca1">Still Can't Find Your Answer?</h2>
       <p data-lang-key="ca2">Our team is here to help! Reach out to us directly for personalized assistance.</p>
-      <a href="feedback.php" class="btn" data-lang-key="ca3">Contact Support</a>
+      <a href="./Rform/feedback.php" class="btn" data-lang-key="ca3">Contact Support</a>
     </section>
   </main>
 
@@ -516,10 +516,10 @@
               Region, Myanmar
             </a>
           </p>
-          <div class="mt-4 text-sm text-blue-200">
-            <p>Email: info@utycc.edu.mm (example)</p>
-            <p>Phone: +95 (XX) XXX XXX (example)</p>
-          </div>
+           <div class="mt-4 text-sm text-blue-200">
+                        <p>Email: info@utycc.site utyccstudentaffair2010@gmail.com</p>
+                        <p>Phone: +959445767834 </p>
+                    </div>
         </div>
 
         <div>

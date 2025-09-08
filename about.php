@@ -382,10 +382,10 @@
               Region, Myanmar
             </a>
           </p>
-          <div class="mt-4 text-sm text-blue-200">
-            <p>Email: info@utycc.edu.mm (example)</p>
-            <p>Phone: +95 (XX) XXX XXX (example)</p>
-          </div>
+           <div class="mt-4 text-sm text-blue-200">
+                        <p>Email: info@utycc.site utyccstudentaffair2010@gmail.com</p>
+                        <p>Phone: +959445767834 </p>
+                    </div>
         </div>
         <div>
           <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">Faculties</h3>
