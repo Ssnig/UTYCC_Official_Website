@@ -116,7 +116,7 @@
       <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
-      <a href="./rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="../rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
