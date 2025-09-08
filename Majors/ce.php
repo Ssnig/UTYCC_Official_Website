@@ -109,13 +109,13 @@
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
-      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="../about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_about_mobile">About Us</a>
         <br><br>
-      <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
-      <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="../rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">

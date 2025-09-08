@@ -640,14 +640,34 @@
     function changeLanguage(lang) {
       currentLanguage = lang;
       localStorage.setItem("language", lang);
-      document.getElementById('language-switcher').value = lang;
-      document.getElementById('language-switcher-mobile').value = lang;
+
+      // Update the hidden selects' values
+      const desktopSelect = document.getElementById('language-switcher');
+      const mobileSelect = document.getElementById('language-switcher-mobile');
+      if (desktopSelect) desktopSelect.value = lang;
+      if (mobileSelect) mobileSelect.value = lang;
+      
+      // Directly update the custom UI for both switchers to fix the refresh issue
+      const optionDetails = { my: { text: 'မြန်မာ', flag: 'https://flagcdn.com/w20/mm.png' }, en: { text: 'English', flag: 'https://flagcdn.com/w20/gb.png' } };
+      if (optionDetails[lang]) {
+          ['desktop', 'mobile'].forEach(type => {
+              const selectedFlag = document.getElementById(`selected-lang-flag-${type}`);
+              const selectedText = document.getElementById(`selected-lang-text-${type}`);
+              if (selectedFlag && selectedText) {
+                  selectedFlag.src = optionDetails[lang].flag;
+                  selectedText.textContent = optionDetails[lang].text;
+              }
+          });
+      }
+
+      // Translate all static text
       document.querySelectorAll("[data-lang-key]").forEach(el => {
         const key = el.dataset.langKey;
         if (translations[lang] && translations[lang][key]) {
           el.innerHTML = translations[lang][key].replace(/\\n/g, "<br>");
         }
       });
+      // Update dynamic content
       updateActivitiesDisplay();
     }
 
@@ -880,4 +900,3 @@
 </body>
 
 </html>
-
