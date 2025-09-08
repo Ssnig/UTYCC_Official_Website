@@ -126,7 +126,7 @@
     }
 
     .faq-search-input {
-      padding-left: 45px;
+      padding-left: 470px;
       height: 50px;
       font-size: 1rem;
     }
@@ -413,8 +413,8 @@
   <main class="container mx-auto px-4 pb-20">
     <div class="max-w-4xl mx-auto">
       <div class="mb-8 search-container">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="faq-search" class="faq-search-input w-full p-3 border border-gray-300 rounded-lg focus:outline-none" data-lang-key="search_placeholder" placeholder="Search for a question..." />
+        <!-- <i class="fas fa-search search-icon"></i> -->
+        <input type="text" id="faq-search" class=" faq-search-input w-full p-3 border border-gray-300 rounded-lg focus:outline-none" data-lang-key="search_placeholder" placeholder="Search for a question..." />
       </div>
 
       <div class="faq-tabs flex flex-wrap justify-center mb-8 gap-4 md:gap-8">
