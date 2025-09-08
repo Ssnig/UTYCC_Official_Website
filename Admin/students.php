@@ -376,13 +376,12 @@ $pdo = null;
     </aside>
 
     <header class="header" id="header">
-      <h1>လက်ခံပြီး ကျောင်းသား/သူများ</h1>
+      <h1>Approved Students</h1>
       <form class="search" role="search" aria-label="Search students" onsubmit="event.preventDefault()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/></svg>
         <input id="search" name="q" placeholder="Search by name, email, or seat no..." autocomplete="off" />
       </form>
       <div class="userbar">
-        <button class="btn ghost" id="importBtn" title="Import CSV" aria-label="Import CSV">Import</button>
         <button class="btn ghost" id="exportBtn" title="Export CSV" aria-label="Export CSV">Export</button>
         <button class="btn primary" id="addBtn" aria-label="Add student">Add Student</button>
       </div>
@@ -392,6 +391,7 @@ $pdo = null;
       <section class="section" id="students">
         <div class="section-header">
           <div class="toolbar">
+            <div id="studentCountDisplay" style="font-weight: 600; color: hsl(var(--muted-foreground)); margin-right: 16px;"></div>
              <!-- START: Year Filter Dropdown -->
              <div class="field" style="min-width: 200px;">
                 <select id="yearFilter" aria-label="Filter by Year">
@@ -660,8 +660,6 @@ $pdo = null;
     </div>
   </dialog>
 
-  <input type="file" id="fileInput" accept=".csv" hidden />
-  
   <div class="toast-wrap"></div>
 
   <script>
@@ -940,6 +938,8 @@ $pdo = null;
     }
 
     function render() {
+      const filteredCount = getFilteredSorted().length;
+      document.getElementById('studentCountDisplay').textContent = `Total Students: ${filteredCount}`;
       renderTable();
     }
     
@@ -1100,13 +1100,11 @@ $pdo = null;
         }
       });
       
-      // --- IMPORT/EXPORT LISTENERS ---
+      // --- EXPORT LISTENER ---
       document.getElementById('exportBtn').addEventListener('click', handleExport);
-      document.getElementById('importBtn').addEventListener('click', () => document.getElementById('fileInput').click());
-      document.getElementById('fileInput').addEventListener('change', handleImport);
     }
     
-    // --- IMPORT/EXPORT FUNCTIONS ---
+    // --- EXPORT FUNCTION ---
     
     function handleExport() {
         if (state.students.length === 0) {
@@ -1147,7 +1145,7 @@ $pdo = null;
         }
 
         const csvString = csvRows.join('\n');
-        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const blob = new Blob(["\uFEFF" + csvString], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         if (link.download !== undefined) {
             const url = URL.createObjectURL(blob);
@@ -1160,68 +1158,6 @@ $pdo = null;
         }
         showToast('Student data exported.', 'success');
     }
-
-    async function handleImport(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const text = e.target.result;
-            const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
-            if (lines.length < 2) {
-                showToast('CSV file is empty or has no data rows.', 'warning');
-                return;
-            }
-            
-            const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-            const studentsToImport = [];
-
-            for (let i = 1; i < lines.length; i++) {
-                // This is a simple parser. It won't work correctly if fields contain commas.
-                // For a robust solution, a proper CSV parsing library would be needed.
-                const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
-                if (values.length !== headers.length) continue; // Skip malformed rows
-                
-                const student = {};
-                headers.forEach((header, index) => {
-                    student[header] = values[index];
-                });
-                studentsToImport.push(student);
-            }
-            
-            if(studentsToImport.length > 0) {
-                const confirmed = await showConfirm('Import Students', `Are you sure you want to import ${studentsToImport.length} student(s)? This may overwrite existing data if seat numbers match.`, 'primary');
-                if(!confirmed) {
-                     event.target.value = ''; // Reset file input
-                    return;
-                }
-
-                showToast('Importing students... Please wait.', 'warning', 10000);
-                const response = await apiRequest('import_students', { students: studentsToImport });
-                if (response.status === 'success') {
-                    // Prepend new/updated students to the state and re-render
-                    response.imported_students.forEach(s => {
-                        const index = state.students.findIndex(existing => existing.student_id === s.student_id);
-                        if (index !== -1) {
-                            state.students[index] = s; // Update
-                        } else {
-                            state.students.unshift(s); // Add
-                        }
-                    });
-                    render();
-                    showToast(`${response.imported_students.length} students imported successfully.`, 'success');
-                } else {
-                    showToast(response.message || 'Import failed.', 'error');
-                }
-            } else {
-                showToast('No valid student data found in the file.', 'warning');
-            }
-        };
-        reader.readAsText(file);
-        event.target.value = ''; // Reset file input
-    }
-
 
     document.addEventListener('DOMContentLoaded', () => {
       addEventListeners();
