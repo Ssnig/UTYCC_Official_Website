@@ -1,26 +1,26 @@
 <?php
 require_once './Rform/db.php'; 
+
 $announcement_text = '';
 $announcement_status = 'disabled';
-$enrollment_status = 'open'; // Default to 'open' if setting is not in DB
+$enrollment_status = 'open';
+$students_stat = '3000'; // Default value
+$acceptance_rate_stat = '21'; // Default value
 
 try {
-    // Check if the settings table exists to avoid errors
-    $stmt = $pdo->query("SELECT 1 FROM site_settings LIMIT 1");
-    
-    if ($stmt->fetch()) {
-        $stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status')");
+    $stmtCheckTable = $pdo->query("SELECT 1 FROM stats_settings LIMIT 1");
+    if ($stmtCheckTable->fetch()) {
+        $stmt = $pdo->query("SELECT setting_key, setting_value FROM stats_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status', 'students_stat', 'acceptance_rate_stat')");
         $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         
         $announcement_text = $settings['announcement_text'] ?? '';
         $announcement_status = $settings['announcement_status'] ?? 'disabled';
         $enrollment_status = $settings['enrollment_status'] ?? 'open';
+        $students_stat = $settings['students_stat'] ?? '3000';
+        $acceptance_rate_stat = $settings['acceptance_rate_stat'] ?? '21';
     }
-
 } catch (PDOException $e) {
-    // Table probably does not exist, so we use default values.
-    // This prevents the site from crashing on a fresh setup.
-    // error_log("Could not fetch settings for home.php: " . $e->getMessage()); // Optional for debugging
+    // Table probably does not exist, use default values.
 }
 $pdo = null; 
 ?>
@@ -44,7 +44,6 @@ $pdo = null;
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="CSS/font.css" />
-    <!-- The GSAP.js file is not needed here as GSAP is loaded from CDN -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -72,9 +71,7 @@ $pdo = null;
             width: 50px;
             height: 50px;
             border: 5px solid #e0e0e0;
-            /* light grey */
             border-top-color: #3b82f6;
-            /* blue-500 */
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -85,12 +82,10 @@ $pdo = null;
             }
         }
 
-        /* --- Smooth Scrolling --- */
         html {
             scroll-behavior: smooth;
         }
 
-        /* --- Scroll Animation Styles --- */
         .animate-on-scroll {
             opacity: 0;
             transform: translateY(30px);
@@ -102,12 +97,10 @@ $pdo = null;
             transform: translateY(0);
         }
 
-        /* Staggered animation delay for children */
         .animate-on-scroll.is-visible .program-card {
             transition-delay: calc(0.1s * var(--i));
         }
 
-        /* --- Hero Slideshow Styles --- */
         .hero-container {
             position: relative;
             height: 80vh;
@@ -197,7 +190,7 @@ $pdo = null;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background-color 0.3s;
+            transition: background-color: 0.3s;
         }
 
         .close_button2:hover {
@@ -212,7 +205,6 @@ $pdo = null;
             border-bottom-right-radius: 12px;
         }
 
-        /* --- Back to Top Button --- */
         #back-to-top-btn {
             position: fixed;
             bottom: 20px;
@@ -228,7 +220,6 @@ $pdo = null;
             visibility: visible;
         }
 
-        /* --- Lightbox Styles --- */
         .lightbox {
             position: fixed;
             top: 0;
@@ -268,7 +259,6 @@ $pdo = null;
             font-weight: bold;
         }
 
-        /* --- Enhanced Hover Effects --- */
         .card-hover-effect {
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
@@ -298,12 +288,10 @@ $pdo = null;
 </head>
 
 <body class="bg-gray-100">
-    <!-- Preloader -->
     <div id="preloader">
         <div class="spinner"></div>
     </div>
 
-    <!-- Header -->
     <div id="header" class="bg-white shadow-md sticky top-0 z-50 transition-colors duration-300">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <a href="./home.php" id="header-logo-link" class="flex items-center space-x-3">
@@ -323,7 +311,6 @@ $pdo = null;
                     data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
                 <a href="./rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
-                <!-- Language Switcher Dropdown -->
                 <div class="relative ml-4">
                     <div id="lang-switcher-container-desktop">
                         <button class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
@@ -353,7 +340,6 @@ $pdo = null;
                 <i class="fas fa-bars text-2xl"></i>
             </button>
         </nav>
-        <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden px-6 pb-4 border-t md:hidden">
             <a href="./about.php" class="block py-2 nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
             <a href="./activity.php" class="block py-2 nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
@@ -384,7 +370,6 @@ $pdo = null;
         </div>
         
         <?php if (isset($announcement_status) && $announcement_status === 'enabled' && !empty($announcement_text)): ?>
-        <!-- Announcement Banner -->
         <div id="announcement-banner" class="relative bg-blue-50 border-b border-blue-200 transition-all duration-500 ease-in-out overflow-hidden" style="max-height: 0; opacity: 0;" role="alert">
             <div class="container mx-auto px-4 sm:px-6">
                 <div class="flex items-center justify-between gap-4 py-3">
@@ -406,7 +391,6 @@ $pdo = null;
     </div>
 
     <div id="main-content">
-        <!-- Hero Section -->
         <section class="hero-container">
             <div class="hero-slideshow">
                 <div class="hero-slide active" style="background-image: url(./Img/hero-carousel/2.jpg)"></div>
@@ -432,7 +416,6 @@ $pdo = null;
             </div>
         </section>
 
-        <!-- Stats Section -->
         <section id="stats-section" class="bg-blue-800 text-white">
             <div class="container mx-auto px-6 py-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
@@ -460,9 +443,7 @@ $pdo = null;
             </div>
         </section>
 
-        <!-- Main Content -->
         <main id="about" class="container mx-auto px-6 py-16">
-            <!-- About Us Section -->
             <section class="mb-20">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div class="order-2 md:order-1">
@@ -485,7 +466,6 @@ $pdo = null;
                             </div>
                         </div>
                     </div>
-                    <!-- Star Container -->
                     <div class="star-wrapper">
                         <div class="star-center"><img src="Img/logo/utycc_logo_favicon/apple-touch-icon.png" class="logo-badge static-logo " alt="UTYCC" /></div>
                         <div class="star-point " style="--angle: 0deg"><a href="./Majors/ist.php"><img src="Img/logo/IST.webp" class="logo-badge static-logo" alt="IST" /></a></div>
@@ -497,7 +477,6 @@ $pdo = null;
                 </div>
             </section>
 
-            <!-- Academic Programs Section -->
             <section id="programs" class="mb-20 bg-white p-8 md:p-12 rounded-lg shadow-lg animate-on-scroll">
                 <h2 class="text-3xl font-bold text-blue-900 mb-10 text-center" data-lang-key="programs_title">Academic Programs</h2>
                 <div class="mb-10">
@@ -522,7 +501,6 @@ $pdo = null;
                     </div>
                 </div>
                 <br><br>
-                <!-- Exam Results Section -->
                 <div class="relative overflow-hidden shadow-lg group ">
                     <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image: url('./Img/utycc_buildings/roadmap.JPG');"></div>
                     <div class="absolute inset-0 bg-black opacity-60"></div>
@@ -534,7 +512,6 @@ $pdo = null;
                 </div>
             </section>
 
-            <!-- International Collaboration Section -->
             <section id="collaboration" class="mb-16 animate-on-scroll">
                 <h2 class="text-3xl font-bold text-blue-900 mb-8 text-center" data-lang-key="collab_title">International Collaboration</h2>
                 <div class="grid md:grid-cols-2 gap-8">
@@ -557,11 +534,9 @@ $pdo = null;
         </main>
     </div>
 
-    <!-- Enrollment Section -->
     <section id="enrollment-card" class="relative bg-cover bg-center py-12 sm:py-20 px-4" style="background-image: url('./Img/utycc_buildings/front_view.JPG')">
         <div class="absolute inset-0 bg-black opacity-50"></div>
         <div class="relative container mx-auto max-w-5xl bg-white/90 backdrop-blur-sm rounded-lg shadow-2xl overflow-hidden animate-on-scroll">
-            <!-- This part will be shown when enrollment is open -->
             <div id="enrollment-open" class="flex flex-col md:flex-row">
                 <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
                     <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4 " data-lang-key="enroll_new_title">New Students</h3>
@@ -576,7 +551,6 @@ $pdo = null;
                 </div>
             </div>
 
-            <!-- This part will be shown when enrollment is closed -->
             <div id="enrollment-closed" class="hidden">
                 <div class="p-8 md:p-12 text-center w-full">
                     <div class="mx-auto bg-gray-200 w-32 h-32 rounded-full flex items-center justify-center mb-6"><img src="./Img/logo/utycc_logo.png" alt="UTYCC Logo" class="p-2"></div>
@@ -587,20 +561,16 @@ $pdo = null;
         </div>
     </section>
 
-    <!-- Easter Egg Game Container -->
     <div id="gameContainer" class="game-toast">
         <button id="closeGameBtn" class="close_button2">Close Game</button>
         <canvas id="gameCanvas"></canvas>
     </div>
 
-    <!-- Lightbox Modal -->
     <div id="lightbox" class="lightbox">
         <span class="lightbox-close">&times;</span>
         <img class="lightbox-content" id="lightbox-img" alt="Enlarged gallery view">
     </div>
 
-
-    <!-- Footer -->
     <footer id="contact" class="bg-blue-900 text-white">
         <div class="container mx-auto px-6 py-12">
             <div class="grid md:grid-cols-4 gap-8">
@@ -658,7 +628,6 @@ $pdo = null;
         </div>
     </footer>
 
-    <!-- Back to Top Button -->
     <button id="back-to-top-btn" class="bg-blue-800 text-white w-12 h-12 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none flex items-center justify-center btn-hover-effect">
         <i class="fas fa-arrow-up"></i>
     </button>
@@ -666,7 +635,6 @@ $pdo = null;
     <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // --- Translations Data ---
         const translations = {
             my: {
                 utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
@@ -792,12 +760,6 @@ $pdo = null;
             },
         };
 
-        // --- Core Functions ---
-
-        /**
-         * Applies translations to all elements with a data-lang-key attribute.
-         * @param {string} lang - The language code (e.g., 'en', 'my').
-         */
         const setLanguage = (lang) => {
             if (!translations[lang]) return;
 
@@ -809,18 +771,14 @@ $pdo = null;
                 }
             });
 
-            // Update both desktop and mobile language switcher UIs
             ['desktop', 'mobile'].forEach(type => {
                 const hiddenSelect = document.getElementById(`language-switcher-${type}`);
                 if (hiddenSelect) {
                     hiddenSelect.value = lang;
-                    // Manually trigger the 'change' event to update the custom UI
                     hiddenSelect.dispatchEvent(new Event('change'));
                 }
             });
         };
-
-        // --- Feature Setup Functions ---
 
         const setupPreloader = () => {
             const preloader = document.getElementById('preloader');
@@ -883,10 +841,9 @@ $pdo = null;
                 });
 
                 hiddenSelect.addEventListener('change', () => updateButton(hiddenSelect.value));
-                updateButton(hiddenSelect.value); // Initial setup
+                updateButton(hiddenSelect.value);
             });
 
-            // Close dropdowns when clicking outside
             document.addEventListener('click', () => {
                 document.querySelectorAll('.lang-switcher-menu').forEach(menu => menu.classList.add('hidden'));
             });
@@ -932,7 +889,6 @@ $pdo = null;
         };
 
         const setupAnimations = () => {
-            // GSAP Stat Counter
             const statsSection = document.getElementById('stats-section');
             if (statsSection && typeof gsap !== 'undefined') {
                 const animateStat = (element, endValue, prefix = '', suffix = '') => {
@@ -948,8 +904,8 @@ $pdo = null;
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            animateStat(document.getElementById('students-stat'), 3000, '~');
-                            animateStat(document.getElementById('acceptance-rate-stat'), 21, '~', '%');
+                            animateStat(document.getElementById('students-stat'), <?php echo json_encode((int)$students_stat); ?>, '~');
+                            animateStat(document.getElementById('acceptance-rate-stat'), <?php echo json_encode((int)$acceptance_rate_stat); ?>, '~', '%');
                             observer.unobserve(statsSection);
                         }
                     });
@@ -957,11 +913,9 @@ $pdo = null;
                 observer.observe(statsSection);
             }
 
-            // GSAP Vision & Mission
             gsap.from(".order-2 h2", { opacity: 0, y: -20, duration: 2, ease: "power3.out" });
             gsap.from(".order-2 h3, .order-2 p.text-gray-600", { opacity: 0, x: -50, duration: 1.5, stagger: 0.3, ease: "back.out(1.7)" });
 
-            // Intersection Observer for general scroll animations
             const animatedElements = document.querySelectorAll('.animate-on-scroll');
             if (animatedElements.length > 0) {
                 const scrollObserver = new IntersectionObserver((entries) => {
@@ -1113,7 +1067,6 @@ $pdo = null;
             });
         };
 
-        // --- Initialization ---
         const init = () => {
             setupPreloader();
             setupMobileMenu();

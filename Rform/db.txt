@@ -213,9 +213,21 @@ CREATE TABLE activities (
 
 
 
+-- This SQL command creates the `site_settings` table.
+-- This table is designed to store various website settings as key-value pairs.
+-- It's used by `stats_api.php` to manage dynamic values for your home page.
 
-
-
+CREATE TABLE IF NOT EXISTS `stats_settings` (
+  -- `setting_key` stores the unique name of the setting (e.g., 'students_stat').
+  -- It's the PRIMARY KEY to prevent duplicate settings.
+  `setting_key` VARCHAR(255) NOT NULL,
+  
+  -- `setting_value` stores the actual value for the key (e.g., '3000').
+  -- TEXT type is used to allow for longer values if needed in the future.
+  `setting_value` TEXT NOT NULL,
+  
+  PRIMARY KEY (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 

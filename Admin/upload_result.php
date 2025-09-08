@@ -9,7 +9,7 @@ require_once 'auth_check.php';
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Upload Exam Results — UTYCC Admin</title>
-  <link rel="shortcut icon" href="./Img/logo/utycc_logo." type="image/x-icon" />
+  <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -40,13 +40,6 @@ require_once 'auth_check.php';
     .preview-box.dragover {
         border-color: #3b82f6;
     }
-  </style>
-  <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-    .card { background-color: white; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
-    .form-select, .form-input {
-        border-color: #d1d5db;
-    }
     .loading-spinner {
         border: 4px solid rgba(255, 255, 255, 0.3);
         border-top-color: #fff;
@@ -58,9 +51,25 @@ require_once 'auth_check.php';
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
-    .dragover {
-        border-color: #3b82f6;
+    /* --- LAYOUT STYLES --- */
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      grid-template-rows: 72px 1fr;
+      grid-template-areas:
+        "sidebar header"
+        "sidebar main";
+      min-height: 100dvh;
+      background-color: #f1f5f9;
     }
+    .header {
+      grid-area: header;
+      position: sticky; top: 0; z-index: 10;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+    }
+    .main { grid-area: main; padding: 20px; }
     .sidebar { grid-area: sidebar; border-right: 1px solid #e2e8f0; background: #fff; padding: 20px 16px; position: sticky; top: 0; height: 100vh; }
     .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
     .brand img { width: 32px; height: 32px; }
@@ -75,10 +84,18 @@ require_once 'auth_check.php';
     .image-preview-item { position: relative; width: 100px; height: 100px; }
     .image-preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem; border: 1px solid #e2e8f0; }
     .remove-btn { position: absolute; top: -8px; right: -8px; background-color: #ef4444; color: white; border-radius: 50%; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+    @media (max-width: 780px) {
+      .app { grid-template-columns: 1fr; grid-template-areas:
+          "header"
+          "main"; }
+      .sidebar { position: static; height: auto; display: none; }
+    }
     </style>
 </head>
-<body class="flex">
-   <aside class="sidebar" aria-label="Sidebar navigation">
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
         <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
         <h1>UTYCC Admin Panel</h1>
@@ -119,197 +136,201 @@ require_once 'auth_check.php';
       </nav>
     </aside>
 
-  <main class="flex-1 p-8">
-         <div class="flex items-center justify-center min-h-screen p-6">
-        <div class="card w-full max-w-4xl p-8">
-            <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">Upload Exam Results</h2>
-            <form id="uploadForm" class="space-y-6" enctype="multipart/form-data">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
-                        <select id="year" name="year" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
-                            <option value="">Select Year</option>
-                            <option value="1">1st Year</option>
-                            <option value="2">2nd Year</option>
-                            <option value="3">3rd Year</option>
-                            <option value="4">4th Year</option>
-                            <option value="5">5th Year</option>
-                            <option value="6">Final Year</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
-                        <select id="semester" name="semester" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
-                            <option value="">Select Semester</option>
-                            <option value="1">1st Semester</option>
-                            <option value="2">2nd Semester</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="major" class="block text-sm font-medium text-gray-700">Major</label>
-                        <select id="major" name="major" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
-                            <option value="">Select Major</option>
-                            <option value="ist">Information Science Technology</option>
-                            <option value="ce">Computer Engineering</option>
-                            <option value="ece">Electronics Engineering</option>
-                            <option value="pre">Precision Engineering</option>
-                            <option value="ame">Advanced Materials Engineering</option>
-                        </select>
-                    </div>
-                </div>
+    <header class="header">
+      <h1 class="text-2xl font-bold text-gray-800">Upload Exam Results</h1>
+    </header>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Exam Result Images</label>
-                    <div id="preview-box" class="mt-1 flex justify-center items-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 min-h-[150px] cursor-pointer hover:border-blue-500 transition-colors duration-200">
-                        <div class="space-y-1 text-center" id="upload-prompt">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                            <p class="text-sm text-gray-600">
-                                <span class="font-medium text-blue-600 cursor-pointer hover:underline">Click to upload</span> or drag and drop
-                            </p>
-                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB each</p>
-                        </div>
-                        <div id="image-previews-container" class="hidden image-preview-container"></div>
-                    </div>
-                    <input type="file" id="result_image" accept="image/*" class="sr-only" multiple>
-                </div>
+    <main class="main">
+      <div class="card w-full p-8">
+          <form id="uploadForm" class="space-y-8" enctype="multipart/form-data">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                      <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
+                      <select id="year" name="year" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
+                          <option value="">Select Year</option>
+                          <option value="1">1st Year</option>
+                          <option value="2">2nd Year</option>
+                          <option value="3">3rd Year</option>
+                          <option value="4">4th Year</option>
+                          <option value="5">5th Year</option>
+                          <option value="6">Final Year</option>
+                      </select>
+                  </div>
+                  <div>
+                      <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
+                      <select id="semester" name="semester" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
+                          <option value="">Select Semester</option>
+                          <option value="1">1st Semester</option>
+                          <option value="2">2nd Semester</option>
+                      </select>
+                  </div>
+                  <div>
+                      <label for="major" class="block text-sm font-medium text-gray-700">Major</label>
+                      <select id="major" name="major" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
+                          <option value="">Select Major</option>
+                          <option value="ist">IST</option>
+                          <option value="ce">CE</option>
+                          <option value="ece">ECE</option>
+                          <option value="pre">PRE</option>
+                          <option value="ame">AME</option>
+                      </select>
+                  </div>
+              </div>
 
-                <div>
-                    <button type="submit" id="submit-btn" class="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
-                        <span id="btn-text">Upload Results</span>
-                        <div id="btn-spinner" class="loading-spinner hidden"></div>
-                    </button>
-                </div>
+              <div>
+                  <label class="block text-sm font-medium text-gray-700">Exam Result Images</label>
+                  <div id="preview-box" class="mt-1 flex justify-center items-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 min-h-[250px] cursor-pointer hover:border-blue-500 transition-colors duration-200">
+                      <div class="space-y-1 text-center" id="upload-prompt">
+                          <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                          <p class="text-sm text-gray-600">
+                              <span class="font-medium text-blue-600 cursor-pointer hover:underline">Click to upload</span> or drag and drop
+                          </p>
+                          <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB each</p>
+                      </div>
+                      <div id="image-previews-container" class="hidden image-preview-container"></div>
+                  </div>
+                  <input type="file" id="result_image" accept="image/*" class="sr-only" multiple>
+              </div>
 
-                <div id="status-message" class="mt-4 p-3 rounded-lg text-center hidden" role="alert"></div>
-            </form>
-        </div>
-    </div>
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const uploadForm = document.getElementById('uploadForm');
-        const statusMessage = document.getElementById('status-message');
-        const submitBtn = document.getElementById('submit-btn');
-        const btnText = document.getElementById('btn-text');
-        const btnSpinner = document.getElementById('btn-spinner');
-        const resultImageInput = document.getElementById('result_image');
-        const uploadPrompt = document.getElementById('upload-prompt');
-        const previewBox = document.getElementById('preview-box');
-        const imagePreviewsContainer = document.getElementById('image-previews-container');
-        let filesToUpload = [];
+              <div>
+                  <button type="submit" id="submit-btn" class="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+                      <span id="btn-text">Upload Results</span>
+                      <div id="btn-spinner" class="loading-spinner hidden"></div>
+                  </button>
+              </div>
 
-        function renderPreviews() {
-            imagePreviewsContainer.innerHTML = '';
-            if (filesToUpload.length > 0) {
-                uploadPrompt.classList.add('hidden');
-                imagePreviewsContainer.classList.remove('hidden');
-                filesToUpload.forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const previewItem = document.createElement('div');
-                        previewItem.className = 'image-preview-item';
-                        previewItem.innerHTML = `
-                            <img src="${e.target.result}" alt="Image Preview">
-                            <div class="remove-btn" data-index="${index}">
-                                <svg class="h-4 w-4 pointer-events-none" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
-                            </div>
-                        `;
-                        imagePreviewsContainer.appendChild(previewItem);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            } else {
-                uploadPrompt.classList.remove('hidden');
-                imagePreviewsContainer.classList.add('hidden');
-            }
-        }
+              <div id="status-message" class="mt-4 p-3 rounded-lg text-center hidden" role="alert"></div>
+          </form>
+      </div>
+    </main>
+  </div>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+      const uploadForm = document.getElementById('uploadForm');
+      const statusMessage = document.getElementById('status-message');
+      const submitBtn = document.getElementById('submit-btn');
+      const btnText = document.getElementById('btn-text');
+      const btnSpinner = document.getElementById('btn-spinner');
+      const resultImageInput = document.getElementById('result_image');
+      const uploadPrompt = document.getElementById('upload-prompt');
+      const previewBox = document.getElementById('preview-box');
+      const imagePreviewsContainer = document.getElementById('image-previews-container');
+      let filesToUpload = [];
 
-        imagePreviewsContainer.addEventListener('click', (e) => {
-            if (e.target.closest('.remove-btn')) {
-                const indexToRemove = parseInt(e.target.closest('.remove-btn').dataset.index, 10);
-                filesToUpload.splice(indexToRemove, 1);
-                renderPreviews();
-            }
-        });
+      function renderPreviews() {
+          imagePreviewsContainer.innerHTML = '';
+          if (filesToUpload.length > 0) {
+              uploadPrompt.classList.add('hidden');
+              imagePreviewsContainer.classList.remove('hidden');
+              filesToUpload.forEach((file, index) => {
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                      const previewItem = document.createElement('div');
+                      previewItem.className = 'image-preview-item';
+                      previewItem.innerHTML = `
+                          <img src="${e.target.result}" alt="Image Preview">
+                          <div class="remove-btn" data-index="${index}">
+                              <svg class="h-4 w-4 pointer-events-none" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+                          </div>
+                      `;
+                      imagePreviewsContainer.appendChild(previewItem);
+                  };
+                  reader.readAsDataURL(file);
+              });
+          } else {
+              uploadPrompt.classList.remove('hidden');
+              imagePreviewsContainer.classList.add('hidden');
+          }
+      }
 
-        previewBox.addEventListener('click', (e) => {
-            if (e.target.closest('.image-preview-item')) return;
-            resultImageInput.click();
-        });
+      imagePreviewsContainer.addEventListener('click', (e) => {
+          if (e.target.closest('.remove-btn')) {
+              const indexToRemove = parseInt(e.target.closest('.remove-btn').dataset.index, 10);
+              filesToUpload.splice(indexToRemove, 1);
+              renderPreviews();
+          }
+      });
 
-        previewBox.addEventListener('dragover', (e) => { e.preventDefault(); previewBox.classList.add('dragover'); });
-        previewBox.addEventListener('dragleave', () => { previewBox.classList.remove('dragover'); });
+      previewBox.addEventListener('click', (e) => {
+          if (e.target.closest('.image-preview-item')) return;
+          resultImageInput.click();
+      });
 
-        previewBox.addEventListener('drop', (e) => {
-            e.preventDefault();
-            previewBox.classList.remove('dragover');
-            const newFiles = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
-            filesToUpload.push(...newFiles);
-            renderPreviews();
-        });
+      previewBox.addEventListener('dragover', (e) => { e.preventDefault(); previewBox.classList.add('dragover'); });
+      previewBox.addEventListener('dragleave', () => { previewBox.classList.remove('dragover'); });
 
-        resultImageInput.addEventListener('change', (e) => {
-            const newFiles = Array.from(e.target.files);
-            filesToUpload.push(...newFiles);
-            renderPreviews();
-            resultImageInput.value = ''; // Clear the input
-        });
+      previewBox.addEventListener('drop', (e) => {
+          e.preventDefault();
+          previewBox.classList.remove('dragover');
+          const newFiles = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+          filesToUpload.push(...newFiles);
+          renderPreviews();
+      });
 
-        uploadForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+      resultImageInput.addEventListener('change', (e) => {
+          const newFiles = Array.from(e.target.files);
+          filesToUpload.push(...newFiles);
+          renderPreviews();
+          resultImageInput.value = ''; // Clear the input
+      });
 
-            if (filesToUpload.length === 0) {
-                statusMessage.textContent = 'Please select at least one image to upload.';
-                statusMessage.className = 'mt-4 p-3 rounded-lg text-center bg-red-100 text-red-800';
-                return;
-            }
+      uploadForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
 
-            const formData = new FormData();
-            formData.append('year', document.getElementById('year').value);
-            formData.append('semester', document.getElementById('semester').value);
-            formData.append('major', document.getElementById('major').value);
-            
-            filesToUpload.forEach(file => {
-                formData.append('result_image[]', file, file.name);
-            });
+          if (filesToUpload.length === 0) {
+              statusMessage.textContent = 'Please select at least one image to upload.';
+              statusMessage.className = 'mt-4 p-3 rounded-lg text-center bg-red-100 text-red-800';
+              return;
+          }
 
-            submitBtn.disabled = true;
-            btnText.classList.add('hidden');
-            btnSpinner.classList.remove('hidden');
-            statusMessage.classList.add('hidden');
+          const formData = new FormData();
+          formData.append('year', document.getElementById('year').value);
+          formData.append('semester', document.getElementById('semester').value);
+          formData.append('major', document.getElementById('major').value);
+          
+          filesToUpload.forEach(file => {
+              formData.append('result_image[]', file, file.name);
+          });
 
-            try {
-                const response = await fetch('upload.php', {
-                    method: 'POST',
-                    body: formData
-                });
+          submitBtn.disabled = true;
+          btnText.classList.add('hidden');
+          btnSpinner.classList.remove('hidden');
+          statusMessage.classList.add('hidden');
 
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.statusText}`);
-                }
+          try {
+              const response = await fetch('upload.php', {
+                  method: 'POST',
+                  body: formData
+              });
 
-                const result = await response.json();
+              if (!response.ok) {
+                  throw new Error(`Server error: ${response.statusText}`);
+              }
 
-                statusMessage.textContent = result.message;
-                statusMessage.classList.remove('hidden');
-                if (result.success) {
-                    statusMessage.className = 'mt-4 p-3 rounded-lg text-center bg-green-100 text-green-800';
-                    uploadForm.reset();
-                    filesToUpload = [];
-                    renderPreviews();
-                } else {
-                    statusMessage.className = 'mt-4 p-3 rounded-lg text-center bg-red-100 text-red-800';
-                }
-            } catch (error) {
-                console.error('Upload error:', error);
-                statusMessage.textContent = 'An unexpected error occurred. Please check the console and try again.';
-                statusMessage.className = 'mt-4 p-3 rounded-lg text-center bg-red-100 text-red-800';
-            } finally {
-                submitBtn.disabled = false;
-                btnText.classList.remove('hidden');
-                btnSpinner.classList.add('hidden');
-            }
-        });
-    });
-    </script>
+              const result = await response.json();
+
+              statusMessage.textContent = result.message;
+              statusMessage.classList.remove('hidden');
+              if (result.success) {
+                  statusMessage.className = 'mt-4 p-3 rounded-lg text-center bg-green-100 text-green-800';
+                  uploadForm.reset();
+                  filesToUpload = [];
+                  renderPreviews();
+              } else {
+                  statusMessage.className = 'mt-4 p-3 rounded-lg text-center bg-red-100 text-red-800';
+              }
+          } catch (error) {
+              console.error('Upload error:', error);
+              statusMessage.textContent = 'An unexpected error occurred. Please check the console and try again.';
+              statusMessage.className = 'mt-4 p-3 rounded-lg text-center bg-red-100 text-red-800';
+          } finally {
+              submitBtn.disabled = false;
+              btnText.classList.remove('hidden');
+              btnSpinner.classList.add('hidden');
+          }
+      });
+  });
+  </script>
 </body>
 </html>
+
