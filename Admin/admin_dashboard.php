@@ -1,10 +1,5 @@
 <?php
 require_once 'auth_check.php';
-
-// For debugging purposes, you can uncomment the following two lines to see detailed PHP errors.
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
-
 // session_start();
 // if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
 //     header("location: ./signin.php"); // Corrected path to signin.php in the same directory
