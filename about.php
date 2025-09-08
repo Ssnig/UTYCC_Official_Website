@@ -307,7 +307,7 @@
       </h2>
       <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 card_1">
         <a href="./Majors/ist.php" class="uiverse-major-card">
-          <img src="Img/logo/IST.webp" alt="Information Science and Technology" class="card-image w-full h-48 object-cover" />
+          <img src="Img/logo/IST.webp" alt="Information Science and Technology" class="card-image w-full h-auto object-contain p-4" />
           <div class="card-content">
             <h3 class="card-title" data-lang-key="major_ist_title">Information Science and Technology (IST)</h3>
             <p class="card-info" data-lang-key="major_ist_desc">Learn to design, implement, and manage information systems that drive business success.</p>
@@ -315,7 +315,7 @@
           </div>
         </a>
         <a href="./Majors/ce.php" class="uiverse-major-card">
-          <img src="Img/logo/CE.webp" alt="Computer Engineering" class="card-image w-full h-48 object-cover" />
+          <img src="Img/logo/CE.webp" alt="Computer Engineering" class="card-image w-full h-auto object-contain p-4" />
           <div class="card-content">
             <h3 class="card-title" data-lang-key="major_ce_title">Computer Engineering (CE)</h3>
             <p class="card-info" data-lang-key="major_ce_desc">Combine computer science and electrical engineering to build hardware and software systems.</p>
@@ -323,7 +323,7 @@
           </div>
         </a>
         <a href="./Majors/ece.php" class="uiverse-major-card">
-          <img src="Img/logo/EcE.jpg" alt="Electronics Engineering" class="card-image w-full h-48 object-cover" />
+          <img src="Img/logo/EcE.jpg" alt="Electronics Engineering" class="card-image w-full h-auto object-contain p-4" />
           <div class="card-content">
             <h3 class="card-title" data-lang-key="major_ece_title">Electronics Engineering (EcE)</h3>
             <p class="card-info" data-lang-key="major_ece_desc">Explore the principles of electricity, electronics, and computing for innovative solutions.</p>
@@ -331,7 +331,7 @@
           </div>
         </a>
         <a href="./Majors/pre.php" class="uiverse-major-card">
-          <img src="Img/logo/PrE.png" alt="Precision Engineering" class="card-image w-full h-48 object-cover" />
+          <img src="Img/logo/PrE.png" alt="Precision Engineering" class="card-image w-full h-auto object-contain p-4" />
           <div class="card-content">
             <h3 class="card-title" data-lang-key="major_pre_title">Precision Engineering (PrE)</h3>
             <p class="card-info" data-lang-key="major_pre_desc">Focus on the exploration, drilling, production, and management of oil and natural gas resources.</p>
@@ -339,7 +339,7 @@
           </div>
         </a>
         <a href="./Majors/ame.php" class="uiverse-major-card">
-          <img src="Img/logo/AME_updated.jpg" alt="Advanced Materials Engineering" class="card-image w-full h-48 object-cover" />
+          <img src="Img/logo/AME_updated.jpg" alt="Advanced Materials Engineering" class="card-image w-full h-auto object-contain p-4" />
           <div class="card-content">
             <h3 class="card-title" data-lang-key="major_ame_title">Advanced Materials Engineering (AME)</h3>
             <p class="card-info" data-lang-key="major_ame_desc">Design, analyze, and test aircraft, spacecraft, and other mechanical systems.</p>
@@ -657,3 +657,4 @@
   </script>
 </body>
 </html>
+
