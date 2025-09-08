@@ -62,11 +62,11 @@
       </a>
       <div class="hidden md:flex items-center space-x-6">
        <a href="../about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about">About Us</a>
         <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
+          data-lang-key="nav_activity">Activities</a>
         <a href="../exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
+          data-lang-key="nav_examresult">Exam Results</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
@@ -100,7 +100,7 @@
           <!-- Hidden original select to maintain JS compatibility -->
           <select id="language-switcher-desktop" class="hidden">
             <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
+            <option value="en" selected>English</option>
           </select>
         </div>
       </div>
@@ -111,13 +111,13 @@
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
       <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+        data-lang-key="nav_about_mobile">About Us</a>
         <br><br>
       <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+        data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
       <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+        data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
@@ -149,7 +149,7 @@
         <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
           <option value="my">မြန်မာ</option>
-          <option value="en">English</option>
+          <option value="en" selected>English</option>
         </select>
       </div>
     </div>
@@ -203,25 +203,10 @@
   <div class="container mx-auto">
     <!-- အောက်ကဟာတွေက ရည်ရွယ်ချက် တာဝန်တွေ ခေါင်းစဥ်နဲ့ စာကိုယ်ခွဲထည့်  -->
     <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="objectives_heading">
-      IST ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များ
+      The objectives and responsibilities
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl px-2 mx-auto" data-lang-key="objectives">
-      ပေါ်ထွန်းလာသည့် အချက်အလက်နည်းပညာများနှင့်
-      အသုံးပြုသူအသိုင်းအဝိုင်းဆိုင်ရာ ဆန်းသစ်တီထွင်နိုင်သော ကျောင်းသားများ
-      ဖြစ်စေရန် သီအိုရီနှင့် လက်တွေ့ အရည်အသွေးအမြင့်ဆုံး ဖြင့်
-      သင်တန်းပေးသင်ကြားရန်။ နည်းပညာအသစ်များကို ထိရောက်စွာ
-      အသုံးပြုခြင်းအားဖြင့် ကမ္ဘာပေါ်ရှိ အခက်အခဲပြဿနာများကို အမှန်တကယ်
-      ဖြေရှင်းနိုင်ရန် ပံ့ပိုးပေးရန်။ ICT ကို အသုံးချသည့် သင်ယူပတ်ဝန်းကျင်
-      အခွင့်အလမ်းများကို ကျယ်ကျယ်ပြန့်ပြန့် ဖန်တီးပေးရန်။ နည်းပညာလောကတွင်
-      လိုအပ်သော ပညာဉာဏ်နှင့်အတူ စွမ်းရည်ပြည့်ဝမှုများ၊
-      လက်တွေ့ကျွမ်းကျင်မှုများနှင့် ပေါ်ထွန်းလာသော အချက်အလက်နည်းပညာများ၏
-      အနာဂတ်ခေါင်းဆောင်များ ဖြစ်လာစေရန်။ စသည်တို့ ဖြစ်ပါသည်။ ထို့အပြင်
-      တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုသည့်
-      ဘာသာရပ်များတွင် ကျွမ်းကျင်စေရန် နှင့် တီထွင်ဆန်းသစ်သော သိပ္ပံသုတေသနများ
-      ဆောင်ရွက်ခြင်းတို့ကို လုပ်ဆောင်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးမည် ဖြစ်ပါသည်။
-      IST ဘာသာရပ်သင်တန်းသည် ကျောင်းသား/သူများကို နည်းပညာပိုင်းတွင် အခြေခံပညာမှ
-      စ၍ သုတေသနနှင့် လက်တွေ့ကျကျ အဆင့်မြင့်ပညာရရှိစေရန် ရည်ရွယ်ထားပြီး
-      အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ အောက်ပါအတိုင်းဖြစ်ပါသည်။
+      To deliver high-quality theoretical and practical training so that students can become innovative creators in emerging information technologies and user communities. To support the effective use of new technologies in order to genuinely solve the problems and challenges facing the world. To widely create learning environments and opportunities that utilize ICT. To enable students to become future leaders in information technology by equipping them with the necessary knowledge, competencies, practical skills, and emerging information technologies. Additionally, to train students to become proficient in their specialized subjects and to engage in innovative scientific research. The IST course aims to provide students with fundamental knowledge in technology, progressing to advanced research and practical expertise. The main topics to be studied are as follows
     </p>
 
     <!-- Grid to hold the cards -->
@@ -421,8 +406,7 @@
       Where You Can Learn
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="lab_intro">
-      သတင်းအချက်အလက်သိပ္ပံ နှင့် နည်းပညာမေဂျာတွင် သီအိုရီနဲ့ လက်တွေ့ကျကျ လေ့လာမှုများမှတစ်ဆင့် နည်းပညာများကို
-      ကျွမ်းကျင်စေရန် စမ်းသပ်ခန်းများ (Laboratories) တည်ဆောက်ထားပါသည်။
+      In the Information Science and Technology major, laboratories have been established to help students master technologies through both theoretical and practical learning
     </p>
 
     <div id="skillCardContainer">
@@ -480,9 +464,7 @@
         <!-- Skill Card 3: Emerging Technology -->
         <div
           class="skill-card group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-          data-description="Network 
-
-Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်ရန်။">
+          data-description="Network Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်ရန်။">
           <div class="bg-yellow-500 text-white rounded-full p-4 mb-4">
             <!-- SVG for Emerging Technology -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="none"
@@ -570,57 +552,7 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
           </h3>
         </div>
 
-        <!-- Skill Card 7: Data Analytics -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Extract insights and make data-driven decisions.">
-                <div class="bg-gray-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v-4m-4 4v-4m8 4v-4" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 19a4 4 0 11-8 0" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Data Analytics</h3>
-            </div> -->
-
-        <!-- Skill Card 8: Innovation & Creativity -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Cultivate an innovative mindset and build products that change the world.">
-                <div class="bg-orange-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16.5c2.485 0 4.5-2.015 4.5-4.5S14.485 7.5 12 7.5 7.5 9.515 7.5 12s2.015 4.5 4.5 4.5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a.5.5 0 110-1 .5.5 0 010 1z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Innovation & Creativity</h3>
-            </div> -->
-
-        <!-- Skill Card 9: User Experience (UX) -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Design and optimize intuitive and accessible digital interfaces.">
-                <div class="bg-teal-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6m-1-1v6m-3-3h6" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21H3a1 1 0 01-1-1V5a1 1 0 011-1h7a1 1 0 011 1v15z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">User Experience (UX)</h3>
-            </div> -->
-
-        <!-- Skill Card 10: Global Collaboration -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Work with diverse teams and contribute to projects on a global scale.">
-                <div class="bg-cyan-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a.5.5 0 110-1 .5.5 0 010 1z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Global Collaboration</h3>
-            </div> -->
+        
       </div>
     </div>
 
@@ -744,9 +676,7 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
       </h2>
       <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="job_info">
         <!-- ဒီမှာက စာလေးပြင် -->
-        B.E. Information Science and Technology ဘွဲ့ရရှိသူများသည် IT Companies,
-        Banking & Financial Institutions, Telecom, Software Houses, E-commerce
-        Companies, Startups, Government Digital Projects စသည်တို့တွင်
+        Graduates with a B.E. in Information Science and Technology can work in IT companies, banking and financial institutions, telecom, software houses, e-commerce companies, startups, government digital projects, and so on, as the following job positions
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1177,7 +1107,7 @@ Configuration, Simulation နှင့် Cybersecurity လေ့ကျင့်
     document.addEventListener("DOMContentLoaded", () => {
       // Check for a saved language in localStorage, otherwise default to 'en'
       const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+      setLanguage(savedLang);
     });
   </script>
   <script src="../JS/lgl.js"></script>

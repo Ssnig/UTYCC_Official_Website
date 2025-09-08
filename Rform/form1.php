@@ -96,6 +96,9 @@
 
         // Store all incoming text POST data into the session.
         $_SESSION['form1_data'] = $_POST;
+        
+        // Force academic year to be 'First Year'
+        $_SESSION['form1_data']['academic_year'] = 'First Year';
 
         // Restore the preserved photo URL. If a new photo is uploaded, this will be replaced later.
         $_SESSION['form1_data']['photo_url'] = $existing_photo_url;
@@ -258,6 +261,14 @@
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4) !important;
         outline: none;
     }
+    select[readonly] {
+        background-color: #f1f5f9;
+        pointer-events: none;
+    }
+    select[readonly]:focus {
+        box-shadow: none !important;
+        border-color: #cbd5e1 !important;
+    }
     .section-card {
         background-color: #ffffff;
         border: 1px solid #e5e7eb;
@@ -324,19 +335,12 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="relative pb-5">
-    <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
-    <select id="academic_year" name="academic_year" class="mt-1">
-        <option value="" disabled <?php echo (getValue('academic_year') == '') ? 'selected' : ''; ?>>သင်တန်းနှစ်ကို ရွေးချယ်ပါ</option>
-        <option value="First Year" <?php echo (getValue('academic_year') == 'First Year') ? 'selected' : ''; ?>>First Year</option>
-        <option value="Second Year" <?php echo (getValue('academic_year') == 'Second Year') ? 'selected' : ''; ?>>Second Year</option>
-        <option value="Third Year" <?php echo (getValue('academic_year') == 'Third Year') ? 'selected' : ''; ?>>Third Year</option>
-        <option value="Fourth Year" <?php echo (getValue('academic_year') == 'Fourth Year') ? 'selected' : ''; ?>>Fourth Year</option>
-        <option value="Fifth Year" <?php echo (getValue('academic_year') == 'Fifth Year') ? 'selected' : ''; ?>>Fifth Year</option>
-        <option value="Final Year" <?php echo (getValue('academic_year') == 'Final Year') ? 'selected' : ''; ?>>Final Year</option>
-    </select>
-    <?php if (isset($errors['academic_year'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['academic_year']; ?></p><?php endif; ?>
-</div>
-<!-- changes select vox -->
+                    <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
+                    <select id="academic_year" name="academic_year" class="mt-1" readonly>
+                        <option value="First Year" selected>First Year</option>
+                    </select>
+                    <?php if (isset($errors['academic_year'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['academic_year']; ?></p><?php endif; ?>
+                </div>
                             
 
                     <div class="relative pb-5">

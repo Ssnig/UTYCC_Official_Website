@@ -27,13 +27,32 @@
   <style>
     body {
       font-family: "Inter", sans-serif;
+      overflow-x: hidden; /* Prevent horizontal scrollbars from animations */
+    }
+    .policy-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .policy-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .hero-icon {
+        position: absolute;
+        right: 10%;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12rem;
+        opacity: 0.05;
+        color: #1e3a8a; /* Using a color from the existing palette */
+        z-index: 1;
+        pointer-events: none;
     }
   </style>
 </head>
 
 <body class="bg-gray-100">
   <!-- Replicated Header from term&policies.php -->
-  <div class="bg-white shadow-md sticky top-0 z-50">
+  <header class="bg-white shadow-md sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
       <a href="./home.php" class="flex items-center space-x-3">
         <div class="p-2 rounded-lg">
@@ -94,15 +113,12 @@
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
-      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="./about.php" class="block py-2 text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_about_mobile">About Us</a>
-          <br><br>
-        <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="./activity.php" class="block py-2 text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_activity_mobile">Activities</a>
-          <br><br>
-        <a href="/Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="/Rform/examResults.php" class="block py-2 text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult_mobile">Exam Results</a>
-          <br><br>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
         <div id="lang-switcher-container-mobile" class="relative">
@@ -137,101 +153,120 @@
         </select>
       </div>
     </div>
-  </div>
+  </header>
 
   <!-- Main Content Section for Data Protection -->
-  <main class="container mx-auto px-6 py-12 animate-section">
-    <div class="bg-white p-8 md:p-12 rounded-lg shadow-lg ">
-      <h1 class="text-3xl md:text-4xl font-bold text-blue-900 mb-6 animate-title" data-lang-key="dataprotection_title">Data Protection Policy</h1>
-      <p class="text-gray-600 mb-10 animate-fade" data-lang-key="dataprotection_intro">
-        The University of Technology (Yatanarpon Cyber City) is committed to protecting the privacy and security of your personal data. This policy outlines our principles for handling your information and your rights concerning your data.
-      </p>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold text-blue-800 mb-4 animate-title" data-lang-key="section_principles_title">1. Key Data Protection Principles</h2>
-        <p class="text-gray-700 mb-4 animate-fade " data-lang-key="section_principles_intro">
-          We adhere to the following core principles when processing your personal data:
-        </p>
-
-        <div class="space-y-6 text-gray-700">
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="principles_legality_section">1.1. Lawfulness, Fairness, and Transparency</h3>
-            <p class="animate-fade" data-lang-key="legality_description">
-              Your data is processed in a lawful, fair, and transparent manner. We will inform you about what data we are collecting, why, and how it will be used.
+  <main class="container mx-auto px-6 py-12">
+    <!-- Hero Section -->
+    <div class="relative bg-white p-8 md:p-12 rounded-lg shadow-lg mb-12 overflow-hidden animate-section">
+        <i class="fas fa-shield-alt hero-icon"></i>
+        <div class="relative z-10">
+            <h1 class="text-3xl md:text-5xl font-bold text-blue-900 mb-4 animate-title" data-lang-key="dataprotection_title">Data Protection Policy</h1>
+            <p class="text-gray-600 max-w-3xl text-lg animate-fade" data-lang-key="dataprotection_intro">
+                The University of Technology (Yatanarpon Cyber City) is committed to protecting the privacy and security of your personal data. This policy outlines our principles for handling your information and your rights concerning your data.
             </p>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="principles_purpose_section">1.2. Purpose Limitation</h3>
-            <p class="animate-fade" data-lang-key="purpose_description">
-              We collect your data only for specific, explicit, and legitimate purposes related to your university registration and studies. Your data will not be used for any other purposes without your consent.
-            </p>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="principles_minimisation_section">1.3. Data Minimisation</h3>
-            <p class="animate-fade" data-lang-key="minimisation_description">
-              We only collect data that is necessary and relevant for the stated purpose. We avoid collecting excessive information.
-            </p>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="principles_accuracy_section">1.4. Accuracy</h3>
-            <p class="animate-fade" data-lang-key="accuracy_description">
-              We take all reasonable steps to ensure your personal data is accurate and, where necessary, kept up to date. You have the right to request a correction if your data is inaccurate.
-            </p>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="principles_storage_section">1.5. Storage Limitation</h3>
-            <p class="animate-fade" data-lang-key="storage_description">
-              Your data is stored for no longer than is necessary for the purposes for which it was collected. Once the data is no longer needed, it will be securely deleted or anonymized.
-            </p>
-          </article>
         </div>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-semibold text-blue-800 mb-4 animate-title" data-lang-key="section_your_rights_title">2. Your Rights</h2>
-        <p class="text-gray-700 mb-4 animate-fade" data-lang-key="section_your_rights_intro">
-          As a student, you have the following rights regarding your personal data:
-        </p>
-
-        <div class="space-y-6 text-gray-700">
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="rights_access_section">2.1. Right to Access</h3>
-            <p class="animate-fade" data-lang-key="rights_access_P">
-              You have the right to request a copy of the personal data we hold about you.
-            </p>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="rights_rectification_section">2.2. Right to Rectification</h3>
-            <p class="animate-fade" data-lang-key="rights_rectification_P">
-              You have the right to have any inaccurate or incomplete data corrected.
-            </p>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="rights_erasure_section">2.3. Right to Erasure (Right to be Forgotten)</h3>
-            <p class="animate-fade" data-lang-key="rights_erasure_P">
-              You may request the deletion of your personal data where there is no legitimate reason for us to continue processing it.
-            </p>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="rights_objection_section">2.4. Right to Object</h3>
-            <p class="animate-fade" data-lang-key="rights_objection_P">
-              You have the right to object to the processing of your personal data in certain circumstances.
-            </p>
-          </article>
-        </div>
-      </section>
     </div>
+
+    <!-- Principles Section -->
+    <section class="mb-16 animate-section">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 animate-title" data-lang-key="section_principles_title">1. Key Data Protection Principles</h2>
+            <p class="text-gray-700 mt-2 max-w-2xl mx-auto animate-fade" data-lang-key="section_principles_intro">
+                We adhere to the following core principles when processing your personal data:
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Card 1 -->
+            <div class="policy-card bg-white p-6 rounded-lg shadow-md text-center">
+                <i class="fas fa-balance-scale text-4xl text-blue-500 mb-4"></i>
+                <h3 class="font-bold text-lg mb-2 text-blue-900" data-lang-key="principles_legality_section">1.1. Lawfulness, Fairness, and Transparency</h3>
+                <p class="text-gray-600 text-sm" data-lang-key="legality_description">
+                    Your data is processed in a lawful, fair, and transparent manner. We will inform you about what data we are collecting, why, and how it will be used.
+                </p>
+            </div>
+            <!-- Card 2 -->
+            <div class="policy-card bg-white p-6 rounded-lg shadow-md text-center">
+                <i class="fas fa-bullseye text-4xl text-blue-500 mb-4"></i>
+                <h3 class="font-bold text-lg mb-2 text-blue-900" data-lang-key="principles_purpose_section">1.2. Purpose Limitation</h3>
+                <p class="text-gray-600 text-sm" data-lang-key="purpose_description">
+                    We collect your data only for specific, explicit, and legitimate purposes related to your university registration and studies. Your data will not be used for any other purposes without your consent.
+                </p>
+            </div>
+            <!-- Card 3 -->
+            <div class="policy-card bg-white p-6 rounded-lg shadow-md text-center">
+                <i class="fas fa-compress-arrows-alt text-4xl text-blue-500 mb-4"></i>
+                <h3 class="font-bold text-lg mb-2 text-blue-900" data-lang-key="principles_minimisation_section">1.3. Data Minimisation</h3>
+                <p class="text-gray-600 text-sm" data-lang-key="minimisation_description">
+                    We only collect data that is necessary and relevant for the stated purpose. We avoid collecting excessive information.
+                </p>
+            </div>
+            <!-- Card 4 -->
+            <div class="policy-card bg-white p-6 rounded-lg shadow-md text-center">
+                <i class="fas fa-check-circle text-4xl text-blue-500 mb-4"></i>
+                <h3 class="font-bold text-lg mb-2 text-blue-900" data-lang-key="principles_accuracy_section">1.4. Accuracy</h3>
+                <p class="text-gray-600 text-sm" data-lang-key="accuracy_description">
+                    We take all reasonable steps to ensure your personal data is accurate and, where necessary, kept up to date. You have the right to request a correction if your data is inaccurate.
+                </p>
+            </div>
+            <!-- Card 5 -->
+            <div class="policy-card bg-white p-6 rounded-lg shadow-md text-center">
+                <i class="fas fa-hourglass-end text-4xl text-blue-500 mb-4"></i>
+                <h3 class="font-bold text-lg mb-2 text-blue-900" data-lang-key="principles_storage_section">1.5. Storage Limitation</h3>
+                <p class="text-gray-600 text-sm" data-lang-key="storage_description">
+                    Your data is stored for no longer than is necessary. Once no longer needed, it will be securely deleted or anonymized.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rights Section -->
+    <section class="animate-section">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 animate-title" data-lang-key="section_your_rights_title">2. Your Rights</h2>
+            <p class="text-gray-700 mt-2 max-w-2xl mx-auto animate-fade" data-lang-key="section_your_rights_intro">
+                As a student, you have the following rights regarding your personal data:
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Right 1 -->
+            <div class="policy-card bg-white p-6 rounded-lg shadow-md text-center">
+                <i class="fas fa-eye text-4xl text-blue-500 mb-4"></i>
+                <h3 class="font-bold text-lg mb-2 text-blue-900" data-lang-key="rights_access_section">2.1. Right to Access</h3>
+                <p class="text-gray-600 text-sm" data-lang-key="rights_access_P">
+                    You have the right to request a copy of the personal data we hold about you.
+                </p>
+            </div>
+            <!-- Right 2 -->
+            <div class="policy-card bg-white p-6 rounded-lg shadow-md text-center">
+                <i class="fas fa-pencil-alt text-4xl text-blue-500 mb-4"></i>
+                <h3 class="font-bold text-lg mb-2 text-blue-900" data-lang-key="rights_rectification_section">2.2. Right to Rectification</h3>
+                <p class="text-gray-600 text-sm" data-lang-key="rights_rectification_P">
+                    You have the right to have any inaccurate or incomplete data corrected.
+                </p>
+            </div>
+            <!-- Right 3 -->
+            <div class="policy-card bg-white p-6 rounded-lg shadow-md text-center">
+                <i class="fas fa-trash-alt text-4xl text-blue-500 mb-4"></i>
+                <h3 class="font-bold text-lg mb-2 text-blue-900" data-lang-key="rights_erasure_section">2.3. Right to Erasure</h3>
+                <p class="text-gray-600 text-sm" data-lang-key="rights_erasure_P">
+                    You may request the deletion of your personal data where there is no legitimate reason for us to continue processing it.
+                </p>
+            </div>
+            <!-- Right 4 -->
+            <div class="policy-card bg-white p-6 rounded-lg shadow-md text-center">
+                <i class="fas fa-hand-paper text-4xl text-blue-500 mb-4"></i>
+                <h3 class="font-bold text-lg mb-2 text-blue-900" data-lang-key="rights_objection_section">2.4. Right to Object</h3>
+                <p class="text-gray-600 text-sm" data-lang-key="rights_objection_P">
+                    You have the right to object to the processing of your personal data in certain circumstances.
+                </p>
+            </div>
+        </div>
+    </section>
   </main>
 
   <!-- Replicated Footer from term&policies.php -->
-  <footer id="contact" class="bg-blue-900 text-white">
+  <footer id="contact" class="bg-blue-900 text-white mt-16">
     <div class="container mx-auto px-6 py-12">
       <div class="grid md:grid-cols-4 gap-8">
         <div>
@@ -244,9 +279,9 @@
             </a>
           </p>
           <div class="mt-4 text-sm text-blue-200">
-            <p>Email: info@utycc.edu.mm (example)</p>
-            <p>Phone: +95 (XX) XXX XXX (example)</p>
-          </div>
+                        <p>Email: info@utycc.site utyccstudentaffair2010@gmail.com</p>
+                        <p>Phone: +959445767834 </p>
+                    </div>
         </div>
         <div>
           <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
@@ -339,22 +374,9 @@
   </footer>
 
   <script>
-    // --- Mobile Menu and Smooth Scroll Script ---
-    const navLinks = document.querySelectorAll(".nav-link");
-    const mobileMenuButton = document.getElementById("mobile-menu-button");
-    const mobileMenu = document.getElementById("mobile-menu");
-
-    navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        const targetId = link.getAttribute("href");
-        document.querySelector(targetId).scrollIntoView({
-          behavior: "smooth"
-        });
-      });
-    });
-
-    mobileMenuButton.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden");
+    // --- Mobile Menu ---
+    document.getElementById("mobile-menu-button").addEventListener("click", () => {
+      document.getElementById("mobile-menu").classList.toggle("hidden");
     });
   </script>
 
@@ -431,7 +453,7 @@
         principles_accuracy_section: "1.4. Accuracy",
         accuracy_description: "We take all reasonable steps to ensure your personal data is accurate and, where necessary, kept up to date. You have the right to request a correction if your data is inaccurate.",
         principles_storage_section: "1.5. Storage Limitation",
-        storage_description: "Your data is stored for no longer than is necessary for the purposes for which it was collected. Once the data is no longer needed, it will be securely deleted or anonymized.",
+        storage_description: "Your data is stored for no longer than is necessary. Once no longer needed, it will be securely deleted or anonymized.",
         section_your_rights_title: "2. Your Rights",
         section_your_rights_intro: "As a student, you have the following rights regarding your personal data:",
         rights_access_section: "2.1. Right to Access",
@@ -460,79 +482,134 @@
         footer_link_dp: "Data Protection",
       },
     };
+    
+    function setLanguage(lang) {
+        // Update local storage
+        localStorage.setItem("language", lang);
 
-    const desktopLanguageSwitcher = document.getElementById("language-switcher-desktop");
-    const mobileLanguageSwitcher = document.getElementById("language-switcher-mobile");
+        // Update UI elements for both desktop and mobile
+        ['desktop', 'mobile'].forEach(device => {
+            const flagImg = document.getElementById(`selected-lang-flag-${device}`);
+            const textSpan = document.getElementById(`selected-lang-text-${device}`);
+            const select = document.getElementById(`language-switcher-${device}`);
+            
+            if(select) select.value = lang;
 
-    const changeLanguage = (lang) => {
-      localStorage.setItem("language", lang);
-      if (desktopLanguageSwitcher) {
-        desktopLanguageSwitcher.value = lang;
-      }
-      if (mobileLanguageSwitcher) {
-        mobileLanguageSwitcher.value = lang;
-      }
-      document.querySelectorAll("[data-lang-key]").forEach((element) => {
-        const key = element.dataset.langKey;
-        const translation = translations[lang][key];
-        if (translation) {
-          element.innerHTML = translation.replace(/\\n/g, "<br>");
-        }
-      });
-    };
-
-    if (desktopLanguageSwitcher) {
-      desktopLanguageSwitcher.addEventListener("change", (event) => {
-        changeLanguage(event.target.value);
-      });
+            if (lang === 'my') {
+                if(flagImg) flagImg.src = 'https://flagcdn.com/w20/mm.png';
+                if(textSpan) textSpan.textContent = 'မြန်မာ';
+            } else {
+                if(flagImg) flagImg.src = 'https://flagcdn.com/w20/gb.png';
+                if(textSpan) textSpan.textContent = 'English';
+            }
+        });
+        
+        // Translate all elements with data-lang-key
+        document.querySelectorAll("[data-lang-key]").forEach(element => {
+            const key = element.dataset.langKey;
+            if (translations[lang] && translations[lang][key]) {
+                element.innerHTML = translations[lang][key];
+            }
+        });
     }
 
-    if (mobileLanguageSwitcher) {
-      mobileLanguageSwitcher.addEventListener("change", (event) => {
-        changeLanguage(event.target.value);
-      });
+    // --- Custom Language Switcher Logic ---
+    function setupLangSwitcher(device) {
+        const container = document.getElementById(`lang-switcher-container-${device}`);
+        if (!container) return;
+        
+        const button = container.querySelector('.lang-switcher-button');
+        const menu = container.querySelector('.lang-switcher-menu');
+        const options = container.querySelectorAll('.lang-switcher-option');
+
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.classList.toggle('hidden');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = option.getAttribute('data-lang');
+                setLanguage(lang);
+                menu.classList.add('hidden');
+            });
+        });
     }
 
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.lang-switcher-menu').forEach(menu => menu.classList.add('hidden'));
+    });
+
+    // --- Initialize Language and Switchers on DOMContentLoaded ---
     document.addEventListener("DOMContentLoaded", () => {
       const savedLang = localStorage.getItem("language") || "en";
       setLanguage(savedLang);
+      setupLangSwitcher('desktop');
+      setupLangSwitcher('mobile');
     });
   </script>
   <!-- gsap animation -->
     <script>
     gsap.registerPlugin(ScrollTrigger);
+    
+    // Animate sections on scroll
+    gsap.utils.toArray(".animate-section").forEach((section) => {
+        gsap.from(section, {
+            scrollTrigger: {
+                trigger: section,
+                start: "top 85%",
+                toggleActions: "play none none none"
+            },
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out"
+        });
+    });
 
-    // Title animation
+    // Staggered animation for policy cards
+    gsap.utils.toArray(".policy-card").forEach((card) => {
+        gsap.from(card, {
+            scrollTrigger: {
+                trigger: card,
+                start: "top 90%",
+                toggleActions: "play none none none"
+            },
+            y: 40,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power2.out",
+        });
+    });
+
+    // Animate titles
     gsap.from(".animate-title", {
-      y: -50,
+      scrollTrigger: {
+          trigger: ".animate-title",
+          start: "top 90%",
+          toggleActions: "play none none none"
+      },
+      y: -30,
       opacity: 0,
       duration: 1,
       ease: "power3.out"
     });
 
-    // Intro fade in
+    // Animate fade elements
     gsap.from(".animate-fade", {
+      scrollTrigger: {
+          trigger: ".animate-fade",
+          start: "top 90%",
+          toggleActions: "play none none none"
+      },
       opacity: 0,
       duration: 1.2,
-      delay: 0.5,
+      delay: 0.3,
       ease: "power2.out"
     });
-
-    // Sections fade in on scroll
-    gsap.utils.toArray(".animate-section").forEach((section) => {
-      gsap.from(section, {
-        scrollTrigger: {
-          trigger: section,
-          start: "top 85%",
-        },
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        ease: "power2.out"
-      });
-    });
   </script>
-  <script src="./JS/lgl.js"></script>
+
 </body>
 
 </html>

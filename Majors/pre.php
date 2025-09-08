@@ -62,11 +62,11 @@
       </a>
       <div class="hidden md:flex items-center space-x-6">
        <a href="../about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about">About Us</a>
         <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
+          data-lang-key="nav_activity">Activities</a>
         <a href="../exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
+          data-lang-key="nav_examresult">Exam Results</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
@@ -100,7 +100,7 @@
           <!-- Hidden original select to maintain JS compatibility -->
           <select id="language-switcher-desktop" class="hidden">
             <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
+            <option value="en" selected>English</option>
           </select>
         </div>
       </div>
@@ -111,13 +111,13 @@
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
       <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+        data-lang-key="nav_about_mobile">About Us</a>
         <br><br>
       <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+        data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
       <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+        data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
@@ -149,7 +149,7 @@
         <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
           <option value="my">မြန်မာ</option>
-          <option value="en">English</option>
+          <option value="en" selected>English</option>
         </select>
       </div>
     </div>
@@ -168,8 +168,7 @@
         <a id="major-title" href="#"
           class="block mt-1 text-lg leading-tight font-medium text-black hover:underline"data-lang-key="major_title">Faculty of Precision Engineering</a>
         <p id="major-description" class="mt-2 text-slate-500"data-lang-key="major_description">
-          နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ တိကျစက်ပစ္စည်းထုတ်လုပ်မှုအင်ဂျင်နီယာဌာန (Faculty of Precision Engineering - PrE) သည် တိကျမှန်ကန်သော စက်ပစ္စည်းများ၊ စက်ပစ္စည်းအစိတ်အပိုင်းများကို ဒီဇိုင်းရေးဆွဲခြင်း၊ ထုတ်လုပ်ခြင်းနှင့် အလိုအလျောက်ထိန်းချုပ်စနစ်များ ဖန်တီးခြင်းကို အဓိကထား သင်ကြားပေးသော ဘာသာရပ်တစ်ခုဖြစ်သည်။
-        </p>
+The Department of Precision Engineering (PrE) at the University of Technology (Yatanarpon Cyber City) focuses on the design, manufacturing, and creation of automated control systems for precise machinery and components.        </p>
       </div>
     </div>
   </div>
@@ -200,26 +199,10 @@
   <div class="container mx-auto">
     <!-- အောက်ကဟာတွေက ရည်ရွယ်ချက် တာဝန်တွေ ခေါင်းစဥ်နဲ့ စာကိုယ်ခွဲထည့်  -->
     <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="objectivesH">
-      Pre ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များမှာ
+      The objectives and responsibilities
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl px-2 mx-auto" data-lang-key="objectives">
-      တိကျမှန်ကန်မှုမြင့်မားသည့် ထုတ်ကုန်များ၊ စက်ပစ္စည်းများအတွက်
-      ဒီဇိုင်းရေးဆွဲနိုင်စွမ်း ရရှိစေရန်။ အလိုအလျောက်ထိန်းချုပ်မှုစနစ်များ
-      (control systems in automation) နှင့် ဆိုင်သော ပြဿနာများကို နားလည်ပြီး
-      ဖြေရှင်းနိုင်စွမ်း ရရှိစေရန်။ လျှပ်စစ်စွမ်းအင်အသုံးစရိတ်၊ AC/DC
-      မော်တော်အမျိုးအစားမျိုးစုံ၏ လည်ပတ်မှုမောင်းနှင်စနစ်များနှင့်
-      စက်ရုံအလိုအလျောက်လုပ်ငန်းစဉ်များအတွက် လိုအပ်သည့်
-      လည်ပတ်မှုအခြေအနေထိန်းသိမ်းခြင်းဆိုင်ရာ ပြဿနာများကို နားလည်စေရန်။
-      Mechanical Precision & Automation Engineering နယ်ပယ်တွင် အရည်အသွေးမြင့်
-      နည်းပညာများ သင်ကြားပေးရန်။ စသည်တို့ ဖြစ်ပါသည်။ ထို့အပြင်
-      တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့ အထူးပြုလေ့လာသည့်
-      တိကျစက်ပစ္စည်းထုတ်လုပ်မှုအင်ဂျင်နီယာကဏ္ဍတွင် အနာဂတ်စိန်ခေါ်မှုများကို
-      ရင်ဆိုင်နိုင်စေရန် လေ့လာသင်ယူမှုစနစ်ကို တိုးမြှင့်၍
-      လေ့ကျင့်သင်ကြားပေးမည် ဖြစ်ပါသည်။ PrE ဘာသာရပ်သင်တန်းသည်
-      ကျောင်းသား/သူများကို ထုတ်ကုန်နဲ့ လုပ်ငန်းစဉ်များကို
-      အလွန်တိကျမှန်ကန်မှုလိုအပ်သော Ultraprecision မှ အရည်အသွေးမြင့် Mass
-      Production အထိ အကျိုးကျေးဇူးအများအပြား ရရှိနိုင်စေရန် ရည်ရွယ်ထားပြီး
-      အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ အောက်ပါအတိုင်းဖြစ်ပါသည်။
+      To develop the ability to design products and machinery with high precision. To understand and solve problems related to automation control systems. To comprehend issues concerning electric energy consumption, the operation of various types of AC/DC motors, and the necessary operating conditions for automated factory processes. To prepare students to face future challenges in the field of precision machinery manufacturing engineering.
     </p>
 
     <!-- Grid to hold the cards -->
@@ -494,8 +477,7 @@
       Where You Can Learn
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="lab_intro">
-      PrE major သည် စက်မှုလုပ်ငန်းများတွင် လိုအပ်သော တိကျမှုနှင့်
-      အလိုအလျောက်စနစ်နည်းပညာများကို လက်တွေ့ကျကျ သင်ယူနိုင်ရန် —
+      In the Department of Precision Engineering, Laboratories have been established to allow students to gain practical knowledge of the precision and automation technologies required in industrial operations.
     </p>
 
     <!-- Description box above the cards -->
@@ -656,57 +638,8 @@
           </h3>
         </div>
 
-        <!-- Skill Card 7: Data Analytics -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Extract insights and make data-driven decisions.">
-                <div class="bg-gray-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19v-4m-4 4v-4m8 4v-4" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 19a4 4 0 11-8 0" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Data Analytics</h3>
-            </div> -->
-
-        <!-- Skill Card 8: Innovation & Creativity -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Cultivate an innovative mindset and build products that change the world.">
-                <div class="bg-orange-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16.5c2.485 0 4.5-2.015 4.5-4.5S14.485 7.5 12 7.5 7.5 9.515 7.5 12s2.015 4.5 4.5 4.5z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a.5.5 0 110-1 .5.5 0 010 1z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Innovation & Creativity</h3>
-            </div> -->
-
-        <!-- Skill Card 9: User Experience (UX) -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Design and optimize intuitive and accessible digital interfaces.">
-                <div class="bg-teal-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14v6m-3-3h6m-1-1v6m-3-3h6" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21H3a1 1 0 01-1-1V5a1 1 0 011-1h7a1 1 0 011 1v15z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">User Experience (UX)</h3>
-            </div> -->
-
-        <!-- Skill Card 10: Global Collaboration -->
-        <!-- <div class="group relative w-full h-40 bg-white rounded-xl shadow-lg flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                 data-description="Work with diverse teams and contribute to projects on a global scale.">
-                <div class="bg-cyan-500 text-white rounded-full p-4 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a.5.5 0 110-1 .5.5 0 010 1z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold">Global Collaboration</h3>
-            </div> -->
+        
+               
       </div>
     </div>
   </div>
@@ -840,9 +773,7 @@
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="jobs_info">
       <!-- ဒီမှာက စာလေးပြင် -->
-      B.E. Mechanical Precision and Automation ဘွဲ့ရရှိသူများသည် Industrial
-      Automation Firms, Consumer Goods Manufacturers, Automotive Industry
-      Companies, Precision Tool and Equipment Manufacturers စသည်တို့တွင် —
+      Graduates with a B.E. in Mechanical Precision and Automation can work in Industrial Automation firms, Consumer Goods manufacturers, Automotive industry companies, Precision Tool and Equipment manufacturers, and similar organizations.
     </p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1262,7 +1193,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       // Check for a saved language in localStorage, otherwise default to 'en'
       const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+      setLanguage(savedLang);
     });
   </script>
   <script src="../js/lgl.js"></script>

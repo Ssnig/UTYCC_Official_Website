@@ -62,11 +62,11 @@
       </a>
       <div class="hidden md:flex items-center space-x-6">
        <a href="../about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
+          data-lang-key="nav_about">About Us</a>
         <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
+          data-lang-key="nav_activity">Activities</a>
         <a href="../exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
+          data-lang-key="nav_examresult">Exam Results</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
@@ -100,7 +100,7 @@
           <!-- Hidden original select to maintain JS compatibility -->
           <select id="language-switcher-desktop" class="hidden">
             <option value="my">မြန်မာ</option>
-            <option value="en">English</option>
+            <option value="en" selected>English</option>
           </select>
         </div>
       </div>
@@ -111,13 +111,13 @@
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
       <br><br>
       <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_about_mobile">ကျွန်ုပ်တို့အကြောင်း</a>
+        data-lang-key="nav_about_mobile">About Us</a>
         <br><br>
       <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_activity_mobile">လှုပ်ရှားမှုများ</a>
+        data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
       <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-        data-lang-key="nav_examresult_mobile">အောင်စာရင်းများ</a>
+        data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
@@ -149,7 +149,7 @@
         <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
           <option value="my">မြန်မာ</option>
-          <option value="en">English</option>
+          <option value="en" selected>English</option>
         </select>
       </div>
     </div>
@@ -169,7 +169,7 @@
         <a id="major-title" href="#"
           class="block mt-1 text-lg leading-tight font-medium text-black hover:underline" data-lang-key="major_title">Faculty of Electronics Engineering</a>
         <p id="major-description" class="mt-2 text-slate-500"data-lang-key="major_description">
-          နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)  ၏ အီလက်ထရောနစ်အင်ဂျင်နီယာဌာန (Faculty of Electronics Engineering - EcE) သည် အီလက်ထရောနစ်စနစ်များ၊ ကိရိယာများ၊ ဆက်သွယ်ရေးနည်းပညာများနှင့် Signal Processing စသည့်နယ်ပယ်များကို အခြေခံ၍ ဖန်တီး၊ ပေါင်းဆက်၊ စမ်းသပ်နိုင်ရန် လေ့ကျင့်သင်ကြားပေးသည့် အင်ဂျင်နီယာဘာသာရပ်တစ်ခု ဖြစ်ပါသည်။
+          The Faculty of Electronics Engineering (EcE) at the University of Technology (Yatanarpon Cyber City) is an engineering discipline that focuses on the study, design, integration, and testing of electronic systems, devices, communication technologies, and signal processing.
         </p>
       </div>
     </div>
@@ -201,25 +201,10 @@
   <div class="container mx-auto">
     <!-- အောက်ကဟာတွေက ရည်ရွယ်ချက် တာဝန်တွေ ခေါင်းစဥ်နဲ့ စာကိုယ်ခွဲထည့်  -->
     <h2 class="text-3xl sm:text-4xl font-bold text-center mb-6" data-lang-key="objectivesH">
-      EcE ဌာန၏ ရည်ရွယ်ချက်နှင့် တာဝန်များမှာ
+      The objectives and responsibilities
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl px-2 mx-auto" data-lang-key="objectives">
-      အီလက်ထရောနစ်နဲ့ ဆက်သွယ်ရေးနည်းပညာဆိုင်ရာ နည်းပညာများကို အခြေခံပြီး
-      တိုးတက်ကျွမ်းကျင်မှု ရရှိစေရန်။ နေရာတိုင်းတွင် အသုံးပြုနေသော
-      ဆက်သွယ်ရေးစနစ်များ၊ smart system များ တီထွင်ဖန်တီးရာတွင် တက်ကြွစွာ
-      ပါဝင်နိုင်စေရန်။ လုပ်ငန်းခွင်တွင် လိုအပ်သော နည်းပညာဆိုင်ရာ
-      စွမ်းဆောင်ရည်များကို ရရှိပြီး အရည်အချင်းပြည့်စုံသော အင်ဂျင်နီယာများ
-      ဖြစ်လာစေရန်။ နည်းပညာဆိုင်ရာ ပြဿနာများကို ဖြေရှင်းနိုင်စေရန် အတွေးအခေါ်
-      တိုးတက်မှု ဖွံ့ဖြိုးစေရန် ရှာဖွေသုတေသနလုပ်ခြင်း၊ တီထွင်ဖန်တီးခြင်း နဲ့
-      ပြဿနာတွေကို ကျွမ်းကျင်စွာ ဖြေရှင်းနိုင်စေရန် စသည်တို့ ဖြစ်ပါသည်။
-      ထို့အပြင် တက်ရောက်လေ့လာမည့် ကျောင်းသား/သူများအား မိမိတို့
-      အထူးပြုလေ့လာသည့် အီလက်ထရွန်နစ်အင်ဂျင်နီယာကဏ္ဍတွင် စိန်ခေါ်မှုများကို
-      ရင်ဆိုင်နိုင်စေရန် လေ့လာသင်ယူမှုစနစ်ကို တိုးမြှင့်၍
-      လေ့ကျင့်သင်ကြားပေးမည် ဖြစ်ပါသည်။ EcE ဘာသာရပ်သင်တန်းသည်
-      ကျောင်းသား/သူများကို နောက်ဆုံးပေါ်နည်းပညာဖြင့် တီထွင်ဖန်တီးမှုရှိသည့်
-      သုတေသနလှုပ်ရှားမှုများကို ကျွမ်းကျင်စွာ လုပ်ဆောင်နိုင်စေရန်
-      ရည်ရွယ်ထားပြီး အဓိကလေ့လာရမည့် အကြောင်းအရာများမှာ
-      အောက်ပါအတိုင်းဖြစ်ပါသည်။
+      The program is designed to provide students with foundational knowledge and advanced expertise in electronics and communication technologies. It aims to enable them to actively participate in designing and developing widely used communication systems and smart systems in various contexts. The curriculum ensures that students acquire the technical skills required in the professional workplace, becoming fully qualified and competent engineers. It also emphasizes the development of critical thinking and problem-solving abilities through research, innovation, and practical application of technology-related challenges. Moreover, students will be trained to face challenges in their specialized field of electronics engineering through enhanced learning and practical training systems. The Electronics and Communication Engineering (EcE) program is intended to equip students to carry out research activities with innovation using the latest technologies, with the key topics of study outlined as follows.
     </p>
 
     <!-- Grid to hold the cards -->
@@ -475,8 +460,7 @@
       Where You Can Learn
     </h2>
     <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="labs_intro">
-      EcE major တွင် သင်ယူထားသော သီအိုရီများကို လက်တွေ့ကျကျ
-      ပြုလုပ်လေ့လာနိုင်ပြီး အတတ်ပညာပိုင်းတွင် ကျွမ်းကျင်မှုများ တိုးတက်စေရန် —
+      In the Department of Electronics Engineering, Laboratories have been established to allow students to practically apply the theories they have learned and to enhance their technical skills and expertise.
     </p>
 
     <!-- Description box above the cards -->
@@ -727,10 +711,7 @@
       </h2>
       <p class="text-center text-lg text-gray-600 mb-12 max-w-3xl mx-auto" data-lang-key="job_info">
         <!-- ဒီမှာက စာလေးပြင် -->
-        B.E. Electronics ဘွဲ့ရရှိသူများသည် Electronics Manufacturing Plants,
-        Consumer Electronics Factories, Telecommunications Companies,
-        Automation and Control System Firms နှင့် Power and Energy Companies
-        စသည်တို့တွင် —
+        Graduates with a B.E. in Electronics can work in electronics manufacturing plants, consumer electronics factories, telecommunications companies, automation and control system firms, power and energy companies, and other related organizations.
       </p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -1190,7 +1171,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       // Check for a saved language in localStorage, otherwise default to 'en'
       const savedLang = localStorage.getItem("language") || "en";
-      changeLanguage(savedLang);
+      setLanguage(savedLang);
     });
   </script>
   <script src="../js/lgl.js"></script>
