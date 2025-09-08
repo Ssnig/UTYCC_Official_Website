@@ -1,11 +1,6 @@
 <?php
-// require_once 'auth_check.php';
-// require_once 'auth_check.php';
-session_start();
-if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-    header("location: ./signin.php"); // Corrected path to signin.php in the same directory
-    exit;
-}
+require_once 'auth_check.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
