@@ -18,7 +18,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../CSS/font.css" />
-    <script src="./JS/GSAP.js"></script>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -57,7 +56,7 @@
           data-lang-key="nav_about">About Us</a>
         <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_activity">Activities</a>
-        <a href="./Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult">Exam Results</a>
         <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
@@ -100,16 +99,9 @@
       </button>
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-      <br><br>
-      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about_mobile">About Us</a>
-          <br><br>
-        <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity_mobile">Activities</a>
-          <br><br>
-        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult_mobile">Exam Results</a>
-          <br><br>
+        <a href="../about.php" class="block py-2 text-gray-700 hover:text-blue-800" data-lang-key="nav_about_mobile">About Us</a>
+        <a href="../activity.php" class="block py-2 text-gray-700 hover:text-blue-800" data-lang-key="nav_activity_mobile">Activities</a>
+        <a href="examResults.php" class="block py-2 text-gray-700 hover:text-blue-800" data-lang-key="nav_examresult_mobile">Exam Results</a>
       <div class="relative mt-4 pt-4 border-t">
         <!-- Language Switcher for Mobile -->
         <div id="lang-switcher-container-mobile" class="relative">
@@ -186,8 +178,8 @@
                     </div>
                 </div>
                 
-                <div class="mt-4 text-center" data-lang-key="sh_re" >
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                <div class="mt-4 text-center">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-transform transform hover:scale-105" data-lang-key="sh_re">
                         Show Results
                     </button>
                 </div>
@@ -250,9 +242,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <!-- ... Your footer HTML ... -->
-
     <!-- Image Modal -->
     <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-[999] hidden transition-opacity duration-300">
         <div class="relative bg-white p-2 rounded-lg max-w-4xl max-h-full">
@@ -263,31 +252,6 @@
         </div>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('imageModal');
-    if (modal) {
-        const modalImg = document.getElementById('modalImage');
-        const closeModalBtn = document.getElementById('closeModal');
-        
-        document.body.addEventListener('click', function(event) {
-            if (event.target.classList.contains('result-image')) {
-                modal.classList.remove('hidden');
-                modalImg.src = event.target.src;
-            }
-        });
-
-        const closeModal = () => modal.classList.add('hidden');
-        closeModalBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
-    }
-});
-</script>
-
-  <!-- Footer goes here -->
- 
  <!-- Footer -->
     <footer id="contact" class="bg-blue-900 text-white">
         <div class="container mx-auto px-6 py-12">
@@ -372,10 +336,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         </div>
     </footer>
-    <script src="../JS/lgl.js"></script>
-      <script>
-    // --- Translation Script ---
-    const translations = {
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const translations = {
             my: {
                 utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
                 nav_about: "ကျွန်ုပ်တို့အကြောင်း",
@@ -423,7 +388,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 seconds: "ဒုတိယသင်တန်း",
                 Go_Back: "နောက်သို့ ပြန်သွားရန်",
                 sh_re: "ရလဒ် ပြပါ",
-
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -472,51 +436,103 @@ document.addEventListener('DOMContentLoaded', () => {
                 seconds: "2nd Semester",
                 Go_Back: "Go Back",
                 sh_re: "Show Results",
-
             },
         };
 
-    const desktopLanguageSwitcher = document.getElementById("language-switcher-desktop");
-    const mobileLanguageSwitcher = document.getElementById("language-switcher-mobile");
+        // --- Language Function ---
+        const changeLanguage = (lang) => {
+            localStorage.setItem("language", lang);
+            document.getElementById('language-switcher-desktop').value = lang;
+            document.getElementById('language-switcher-mobile').value = lang;
 
-    const changeLanguage = (lang) => {
-      localStorage.setItem("language", lang);
-      if (desktopLanguageSwitcher) {
-        desktopLanguageSwitcher.value = lang;
-      }
-      if (mobileLanguageSwitcher) {
-        mobileLanguageSwitcher.value = lang;
-      }
-      document.querySelectorAll("[data-lang-key]").forEach((element) => {
-        const key = element.dataset.langKey;
-        const translation = translations[lang][key];
-        if (translation) {
-          element.innerHTML = translation.replace(/\\n/g, "<br>");
+            const optionDetails = {
+                my: { text: 'မြန်မာ', flag: 'https://flagcdn.com/w20/mm.png' },
+                en: { text: 'English', flag: 'https://flagcdn.com/w20/gb.png' }
+            };
+
+            if (optionDetails[lang]) {
+                ['desktop', 'mobile'].forEach(type => {
+                    const flag = document.getElementById(`selected-lang-flag-${type}`);
+                    const text = document.getElementById(`selected-lang-text-${type}`);
+                    if (flag && text) {
+                        flag.src = optionDetails[lang].flag;
+                        text.textContent = optionDetails[lang].text;
+                    }
+                });
+            }
+
+            document.querySelectorAll("[data-lang-key]").forEach((element) => {
+                const key = element.dataset.langKey;
+                const translation = translations[lang]?.[key];
+                if (translation) {
+                    element.innerHTML = translation.replace(/\\n/g, "<br>");
+                }
+            });
+        };
+        
+        // --- Setup Language Switchers ---
+        function setupLangSwitcher(type) {
+            const container = document.getElementById(`lang-switcher-container-${type}`);
+            if (!container) return;
+
+            const button = container.querySelector('.lang-switcher-button');
+            const menu = container.querySelector('.lang-switcher-menu');
+            const options = container.querySelectorAll('.lang-switcher-option');
+            const hiddenSelect = document.getElementById(`language-switcher-${type}`);
+
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menu.classList.toggle('hidden');
+            });
+
+            options.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const lang = option.getAttribute('data-lang');
+                    changeLanguage(lang);
+                    menu.classList.add('hidden');
+                });
+            });
         }
-      });
-    };
 
-    if (desktopLanguageSwitcher) {
-      desktopLanguageSwitcher.addEventListener("change", (event) => {
-        changeLanguage(event.target.value);
-      });
-    }
+        setupLangSwitcher('desktop');
+        setupLangSwitcher('mobile');
+        document.addEventListener('click', () => document.querySelectorAll('.lang-switcher-menu').forEach(menu => menu.classList.add('hidden')));
 
-    if (mobileLanguageSwitcher) {
-      mobileLanguageSwitcher.addEventListener("change", (event) => {
-        changeLanguage(event.target.value);
-      });
-    }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedLang = localStorage.getItem("language") || "en";
-      setLanguage(savedLang);
+        // --- Setup Mobile Menu ---
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener("click", () => {
+                mobileMenu.classList.toggle("hidden");
+            });
+        }
+
+        // --- Setup Image Modal ---
+        const modal = document.getElementById('imageModal');
+        if (modal) {
+            const modalImg = document.getElementById('modalImage');
+            const closeModalBtn = document.getElementById('closeModal');
+            
+            document.body.addEventListener('click', function(event) {
+                if (event.target.classList.contains('result-image')) {
+                    modal.classList.remove('hidden');
+                    modalImg.src = event.target.src;
+                }
+            });
+
+            const closeModal = () => modal.classList.add('hidden');
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        }
+
+        // --- Initial Load ---
+        const savedLang = localStorage.getItem("language") || "my";
+        changeLanguage(savedLang);
     });
-  </script>
-
-
-  <!-- <footer> ... your footer code ... </footer> -->
-  <!-- ===================================== -->
-
+    </script>
 </body>
 </html>
