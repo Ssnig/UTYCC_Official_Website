@@ -42,6 +42,25 @@ try {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+    /* --- NEW LAYOUT STYLES TO MATCH DASHBOARD --- */
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      grid-template-rows: 72px 1fr;
+      grid-template-areas:
+        "sidebar header"
+        "sidebar main";
+      min-height: 100dvh;
+    }
+    .header {
+      grid-area: header;
+      position: sticky; top: 0; z-index: 10;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+    }
+    .main { grid-area: main; padding: 20px; }
+    /* --- END NEW LAYOUT STYLES --- */
     .sidebar { grid-area: sidebar; border-right: 1px solid #e2e8f0; background: #fff; padding: 20px 16px; position: sticky; top: 0; height: 100vh; }
     .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
     .brand img { width: 32px; height: 32px; }
@@ -57,7 +76,8 @@ try {
     .modal-backdrop.visible .modal-content { transform: scale(1); }
   </style>
 </head>
-<body class="flex">
+<body>
+<div class="app">
    <aside class="sidebar" aria-label="Sidebar navigation">
       <div class="brand" aria-label="Brand">
         <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
@@ -93,15 +113,27 @@ try {
           Support
         </a>
         <a class="nav-link" href="settings.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           Settings
         </a>
       </nav>
     </aside>
 
-  <main class="flex-1 p-8">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Manage Exam Results</h1>
+  <header class="header">
+    <h1 class="text-3xl font-bold text-gray-800">Manage Exam Results</h1>
+    <div class="flex-grow"></div>
+    <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        <span class="font-semibold text-gray-700">
+            <?php echo htmlspecialchars($_SESSION['admin_user'] ?? 'Admin'); ?>
+        </span>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="flex flex-col md:flex-row justify-end items-start md:items-center mb-6">
         <!-- Filters -->
         <div class="flex gap-4 mt-4 md:mt-0">
             <select id="filter-year" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -158,7 +190,7 @@ try {
         <?php endif; ?>
     </div>
   </main>
-
+</div>
   <!-- Modals (Edit and Delete) -->
   <!-- Edit Modal -->
   <div id="editModal" class="modal-backdrop">
@@ -359,3 +391,4 @@ try {
 </script>
 </body>
 </html>
+

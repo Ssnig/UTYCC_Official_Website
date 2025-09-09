@@ -384,6 +384,12 @@ $pdo = null;
       <div class="userbar">
         <button class="btn ghost" id="exportBtn" title="Export CSV" aria-label="Export CSV">Export</button>
         <button class="btn primary" id="addBtn" aria-label="Add student">Add Student</button>
+        <div class="user-info" style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem; border-left: 1px solid hsl(var(--border)); padding-left: 1rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.25rem; height: 1.25rem; color: hsl(var(--muted-foreground));"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span style="font-weight: 600; color: hsl(var(--fg));">
+                <?php echo htmlspecialchars($_SESSION['admin_user'] ?? 'Admin'); ?>
+            </span>
+        </div>
       </div>
     </header>
 
