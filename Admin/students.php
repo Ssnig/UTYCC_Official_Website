@@ -352,9 +352,9 @@ $pdo = null;
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             Manage Results
         </a>
-        <a class="nav-link" href="analytics.php">
+         <a class="nav-link" href="manage_stats.php">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-            Analytics
+            Manage Stats
         </a>
         <a class="nav-link" href="activity.php">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
@@ -1131,15 +1131,22 @@ $pdo = null;
         };
 
         for (const s of state.students) {
+            // FIX: Wrap phone numbers in Excel's text formula `="<number>"` to prevent scientific notation
             const row = [
-                s.student_id, s.seat_no, s.student_name_en, s.student_name_mm, s.student_email, s.student_phone, s.student_nrc, s.student_dob, s.student_birthplace, s.student_race, s.student_religion, s.student_address, s.township, s.state_region, s.dormitory_preference ? '1' : '0', s.year, s.academic_year, s.entry_year, s.date, s.photo_url,
+                s.student_id, s.seat_no, s.student_name_en, s.student_name_mm, s.student_email, 
+                s.student_phone ? `="${s.student_phone}"` : '', 
+                s.student_nrc, s.student_dob, s.student_birthplace, s.student_race, s.student_religion, s.student_address, s.township, s.state_region, s.dormitory_preference ? '1' : '0', s.year, s.academic_year, s.entry_year, s.date, s.photo_url,
                 s.preferences ? (s.preferences['1'] || '') : '',
                 s.preferences ? (s.preferences['2'] || '') : '',
                 s.preferences ? (s.preferences['3'] || '') : '',
                 s.preferences ? (s.preferences['4'] || '') : '',
                 s.preferences ? (s.preferences['5'] || '') : '',
-                s.father_name_en, s.father_name_mm, s.father_nrc, s.father_race, s.father_religion, s.father_info, s.father_address, s.father_phone, s.father_deceased_year,
-                s.mother_name_en, s.mother_name_mm, s.mother_nrc, s.mother_race, s.mother_religion, s.mother_info, s.mother_address, s.mother_phone, s.mother_deceased_year
+                s.father_name_en, s.father_name_mm, s.father_nrc, s.father_race, s.father_religion, s.father_info, s.father_address, 
+                s.father_phone ? `="${s.father_phone}"` : '', 
+                s.father_deceased_year,
+                s.mother_name_en, s.mother_name_mm, s.mother_nrc, s.mother_race, s.mother_religion, s.mother_info, s.mother_address, 
+                s.mother_phone ? `="${s.mother_phone}"` : '', 
+                s.mother_deceased_year
             ];
             csvRows.push(row.map(escapeCSV).join(','));
         }
@@ -1166,4 +1173,3 @@ $pdo = null;
   </script>
 </body>
 </html>
-
