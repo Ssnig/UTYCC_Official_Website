@@ -237,11 +237,7 @@
     <div class="container mx-auto px-6 py-12">
       <div class="grid md:grid-cols-4 gap-8">
         <div>
-<<<<<<< HEAD
           <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4 hover_up" loading="lazy"/>
-=======
-          <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
->>>>>>> 0cbc19c9b6846725117f96b0abda5435310f924c
           <h3 class="text-lg font-bold">UTYCC</h3>
           <p class="text-blue-200 text-sm mt-4">
             <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
