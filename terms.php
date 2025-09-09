@@ -465,7 +465,7 @@
     });
   </script>
   
-  <script src="./js/lgl.js"></script>
+  
   <script src="./js/game-script.js"></script>
 
 </body>
