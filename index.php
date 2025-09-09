@@ -1,26 +1,34 @@
 <?php
 require_once './Rform/db.php'; 
 
+// Default values
 $announcement_text = '';
 $announcement_status = 'disabled';
 $enrollment_status = 'open';
-$students_stat = '3000'; // Default value
-$acceptance_rate_stat = '21'; // Default value
+$students_stat = '3000';
+$acceptance_rate_stat = '21';
 
 try {
-    $stmtCheckTable = $pdo->query("SELECT 1 FROM stats_settings LIMIT 1");
-    if ($stmtCheckTable->fetch()) {
-        $stmt = $pdo->query("SELECT setting_key, setting_value FROM stats_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status', 'students_stat', 'acceptance_rate_stat')");
-        $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-        
-        $announcement_text = $settings['announcement_text'] ?? '';
-        $announcement_status = $settings['announcement_status'] ?? 'disabled';
-        $enrollment_status = $settings['enrollment_status'] ?? 'open';
-        $students_stat = $settings['students_stat'] ?? '3000';
-        $acceptance_rate_stat = $settings['acceptance_rate_stat'] ?? '21';
+    // Fetch announcement and enrollment settings from site_settings
+    $site_settings_stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status')");
+    if ($site_settings_stmt) {
+        $site_settings = $site_settings_stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        $announcement_text = $site_settings['announcement_text'] ?? '';
+        $announcement_status = $site_settings['announcement_status'] ?? 'disabled';
+        $enrollment_status = $site_settings['enrollment_status'] ?? 'open';
     }
+
+    // Fetch stats settings from stats_settings
+    $stats_settings_stmt = $pdo->query("SELECT setting_key, setting_value FROM stats_settings WHERE setting_key IN ('students_stat', 'acceptance_rate_stat')");
+    if ($stats_settings_stmt) {
+        $stats_settings = $stats_settings_stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        $students_stat = $stats_settings['students_stat'] ?? '3000';
+        $acceptance_rate_stat = $stats_settings['acceptance_rate_stat'] ?? '21';
+    }
+    
 } catch (PDOException $e) {
-    // Table probably does not exist, use default values.
+    // If tables don't exist or another error occurs, the defaults will be used.
+    // For debugging, you could log the error: error_log($e->getMessage());
 }
 $pdo = null; 
 ?>
@@ -1088,4 +1096,3 @@ $pdo = null;
     </script>
 </body>
 </html>
-
