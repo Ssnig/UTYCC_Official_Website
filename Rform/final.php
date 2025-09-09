@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $modal_data = [
                 'type' => 'success', 'title' => 'Success', 'message' => $success_message,
-                'buttonText' => 'Go to Homepage', 'redirectUrl' => '../home.php'
+                'buttonText' => 'Go to Homepage', 'redirectUrl' => '../index.php'
             ];
 
         } catch (PDOException $e) {
