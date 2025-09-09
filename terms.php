@@ -246,8 +246,8 @@
             </a>
           </p>
            <div class="mt-4 text-sm text-blue-200">
-                <p>Email: info@utycc.site utyccstudentaffair2010@gmail.com</p>
-                <p>Phone: +959445767834 </p>
+                <a href="mailto:utyccstudentaffair2010@gmail.com">Email: info@utycc.site utyccstudentaffair2010@gmail.com</a>
+                        <a href="tel:+959445767834">Phone: +959445767834 </a>
             </div>
         </div>
         <div>
@@ -468,7 +468,7 @@
   </script>
   
   
-  <script src="./js/game-script.js"></script>
+  <!-- <script src="./js/game-script.js"></script> -->
 
 </body>
 
