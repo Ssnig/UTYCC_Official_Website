@@ -739,8 +739,8 @@
             </a>
           </p>
           <div class="mt-4 text-sm text-blue-200">
-            <p>Email: info@utycc.edu.mm (example)</p>
-            <p>Phone: +95 (XX) XXX XXX (example)</p>
+            <a href="mailto:utyccstudentaffair2010@gmail.com">Email: info@utycc.site utyccstudentaffair2010@gmail.com</a>
+                        <a href="tel:+959445767834">Phone: +959445767834 </a>
           </div>
         </div>
 
