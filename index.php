@@ -42,7 +42,7 @@ $pdo = null;
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="stylesheet" href="./CSS/footer.css" />
-    <script defer src="./JS/star-layout.js"></script>
+    <script  src="./JS/star-layout.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -520,27 +520,23 @@ $pdo = null;
                 </div>
             </section>
 
-            <section id="collaboration" class="mb-16 animate-on-scroll">
+           <section id="collaboration" class="mb-16 animate-on-scroll">
                 <h2 class="text-3xl font-bold text-blue-900 mb-8 text-center" data-lang-key="collab_title">International Collaboration</h2>
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
-                        <img src="https://placehold.co/100x100/3b82f6/ffffff?text=ACU" class="rounded-full" alt="ACU Logo" loading="lazy" />
-                    <a href="http://www.aseanoer.net/about/acu-project.acu" target="_blank" rel="noopener noreferrer">
-                        <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
-                        <img src="./Img/logo/unilogo/ACU-logo_large.jpg" class="w-24 h-24 rounded-full object-cover" alt="ACU Logo" />
+                        <img src="https://placehold.co/100x100/3b82f6/ffffff?text=ACU" class="rounded-full" alt="ACU Logo" />
                         <div>
                             <h3 class="text-xl font-semibold text-blue-900" data-lang-key="collab_acu_title">ASEAN-KOREA Cyber University (ACU)</h3>
                             <p class="text-gray-600 mt-1" data-lang-key="collab_acu_text">Engaging in e-Learning projects to enhance digital education across the region.</p>
                         </div>
                     </div>
                     <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
-                        <img src="https://placehold.co/100x100/16a34a/ffffff?text=MU" class="rounded-full" alt="Miyazaki University Logo" loading="lazy"/>
+                        <img src="https://placehold.co/100x100/16a34a/ffffff?text=MU" class="rounded-full" alt="Miyazaki University Logo" />
                         <div>
                             <h3 class="text-xl font-semibold text-blue-900" data-lang-key="collab_mu_title">Miyazaki University, Japan</h3>
                             <p class="mt-1 shine_text" data-lang-key="collab_mu_text">Offering a Double Master's Degree program, fostering international academic exchange.</p>
                         </div>
                     </div>
-                    </a>
                 </div>
             </section>
         </main>
