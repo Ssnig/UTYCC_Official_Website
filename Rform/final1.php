@@ -158,7 +158,7 @@ session_destroy();
   // ✅ Success message with alert + redirect
         echo "<script>
             alert('Registration is successful!');
-            window.location.href = '../home.php';
+            window.location.href = '../index.php';
         </script>";
         exit;
 

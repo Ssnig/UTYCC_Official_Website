@@ -149,9 +149,9 @@
     parseNrc(getValue('student_nrc'), $repopulate_nrc['student']);
     parseNrc(getValue('father_nrc'), $repopulate_nrc['father']);
     parseNrc(getValue('mother_nrc'), $repopulate_nrc['mother']);
+    include 'formPartial/header.php';
 ?>
 
-<?php include 'formPartial/header.php'; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
