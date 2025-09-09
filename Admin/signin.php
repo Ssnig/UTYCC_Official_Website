@@ -156,7 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="login-card">
             <div class="login-form-panel">
                 <div class="text-center md:text-left mb-8">
-                    <a href="../home.php" class="inline-flex items-center gap-3 mb-4">
+                    <a href="../index.php" class="inline-flex items-center gap-3 mb-4">
                         <img src="../Img/logo/utycc_logo_favicon/logo.png" alt="UTYCC Logo" class="h-12 w-12">
                         <div>
                              <h1 class="text-2xl font-bold text-gray-800">Admin Panel</h1>

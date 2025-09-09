@@ -69,7 +69,7 @@
 <body class="bg-gray-50 text-gray-800">
   <header class="bg-white shadow-md sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-      <a href="./home.php" class="flex items-center space-x-3">
+      <a href="./index.php" class="flex items-center space-x-3">
         <div class="p-2 rounded-lg">
           <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
         </div>
