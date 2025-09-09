@@ -294,7 +294,7 @@ $pdo = null;
 
     <div id="header" class="bg-white shadow-md sticky top-0 z-50 transition-colors duration-300">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="./home.php" id="header-logo-link" class="flex items-center space-x-3">
+            <a href="./index.php" id="header-logo-link" class="flex items-center space-x-3">
                 <div class="p-2 rounded-lg icon-hover-effect ">
                     <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
                 </div>
