@@ -351,7 +351,7 @@
                   
                     <div class="sm:col-span-2">
                         <label for="entry_year" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
-                        <input type="text" id="entry_year" name="entry_year" class="mt-1" value="<?php echo getValue('entry_year'); ?>">
+                        <input type="text" id="entry_year" placeholder="eg.2025-2026" name="entry_year" class="mt-1" value="<?php echo getValue('entry_year'); ?>">
                     </div>
                 </div>
                 <div id="photo-upload-area" class="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-2 h-48">
