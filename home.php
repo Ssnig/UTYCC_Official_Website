@@ -190,7 +190,7 @@ $pdo = null;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background-color: 0.3s;
+            transition:  0.3s;
         }
 
         .close_button2:hover {
