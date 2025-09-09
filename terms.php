@@ -17,8 +17,8 @@
   <link rel="stylesheet" href="./CSS/footer.css">
   
   <!-- GSAP CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
   <style>
     body {
@@ -142,12 +142,9 @@
             class="lang-switcher-menu hidden absolute mt-1 w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
             <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               data-lang="my">
-<<<<<<< HEAD
               <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
                 class="h-4 w-6 mr-3 object-cover flex-shrink-0" loading="lazy">
-=======
               <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
->>>>>>> 0cbc19c9b6846725117f96b0abda5435310f924c
               <span>မြန်မာ</span>
             </a>
             <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -362,8 +359,6 @@
     });
   </script>
 
-=======
->>>>>>> 0cbc19c9b6846725117f96b0abda5435310f924c
   <script>
     const translations = {
         my: {
