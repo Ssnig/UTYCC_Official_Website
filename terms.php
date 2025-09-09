@@ -3,39 +3,74 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="stylesheet" href="./CSS/star-layout.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="stylesheet" href="./CSS/footer.css" />
-  <script src="./JS/star-layout.js"></script>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terms & Policies - UTYCC</title>
   <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="./CSS/hero-carousel.css" />
-  <script src="./JS/hero-carousel.js"></script>
-  <link rel="stylesheet" href="CSS/font.css" />
-  <meta name="robots" content="noindex, nofollow">
-    <!-- GSAP CDN -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./CSS/footer.css">
+  
+  <!-- GSAP CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-  <!-- === Game Stylesheet === -->
-  <link rel="stylesheet" href="./CSS/game-style.css" />
-  <!-- === End Game Stylesheet === -->
 
   <style>
     body {
       font-family: "Inter", sans-serif;
+      overflow-x: hidden;
+    }
+    h1, h2, h3 {
+        font-family: 'Oswald', sans-serif;
+    }
+    .policy-card {
+        background-color: #fff;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    .policy-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    }
+    .hero-icon {
+        position: absolute;
+        right: 10%;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12rem;
+        opacity: 0.05;
+        color: #1e3a8a;
+        z-index: 1;
+        pointer-events: none;
+    }
+    .policy-card ul li {
+      position: relative;
+      padding-left: 1.75rem;
+      list-style: none;
+    }
+    .policy-card ul li::before {
+      content: "\f058"; /* FontAwesome check-circle icon */
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      left: 0;
+      top: 5px;
+      color: #3b82f6;
+      font-size: 1rem;
     }
   </style>
 </head>
 
 <body class="bg-gray-100">
-  <div class="bg-white shadow-md sticky top-0 z-50">
+  <header class="bg-white shadow-md sticky top-0 z-50">
     <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
       <a href="./index.php" class="flex items-center space-x-3">
         <div class="p-2 rounded-lg">
@@ -54,10 +89,8 @@
           data-lang-key="nav_activity">Activities</a>
         <a href="/Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult">Exam Results</a>
-        <!-- Language Switcher Dropdown - Updated Style -->
         <div class="relative ml-4">
           <div id="lang-switcher-container-desktop">
-            <!-- Custom Button -->
             <button
               class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
               <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
@@ -65,7 +98,6 @@
               <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
               <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
             </button>
-            <!-- Custom Dropdown Menu -->
             <div
               class="lang-switcher-menu hidden absolute mt-1 w-auto min-w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
               <a href="#"
@@ -83,7 +115,6 @@
               </a>
             </div>
           </div>
-          <!-- Hidden original select to maintain JS compatibility -->
           <select id="language-switcher-desktop" class="hidden">
             <option value="my">မြန်မာ</option>
             <option value="en" selected>English</option>
@@ -95,20 +126,11 @@
       </button>
     </nav>
     <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 border-t">
-      <br><br>
-      <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_about_mobile">About Us</a>
-          <br><br>
-        <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_activity_mobile">Activities</a>
-          <br><br>
-        <a href="./exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
-          data-lang-key="nav_examresult_mobile">Exam Results</a>
-          <br><br>
+      <a href="./about.php" class="block py-2 text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_about_mobile">About Us</a>
+      <a href="./activity.php" class="block py-2 text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_activity_mobile">Activities</a>
+      <a href="/Rform/examResults.php" class="block py-2 text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_examresult_mobile">Exam Results</a>
       <div class="relative mt-4 pt-4 border-t">
-        <!-- Language Switcher for Mobile -->
         <div id="lang-switcher-container-mobile" class="relative">
-          <!-- Custom Button -->
           <button
             class="lang-switcher-button relative flex items-center w-full bg-gray-100 hover:bg-gray-200 rounded-md transition py-2 pl-4 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
             <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
@@ -116,13 +138,11 @@
             <span id="selected-lang-text-mobile" class="ml-3">မြန်မာ</span>
             <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 pointer-events-none"></i>
           </button>
-          <!-- Custom Dropdown Menu -->
           <div
             class="lang-switcher-menu hidden absolute mt-1 w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
             <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               data-lang="my">
-              <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
-                class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+              <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
               <span>မြန်မာ</span>
             </a>
             <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -132,115 +152,90 @@
             </a>
           </div>
         </div>
-        <!-- Hidden original select to maintain JS compatibility -->
         <select id="language-switcher-mobile" class="hidden">
           <option value="my">မြန်မာ</option>
           <option value="en" selected>English</option>
         </select>
       </div>
     </div>
-  </div>
+  </header>
 
-
-  <main class="container mx-auto px-6 py-12 animate-section">
-    <div class="bg-white p-8 md:p-12 rounded-lg shadow-lg">
-      <h1 class="text-3xl md:text-4xl font-bold text-blue-900 mb-6 animate-title" data-lang-key="terms_policies_title">Terms & Policies</h1>
-      <p class="text-gray-600 mb-10 animate-title" data-lang-key="terms_policies_intro">
-        Welcome to the UTYCC Student Registration Website. By accessing and using this website, you agree to comply with and be bound by the following terms and policies. Please read them carefully.
-      </p>
-
-      <section class="mb-10">
-        <h2 class="text-2xl font-semibold text-blue-800 mb-4" data-lang-key="section_terms_title">1. Terms and Conditions</h2>
-        <p class="text-gray-700 mb-4" data-lang-key="section_terms_intro">
-          This section outlines the rules and guidelines for using our student registration services.
-        </p>
-
-        <div class="space-y-6 text-gray-700">
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="terms_account_section">1.1. User Accounts and Eligibility</h3>
-            <p class="animate-fade" data-lang-key="account_eligible">
-              To register for courses and access certain features, you must create a user account. You must be a currently enrolled student at UTYCC to be eligible to use this service.
+  <main class="container mx-auto px-6 py-12">
+    <!-- Hero Section -->
+    <section class="relative bg-white p-8 md:p-12 rounded-lg shadow-lg mb-16 overflow-hidden animate-section">
+        <i class="fas fa-file-contract hero-icon"></i>
+        <div class="relative z-10 text-center max-w-3xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-900 mb-4 animate-title" data-lang-key="terms_policies_title">Terms & Policies</h1>
+            <p class="text-lg text-gray-600 leading-relaxed animate-fade" data-lang-key="terms_policies_intro">
+                Welcome to the UTYCC Student Registration Website. By accessing and using this website, you agree to comply with and be bound by the following terms and policies. Please read them carefully.
             </p>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="terms_conduct_section">1.2. Prohibited Conduct</h3>
-            <p class="animate-fade" data-lang-key="prohibit_act">
-              You agree not to use this website for any unlawful or prohibited activities, including, but not limited to:
-            </p>
-            <ul class="list-disc list-inside ml-4 mt-2 space-y-1 ">
-              <li class="animate-fade" data-lang-key="prohibit_1">Attempting to access unauthorized data or accounts.</li>
-              <li class="animate-fade" data-lang-key="prohibit_2">Providing false or misleading information during registration.</li>
-              <li class="animate-fade" data-lang-key="prohibit_3">Interfering with the operation of the website or its security features.</li>
-            </ul>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="terms_intellectual_section">1.3. Intellectual Property</h3>
-            <p class="animate-fade" data-lang-key="intellectual_property">
-              All content on this website, including text, graphics, and code, is the property of UTYCC and is protected by copyright and intellectual property laws. You may not copy, reproduce, or distribute any content without prior written permission.
-            </p>
-          </article>
         </div>
-      </section>
-
-      <section>
-        <h2 class="text-2xl font-semibold text-blue-800 mb-4  animate-title" data-lang-key="section_privacy_title">2. Privacy Policy</h2>
-        <p class="text-gray-700 mb-4 animate-fade" data-lang-key="section_privacy_intro">
-          This policy explains how UTYCC collects, uses, and protects your personal information.
-        </p>
-        <p class="text-gray-700 mb-6 italic animate-fade" data-lang-key="privacy_effective_date">
-          Effective Date: August 10, 2025
-        </p>
-
-        <div class="space-y-6 text-gray-700">
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="privacy_data_collection_section">2.1. Information We Collect</h3>
-            <p class="animate-fade" data-lang-key="data_collection_intro">
-              We collect information that you provide directly to us during the registration process, including:
-            </p>
-            <ul class="list-disc list-inside ml-4 mt-2 space-y-1">
-              <li class="animate-fade" data-lang-key="personal_details">Personal Identifiers (e.g., name, student ID, date of birth).</li>
-              <li class="animate-fade" data-lang-key="contact_info">Contact Information (e.g., email address, phone number, address).</li>
-              <li class="animate-fade" data-lang-key="academic_info">Academic Information (e.g., major, year of study, course selections).</li>
-            </ul>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="privacy_data_use_section">2.2. How We Use Your Information</h3>
-            <p class="animate-fade" data-lang-key="info_used_in">
-              The information we collect is used to:
-            </p>
-            <ul class="list-disc list-inside ml-4 mt-2 space-y-1">
-              <li class="animate-fade" data-lang-key="registration">Process your course registration and academic records.</li>
-              <li class="animate-fade" data-lang-key="studies_announce">Communicate with you regarding your studies and university announcements.</li>
-              <li class="animate-fade" data-lang-key="impro_functionality">Improve our services and website functionality.</li>
-            </ul>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 animate-title" data-lang-key="privacy_data_sharing_section">2.3. Data Sharing</h3>
-            <p class="animate-fade" data-lang-key="data_sharing_P">
-              We do not sell your personal information. Your data may be shared with internal university departments and third-party service providers (e.g., academic software) only as necessary to provide our services and manage your academic records.
-            </p>
-          </article>
-
-          <article>
-            <h3 class="font-bold text-lg mb-2 addEventListener" data-lang-key="privacy_security_section">2.4. Data Security</h3>
-            <p class="animate-fade" data-lang-key="security_P">
-              We implement reasonable security measures to protect your personal information from unauthorized access, alteration, or disclosure.
-            </p>
-          </article>
+    </section>
+    
+    <!-- Terms and Conditions Section -->
+    <section class="mb-16 animate-section">
+        <h2 class="text-4xl font-bold text-center text-blue-900 mb-10" data-lang-key="section_terms_title">1. Terms and Conditions</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="policy-card p-6">
+                <div class="flex items-center mb-4"><i class="fas fa-user-check text-3xl text-blue-500 mr-4"></i><h3 class="text-xl font-semibold text-blue-800" data-lang-key="terms_account_section">User Accounts</h3></div>
+                <p class="text-gray-600 flex-grow" data-lang-key="account_eligible">To register for courses, you must create an account. You must be a currently enrolled student at UTYCC to be eligible.</p>
+            </div>
+            <div class="policy-card p-6">
+                <div class="flex items-center mb-4"><i class="fas fa-copyright text-3xl text-blue-500 mr-4"></i><h3 class="text-xl font-semibold text-blue-800" data-lang-key="terms_intellectual_section">Intellectual Property</h3></div>
+                <p class="text-gray-600 flex-grow" data-lang-key="intellectual_property">All content on this site is the property of UTYCC. You may not reproduce or distribute any content without written permission.</p>
+            </div>
+            <div class="policy-card p-6 md:col-span-2 lg:col-span-1">
+                <div class="flex items-center mb-4"><i class="fas fa-ban text-3xl text-red-500 mr-4"></i><h3 class="text-xl font-semibold text-blue-800" data-lang-key="terms_conduct_section">Prohibited Conduct</h3></div>
+                <p class="text-gray-600 mb-3" data-lang-key="prohibit_act">You agree not to use this website for any unlawful activities, including:</p>
+                <ul class="space-y-2 text-gray-600 text-sm flex-grow">
+                    <li data-lang-key="prohibit_1">Attempting to access unauthorized data.</li>
+                    <li data-lang-key="prohibit_2">Providing false or misleading information.</li>
+                    <li data-lang-key="prohibit_3">Interfering with website security features.</li>
+                </ul>
+            </div>
         </div>
-      </section>
-    </div>
+    </section>
+
+    <!-- Privacy Policy Section -->
+    <section class="animate-section">
+        <h2 class="text-4xl font-bold text-center text-blue-900 mb-4" data-lang-key="section_privacy_title">2. Privacy Policy</h2>
+        <p class="text-center text-gray-500 mb-10" data-lang-key="privacy_effective_date">Effective Date: August 10, 2025</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <div class="policy-card p-6">
+                <div class="flex items-center mb-4"><i class="fas fa-database text-3xl text-blue-500 mr-4"></i><h3 class="text-xl font-semibold text-blue-800" data-lang-key="privacy_data_collection_section">Information We Collect</h3></div>
+                <p class="text-gray-600 mb-3" data-lang-key="data_collection_intro">We collect information you provide during registration, including:</p>
+                <ul class="space-y-2 text-gray-600 text-sm flex-grow">
+                    <li data-lang-key="personal_details">Personal Identifiers (name, student ID, etc.).</li>
+                    <li data-lang-key="contact_info">Contact Information (email, phone, address).</li>
+                    <li data-lang-key="academic_info">Academic Information (major, course selections).</li>
+                </ul>
+            </div>
+            <div class="policy-card p-6">
+                <div class="flex items-center mb-4"><i class="fas fa-tasks text-3xl text-blue-500 mr-4"></i><h3 class="text-xl font-semibold text-blue-800" data-lang-key="privacy_data_use_section">How We Use Information</h3></div>
+                 <p class="text-gray-600 mb-3" data-lang-key="info_used_in">The information collected is used to:</p>
+                <ul class="space-y-2 text-gray-600 text-sm flex-grow">
+                    <li data-lang-key="registration">Process course registration and academic records.</li>
+                    <li data-lang-key="studies_announce">Communicate with you about studies and announcements.</li>
+                    <li data-lang-key="impro_functionality">Improve our services and website functionality.</li>
+                </ul>
+            </div>
+            <div class="policy-card p-6">
+                <div class="flex items-center mb-4"><i class="fas fa-share-alt text-3xl text-blue-500 mr-4"></i><h3 class="text-xl font-semibold text-blue-800" data-lang-key="privacy_data_sharing_section">Data Sharing</h3></div>
+                <p class="text-gray-600 flex-grow" data-lang-key="data_sharing_P">We do not sell your personal information. Data may be shared with university departments or third-party service providers as necessary to manage your academic records.</p>
+            </div>
+            <div class="policy-card p-6">
+                <div class="flex items-center mb-4"><i class="fas fa-shield-alt text-3xl text-blue-500 mr-4"></i><h3 class="text-xl font-semibold text-blue-800" data-lang-key="privacy_security_section">Data Security</h3></div>
+                <p class="text-gray-600 flex-grow" data-lang-key="security_P">We implement reasonable security measures to protect your personal information from unauthorized access, alteration, or disclosure.</p>
+            </div>
+        </div>
+    </section>
   </main>
 
-  <footer id="contact" class="bg-blue-900 text-white">
+  <footer id="contact" class="bg-blue-900 text-white mt-16">
     <div class="container mx-auto px-6 py-12">
       <div class="grid md:grid-cols-4 gap-8">
         <div>
-          <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4 hover_up" />
+          <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
           <h3 class="text-lg font-bold">UTYCC</h3>
           <p class="text-blue-200 text-sm mt-4">
             <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
@@ -249,67 +244,35 @@
             </a>
           </p>
            <div class="mt-4 text-sm text-blue-200">
-                        <p>Email: info@utycc.site utyccstudentaffair2010@gmail.com</p>
-                        <p>Phone: +959445767834 </p>
-                    </div>
+                <p>Email: info@utycc.site utyccstudentaffair2010@gmail.com</p>
+                <p>Phone: +959445767834 </p>
+            </div>
         </div>
         <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">
-            Faculties
-          </h3>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">Faculties</h3>
           <ul class="space-y-2 text-sm text-blue-200">
-            <li>
-              <a href="./Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science
-                Technology</a>
-            </li>
-            <li>
-              <a href="./Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a>
-            </li>
-            <li>
-              <a href="./Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
-            </li>
-            <li>
-              <a data-lang-key="footer_faculty_pre" href="./Majors/pre.php">Precision Engineering</a>
-            </li>
-            <li>
-              <a data-lang-key="footer_faculty_ame" href="./Majors/ame.php">Advanced Materials
-                Engineering</a>
-            </li>
+            <li><a href="./Majors/ist.php" data-lang-key="footer_faculty_ist" class="hover:text-white transition">Information Science Technology</a></li>
+            <li><a href="./Majors/ce.php" data-lang-key="footer_faculty_ce" class="hover:text-white transition">Computer Engineering</a></li>
+            <li><a href="./Majors/ece.php" data-lang-key="footer_faculty_ece" class="hover:text-white transition">Electronics Engineering</a></li>
+            <li><a data-lang-key="footer_faculty_pre" href="./Majors/pre.php" class="hover:text-white transition">Precision Engineering</a></li>
+            <li><a data-lang-key="footer_faculty_ame" href="./Majors/ame.php" class="hover:text-white transition">Advanced Materials Engineering</a></li>
           </ul>
         </div>
         <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">
-            Quick Links
-          </h3>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">Quick Links</h3>
           <ul class="space-y-2 text-sm text-blue-200">
-            <li>
-              <a href="./terms.php" class="hover:text-white shine_text"
-                data-lang-key="footer_link_terms">Terms &
-                Policies</a>
-            </li>
-            <li>
-              <a href="./FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
-            </li>
-            <li>
-              <a href="./about.php" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
-            </li>
-            <li>
-              <a href="./randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules &
-                Regulations</a>
-            </li>
-            <li>
-              <a href="./data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
-            </li>
+            <li><a href="./terms.php" class="hover:text-white transition" data-lang-key="footer_link_terms">Terms & Policies</a></li>
+            <li><a href="./FAQs.php" class="hover:text-white transition" data-lang-key="footer_link_faq">FAQs</a></li>
+            <li><a href="./about.php" class="hover:text-white transition" data-lang-key="footer_link_about">About Us</a></li>
+            <li><a href="./randr.php" class="hover:text-white transition" data-lang-key="footer_link_rules">Rules & Regulations</a></li>
+            <li><a href="./data_protection.php" class="hover:text-white transition" data-lang-key="footer_link_dp">Data Protection</a></li>
           </ul>
         </div>
         <div>
-          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">
-            Follow Us
-          </h3>
+          <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">Follow Us</h3>
           <div class="flex space-x-4">
             <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
-            <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/"
-              class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
+            <a href="https://mm.linkedin.com/school/university-of-technology-yatanarpon-cyber-city/" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin-in text-xl"></i></a>
             <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
             <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
           </div>
@@ -324,277 +287,186 @@
           </div>
         </div>
       </div>
-      <div id="gameContainer" class="game-container hidden text-center mt-10">
-        <iframe src="https://chromedino.com/" frameborder="0" scrolling="no" width="100%" height="100%"
-          loading="lazy"></iframe>
-        <style type="text/css">
-          iframe {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 999;
-          }
-        </style>
-      </div>
-      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300"
-        data-lang-key="footer_copyright">
-        © 2025 University of Technology - Yatanarpon Cyber City. All
-        Rights Reserved.
+      <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300" data-lang-key="footer_copyright">
+        &copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.
       </div>
     </div>
   </footer>
 
-  <!-- === Game HTML Elements === -->
-  <div id="sj-game-toast" class="sj-game-toast-hidden">
-      <p>Bored, wanna play a game?</p>
-      <div class="sj-game-toast-buttons">
-          <button id="sj-game-toast-yes">Yes</button>
-          <button id="sj-game-toast-no">No</button>
-      </div>
-  </div>
-
-  <div id="sj-game-modal-overlay" class="sj-game-modal-hidden">
-      <div id="sj-game-modal-content">
-          <button id="sj-game-modal-close-top">&times;</button>
-          <div class="sj-game-header">
-              <img src="./Img/logo/utycc_logo.png" alt="UTYCC Logo">
-              <div class="sj-game-title-container">
-                  <h1 class="sj-game-h1">Super Jumper</h1>
-              </div>
-              <div class="sj-game-score-container">
-                  <div>SCORE: <span id="sj-game-score">0</span></div>
-                  <div class="sj-game-best-score">BEST: <span id="sj-game-highScore">0</span></div>
-              </div>
-          </div>
-          <canvas id="sj-game-canvas"></canvas>
-          <div id="sj-game-countdown" class="sj-game-countdown-hidden"></div>
-          <div class="sj-game-touch-controls">
-              <div id="sj-game-leftBtn" class="sj-game-touch-btn">&#9664;</div>
-              <div id="sj-game-jumpBtn" class="sj-game-touch-btn sj-game-jump-btn">&#9650;</div>
-              <div id="sj-game-rightBtn" class="sj-game-touch-btn">&#9654;</div>
-          </div>
-          <div id="sj-game-over-screen" class="sj-game-over-hidden">
-              <h2>GAME OVER</h2>
-              <button id="sj-game-play-again">Play Again</button>
-              <button id="sj-game-modal-close-bottom">Close</button>
-          </div>
-      </div>
-  </div>
-  <!-- === End Game HTML === -->
-
-
-    <script>
-    // --- Mobile Menu and Smooth Scroll Script ---
-    const navLinks = document.querySelectorAll(".nav-link");
-    const mobileMenuButton = document.getElementById("mobile-menu-button");
-    const mobileMenu = document.getElementById("mobile-menu");
-
-    navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        const targetId = link.getAttribute("href");
-        document.querySelector(targetId).scrollIntoView({
-          behavior: "smooth"
-        });
-      });
-    });
-
-    mobileMenuButton.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden");
-    });
-  </script>
-
   <script>
-    // --- Translation Script ---
     const translations = {
-      my: {
-        utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
-          nav_about: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_activity: "လှုပ်ရှားမှုများ",
-        nav_examresult: "အောင်စာရင်း",
-        nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
-        nav_activity_mobile: "လှုပ်ရှားမှုများ",
-        nav_examresult_mobile: "အောင်စာရင်း",
-        terms_policies_title: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
-        terms_policies_intro: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ၏ ကျောင်းသားမှတ်ပုံတင် ဝက်ဘ်ဆိုဒ်မှ ကြိုဆိုပါသည်။ ဤဝက်ဘ်ဆိုဒ်ကို ဝင်ရောက်အသုံးပြုပါက အောက်ဖော်ပြပါ စည်းမျဉ်းများနှင့် မူဝါဒများကို လိုက်နာရန် သဘောတူရပါမည်။ ကျေးဇူးပြု၍ သေချာဖတ်ရှုပါ။",
-        section_terms_title: "၁။ စည်းမျဉ်းစည်းကမ်းများ",
-        section_terms_intro: "ဤအပိုင်းတွင် ကျွန်ုပ်တို့၏ ကျောင်းသားမှတ်ပုံတင်ခြင်း ဝန်ဆောင်မှုများကို အသုံးပြုရန်အတွက် စည်းမျဉ်းများနှင့် လမ်းညွှန်ချက်များကို ဖော်ပြထားပါသည်။",
-        terms_account_section: "၁.၁။ သုံးစွဲသူအကောင့်နှင့် အရည်အချင်းပြည့်မီမှု",
-        account_eligible: "သင်တန်းများကို စာရင်းသွင်းခြင်းနှင့် အချို့သော လုပ်ဆောင်ချက်များကို အသုံးပြုနိုင်ရန်အတွက် သင့်ကိုယ်ပိုင် အသုံးပြုသူအကောင့်တစ်ခု ဖန်တီးရပါမည်။ဤဝန်ဆောင်မှုကို အသုံးပြုနိုင်ရန် နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) တွင် လက်ရှိစာရင်းသွင်းထားသော ကျောင်းသား/သူဖြစ်ရပါမည်။",
-        terms_conduct_section: "၁.၂။ တားမြစ်ထားသော အပြုအမူ",
-        prohibit_act: "သင့်အနေဖြင့် ဤဝဘ်ဆိုဒ်ကို တရားမဝင်သော သို့မဟုတ် တားမြစ်ထားသော လှုပ်ရှားမှုများအတွက် အသုံးမပြုရန် သဘောတူရပါမည်။ ထိုအတွင်း ပါဝင်ပြီး ကန့်သတ်မထားသည့် လှုပ်ရှားမှုများမှာ–",
-        prohibit_1: "ခွင့်မပြုထားသည့် အချက်အလက်များ သို့မဟုတ် အခြားသူ၏ အကောင့်များကို ဝင်ရောက်ကြိုးပမ်းခြင်း။",
-        prohibit_2: "မှတ်ပုံတင် စာရင်းပေးသွင်းစဉ် အမှန်မဟုတ်သော သို့မဟုတ် လိမ်လည်ထားသော အချက်အလက်များ ဖြည့်သွင်းပေးခြင်း။",
-        prohibit_3: "ဝဘ်ဆိုဒ်၏ လုပ်ငန်းစဉ် သို့မဟုတ် လုံခြုံရေးအင်္ဂါရပ်များကို ချိုးဖောက်အနှောင့်အယှက် ဖြစ်စေခြင်း။",
-        terms_intellectual_section: "၁.၃။ ဉာဏပစ္စည်းမူပိုင်ခွင့်",
-        intellectual_property: "ဤဝဘ်ဆိုဒ်ရှိ အကြောင်းအရာများအားလုံး (စာသားများ၊ ရုပ်ပုံများနှင့် ကုဒ်များ အပါအဝင်)သည် နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ၏ ပိုင်ဆိုင်မှုဖြစ်ပြီး မူပိုင်ခွင့်နှင့် ဉာဏပညာ၏ ပိုင်ဆိုင်မှုဆိုင်ရာ ဥပဒေများအောက်တွင် ကာကွယ်ထားပါသည်။ တရားဝင်ရေးစာဖြင့် ကြိုတင် ခွင့်ပြုချက်မရရှိဘဲ အကြောင်းအရာများကို မိတ္တူကူးခြင်း၊ မူပွားခြင်း သို့မဟုတ် ဖြန့်ချိခြင်း မပြုရပါ။",
-        section_privacy_title: "၂။ ကိုယ်ရေးကိုယ်တာ မူဝါဒ",
-        section_privacy_intro: "ဤမူဝါဒသည် သင့်ကိုယ်ရေးကိုယ်တာအချက်အလက်များကို နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) မှ မည်သို့စုဆောင်း၊ အသုံးပြုပြီး ကာကွယ်ပေးသည်ကို ရှင်းပြထားသည်။",
-        privacy_effective_date: "အသက်ဝင်သည့်ရက်စွဲ: ၂၀၂၅ ခုနှစ်၊ ဩဂုတ်လ ၁၀ ရက်",
-        privacy_data_collection_section: "၂.၁။ ကျွန်ုပ်တို့စုဆောင်းသော အချက်အလက်များ",
-        data_collection_intro: "ကျွန်ုပ်တို့သည် ကျောင်းသား/သူအဖြစ် မှတ်ပုံတင် စာရင်းပေးသွင်းခြင်း လုပ်ငန်းစဉ်အတွင်း ကျောင်းသား/သူများထံမှ တိုက်ရိုက်ပေးသော အချက်အလက်များကို စုဆောင်းထားရှိပါသည်။ ထိုအချက်အလက်များတွင် ပါဝင်သည့်အရာများမှာ–",
-        personal_details: "ကိုယ်ပိုင်အမည်များ (ဥပမာ – အမည်၊ ကျောင်းသားအမှတ်၊ မွေးသက္ကရာဇ်)",
-        contact_info: "ဆက်သွယ်ရန်အချက်အလက်များ (ဥပမာ – အီးမေးလ်၊ ဖုန်းနံပါတ်၊ လိပ်စာ)",
-        academic_info: "ပညာရေးဆိုင်ရာအချက်အလက်များ (ဥပမာ – အဓိကမေဂျာဘာသာရပ်၊ သင်ယူသည့်နှစ်၊ ရွေးချယ်သည့်ဘာသာများ)",
-        privacy_data_use_section: "၂.၂။ သင့်အချက်အလက်များကို ကျွန်ုပ်တို့ မည်သို့အသုံးပြုသနည်း",
-        info_used_in: "ကျွန်ုပ်တို့ စုဆောင်းသည့် အချက်အလက်များကို အောက်ပါအတွက် အသုံးပြုပါသည်–",
-        registration: "ကျောင်းသား/သူ ၏ သင်တန်း မှတ်ပုံတင်ခြင်းနှင့် ပညာရေးဆိုင်ရာ မှတ်တမ်းများကို စီမံဆောင်ရွက်ရန်။",
-        studies_announce: "ကျောင်းသား/သူ ၏ သင်ကြားမှုများနှင့် တက္ကသိုလ်၏ အသိပေးကြေညာချက်များ နှင့် ပတ်သက်၍ ဆက်သွယ်ရန်။",
-        impro_functionality: "ကျွန်ုပ်တို့၏ ဝန်ဆောင်မှုများနှင့် ဝဘ်ဆိုဒ် လည်ပတ်မှုကို တိုးတက်ကောင်းမွန်စေရန်။",
-        privacy_data_sharing_section: "၂.၃။ အချက်အလက်များ မျှဝေခြင်း",
-        data_sharing_P: "ကျွန်ုပ်တို့သည် သင်၏ ကိုယ်ပိုင်အချက်အလက်များကို ရောင်းချမည်မဟုတ်ပါ။ သင်၏ အချက်အလက်များကို ကျွန်ုပ်တို့၏ ဝန်ဆောင်မှုများပေးစွမ်းရန်နှင့် သင်၏ ပညာရေးမှတ်တမ်းများကို စီမံခန့်ခွဲရန် လိုအပ်သည့် တက္ကသိုလ်အတွင်းရှိ ဌာနများနှင့် တစ်ဆင့်ဝန်ဆောင်မှုပေးသူများ (ဥပမာ – ပညာရေးဆိုင်ရာ ဆော့ဖ်ဝဲ) ထံသာ မျှဝေသွားနိုင်ပါသည်။",
-        privacy_security_section: "၂.၄။ အချက်အလက်လုံခြုံရေး",
-        security_P: "ကျွန်ုပ်တို့သည် သင်၏ ကိုယ်ပိုင်အချက်အလက်များကို ခွင့်မပြုထားသည့် ဝင်ရောက်မှု၊ ပြင်ဆင်မှု သို့မဟုတ် ဖော်ပြမှုမှ ကာကွယ်ရန် သင့်တော်သော လုံခြုံရေးအစီအစဉ်များကို လုပ်ဆောင်ပါသည်။",
-        footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊<br>ပြင်ဦးလွင်မြို့အနီး၊<br>မန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
-        footer_faculties_title: "မဟာဌာနများ",
-        footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
-        footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
-        footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-        footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
-        footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
-        footer_contact_title: "ဆက်သွယ်ရန်",
-        footer_follow_title: "Follow Us",
-        footer_copyright: "© ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
-        footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
-        footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
-        footer_link_faq: "အမေးများသော မေးခွန်းများ",
-        footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
-        footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
-        footer_link_dp: "ဒေတာကာကွယ်ရေး",
-
-      },
-      en: {
-        utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
-        nav_about: "About Us",
-        nav_activity: "Activities",
-        nav_examresult: "Exam Results",
-        nav_about_mobile: "About Us",
-        nav_activity_mobile: "Activities",
-        nav_examresult_mobile: "Exam Results",
-        terms_policies_title: "Terms & Policies",
-        terms_policies_intro: "Welcome to the UTYCC Student Registration Website. By accessing and using this website, you agree to comply with and be bound by the following terms and policies. Please read them carefully.",
-        section_terms_title: "1. Terms and Conditions",
-        section_terms_intro: "This section outlines the rules and guidelines for using our student registration services.",
-        terms_account_section: "1.1. User Accounts and Eligibility",
-        account_eligible: "To register for courses and access certain features, you must create a user account. You must be a currently enrolled student at UTYCC to be eligible to use this service.",
-        terms_conduct_section: "1.2. Prohibited Conduct",
-        prohibit_act: "You agree not to use this website for any unlawful or prohibited activities, including, but not limited to:",
-        prohibit_1: "Attempting to access unauthorized data or accounts.",
-        prohibit_2: "Providing false or misleading information during registration.",
-        prohibit_3: "Interfering with the operation of the website or its security features.",
-        terms_intellectual_section: "1.3. Intellectual Property",
-        intellectual_property: "All content on this website, including text, graphics, and code, is the property of UTYCC and is protected by copyright and intellectual property laws. You may not copy, reproduce, or distribute any content without prior written permission.",
-        section_privacy_title: "2. Privacy Policy",
-        section_privacy_intro: "This policy explains how UTYCC collects, uses, and protects your personal information.",
-        privacy_effective_date: "Effective Date: August 10, 2025",
-        privacy_data_collection_section: "2.1. Information We Collect",
-        data_collection_intro: "We collect information that you provide directly to us during the registration process, including:",
-        personal_details: "Personal Identifiers (e.g., name, student ID, date of birth).",
-        contact_info: "Contact Information (e.g., email address, phone number, address).",
-        academic_info: "Academic Information (e.g., major, year of study, course selections).",
-        privacy_data_use_section: "2.2. How We Use Your Information",
-        info_used_in: "The information we collect is used to:",
-        registration: "Process your course registration and academic records.",
-        studies_announce: "Communicate with you regarding your studies and university announcements.",
-        impro_functionality: "Improve our services and website functionality.",
-        privacy_data_sharing_section: "2.3. Data Sharing",
-        data_sharing_P: "We do not sell your personal information. Your data may be shared with internal university departments and third-party service providers (e.g., academic software) only as necessary to provide our services and manage your academic records.",
-        privacy_security_section: "2.4. Data Security",
-        security_P: "We implement reasonable security measures to protect your personal information from unauthorized access, alteration, or disclosure.",
-        footer_address: "Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay Region, Myanmar",
-        footer_faculties_title: "Faculties",
-        footer_faculty_ist: "Information Science Technology",
-        footer_faculty_ce: "Computer Engineering",
-        footer_faculty_ece: "Electronics Engineering",
-        footer_faculty_ame: "Advanced Materials Engineering",
-        footer_faculty_pre: "Precision Engineering",
-        footer_contact_title: "Contact Us",
-        footer_follow_title: "Follow Us",
-        footer_copyright: "© 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
-        footer_quick_links_title: "Quick Links",
-        footer_link_terms: "Terms & Policies",
-        footer_link_faq: "FAQs",
-        footer_link_about: "About Us",
-        footer_link_rules: "Rules & Regulations",
-        footer_link_dp: "Data Protection",
-      },
-    };
-
-    const desktopLanguageSwitcher = document.getElementById("language-switcher-desktop");
-    const mobileLanguageSwitcher = document.getElementById("language-switcher-mobile");
-
-    const changeLanguage = (lang) => {
-      localStorage.setItem("language", lang);
-      if (desktopLanguageSwitcher) {
-        desktopLanguageSwitcher.value = lang;
-      }
-      if (mobileLanguageSwitcher) {
-        mobileLanguageSwitcher.value = lang;
-      }
-      document.querySelectorAll("[data-lang-key]").forEach((element) => {
-        const key = element.dataset.langKey;
-        const translation = translations[lang][key];
-        if (translation) {
-          element.innerHTML = translation.replace(/\\n/g, "<br>");
-        }
-      });
-    };
-
-    if (desktopLanguageSwitcher) {
-      desktopLanguageSwitcher.addEventListener("change", (event) => {
-        changeLanguage(event.target.value);
-      });
-    }
-
-    if (mobileLanguageSwitcher) {
-      mobileLanguageSwitcher.addEventListener("change", (event) => {
-        changeLanguage(event.target.value);
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedLang = localStorage.getItem("language") || "en";
-      setLanguage(savedLang);
-    });
-  </script>
-  <!-- gsap animation -->
-    <script>
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Title animation
-    gsap.from(".animate-title", {
-      y: -50,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out"
-    });
-
-    // Intro fade in
-    gsap.from(".animate-fade", {
-      opacity: 0,
-      duration: 1.2,
-      delay: 0.5,
-      ease: "power2.out"
-    });
-
-    // Sections fade in on scroll
-    gsap.utils.toArray(".animate-section").forEach((section) => {
-      gsap.from(section, {
-        scrollTrigger: {
-          trigger: section,
-          start: "top 85%",
+        my: {
+            utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+            nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+            nav_activity: "လှုပ်ရှားမှုများ",
+            nav_examresult: "အောင်စာရင်း",
+            nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+            nav_activity_mobile: "လှုပ်ရှားမှုများ",
+            nav_examresult_mobile: "အောင်စာရင်း",
+            terms_policies_title: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+            terms_policies_intro: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး) ၏ ကျောင်းသားမှတ်ပုံတင် ဝက်ဘ်ဆိုဒ်မှ ကြိုဆိုပါသည်။ ဤဝက်ဘ်ဆိုဒ်ကို ဝင်ရောက်အသုံးပြုပါက အောက်ဖော်ပြပါ စည်းမျဉ်းများနှင့် မူဝါဒများကို လိုက်နာရန် သဘောတူရပါမည်။ ကျေးဇူးပြု၍ သေချာဖတ်ရှုပါ။",
+            section_terms_title: "၁။ စည်းမျဉ်းစည်းကမ်းများ",
+            terms_account_section: "သုံးစွဲသူအကောင့်",
+            account_eligible: "သင်တန်းများကို စာရင်းသွင်းရန်အတွက် အကောင့်တစ်ခုဖန်တီးရပါမည်။ ဤဝန်ဆောင်မှုကို အသုံးပြုရန်အတွက် သင်သည် UTYCC တွင် လက်ရှိတက်ရောက်နေသော ကျောင်းသားတစ်ဦးဖြစ်ရပါမည်။",
+            terms_conduct_section: "တားမြစ်ထားသော အပြုအမူ",
+            prohibit_act: "ဤဝဘ်ဆိုဒ်ကို တရားမဝင်သော လုပ်ဆောင်ချက်များအတွက် အသုံးမပြုရန် သင်သဘောတူသည်၊ အောက်ပါတို့အပါအဝင်:",
+            prohibit_1: "ခွင့်ပြုချက်မရှိဘဲ ဒေတာများကို ဝင်ရောက်ရန် ကြိုးစားခြင်း။",
+            prohibit_2: "မှားယွင်းသော သို့မဟုတ် လွဲမှားစေသော အချက်အလက်များကို ပေးခြင်း။",
+            prohibit_3: "ဝဘ်ဆိုဒ် လုံခြုံရေးအင်္ဂါရပ်များကို နှောင့်ယှက်ခြင်း။",
+            terms_intellectual_section: "ဉာဏပစ္စည်းမူပိုင်ခွင့်",
+            intellectual_property: "ဤဆိုက်ရှိ အကြောင်းအရာအားလုံးသည် UTYCC ၏ ပိုင်ဆိုင်မှုဖြစ်သည်။ စာဖြင့်ရေးသားခွင့်ပြုချက်မရှိဘဲ မည်သည့်အကြောင်းအရာကိုမဆို ပြန်လည်ထုတ်လုပ်ခြင်း သို့မဟုတ် ဖြန့်ဝေခြင်းမပြုရပါ။",
+            section_privacy_title: "၂။ ကိုယ်ရေးကိုယ်တာ မူဝါဒ",
+            privacy_effective_date: "အသက်ဝင်သည့်ရက်စွဲ: ၂၀၂၅ ခုနှစ်၊ ဩဂုတ်လ ၁၀ ရက်",
+            privacy_data_collection_section: "ကျွန်ုပ်တို့စုဆောင်းသော အချက်အလက်များ",
+            data_collection_intro: "မှတ်ပုံတင်စဉ်အတွင်း သင်ပေးသော အချက်အလက်များကို ကျွန်ုပ်တို့ စုဆောင်းပါသည်၊ အောက်ပါတို့အပါအဝင်:",
+            personal_details: "ကိုယ်ရေးကိုယ်တာ အထောက်အထားများ (အမည်၊ ကျောင်းသားနံပါတ် စသည်)။",
+            contact_info: "ဆက်သွယ်ရန် အချက်အလက် (အီးမေးလ်၊ ဖုန်း၊ လိပ်စာ)။",
+            academic_info: "ပညာရေးဆိုင်ရာ အချက်အလက် (မေဂျာ၊ သင်တန်းရွေးချယ်မှုများ)။",
+            privacy_data_use_section: "ကျွန်ုပ်တို့ အချက်အလက်များကို မည်သို့အသုံးပြုသနည်း",
+            info_used_in: "စုဆောင်းထားသော အချက်အလက်များကို အောက်ပါတို့အတွက် အသုံးပြုသည်:",
+            registration: "သင်တန်းမှတ်ပုံတင်ခြင်းနှင့် ပညာရေးဆိုင်ရာ မှတ်တမ်းများကို စီမံဆောင်ရွက်ရန်။",
+            studies_announce: "သင်၏ သင်ကြားရေးနှင့် ကြေငြာချက်များနှင့် ပတ်သက်၍ သင်နှင့် ဆက်သွယ်ရန်။",
+            impro_functionality: "ကျွန်ုပ်တို့၏ ဝန်ဆောင်မှုများနှင့် ဝဘ်ဆိုဒ် လုပ်ဆောင်နိုင်စွမ်းကို မြှင့်တင်ရန်။",
+            privacy_data_sharing_section: "အချက်အလက် မျှဝေခြင်း",
+            data_sharing_P: "ကျွန်ုပ်တို့သည် သင်၏ ကိုယ်ရေးကိုယ်တာ အချက်အလက်များကို မရောင်းချပါ။ သင်၏ ပညာရေးဆိုင်ရာ မှတ်တမ်းများကို စီမံခန့်ခွဲရန် လိုအပ်သလို တက္ကသိုလ်ဌာနများ သို့မဟုတ် ပြင်ပဝန်ဆောင်မှုပေးသူများနှင့် ဒေတာများကို မျှဝေနိုင်ပါသည်။",
+            privacy_security_section: "အချက်အလက်လုံခြုံရေး",
+            security_P: "သင်၏ ကိုယ်ရေးကိုယ်တာ အချက်အလက်များကို ခွင့်ပြုချက်မရှိဘဲ ဝင်ရောက်ခြင်း၊ ပြောင်းလဲခြင်း သို့မဟုတ် ထုတ်ဖော်ခြင်းမှ ကာကွယ်ရန် ကျိုးကြောင်းဆီလျော်သော လုံခြုံရေးအစီအမံများကို ကျွန်ုပ်တို့ အကောင်အထည်ဖော်ပါသည်။",
+            footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊<br>ပြင်ဦးလွင်မြို့အနီး၊<br>မန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+            footer_faculties_title: "မဟာဌာနများ",
+            footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+            footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+            footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+            footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+            footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+            footer_contact_title: "ဆက်သွယ်ရန်",
+            footer_follow_title: "Follow Us",
+            footer_copyright: "© ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+            footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+            footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+            footer_link_faq: "အမေးများသော မေးခွန်းများ",
+            footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
+            footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+            footer_link_dp: "ဒေတာကာကွယ်ရေး",
         },
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        ease: "power2.out"
-      });
+        en: {
+            utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+            nav_about: "About Us",
+            nav_activity: "Activities",
+            nav_examresult: "Exam Results",
+            nav_about_mobile: "About Us",
+            nav_activity_mobile: "Activities",
+            nav_examresult_mobile: "Exam Results",
+            terms_policies_title: "Terms & Policies",
+            terms_policies_intro: "Welcome to the UTYCC Student Registration Website. By accessing and using this website, you agree to comply with and be bound by the following terms and policies. Please read them carefully.",
+            section_terms_title: "1. Terms and Conditions",
+            terms_account_section: "User Accounts",
+            account_eligible: "To register for courses, you must create an account. You must be a currently enrolled student at UTYCC to be eligible.",
+            terms_conduct_section: "Prohibited Conduct",
+            prohibit_act: "You agree not to use this website for any unlawful activities, including:",
+            prohibit_1: "Attempting to access unauthorized data.",
+            prohibit_2: "Providing false or misleading information.",
+            prohibit_3: "Interfering with website security features.",
+            terms_intellectual_section: "Intellectual Property",
+            intellectual_property: "All content on this site is the property of UTYCC. You may not reproduce or distribute any content without written permission.",
+            section_privacy_title: "2. Privacy Policy",
+            privacy_effective_date: "Effective Date: August 10, 2025",
+            privacy_data_collection_section: "Information We Collect",
+            data_collection_intro: "We collect information you provide during registration, including:",
+            personal_details: "Personal Identifiers (name, student ID, etc.).",
+            contact_info: "Contact Information (email, phone, address).",
+            academic_info: "Academic Information (major, course selections).",
+            privacy_data_use_section: "How We Use Information",
+            info_used_in: "The information collected is used to:",
+            registration: "Process course registration and academic records.",
+            studies_announce: "Communicate with you about studies and announcements.",
+            impro_functionality: "Improve our services and website functionality.",
+            privacy_data_sharing_section: "Data Sharing",
+            data_sharing_P: "We do not sell your personal information. Data may be shared with university departments or third-party service providers as necessary to manage your academic records.",
+            privacy_security_section: "Data Security",
+            security_P: "We implement reasonable security measures to protect your personal information from unauthorized access, alteration, or disclosure.",
+            footer_address: "Yatanarpon Cyber City,<br>Near Pyin Oo Lwin,<br>Mandalay Region, Myanmar",
+            footer_faculties_title: "Faculties",
+            footer_faculty_ist: "Information Science Technology",
+            footer_faculty_ce: "Computer Engineering",
+            footer_faculty_ece: "Electronics Engineering",
+            footer_faculty_ame: "Advanced Materials Engineering",
+            footer_faculty_pre: "Precision Engineering",
+            footer_contact_title: "Contact Us",
+            footer_follow_title: "Follow Us",
+            footer_copyright: "© 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+            footer_quick_links_title: "Quick Links",
+            footer_link_terms: "Terms & Policies",
+            footer_link_faq: "FAQs",
+            footer_link_about: "About Us",
+            footer_link_rules: "Rules & Regulations",
+            footer_link_dp: "Data Protection",
+        },
+    };
+
+    function setLanguage(lang) {
+        localStorage.setItem("language", lang);
+        ['desktop', 'mobile'].forEach(device => {
+            const flagImg = document.getElementById(`selected-lang-flag-${device}`);
+            const textSpan = document.getElementById(`selected-lang-text-${device}`);
+            const select = document.getElementById(`language-switcher-${device}`);
+            if(select) select.value = lang;
+            if (lang === 'my') {
+                if(flagImg) flagImg.src = 'https://flagcdn.com/w20/mm.png';
+                if(textSpan) textSpan.textContent = 'မြန်မာ';
+            } else {
+                if(flagImg) flagImg.src = 'https://flagcdn.com/w20/gb.png';
+                if(textSpan) textSpan.textContent = 'English';
+            }
+        });
+        document.querySelectorAll("[data-lang-key]").forEach(element => {
+            const key = element.dataset.langKey;
+            if (translations[lang] && translations[lang][key]) {
+                element.innerHTML = translations[lang][key];
+            }
+        });
+    }
+
+    function setupLangSwitcher(device) {
+        const container = document.getElementById(`lang-switcher-container-${device}`);
+        if (!container) return;
+        const button = container.querySelector('.lang-switcher-button');
+        const menu = container.querySelector('.lang-switcher-menu');
+        const options = container.querySelectorAll('.lang-switcher-option');
+        button.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('hidden'); });
+        options.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                setLanguage(option.getAttribute('data-lang'));
+                menu.classList.add('hidden');
+            });
+        });
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.lang-switcher-menu').forEach(menu => menu.classList.add('hidden'));
+    });
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("mobile-menu-button").addEventListener("click", () => {
+            document.getElementById("mobile-menu").classList.toggle("hidden");
+        });
+        setupLangSwitcher('desktop');
+        setupLangSwitcher('mobile');
+        const savedLang = localStorage.getItem("language") || "en";
+        setLanguage(savedLang);
+
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.utils.toArray('.animate-section').forEach(section => {
+            gsap.from(section, {
+                scrollTrigger: { trigger: section, start: "top 85%", toggleActions: "play none none none" },
+                y: 50, opacity: 0, duration: 1, ease: "power3.out"
+            });
+        });
     });
   </script>
+  
   <script src="./js/lgl.js"></script>
-
-  <!-- === Game Script === -->
   <script src="./js/game-script.js"></script>
-  <!-- === End Game Script === -->
 
 </body>
 
