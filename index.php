@@ -1,26 +1,34 @@
 <?php
 require_once './Rform/db.php'; 
 
+// Default values
 $announcement_text = '';
 $announcement_status = 'disabled';
 $enrollment_status = 'open';
-$students_stat = '3000'; // Default value
-$acceptance_rate_stat = '21'; // Default value
+$students_stat = '3000';
+$acceptance_rate_stat = '21';
 
 try {
-    $stmtCheckTable = $pdo->query("SELECT 1 FROM stats_settings LIMIT 1");
-    if ($stmtCheckTable->fetch()) {
-        $stmt = $pdo->query("SELECT setting_key, setting_value FROM stats_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status', 'students_stat', 'acceptance_rate_stat')");
-        $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-        
-        $announcement_text = $settings['announcement_text'] ?? '';
-        $announcement_status = $settings['announcement_status'] ?? 'disabled';
-        $enrollment_status = $settings['enrollment_status'] ?? 'open';
-        $students_stat = $settings['students_stat'] ?? '3000';
-        $acceptance_rate_stat = $settings['acceptance_rate_stat'] ?? '21';
+    // Fetch announcement and enrollment settings from site_settings
+    $site_settings_stmt = $pdo->query("SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status')");
+    if ($site_settings_stmt) {
+        $site_settings = $site_settings_stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        $announcement_text = $site_settings['announcement_text'] ?? '';
+        $announcement_status = $site_settings['announcement_status'] ?? 'disabled';
+        $enrollment_status = $site_settings['enrollment_status'] ?? 'open';
     }
+
+    // Fetch stats settings from stats_settings
+    $stats_settings_stmt = $pdo->query("SELECT setting_key, setting_value FROM stats_settings WHERE setting_key IN ('students_stat', 'acceptance_rate_stat')");
+    if ($stats_settings_stmt) {
+        $stats_settings = $stats_settings_stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        $students_stat = $stats_settings['students_stat'] ?? '3000';
+        $acceptance_rate_stat = $stats_settings['acceptance_rate_stat'] ?? '21';
+    }
+    
 } catch (PDOException $e) {
-    // Table probably does not exist, use default values.
+    // If tables don't exist or another error occurs, the defaults will be used.
+    // For debugging, you could log the error: error_log($e->getMessage());
 }
 $pdo = null; 
 ?>
@@ -294,7 +302,7 @@ $pdo = null;
 
     <div id="header" class="bg-white shadow-md sticky top-0 z-50 transition-colors duration-300">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="./home.php" id="header-logo-link" class="flex items-center space-x-3">
+            <a href="./index.php" id="header-logo-link" class="flex items-center space-x-3">
                 <div class="p-2 rounded-lg icon-hover-effect ">
                     <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" loading="lazy" />
                 </div>
@@ -515,20 +523,34 @@ $pdo = null;
             <section id="collaboration" class="mb-16 animate-on-scroll">
                 <h2 class="text-3xl font-bold text-blue-900 mb-8 text-center" data-lang-key="collab_title">International Collaboration</h2>
                 <div class="grid md:grid-cols-2 gap-8">
+<<<<<<< HEAD
                     <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
                         <img src="https://placehold.co/100x100/3b82f6/ffffff?text=ACU" class="rounded-full" alt="ACU Logo" loading="lazy" />
+=======
+                    <a href="http://www.aseanoer.net/about/acu-project.acu" target="_blank" rel="noopener noreferrer">
+                        <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
+                        <img src="./Img/logo/unilogo/ACU-logo_large.jpg" class="w-24 h-24 rounded-full object-cover" alt="ACU Logo" />
+>>>>>>> 0cbc19c9b6846725117f96b0abda5435310f924c
                         <div>
                             <h3 class="text-xl font-semibold text-blue-900" data-lang-key="collab_acu_title">ASEAN-KOREA Cyber University (ACU)</h3>
                             <p class="text-gray-600 mt-1" data-lang-key="collab_acu_text">Engaging in e-Learning projects to enhance digital education across the region.</p>
                         </div>
                     </div>
+<<<<<<< HEAD
                     <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
                         <img src="https://placehold.co/100x100/16a34a/ffffff?text=MU" class="rounded-full" alt="Miyazaki University Logo" loading="lazy"/>
+=======
+                    </a>
+                    <a href="https://www.miyazaki-u.ac.jp/english/" target="_blank" rel="noopener noreferrer">
+                        <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
+                        <img src="./Img/logo/unilogo/sec01logo.png" class="rounded-full" alt="Miyazaki University Logo" />
+>>>>>>> 0cbc19c9b6846725117f96b0abda5435310f924c
                         <div>
                             <h3 class="text-xl font-semibold text-blue-900" data-lang-key="collab_mu_title">Miyazaki University, Japan</h3>
                             <p class="mt-1 shine_text" data-lang-key="collab_mu_text">Offering a Double Master's Degree program, fostering international academic exchange.</p>
                         </div>
                     </div>
+                    </a>
                 </div>
             </section>
         </main>
@@ -1088,4 +1110,3 @@ $pdo = null;
     </script>
 </body>
 </html>
-
