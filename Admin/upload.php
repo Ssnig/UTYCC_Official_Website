@@ -1,7 +1,7 @@
 <?php
 // Include the database connection file
 require_once 'auth_check.php';
-
+require_once '../Rform/db.php'; // <--- ပြင်ဆင်လိုက်သော အကြောင်းရင်း
 
 header('Content-Type: application/json');
 
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Define the public-facing directory for result images.
-    $targetDir = __DIR__ . "/../uploadResults/";
+    $targetDir = __DIR__ . "../uploadResults/";
 
     // Create the directory if it doesn't exist
     if (!is_dir($targetDir)) {
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
 
     // Check if multiple files were uploaded
-    if (is_array($_FILES["result_image"]["name"])) {
+    if (isset($_FILES["result_image"]["name"]) && is_array($_FILES["result_image"]["name"])) {
         // Loop through each file
         for ($i = 0; $i < count($_FILES["result_image"]["name"]); $i++) {
             $file = [
@@ -73,20 +73,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (move_uploaded_file($file["tmp_name"], $targetFile)) {
                 // File uploaded successfully, now insert data into database
                 try {
-                    $imagePathForDB = "../uploadResults/" . basename($targetFile);
+                    $imagePathForDB = "uploadResults/" . basename($targetFile);
                     $stmt = $pdo->prepare("INSERT INTO exam_results (year, semester, major, image_path) VALUES (?, ?, ?, ?)");
                     $stmt->execute([$year, $semester, $major, $imagePathForDB]);
                     $files_uploaded_count++;
                 } catch (PDOException $e) {
                     $errors[] = 'Database error: ' . $e->getMessage();
-                    break;
+                    // If one file fails to insert, we should stop the whole process.
+                    // Also, we might want to delete the file that was just uploaded.
+                    unlink($targetFile);
+                    break; 
                 }
             } else {
                 $errors[] = "Sorry, there was an error uploading file " . htmlspecialchars($file['name']) . ".";
             }
         }
     } else {
-        echo json_encode(['success' => false, 'message' => 'Unexpected file upload format. Please try again.']);
+        echo json_encode(['success' => false, 'message' => 'No files were selected or unexpected file upload format. Please try again.']);
         exit;
     }
 
