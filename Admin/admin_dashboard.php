@@ -102,12 +102,21 @@ $pdo = null;
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); --shadow-inset: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
     }
-    html.dark {
-        --bg: 222 47% 11%; --fg: 210 40% 98%; --muted: 217 33% 17%; --muted-foreground: 215 20% 65%;
-        --primary: 217 91% 60%; --primary-foreground: 210 40% 98%; --secondary: 222 47% 13%; --secondary-foreground: 210 40% 98%;
-        --card: 222 47% 15%; --card-foreground: 210 40% 98%; --border: 217 33% 22%; --ring: 217 91% 60%;
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+ html.dark {
+        /* Dark Theme */
+        --bg: 0 0% 4%;
+        --fg: 210 40% 98%;
+        --muted: 0 0% 12%;
+        --muted-foreground: 215 20% 65%;
+        --primary: 217 91% 60%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 0 0% 6%;
+        --secondary-foreground: 210 40% 98%;
+        --card: 0 0% 8%;
+        --card-foreground: 210 40% 98%;
+        --border: 0 0% 15%;
+        --ring: 217 91% 60%;
+        --shadow-card: 0 10px 20px -10px hsl(0 0% 0% / 0.45);
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; }
@@ -518,6 +527,12 @@ $pdo = null;
                 <label for="mother_deceased_year">Deceased Year (if applicable)</label>
                 <input id="mother_deceased_year" name="mother_deceased_year" type="number" placeholder="YYYY" />
             </div>
+
+            <!-- New section for documents in edit modal -->
+            <h3 class="detail-section-header">တင်သွင်းထားသော အထောက်အထားများ</h3>
+            <div id="edit-documents-grid" class="documents-grid" style="grid-column: 1 / -1;">
+                <!-- Document items will be injected here by JavaScript -->
+            </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -697,6 +712,47 @@ $pdo = null;
               const prefValue = student.preferences ? student.preferences[i] : null;
               if (prefValue) { selectEl.value = prefValue; } else { selectEl.selectedIndex = 0; }
           }
+
+          // --- NEW: Populate document files in Edit Modal ---
+          const documentsGrid = document.getElementById('edit-documents-grid');
+          documentsGrid.innerHTML = ''; // Clear previous documents
+
+          const documents = [
+              { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' },
+              { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
+              { label: 'အောင်လက်မှတ်', key: 'doc_certificate' },
+              { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
+              { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' },
+              { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
+              { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' },
+              { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
+              { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' },
+              { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
+              { label: 'အမေ NRC (နောက်)', key: 'doc_mother_nrc_back' },
+          ];
+
+          let documentsHtml = '';
+          let hasDocuments = false;
+          documents.forEach(doc => {
+              const docPath = student[doc.key];
+              if (docPath) {
+                  hasDocuments = true;
+                  documentsHtml += `
+                      <div class="doc-item">
+                          <a href="${getSafeUrl(docPath)}" target="_blank" title="View ${doc.label}">
+                              <img src="${getSafeUrl(docPath)}" alt="${doc.label}" loading="lazy">
+                              <p>${doc.label}</p>
+                          </a>
+                      </div>`;
+              }
+          });
+
+          if (!hasDocuments) {
+              documentsGrid.innerHTML = '<p style="color: hsl(var(--muted-foreground));">No documents were submitted.</p>';
+          } else {
+              documentsGrid.innerHTML = documentsHtml;
+          }
+          // --- END NEW SECTION ---
       } 
       modal.showModal();
       formElements.student_name_en.focus();
@@ -1051,4 +1107,3 @@ $pdo = null;
   </script>
 </body>
 </html>
-

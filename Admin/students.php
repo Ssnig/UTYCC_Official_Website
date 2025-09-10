@@ -102,21 +102,21 @@ $pdo = null;
       --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
     }
 
-    html.dark {
+ html.dark {
         /* Dark Theme */
-        --bg: 222 47% 11%;
+        --bg: 0 0% 4%;
         --fg: 210 40% 98%;
-        --muted: 217 33% 17%;
+        --muted: 0 0% 12%;
         --muted-foreground: 215 20% 65%;
         --primary: 217 91% 60%;
         --primary-foreground: 210 40% 98%;
-        --secondary: 222 47% 13%;
+        --secondary: 0 0% 6%;
         --secondary-foreground: 210 40% 98%;
-        --card: 222 47% 15%;
+        --card: 0 0% 8%;
         --card-foreground: 210 40% 98%;
-        --border: 217 33% 22%;
+        --border: 0 0% 15%;
         --ring: 217 91% 60%;
-        --shadow-card: 0 10px 20px -10px hsl(220 40% 2% / 0.45);
+        --shadow-card: 0 10px 20px -10px hsl(0 0% 0% / 0.45);
     }
 
     * { box-sizing: border-box; }
@@ -316,6 +316,39 @@ $pdo = null;
         color: hsl(var(--primary));
     }
 
+    /* NEW Document Grid Styles */
+    .documents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+    .doc-item a {
+      display: block;
+      border: 1px solid hsl(var(--border));
+      border-radius: 8px;
+      overflow: hidden;
+      text-decoration: none;
+      color: hsl(var(--fg));
+      transition: all .2s ease;
+    }
+    .doc-item a:hover {
+      box-shadow: var(--shadow-card);
+      transform: translateY(-2px);
+    }
+    .doc-item img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      background-color: hsl(var(--muted));
+    }
+    .doc-item p {
+      font-size: 13px;
+      padding: 8px;
+      text-align: center;
+      font-weight: 500;
+    }
+    /* END NEW Styles */
+
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
 
@@ -369,7 +402,7 @@ $pdo = null;
           Support
         </a>
         <a class="nav-link" href="settings.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           Settings
         </a>
       </nav>
@@ -629,6 +662,11 @@ $pdo = null;
                 <label for="mother_deceased_year">Deceased Year (if applicable)</label>
                 <input id="mother_deceased_year" name="mother_deceased_year" type="number" placeholder="YYYY" />
             </div>
+            <!-- NEW: Document section for Edit Modal -->
+            <h3 class="detail-section-header">Submitted Documents</h3>
+            <div id="edit-documents-grid" class="documents-grid" style="grid-column: 1 / -1;">
+                <!-- JS will populate this -->
+            </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -690,16 +728,24 @@ $pdo = null;
       selected: new Set(),
     };
     
-    function getSafePhotoUrl(path) {
+    // NEW/MODIFIED: Unified function to handle all file paths
+    function getSafeUrl(path) {
         if (!path) {
-            return PHOTO_PLACEHOLDER;
+            return 'https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+File';
         }
+        // Path can be stored as '/uploads/...' or 'uploads/...'
+        // We need to find the 'uploads/' segment and build the correct relative path from there.
         const uploadsIndex = path.indexOf('uploads/');
         if (uploadsIndex !== -1) {
-            return `/${path.substring(uploadsIndex)}`;
+            // Get the part of the string from 'uploads/' onwards
+            const relativePath = path.substring(uploadsIndex);
+            // Construct the correct path from the 'admin' directory
+            return `../Rform/${relativePath}`;
         }
+        // Fallback for any other format
         return path;
     }
+
 
     function todayStr(d = new Date()) { return d.toISOString().split('T')[0]; }
 
@@ -759,12 +805,58 @@ $pdo = null;
         
         confirmBtn.className = `btn ${confirmClass}`;
 
-        confirmModal.showModal();
-        const handleConfirm = () => { confirmModal.close(); resolve(true); };
-        const handleCancel = () => { confirmModal.close(); resolve(false); };
+        const handleConfirm = () => { confirmModal.close(); resolve(true); cleanup(); };
+        const handleCancel = () => { confirmModal.close(); resolve(false); cleanup(); };
+
+        const cleanup = () => {
+            confirmBtn.removeEventListener('click', handleConfirm);
+            document.getElementById('confirmCancel').removeEventListener('click', handleCancel);
+        };
+        
         confirmBtn.addEventListener('click', handleConfirm, { once: true });
         document.getElementById('confirmCancel').addEventListener('click', handleCancel, { once: true });
+        confirmModal.showModal();
       });
+    }
+
+    // NEW: Function to generate and render document grid
+    function renderDocuments(student, containerElement) {
+        const documents = [
+            { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' },
+            { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
+            { label: 'အောင်လက်မှတ်', key: 'doc_certificate' },
+            { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
+            { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' },
+            { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
+            { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' },
+            { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
+            { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' },
+            { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
+            { label: 'အမေ NRC (နောက်)', key: 'doc_mother_nrc_back' },
+        ];
+        
+        let documentsHtml = '';
+        let hasDocuments = false;
+        documents.forEach(doc => {
+            const docPath = student[doc.key];
+            if (docPath) {
+                hasDocuments = true;
+                documentsHtml += `
+                    <div class="doc-item">
+                        <a href="${getSafeUrl(docPath)}" target="_blank" title="View ${doc.label}">
+                            <img src="${getSafeUrl(docPath)}" alt="${doc.label}" loading="lazy">
+                            <p>${doc.label}</p>
+                        </a>
+                    </div>`;
+            }
+        });
+
+        if (!hasDocuments) {
+            containerElement.innerHTML = '<p style="color: hsl(var(--muted-foreground));">No documents were submitted.</p>';
+        } else {
+            containerElement.innerHTML = documentsHtml;
+        }
+        return `<h3 class="detail-section-header">Submitted Documents</h3><div class="documents-grid">${documentsHtml || '<p style="color: hsl(var(--muted-foreground));">No documents were submitted.</p>'}</div>`;
     }
 
     function openModal(mode, student = null) {
@@ -787,7 +879,7 @@ $pdo = null;
                   }
               }
           }
-          document.getElementById('photo_preview').src = getSafePhotoUrl(student.photo_url);
+          document.getElementById('photo_preview').src = student.photo_url ? getSafeUrl(student.photo_url) : PHOTO_PLACEHOLDER;
           
           for (let i = 1; i <= 5; i++) {
               const selectEl = document.getElementById(`preference${i}`);
@@ -807,7 +899,12 @@ $pdo = null;
                   selectEl.selectedIndex = -1; 
               }
           }
-      } 
+          // NEW: Render documents in edit modal
+          renderDocuments(student, document.getElementById('edit-documents-grid'));
+      } else {
+          // Clear documents if it's an 'add' modal
+          document.getElementById('edit-documents-grid').innerHTML = '<p style="color: hsl(var(--muted-foreground));">No documents available for new student.</p>';
+      }
       modal.showModal();
       formElements.student_name_en.focus();
     }
@@ -817,7 +914,7 @@ $pdo = null;
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
-        const photoUrl = getSafePhotoUrl(s.photo_url);
+        const photoUrl = s.photo_url ? getSafeUrl(s.photo_url) : PHOTO_PLACEHOLDER;
 
         let preferencesHtml = '';
         if (s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0) {
@@ -830,6 +927,9 @@ $pdo = null;
             }
             preferencesHtml += `</dl>`;
         }
+        
+        // NEW: Generate documents HTML for details view
+        const documentsHtml = renderDocuments(s, document.createElement('div'));
 
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
@@ -888,7 +988,8 @@ $pdo = null;
                     <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd>
                     <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
                 </dl>
-            </div>`;
+            </div>
+            ${documentsHtml}`; // Add documents here
         detailsModal.showModal();
     }
 
@@ -919,23 +1020,27 @@ $pdo = null;
       const tbody = document.getElementById('tbody');
 
       tbody.innerHTML = '';
-      for (const s of pageRows) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
-          <td>${s.seat_no || ''}</td>
-          <td>${s.student_name_en || ''}</td>
-          <td>${s.student_email || ''}</td>
-          <td>${s.student_phone || ''}</td>
-          <td>${formatDate(s.date)}</td>
-          <td>
-            <div style="display:flex; gap:6px;">
-              <button class="btn ghost" data-details="${s.student_id}">Details</button>
-              <button class="btn ghost" data-edit="${s.student_id}">Edit</button>
-              <button class="btn destructive" data-del="${s.student_id}">Delete</button>
-            </div>
-          </td>`;
-        tbody.appendChild(tr);
+      if(pageRows.length === 0){
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No approved students found matching criteria.</td></tr>';
+      } else {
+        for (const s of pageRows) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
+            <td>${s.seat_no || ''}</td>
+            <td>${s.student_name_en || ''}</td>
+            <td>${s.student_email || ''}</td>
+            <td>${s.student_phone || ''}</td>
+            <td>${formatDate(s.date)}</td>
+            <td>
+                <div style="display:flex; gap:6px;">
+                <button class="btn ghost" data-details="${s.student_id}">Details</button>
+                <button class="btn ghost" data-edit="${s.student_id}">Edit</button>
+                <button class="btn destructive" data-del="${s.student_id}">Delete</button>
+                </div>
+            </td>`;
+            tbody.appendChild(tr);
+        }
       }
 
       document.getElementById('pageInfo').textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
@@ -958,7 +1063,11 @@ $pdo = null;
 
       document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
       document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
-      document.getElementById('nextPage').addEventListener('click', () => { state.page++; render(); });
+      document.getElementById('nextPage').addEventListener('click', () => { 
+          const rows = getFilteredSorted();
+          const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+          if (state.page < totalPages) { state.page++; render(); }
+      });
       document.getElementById('addBtn').addEventListener('click', () => openModal('add'));
       document.getElementById('closeModal').addEventListener('click', closeModalSafe);
       document.getElementById('cancelModal').addEventListener('click', closeModalSafe);
@@ -1179,3 +1288,4 @@ $pdo = null;
   </script>
 </body>
 </html>
+

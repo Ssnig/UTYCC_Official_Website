@@ -33,11 +33,17 @@ function processStudentRow($studentRow) {
     if (isset($studentRow['preferences'])) {
         $studentRow['preferences'] = $studentRow['preferences'] ? json_decode($studentRow['preferences'], true) : null;
     }
+    // Correctly construct the full URL for the photo
+    if (isset($studentRow['photo_url']) && !empty($studentRow['photo_url'])) {
+        // Assuming photo_url is stored like '/uploads/filename.jpg'
+        // And the script is in 'admin' directory, so we go up one level.
+        $studentRow['photo_url'] = '../Rform' . $studentRow['photo_url'];
+    }
     return $studentRow;
 }
 
 
-$fileSystemUploadDir = '../uploads/';
+$fileSystemUploadDir = __DIR__ . '/../Rform/uploads/';
 $urlUploadDir = '/uploads/'; 
 
 

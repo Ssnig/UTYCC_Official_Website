@@ -9,18 +9,70 @@ require_once 'auth_check.php';
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Manage Site Stats — UTYCC Admin</title>
   <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+  
+  <script>
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    (function() {
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {
+        console.error('Could not apply theme from localStorage', e);
+      }
+    })();
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-    .card { background-color: white; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+    :root {
+      --bg: 220 20% 98%; --fg: 222 47% 11%; --muted: 220 20% 94%; --muted-foreground: 215 17% 47%;
+      --primary: 220 83% 58%; --primary-foreground: 0 0% 100%;
+      --secondary: 0 0% 100%; --secondary-foreground: 222 47% 11%;
+      --card: 0 0% 100%; --card-foreground: 222 47% 11%; --border: 220 20% 91%; --ring: 220 83% 58%;
+      --radius: 1rem; --duration: 220ms; --ease: cubic-bezier(.2,.8,.2,1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+    html.dark {
+        /* Dark Theme */
+        --bg: 0 0% 4%;
+        --fg: 210 40% 98%;
+        --muted: 0 0% 12%;
+        --muted-foreground: 215 20% 65%;
+        --primary: 217 91% 60%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 0 0% 6%;
+        --secondary-foreground: 210 40% 98%;
+        --card: 0 0% 8%;
+        --card-foreground: 210 40% 98%;
+        --border: 0 0% 15%;
+        --ring: 217 91% 60%;
+        --shadow-card: 0 10px 20px -10px hsl(0 0% 0% / 0.45);
+    }
+    body { 
+      font-family: 'Inter', sans-serif;
+      background: hsl(var(--bg));
+      color: hsl(var(--fg));
+      transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+    }
+    .card { 
+      background-color: hsl(var(--card)); 
+      color: hsl(var(--card-foreground));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius); 
+      box-shadow: var(--shadow-md); 
+    }
     .form-input {
-        border-color: #d1d5db;
+        border-color: hsl(var(--border));
+        background-color: hsl(var(--bg));
+        color: hsl(var(--fg));
         transition: all 0.2s ease-in-out;
     }
     .form-input:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+        border-color: hsl(var(--ring));
+        box-shadow: 0 0 0 2px hsl(var(--ring) / 0.4);
         outline: none;
     }
     .btn {
@@ -46,24 +98,44 @@ require_once 'auth_check.php';
         "sidebar header"
         "sidebar main";
       min-height: 100dvh;
-      background-color: #f1f5f9;
     }
     .header {
       grid-area: header;
       position: sticky; top: 0; z-index: 10;
-      background: white;
-      border-bottom: 1px solid #e2e8f0;
+      background: hsl(var(--card) / 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid hsl(var(--border));
       display: flex; align-items: center; gap: 12px; padding: 16px 20px;
     }
     .main { grid-area: main; padding: 20px; }
-    .sidebar { grid-area: sidebar; border-right: 1px solid #e2e8f0; background: #fff; padding: 20px 16px; position: sticky; top: 0; height: 100vh; }
+    .sidebar { 
+      grid-area: sidebar; 
+      border-right: 1px solid hsl(var(--border)); 
+      background: hsl(var(--secondary)); 
+      padding: 20px 16px; 
+      position: sticky; top: 0; 
+      height: 100vh; 
+    }
     .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
     .brand img { width: 32px; height: 32px; }
-    .brand h1 { font-size: 18px; margin: 0; font-weight: 700; }
+    .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground));}
     nav { margin-top: 18px; display: grid; gap: 8px; }
-    .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: #64748b; }
-    .nav-link:hover { background: #f1f5f9; color: #0f172a; }
-    .nav-link.active { background: #3b82f6; color: #fff; }
+    .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); }
+    .nav-link:hover { background: hsl(var(--muted)); color: hsl(var(--fg)); }
+    .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+
+    /* Text color overrides */
+    h1, h2, .font-bold, .font-semibold, .text-gray-800 { color: hsl(var(--fg)); }
+    .text-gray-700, label { color: hsl(var(--muted-foreground)); }
+    .text-gray-500 { color: hsl(var(--muted-foreground) / 0.8); }
+
+    .border-b { border-color: hsl(var(--border)); }
+
+    /* Specific override for white headings in dark mode */
+    html.dark .header h1,
+    html.dark .card h2 {
+        color: #FFFFFF;
+    }
 
     @media (max-width: 780px) {
       .app { grid-template-columns: 1fr; grid-template-areas:
@@ -135,14 +207,14 @@ require_once 'auth_check.php';
             <h2 class="text-xl font-semibold text-gray-800 border-b pb-3">Home Page Stats</h2>
             
             <div>
-              <label for="students_stat" class="block text-sm font-medium text-gray-700">Total Students</label>
-              <input type="number" id="students_stat" name="students_stat" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-input" placeholder="e.g., 3000">
+              <label for="students_stat" class="block text-sm font-medium">Total Students</label>
+              <input type="number" id="students_stat" name="students_stat" required class="mt-1 block w-full rounded-md shadow-sm form-input" placeholder="e.g., 3000">
               <p class="mt-1 text-xs text-gray-500">The approximate total number of students to display on the home page.</p>
             </div>
             
             <div>
-              <label for="acceptance_rate_stat" class="block text-sm font-medium text-gray-700">Acceptance Rate (%)</label>
-              <input type="number" id="acceptance_rate_stat" name="acceptance_rate_stat" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-input" placeholder="e.g., 21">
+              <label for="acceptance_rate_stat" class="block text-sm font-medium">Acceptance Rate (%)</label>
+              <input type="number" id="acceptance_rate_stat" name="acceptance_rate_stat" required class="mt-1 block w-full rounded-md shadow-sm form-input" placeholder="e.g., 21">
                <p class="mt-1 text-xs text-gray-500">The acceptance rate percentage to display (enter the number only).</p>
             </div>
 
@@ -187,6 +259,12 @@ require_once 'auth_check.php';
     function showStatus(message, isSuccess) {
       statusMessage.textContent = message;
       statusMessage.className = `mt-4 text-center p-3 rounded-md ${isSuccess ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+      
+      // Add dark mode classes for status message
+      if (document.documentElement.classList.contains('dark')) {
+        statusMessage.className += isSuccess ? ' dark:bg-green-900/50 dark:text-green-300' : ' dark:bg-red-900/50 dark:text-red-300';
+      }
+
       setTimeout(() => { statusMessage.className = 'mt-4 text-center hidden'; }, 4000);
     }
 
@@ -230,4 +308,5 @@ require_once 'auth_check.php';
   </script>
 </body>
 </html>
+
 

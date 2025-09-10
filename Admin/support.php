@@ -50,15 +50,22 @@ $pdo = null;
           --duration: 220ms; --shadow-soft: 0 10px 30px -12px hsl(var(--primary)/0.25);
           --shadow-card: 0 10px 20px -10px hsl(220 40% 20% / 0.15);
         }
-        html.dark {
-            /* Dark Theme */
-            --bg: 222 47% 11%; --fg: 210 40% 98%; --muted: 217 33% 17%;
-            --muted-foreground: 215 20% 65%; --primary: 217 91% 60%;
-            --primary-foreground: 210 40% 98%; --secondary: 222 47% 13%;
-            --secondary-foreground: 210 40% 98%; --card: 222 47% 15%;
-            --card-foreground: 210 40% 98%; --border: 217 33% 22%;
-            --ring: 217 91% 60%; --shadow-card: 0 10px 20px -10px hsl(220 40% 2% / 0.45);
-        }
+ html.dark {
+        /* Dark Theme */
+        --bg: 0 0% 4%;
+        --fg: 210 40% 98%;
+        --muted: 0 0% 12%;
+        --muted-foreground: 215 20% 65%;
+        --primary: 217 91% 60%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 0 0% 6%;
+        --secondary-foreground: 210 40% 98%;
+        --card: 0 0% 8%;
+        --card-foreground: 210 40% 98%;
+        --border: 0 0% 15%;
+        --ring: 217 91% 60%;
+        --shadow-card: 0 10px 20px -10px hsl(0 0% 0% / 0.45);
+    }
         * { box-sizing: border-box; }
         html, body { height: 100%; }
         body { margin: 0; color: hsl(var(--fg)); background: hsl(var(--bg)); font: 500 16px/1.4 'Inter', sans-serif; text-rendering: optimizeLegibility; transition: background var(--duration) var(--ease), color var(--duration) var(--ease); }
