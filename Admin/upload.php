@@ -1,7 +1,7 @@
 <?php
 // Include the database connection file
 require_once 'auth_check.php';
-require_once '../Rform/db.php'; // <--- ပြင်ဆင်လိုက်သော အကြောင်းရင်း
+require_once '../Rform/db.php';
 
 header('Content-Type: application/json');
 
@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Define the public-facing directory for result images.
-    $targetDir = __DIR__ . "../uploadResults/";
+    // Define the target directory for result images, which is one level up from the current directory.
+    $targetDir = __DIR__ . "/../uploadResults/";
 
     // Create the directory if it doesn't exist
     if (!is_dir($targetDir)) {
@@ -73,14 +73,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (move_uploaded_file($file["tmp_name"], $targetFile)) {
                 // File uploaded successfully, now insert data into database
                 try {
-                    $imagePathForDB = "uploadResults/" . basename($targetFile);
+                    // Store the path relative to the admin directory for correct display
+                    $imagePathForDB = "../uploadResults/" . basename($targetFile);
                     $stmt = $pdo->prepare("INSERT INTO exam_results (year, semester, major, image_path) VALUES (?, ?, ?, ?)");
                     $stmt->execute([$year, $semester, $major, $imagePathForDB]);
                     $files_uploaded_count++;
                 } catch (PDOException $e) {
                     $errors[] = 'Database error: ' . $e->getMessage();
-                    // If one file fails to insert, we should stop the whole process.
-                    // Also, we might want to delete the file that was just uploaded.
+                    // If the database insert fails, delete the uploaded file
                     unlink($targetFile);
                     break; 
                 }
@@ -107,3 +107,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
 }
 ?>
+
