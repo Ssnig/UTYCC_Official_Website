@@ -4,6 +4,13 @@
     // Set the default timezone to Myanmar time
     date_default_timezone_set('Asia/Yangon');
 
+    
+if (!isset($_SESSION['pre_approved_data'])) {
+        // Redirect them back to the verification page.
+        header('Location: Verify_new.php');
+        exit; // Important to stop further script execution.
+    }
+
     // If the user is starting a new application (e.g., by visiting form1.php?new=1),
     // clear any previously saved form data from the session.
     if (isset($_GET['new']) && $_GET['new'] == '1') {
