@@ -39,10 +39,10 @@ $pdo = null;
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="./CSS/shine_text.css">
     <link rel="stylesheet" href="./CSS/star-layout.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="stylesheet" href="./CSS/footer.css" />
-    <script src="./JS/star-layout.js"></script>
+    <script  src="./JS/star-layout.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -304,7 +304,7 @@ $pdo = null;
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <a href="./index.php" id="header-logo-link" class="flex items-center space-x-3">
                 <div class="p-2 rounded-lg icon-hover-effect ">
-                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" loading="lazy" />
                 </div>
                 <div>
                     <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
@@ -322,17 +322,17 @@ $pdo = null;
                 <div class="relative ml-4">
                     <div id="lang-switcher-container-desktop">
                         <button class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
-                            <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/gb.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
+                            <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/gb.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0" loading="lazy">
                             <span id="selected-lang-text-desktop" class="ml-2">English</span>
                             <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
                         </button>
                         <div class="lang-switcher-menu hidden absolute mt-1 w-auto min-w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
                             <a href="#" class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="my">
-                                <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                                <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0" loading="lazy">
                                 <span>မြန်မာ</span>
                             </a>
                             <a href="#" class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="en">
-                                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0" loading="lazy">
                                 <span>English</span>
                             </a>
                         </div>
@@ -355,17 +355,17 @@ $pdo = null;
             <div class="relative mt-4 pt-4 border-t">
                 <div id="lang-switcher-container-mobile" class="relative">
                     <button class="lang-switcher-button relative flex items-center w-full bg-gray-100 hover:bg-gray-200 rounded-md transition py-2 pl-4 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
-                        <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0">
+                        <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag" class="h-4 w-6 object-cover flex-shrink-0" loading="lazy">
                         <span id="selected-lang-text-mobile" class="ml-3">မြန်မာ</span>
                         <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 pointer-events-none"></i>
                     </button>
                     <div class="lang-switcher-menu hidden absolute mt-1 w-full rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5">
                         <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="my">
-                            <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                            <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0" loading="lazy">
                             <span>မြန်မာ</span>
                         </a>
                         <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-lang="en">
-                            <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                            <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0" loading="lazy">
                             <span>English</span>
                         </a>
                     </div>
@@ -475,26 +475,26 @@ $pdo = null;
                         </div>
                     </div>
                     <div class="star-wrapper">
-                        <div class="star-center"><img src="Img/logo/utycc_logo_favicon/apple-touch-icon.png" class="logo-badge static-logo " alt="UTYCC" /></div>
-                        <div class="star-point " style="--angle: 0deg"><a href="./Majors/ist.php"><img src="Img/logo/IST.webp" class="logo-badge static-logo" alt="IST" /></a></div>
-                        <div class="star-point" style="--angle: 72deg"><a href="./Majors/ce.php"><img src="Img/logo/CE.webp" class="logo-badge static-logo" alt="CE" /></a></div>
-                        <div class="star-point" style="--angle: 144deg"><a href="./Majors/ece.php"><img src="Img/logo/EcE.jpg" class="logo-badge static-logo" alt="EcE" /></a></div>
-                        <div class="star-point" style="--angle: 216deg"><a href="./Majors/pre.php"><img src="Img/logo/PrE.png" class="logo-badge static-logo" alt="PrE" /></a></div>
-                        <div class="star-point" style="--angle: 288deg"><a href="./Majors/ame.php"><img src="Img/logo/AME_updated.jpg" class="logo-badge static-logo" alt="AmE" /></a></div>
+                        <div class="star-center"><img src="Img/logo/utycc_logo_favicon/apple-touch-icon.png" class="logo-badge static-logo " alt="UTYCC" loading="lazy"/></div>
+                        <div class="star-point " style="--angle: 0deg"><a href="./Majors/ist.php"><img src="Img/logo/IST.webp" class="logo-badge static-logo" alt="IST" loading="lazy"/></a></div>
+                        <div class="star-point" style="--angle: 72deg"><a href="./Majors/ce.php"><img src="Img/logo/CE.webp" class="logo-badge static-logo" alt="CE" loading="lazy"/></a></div>
+                        <div class="star-point" style="--angle: 144deg"><a href="./Majors/ece.php"><img src="Img/logo/EcE.jpg" class="logo-badge static-logo" alt="EcE" loading="lazy"/></a></div>
+                        <div class="star-point" style="--angle: 216deg"><a href="./Majors/pre.php"><img src="Img/logo/PrE.png" class="logo-badge static-logo" alt="PrE" loading="lazy"/></a></div>
+                        <div class="star-point" style="--angle: 288deg"><a href="./Majors/ame.php"><img src="Img/logo/AME_updated.jpg" class="logo-badge static-logo" alt="AmE" loading="lazy"/></a></div>
                     </div>
                 </div>
             </section>
 
             <section id="programs" class="mb-20 bg-white p-8 md:p-12 rounded-lg shadow-lg animate-on-scroll">
-                <h2 class="text-3xl font-bold text-blue-900 mb-10 text-center" data-lang-key="programs_title">Academic Programs</h2>
+               <h2 class="text-3xl font-bold text-blue-900 mb-10 text-center" data-lang-key="programs_title">Academic Programs</h2>
                 <div class="mb-10">
                     <h3 class="text-2xl font-semibold text-blue-800 mb-6 border-b-2 border-blue-200 pb-2" data-lang-key="bachelor_title">Bachelor's Degrees (6 Years)</h3>
                     <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 card_1">
-                        <a href="./Majors/ist.php" class="program-card" style="--i:1;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img\logo\IST.webp" alt="Information Science and Technology" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ist">Information Science and Technology (IST)</h3></div></a>
-                        <a href="./Majors/ce.php" class="program-card" style="--i:2;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img\logo\CE.webp" alt="Computer Engineering" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ce">Computer Engineering (CE)</h3></div></a>
-                        <a href="./Majors/ece.php" class="program-card" style="--i:3;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img/logo/EcE.jpg" alt="Electronics Engineering" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ece">Electronics Engineering (EcE)</h3></div></a>
-                        <a href="./Majors/pre.php" class="program-card" style="--i:4;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img/logo/PrE.png" alt="Precision Engineering" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_pre">Precision Engineering (PrE)</h3></div></a>
-                        <a href="./Majors/ame.php" class="program-card" style="--i:5;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img\logo\Ame_updated.jpg" alt="Advanced Materials Engineering" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ame">Advanced Materials Engineering (AME)</h3></div></a>
+                        <a href="./Majors/ist.php" class="program-card" style="--i:1;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img\logo\IST.webp" alt="Information Science and Technology" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ist">Information Science and Technology (IST)</h3></div></a>
+                        <a href="./Majors/ce.php" class="program-card" style="--i:2;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img\logo\CE.webp" alt="Computer Engineering" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ce">Computer Engineering (CE)</h3></div></a>
+                        <a href="./Majors/ece.php" class="program-card" style="--i:3;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img/logo/EcE.jpg" alt="Electronics Engineering" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ece">Electronics Engineering (EcE)</h3></div></a>
+                        <a href="./Majors/pre.php" class="program-card" style="--i:4;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img/logo/PrE.png" alt="Precision Engineering" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_pre">Precision Engineering (PrE)</h3></div></a>
+                        <a href="./Majors/ame.php" class="program-card" style="--i:5;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img\logo\Ame_updated.jpg" alt="Advanced Materials Engineering" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ame">Advanced Materials Engineering (AME)</h3></div></a>
                     </div>
                 </div>
 
@@ -520,23 +520,27 @@ $pdo = null;
                 </div>
             </section>
 
-            <section id="collaboration" class="mb-16 animate-on-scroll">
+           <section id="collaboration" class="mb-16 animate-on-scroll">
                 <h2 class="text-3xl font-bold text-blue-900 mb-8 text-center" data-lang-key="collab_title">International Collaboration</h2>
                 <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
-                        <img src="https://placehold.co/100x100/3b82f6/ffffff?text=ACU" class="rounded-full" alt="ACU Logo" />
+                    <a href="http://www.aseanoer.net/about/acu-project.acu" target="_blank" rel="noopener noreferrer">
+                        <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
+                        <img src="./Img/logo/unilogo/ACU-logo_large.jpg" class="w-24 h-24 rounded-full object-cover" alt="ACU Logo" />
                         <div>
                             <h3 class="text-xl font-semibold text-blue-900" data-lang-key="collab_acu_title">ASEAN-KOREA Cyber University (ACU)</h3>
                             <p class="text-gray-600 mt-1" data-lang-key="collab_acu_text">Engaging in e-Learning projects to enhance digital education across the region.</p>
                         </div>
                     </div>
-                    <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
-                        <img src="https://placehold.co/100x100/16a34a/ffffff?text=MU" class="rounded-full" alt="Miyazaki University Logo" />
+                    </a>
+                    <a href="https://www.miyazaki-u.ac.jp/english/" target="_blank" rel="noopener noreferrer">
+                        <div class="bg-white p-8 rounded-lg shadow-md flex items-center space-x-6 card-hover-effect">
+                        <img src="./Img/logo/unilogo/sec01logo.png" class="rounded-full" alt="Miyazaki University Logo" />
                         <div>
                             <h3 class="text-xl font-semibold text-blue-900" data-lang-key="collab_mu_title">Miyazaki University, Japan</h3>
                             <p class="mt-1 shine_text" data-lang-key="collab_mu_text">Offering a Double Master's Degree program, fostering international academic exchange.</p>
                         </div>
                     </div>
+                    </a>
                 </div>
             </section>
         </main>
@@ -561,7 +565,7 @@ $pdo = null;
 
             <div id="enrollment-closed" class="hidden">
                 <div class="p-8 md:p-12 text-center w-full">
-                    <div class="mx-auto bg-gray-200 w-32 h-32 rounded-full flex items-center justify-center mb-6"><img src="./Img/logo/utycc_logo.png" alt="UTYCC Logo" class="p-2"></div>
+                    <div class="mx-auto bg-gray-200 w-32 h-32 rounded-full flex items-center justify-center mb-6"><img src="./Img/logo/utycc_logo.png" alt="UTYCC Logo" class="p-2" loading="lazy"></div>
                     <h1 class="text-3xl font-bold text-red-600 mb-4" data-lang-key="admission_closed_title">ADMISSIONS ARE CURRENTLY CLOSED</h1>
                     <p class="text-gray-700 text-lg mb-8" data-lang-key="admission_closed_text">Our university is not accepting new student applications at this time.</p>
                 </div>
@@ -583,12 +587,12 @@ $pdo = null;
         <div class="container mx-auto px-6 py-12">
             <div class="grid md:grid-cols-4 gap-8">
                 <div class="animate-on-scroll" style="--i:1;">
-                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4 icon-hover-effect" />
+                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4 icon-hover-effect" loading="lazy"/>
                     <h3 class="text-lg font-bold">UTYCC</h3>
                     <p class="text-blue-200 text-sm mt-4"><a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay Region, Myanmar</a></p>
                     <div class="mt-4 text-sm text-blue-200">
-                        <p>Email: info@utycc.site utyccstudentaffair2010@gmail.com</p>
-                        <p>Phone: +959445767834 </p>
+                        <a href="mailto:utyccstudentaffair2010@gmail.com">Email: info@utycc.site utyccstudentaffair2010@gmail.com</a>
+                        <a href="tel:+959445767834">Phone: +959445767834 </a>
                     </div>
                 </div>
                 <div class="animate-on-scroll" style="--i:2;">

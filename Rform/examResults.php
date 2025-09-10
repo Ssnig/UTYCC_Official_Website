@@ -43,7 +43,7 @@
     <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
       <a href="../index.php" class="flex items-center space-x-3">
         <div class="p-2 rounded-lg">
-          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
+          <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" loading="lazy"/>
         </div>
         <div>
           <span class="text-lg font-bold text-blue-900 block">UTYCC</span>
@@ -65,7 +65,7 @@
             <button
               class="lang-switcher-button relative flex items-center bg-gray-100 hover:bg-gray-200 rounded-md transition py-1.5 pl-3 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
               <img id="selected-lang-flag-desktop" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
-                class="h-4 w-6 object-cover flex-shrink-0">
+                class="h-4 w-6 object-cover flex-shrink-0" loading="lazy">
               <span id="selected-lang-text-desktop" class="ml-2">မြန်မာ</span>
               <i class="fas fa-chevron-down text-gray-500 text-xs absolute right-3 pointer-events-none"></i>
             </button>
@@ -76,13 +76,13 @@
                 class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 data-lang="my">
                 <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
-                  class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                  class="h-4 w-6 mr-3 object-cover flex-shrink-0" loading="lazy">
                 <span>မြန်မာ</span>
               </a>
               <a href="#"
                 class="lang-switcher-option whitespace-nowrap flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 data-lang="en">
-                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0" loading="lazy">
                 <span>English</span>
               </a>
             </div>
@@ -109,7 +109,7 @@
           <button
             class="lang-switcher-button relative flex items-center w-full bg-gray-100 hover:bg-gray-200 rounded-md transition py-2 pl-4 pr-10 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 font-medium">
             <img id="selected-lang-flag-mobile" src="https://flagcdn.com/w20/mm.png" alt="Selected Flag"
-              class="h-4 w-6 object-cover flex-shrink-0">
+              class="h-4 w-6 object-cover flex-shrink-0" loading="lazy">
             <span id="selected-lang-text-mobile" class="ml-3">မြန်မာ</span>
             <i class="fas fa-chevron-down text-gray-500 text-sm absolute right-4 pointer-events-none"></i>
           </button>
@@ -119,12 +119,12 @@
             <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               data-lang="my">
               <img src="https://flagcdn.com/w20/mm.png" alt="Myanmar Flag"
-                class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+                class="h-4 w-6 mr-3 object-cover flex-shrink-0" loading="lazy">
               <span>မြန်မာ</span>
             </a>
             <a href="#" class="lang-switcher-option flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               data-lang="en">
-              <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0">
+              <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="h-4 w-6 mr-3 object-cover flex-shrink-0" loading="lazy">
               <span>English</span>
             </a>
           </div>
@@ -245,7 +245,7 @@
     <!-- Image Modal -->
     <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-[999] hidden transition-opacity duration-300">
         <div class="relative bg-white p-2 rounded-lg max-w-4xl max-h-full">
-            <img id="modalImage" src="" alt="Enlarged Exam Result" class="max-w-full max-h-[90vh] object-contain">
+            <img id="modalImage" src="" alt="Enlarged Exam Result" class="max-w-full max-h-[90vh] object-contain" loading="lazy">
             <button id="closeModal" class="absolute -top-3 -right-3 text-white bg-gray-800 rounded-full p-1.5 hover:bg-red-600 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
@@ -257,7 +257,7 @@
         <div class="container mx-auto px-6 py-12">
             <div class="grid md:grid-cols-4 gap-8">
                 <div>
-                    <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" />
+                    <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" loading="lazy"/>
                     <h3 class="text-lg font-bold">UTYCC</h3>
                     <p class="text-blue-200 text-sm mt-4">
                         <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">

@@ -267,7 +267,7 @@
                     <button type="button" onclick="document.getElementById('photo_upload').click()" class="mt-2 block mx-auto px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200">Upload</button>
                 </div>
                 <div id="photo-preview-container" class="hidden w-full h-full relative">
-                    <img id="photo-preview" src="#" alt="Photo Preview" class="w-full h-full object-contain">
+                    <img id="photo-preview" src="#" alt="Photo Preview" class="w-full h-full object-contain" loading="lazy">
                     <div id="remove-photo-btn" title="Remove Photo" class="absolute top-0 right-1 text-2xl cursor-pointer text-red-500">&times;</div>
                 </div>
                 <input type="file" class="hidden" id="photo_upload" name="photo_upload" accept="image/*">
