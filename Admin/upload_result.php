@@ -10,88 +10,125 @@ require_once 'auth_check.php';
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Upload Exam Results — UTYCC Admin</title>
   <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+  
+  <script>
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    (function() {
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {
+        console.error('Could not apply theme from localStorage', e);
+      }
+    })();
+  </script>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-    .card { background-color: white; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+    :root {
+      --bg: 220 20% 98%; --fg: 222 47% 11%; --muted: 220 20% 94%; --muted-foreground: 215 17% 47%;
+      --primary: 220 83% 58%; --primary-foreground: 0 0% 100%;
+      --secondary: 0 0% 100%; --secondary-foreground: 222 47% 11%;
+      --card: 0 0% 100%; --card-foreground: 222 47% 11%; --border: 220 20% 91%; --ring: 220 83% 58%;
+      --radius: 1rem; --duration: 220ms; --ease: cubic-bezier(.2,.8,.2,1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+    html.dark {
+        --bg: 0 0% 4%; --fg: 210 40% 98%; --muted: 0 0% 12%; --muted-foreground: 215 20% 65%;
+        --primary: 217 91% 60%; --primary-foreground: 210 40% 98%;
+        --secondary: 0 0% 6%; --secondary-foreground: 210 40% 98%;
+        --card: 0 0% 8%; --card-foreground: 210 40% 98%;
+        --border: 0 0% 15%; --ring: 217 91% 60%;
+        --shadow-card: 0 10px 20px -10px hsl(0 0% 0% / 0.45);
+    }
+    body { 
+      font-family: 'Inter', sans-serif;
+      background-color: hsl(var(--bg));
+      color: hsl(var(--fg));
+      transition: background-color var(--duration) var(--ease), color var(--duration) var(--ease);
+    }
+    .card { 
+      background-color: hsl(var(--card));
+      color: hsl(var(--card-foreground));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius); 
+      box-shadow: var(--shadow-md);
+    }
     .form-select, .form-input {
-        border-color: #d1d5db;
+        border-color: hsl(var(--border));
+        background-color: hsl(var(--bg));
+        color: hsl(var(--fg));
         transition: all 0.2s ease-in-out;
     }
     .form-select:focus, .form-input:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+        border-color: hsl(var(--ring));
+        box-shadow: 0 0 0 2px hsl(var(--ring) / 0.4);
         outline: none;
     }
-    .btn-primary {
-        background-color: #2563eb;
-        color: white;
-        transition: background-color 0.2s ease-in-out;
-    }
-    .btn-primary:hover {
-        background-color: #1d4ed8;
-    }
     .preview-box {
-        background-color: #f9fafb;
-        border: 2px dashed #d1d5db;
+        background-color: hsl(var(--bg));
+        border: 2px dashed hsl(var(--border));
         transition: border-color 0.2s ease-in-out;
     }
-    .preview-box.dragover {
-        border-color: #3b82f6;
-    }
+    .preview-box.dragover { border-color: hsl(var(--ring)); }
     .loading-spinner {
         border: 4px solid rgba(255, 255, 255, 0.3);
         border-top-color: #fff;
         border-radius: 50%;
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 1.5rem; height: 1.5rem;
         animation: spin 1s linear infinite;
     }
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    /* --- LAYOUT STYLES --- */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
     .app {
       display: grid;
       grid-template-columns: 280px 1fr;
       grid-template-rows: 72px 1fr;
-      grid-template-areas:
-        "sidebar header"
-        "sidebar main";
+      grid-template-areas: "sidebar header" "sidebar main";
       min-height: 100dvh;
-      background-color: #f1f5f9;
     }
     .header {
-      grid-area: header;
-      position: sticky; top: 0; z-index: 10;
-      background: white;
-      border-bottom: 1px solid #e2e8f0;
+      grid-area: header; position: sticky; top: 0; z-index: 10;
+      background: hsl(var(--card) / 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid hsl(var(--border));
       display: flex; align-items: center; gap: 12px; padding: 16px 20px;
     }
     .main { grid-area: main; padding: 20px; }
-    .sidebar { grid-area: sidebar; border-right: 1px solid #e2e8f0; background: #fff; padding: 20px 16px; position: sticky; top: 0; height: 100vh; }
+    .sidebar { 
+      grid-area: sidebar; 
+      border-right: 1px solid hsl(var(--border)); 
+      background: hsl(var(--secondary));
+      padding: 20px 16px; 
+      position: sticky; top: 0; height: 100vh; 
+    }
     .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
     .brand img { width: 32px; height: 32px; }
-    .brand h1 { font-size: 18px; margin: 0; font-weight: 700; }
+    .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground)); }
     nav { margin-top: 18px; display: grid; gap: 8px; }
-    .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: #64748b; }
-    .nav-link:hover { background: #f1f5f9; color: #0f172a; }
-    .nav-link.active { background: #3b82f6; color: #fff; }
+    .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); }
+    .nav-link:hover { background: hsl(var(--muted)); color: hsl(var(--fg)); }
+    .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
 
-    /* Custom styles for image previews */
+    h1, h2, .font-bold, .font-semibold, .text-gray-800 { color: hsl(var(--fg)); }
+    .text-gray-700, label { color: hsl(var(--muted-foreground)); }
+    .text-gray-600, .text-sm.text-gray-600 { color: hsl(var(--muted-foreground)); }
+    .text-gray-500 { color: hsl(var(--muted-foreground) / 0.8); }
+    .text-blue-600 { color: hsl(var(--primary)); }
+
     .image-preview-container { display: flex; flex-wrap: wrap; gap: 1rem; padding-top: 1rem; }
     .image-preview-item { position: relative; width: 100px; height: 100px; }
-    .image-preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem; border: 1px solid #e2e8f0; }
+    .image-preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem; border: 1px solid hsl(var(--border)); }
     .remove-btn { position: absolute; top: -8px; right: -8px; background-color: #ef4444; color: white; border-radius: 50%; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
     @media (max-width: 780px) {
-      .app { grid-template-columns: 1fr; grid-template-areas:
-          "header"
-          "main"; }
+      .app { grid-template-columns: 1fr; grid-template-areas: "header" "main"; }
       .sidebar { position: static; height: auto; display: none; }
     }
-    </style>
+  </style>
 </head>
 <body>
   <div class="app">
@@ -130,14 +167,14 @@ require_once 'auth_check.php';
           Support
         </a>
         <a class="nav-link" href="settings.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           Settings
         </a>
       </nav>
     </aside>
 
     <header class="header">
-      <h1 class="text-2xl font-bold text-gray-800">Upload Exam Results</h1>
+      <h1 class="text-2xl font-bold">Upload Exam Results</h1>
       <div class="flex-grow"></div>
       <div class="flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -154,8 +191,8 @@ require_once 'auth_check.php';
           <form id="uploadForm" class="space-y-8" enctype="multipart/form-data">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
-                      <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
-                      <select id="year" name="year" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
+                      <label for="year" class="block text-sm font-medium">Year</label>
+                      <select id="year" name="year" required class="mt-1 block w-full rounded-md shadow-sm form-select">
                           <option value="">Select Year</option>
                           <option value="1">1st Year</option>
                           <option value="2">2nd Year</option>
@@ -166,16 +203,16 @@ require_once 'auth_check.php';
                       </select>
                   </div>
                   <div>
-                      <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
-                      <select id="semester" name="semester" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
+                      <label for="semester" class="block text-sm font-medium">Semester</label>
+                      <select id="semester" name="semester" required class="mt-1 block w-full rounded-md shadow-sm form-select">
                           <option value="">Select Semester</option>
                           <option value="1">1st Semester</option>
                           <option value="2">2nd Semester</option>
                       </select>
                   </div>
                   <div>
-                      <label for="major" class="block text-sm font-medium text-gray-700">Major</label>
-                      <select id="major" name="major" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 form-select">
+                      <label for="major" class="block text-sm font-medium">Major</label>
+                      <select id="major" name="major" required class="mt-1 block w-full rounded-md shadow-sm form-select">
                           <option value="">Select Major</option>
                           <option value="ist">IST</option>
                           <option value="ce">CE</option>
@@ -187,11 +224,11 @@ require_once 'auth_check.php';
               </div>
 
               <div>
-                  <label class="block text-sm font-medium text-gray-700">Exam Result Images</label>
-                  <div id="preview-box" class="mt-1 flex justify-center items-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 min-h-[250px] cursor-pointer hover:border-blue-500 transition-colors duration-200">
+                  <label class="block text-sm font-medium">Exam Result Images</label>
+                  <div id="preview-box" class="mt-1 flex justify-center items-center rounded-md px-6 pt-5 pb-6 min-h-[250px] cursor-pointer">
                       <div class="space-y-1 text-center" id="upload-prompt">
                           <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                          <p class="text-sm text-gray-600">
+                          <p class="text-sm">
                               <span class="font-medium text-blue-600 cursor-pointer hover:underline">Click to upload</span> or drag and drop
                           </p>
                           <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB each</p>

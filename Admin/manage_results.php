@@ -38,42 +38,108 @@ try {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Manage Exam Results — UTYCC Admin</title>
   <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+  
+  <script>
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    (function() {
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {
+        console.error('Could not apply theme from localStorage', e);
+      }
+    })();
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-    /* --- NEW LAYOUT STYLES TO MATCH DASHBOARD --- */
+    :root {
+      --bg: 220 20% 98%; --fg: 222 47% 11%; --muted: 220 20% 94%; --muted-foreground: 215 17% 47%;
+      --primary: 220 83% 58%; --primary-foreground: 0 0% 100%;
+      --secondary: 0 0% 100%; --secondary-foreground: 222 47% 11%;
+      --card: 0 0% 100%; --card-foreground: 222 47% 11%; --border: 220 20% 91%; --ring: 220 83% 58%;
+      --radius: 0.75rem; --duration: 220ms; --ease: cubic-bezier(.2,.8,.2,1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+    html.dark {
+        --bg: 0 0% 4%; --fg: 210 40% 98%; --muted: 0 0% 12%; --muted-foreground: 215 20% 65%;
+        --primary: 217 91% 60%; --primary-foreground: 210 40% 98%;
+        --secondary: 0 0% 6%; --secondary-foreground: 210 40% 98%;
+        --card: 0 0% 8%; --card-foreground: 210 40% 98%;
+        --border: 0 0% 15%; --ring: 217 91% 60%;
+        --shadow-card: 0 10px 20px -10px hsl(0 0% 0% / 0.45);
+    }
+    body { 
+      font-family: 'Inter', sans-serif;
+      background-color: hsl(var(--bg));
+      color: hsl(var(--fg));
+      transition: background-color var(--duration) var(--ease), color var(--duration) var(--ease);
+    }
     .app {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      grid-template-rows: 72px 1fr;
-      grid-template-areas:
-        "sidebar header"
-        "sidebar main";
+      display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 72px 1fr;
+      grid-template-areas: "sidebar header" "sidebar main";
       min-height: 100dvh;
     }
     .header {
-      grid-area: header;
-      position: sticky; top: 0; z-index: 10;
-      background: white;
-      border-bottom: 1px solid #e2e8f0;
+      grid-area: header; position: sticky; top: 0; z-index: 10;
+      background: hsl(var(--card) / 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid hsl(var(--border));
       display: flex; align-items: center; gap: 12px; padding: 16px 20px;
     }
     .main { grid-area: main; padding: 20px; }
-    /* --- END NEW LAYOUT STYLES --- */
-    .sidebar { grid-area: sidebar; border-right: 1px solid #e2e8f0; background: #fff; padding: 20px 16px; position: sticky; top: 0; height: 100vh; }
+    .sidebar { 
+      grid-area: sidebar; 
+      border-right: 1px solid hsl(var(--border)); 
+      background: hsl(var(--secondary));
+      padding: 20px 16px; 
+      position: sticky; top: 0; height: 100vh;
+    }
     .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
     .brand img { width: 32px; height: 32px; }
-    .brand h1 { font-size: 18px; margin: 0; font-weight: 700; }
+    .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground)); }
     nav { margin-top: 18px; display: grid; gap: 8px; }
-    .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: #64748b; }
-    .nav-link:hover { background: #f1f5f9; color: #0f172a; }
-    .nav-link.active { background: #3b82f6; color: #fff; }
+    .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); }
+    .nav-link:hover { background: hsl(var(--muted)); color: hsl(var(--fg)); }
+    .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+    
+    .result-card, .bg-white {
+        background-color: hsl(var(--card));
+        border-color: hsl(var(--border));
+    }
+    select {
+        background-color: hsl(var(--card));
+        border-color: hsl(var(--border));
+        color: hsl(var(--fg));
+    }
+
+    h1, h2, h3, .font-bold, .font-semibold, .text-gray-800, .text-gray-900 { color: hsl(var(--fg)); }
+    .text-gray-700 { color: hsl(var(--muted-foreground)); }
+    .text-gray-600 { color: hsl(var(--muted-foreground)); }
+    .text-gray-500 { color: hsl(var(--muted-foreground) / 0.8); }
+    .text-gray-400 { color: hsl(var(--muted-foreground) / 0.7); }
+    .border-b { border-color: hsl(var(--border)); }
+
     /* Modal styles */
-    .modal-backdrop { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
+    .modal-backdrop { position: fixed; inset: 0; background-color: hsl(var(--bg) / 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 50; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
     .modal-backdrop.visible { opacity: 1; visibility: visible; }
-    .modal-content { background: white; padding: 2rem; border-radius: 0.75rem; width: 90%; max-width: 500px; transform: scale(0.95); transition: transform 0.3s; }
+    .modal-content { 
+        background: hsl(var(--card)); 
+        padding: 2rem; border-radius: var(--radius);
+        border: 1px solid hsl(var(--border));
+        width: 90%; max-width: 500px; 
+        transform: scale(0.95); transition: transform 0.3s; 
+    }
     .modal-backdrop.visible .modal-content { transform: scale(1); }
+    .modal-content label { color: hsl(var(--muted-foreground)); }
+    .modal-content select {
+        background-color: hsl(var(--bg));
+    }
+    .modal-content .bg-gray-200 { background-color: hsl(var(--muted)); color: hsl(var(--fg)); }
+    .modal-content .bg-gray-200:hover { background-color: hsl(var(--border)); }
   </style>
 </head>
 <body>
@@ -120,7 +186,7 @@ try {
     </aside>
 
   <header class="header">
-    <h1 class="text-3xl font-bold text-gray-800">Manage Exam Results</h1>
+    <h1 class="text-3xl font-bold">Manage Exam Results</h1>
     <div class="flex-grow"></div>
     <div class="flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -136,13 +202,13 @@ try {
     <div class="flex flex-col md:flex-row justify-end items-start md:items-center mb-6">
         <!-- Filters -->
         <div class="flex gap-4 mt-4 md:mt-0">
-            <select id="filter-year" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            <select id="filter-year" class="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                 <option value="all" selected>All Years</option>
                 <?php foreach ($year_map as $key => $value): ?>
                     <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                 <?php endforeach; ?>
             </select>
-            <select id="filter-major" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            <select id="filter-major" class="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                 <option value="all" selected>All Majors</option>
                 <?php foreach ($major_map as $key => $value): ?>
                     <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
@@ -161,10 +227,10 @@ try {
         <?php else: ?>
             <?php foreach ($grouped_results as $year => $majors): ?>
                 <div class="year-group" data-year="<?php echo $year; ?>">
-                    <h2 class="text-2xl font-bold text-gray-700 border-b pb-2 mb-4"><?php echo $year_map[$year] ?? 'Unknown Year'; ?></h2>
+                    <h2 class="text-2xl font-bold border-b pb-2 mb-4"><?php echo $year_map[$year] ?? 'Unknown Year'; ?></h2>
                     <?php foreach ($majors as $major => $results): ?>
                         <div class="major-group" data-major="<?php echo $major; ?>">
-                            <h3 class="text-xl font-semibold text-gray-600 mb-4"><?php echo $major_map[$major] ?? 'Unknown Major'; ?></h3>
+                            <h3 class="text-xl font-semibold mb-4"><?php echo $major_map[$major] ?? 'Unknown Major'; ?></h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
                                 <?php foreach ($results as $result): ?>
                                     <div class="result-card border rounded-lg shadow-sm overflow-hidden" id="result-card-<?php echo $result['id']; ?>" data-year="<?php echo $year; ?>" data-major="<?php echo $major; ?>">
@@ -200,19 +266,19 @@ try {
             <input type="hidden" id="edit-id" name="id">
             <div class="space-y-4">
                 <div>
-                    <label for="edit-year" class="block text-sm font-medium text-gray-700">Year</label>
+                    <label for="edit-year" class="block text-sm font-medium">Year</label>
                     <select id="edit-year" name="year" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <?php foreach ($year_map as $key => $value) echo "<option value='{$key}'>{$value}</option>"; ?>
                     </select>
                 </div>
                 <div>
-                    <label for="edit-semester" class="block text-sm font-medium text-gray-700">Semester</label>
+                    <label for="edit-semester" class="block text-sm font-medium">Semester</label>
                     <select id="edit-semester" name="semester" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                          <?php foreach ($semester_map as $key => $value) echo "<option value='{$key}'>{$value}</option>"; ?>
                     </select>
                 </div>
                 <div>
-                    <label for="edit-major" class="block text-sm font-medium text-gray-700">Major</label>
+                    <label for="edit-major" class="block text-sm font-medium">Major</label>
                     <select id="edit-major" name="major" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <?php foreach ($major_map as $key => $value) echo "<option value='{$key}'>{$value}</option>"; ?>
                     </select>
