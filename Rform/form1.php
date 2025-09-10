@@ -154,6 +154,11 @@
             $_SESSION['form1_data']['photo_url'] = ''; // Clear photo URL from session
         }
 
+        // Explicitly save the student's NRC data to the session to ensure it persists.
+        if (isset($_POST['student_nrc'])) {
+            $_SESSION['form1_data']['student_nrc'] = trim($_POST['student_nrc']);
+        }
+
 
         // --- Validate Required Fields ----
         // We validate based on the session data which now includes the latest POST and photo info
@@ -168,7 +173,8 @@
         if (empty($_POST['student_name_en'])) $validation_errors['student_name_en'] = "ကျောင်းသား/သူ၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         if (empty($_POST['student_race'])) $validation_errors['student_race'] = "ကျောင်းသား/သူ၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
         if (empty($_POST['student_religion'])) $validation_errors['student_religion'] = "ကိုးကွယ်သည့်ဘာသာထည့်သွင်းရန်လိုအပ်ပါသည်။";
-        if (empty($_POST['student_nrc'])) $validation_errors['student_nrc'] = "ကျောင်းသား/သူ၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        // Validate against the session value which is now guaranteed to be set
+        if (empty($_SESSION['form1_data']['student_nrc'])) $validation_errors['student_nrc'] = "ကျောင်းသား/သူ၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
         if (empty($_POST['student_dob'])) $validation_errors['student_dob'] = "ကျောင်းသား/သူ၏ မွေးသက္ကရာဇ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         if (empty($_POST['student_birthplace'])) $validation_errors['student_birthplace'] = "မွေးဖွားရာဇာတိထည့်သွင်းရန်လိုအပ်ပါသည်။";
         if (empty($_POST['student_phone'])) $validation_errors['student_phone'] = "ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
@@ -336,8 +342,7 @@
                 <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="relative pb-5">
                     <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
-                    <select id="academic_year" name="academic_year" class="mt-1" readonly>
-                        <option value="First Year" selected>First Year</option>
+                        <input type="text" id="academic_year" name="academic_year" class="mt-1" value="First Year" selected readonly>
                     </select>
                     <?php if (isset($errors['academic_year'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['academic_year']; ?></p><?php endif; ?>
                 </div>
@@ -351,7 +356,7 @@
                   
                     <div class="sm:col-span-2">
                         <label for="entry_year" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
-                        <input type="text" id="entry_year" placeholder="eg.2025-2026" name="entry_year" class="mt-1" value="<?php echo getValue('entry_year'); ?>">
+                        <input type="text" id="entry_year" placeholder="eg.2025-2026" name="entry_year" class="mt-1" value="<?php echo getValue('entry_year'); ?>" readonly>
                     </div>
                 </div>
                 <div id="photo-upload-area" class="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-2 h-48">
