@@ -1,37 +1,20 @@
 <?php
 require_once 'auth_check.php';
-// session_start();
-// if (!isset($_SESSION['admin_loggedin']) || $_SESSION['admin_loggedin'] !== true) {
-//     header("location: ./signin.php"); // Corrected path to signin.php in the same directory
-//     exit;
-// }
 
-
-
-/**
- * A function to safely encode data into a JSON string for use in JavaScript.
- * This prevents script-breaking errors if the data is invalid.
- *
- * @param mixed $value The data to encode.
- * @return string A valid JSON string (defaults to '[]' on error).
- */
 function safe_json_encode($value) {
     try {
-        // Encode data, throwing an exception on errors like malformed UTF-8 characters.
         $json = json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
         return $json;
     } catch (JsonException $e) {
-        // If encoding fails, log the error and return a valid empty JSON array string.
         error_log("json_encode error: " . $e->getMessage());
         return '[]';
     }
 }
 
-$students_json = '[]'; // Default to a valid empty JSON array as a string.
-$pdo = null; // Initialize pdo to null
+$students_json = '[]';
+$pdo = null;
 
 try {
-    // --- CODE QUALITY FIX: The file path for the database connection has been made more robust. ---
     $db_path = __DIR__ . '/../Rform/db.php';
     if (!file_exists($db_path)) {
         throw new Exception("Database configuration file not found at: {$db_path}");
@@ -42,7 +25,6 @@ try {
         throw new Exception("PDO connection object was not created in db.php.");
     }
 
-    // Set the default timezone to ensure date comparisons are accurate.
     date_default_timezone_set('Asia/Yangon');
 
     $students = [];
@@ -59,19 +41,16 @@ try {
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($results as $row) {
-        // Ensure numeric and boolean types are correctly cast for JSON
         $row['student_id'] = (int)$row['student_id'];
         $row['dormitory_preference'] = (bool)$row['dormitory_preference'];
         if (!empty($row['father_deceased_year'])) $row['father_deceased_year'] = (int)$row['father_deceased_year'];
         if (!empty($row['mother_deceased_year'])) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
         
-        // Decode the JSON preferences string into an array
         $row['preferences'] = !empty($row['preferences']) ? json_decode($row['preferences'], true) : null;
 
         $students[] = $row;
     }
 
-    // Safely encode the final array into a JSON string.
     $students_json = safe_json_encode($students);
 
 } catch (PDOException $e) {
@@ -83,7 +62,6 @@ try {
     $students_json = '[]';
 }
 
-// Close the connection by setting the PDO object to null
 $pdo = null;
 ?>
 <!DOCTYPE html>
@@ -95,7 +73,6 @@ $pdo = null;
   <meta name="description" content="Admin dashboard for the UTYCC student registration system." />
   <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
-  <!-- Theme Loader Script: Prevents a flash of incorrect theme on page load -->
   <script>
     (function() {
       try {
@@ -109,136 +86,65 @@ $pdo = null;
     })();
   </script>
 
-  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   
 
   <style>
-    /* --- UI FIX: Refined color palette and added more variables for a polished look. --- */
     :root {
-      /* Light Theme (Default) */
-      --bg: 220 20% 98%;
-      --fg: 222 47% 11%;
-      --muted: 220 20% 94%;
-      --muted-foreground: 215 17% 47%;
-      
-      --primary: 220 83% 58%;
-      --primary-foreground: 0 0% 100%;
-      
-      --secondary: 0 0% 100%;
-      --secondary-foreground: 222 47% 11%;
-      
-      --card: 0 0% 100%;
-      --card-foreground: 222 47% 11%;
-      --border: 220 20% 91%;
-      --ring: 220 83% 58%;
-      --success: 153 61% 34%;
-      --warning: 43 96% 56%;
-      --danger: 0 84% 60%;
-      --radius: 12px;
-
-      /* Motion */
-      --ease: cubic-bezier(.2,.8,.2,1);
-      --duration: 220ms;
-
-      /* Shadows */
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      --shadow-inset: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+      --bg: 220 20% 98%; --fg: 222 47% 11%; --muted: 220 20% 94%; --muted-foreground: 215 17% 47%;
+      --primary: 220 83% 58%; --primary-foreground: 0 0% 100%;
+      --secondary: 0 0% 100%; --secondary-foreground: 222 47% 11%;
+      --card: 0 0% 100%; --card-foreground: 222 47% 11%; --border: 220 20% 91%; --ring: 220 83% 58%;
+      --success: 153 61% 34%; --warning: 43 96% 56%; --danger: 0 84% 60%; --radius: 12px;
+      --ease: cubic-bezier(.2,.8,.2,1); --duration: 220ms;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); --shadow-inset: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
     }
-
     html.dark {
-        /* Dark Theme */
-        --bg: 222 47% 11%;
-        --fg: 210 40% 98%;
-        --muted: 217 33% 17%;
-        --muted-foreground: 215 20% 65%;
-        --primary: 217 91% 60%;
-        --primary-foreground: 210 40% 98%;
-        --secondary: 222 47% 13%;
-        --secondary-foreground: 210 40% 98%;
-        --card: 222 47% 15%;
-        --card-foreground: 210 40% 98%;
-        --border: 217 33% 22%;
-        --ring: 217 91% 60%;
+        --bg: 222 47% 11%; --fg: 210 40% 98%; --muted: 217 33% 17%; --muted-foreground: 215 20% 65%;
+        --primary: 217 91% 60%; --primary-foreground: 210 40% 98%; --secondary: 222 47% 13%; --secondary-foreground: 210 40% 98%;
+        --card: 222 47% 15%; --card-foreground: 210 40% 98%; --border: 217 33% 22%; --ring: 217 91% 60%;
         --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
         --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
     }
-
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-      margin: 0;
-      color: hsl(var(--fg));
-      background: hsl(var(--bg));
+      margin: 0; color: hsl(var(--fg)); background: hsl(var(--bg));
       font: 500 16px/1.4 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
       transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
     }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; }
-
-    /* Layout */
-    .app {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      grid-template-rows: 72px 1fr;
-      grid-template-areas:
-        "sidebar header"
-        "sidebar main";
-      min-height: 100dvh;
-    }
-    .sidebar {
-      grid-area: sidebar;
-      border-right: 1px solid hsl(var(--border));
-      background: hsl(var(--secondary));
-      padding: 20px 16px;
-      position: sticky; top: 0; height: 100dvh;
-    }
-    .brand {
-      display: flex; align-items: center; gap: 12px; padding: 8px 10px;
-    }
-    .brand img {
-      width: 32px;
-      height: 32px;
-    }
+    .app { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 72px 1fr; grid-template-areas: "sidebar header" "sidebar main"; min-height: 100dvh; }
+    .sidebar { grid-area: sidebar; border-right: 1px solid hsl(var(--border)); background: hsl(var(--secondary)); padding: 20px 16px; position: sticky; top: 0; height: 100dvh; }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
+    .brand img { width: 32px; height: 32px; }
     .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground)); }
     nav { margin-top: 18px; display: grid; gap: 8px; }
     .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: hsl(var(--muted-foreground)); border: 1px solid transparent; transition: all var(--duration) var(--ease); }
     .nav-link:hover { background: hsl(var(--muted)); color: hsl(var(--fg)); }
     .nav-link.active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: var(--shadow-md); font-weight: 600; }
-    /* --- UI FIX: Added SVG icon support --- */
     .nav-link svg { width: 20px; height: 20px; }
-
     .header {
-      grid-area: header;
-      position: sticky; top: 0; z-index: 10;
-      background: hsl(var(--card) / 0.8);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid hsl(var(--border));
-      display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+      grid-area: header; position: sticky; top: 0; z-index: 10;
+      background: hsl(var(--card) / 0.8); backdrop-filter: blur(8px);
+      border-bottom: 1px solid hsl(var(--border)); display: flex; align-items: center; gap: 12px; padding: 16px 20px;
     }
-    .search {
-      flex: 1; display: flex; gap: 8px; align-items: center; background: hsl(var(--bg)); border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px;
-    }
-    .search input { width: 100%; border: none; outline: none; background: transparent; color: hsl(var(--fg)); }
-
-    .userbar { display: flex; gap: 8px; align-items: center; }
+    .header h1 { margin-right: auto; }
+    .user-info { display: flex; align-items: center; gap: 0.75rem; border-left: 1px solid hsl(var(--border)); padding-left: 1rem; margin-left: 1rem;}
+    .user-info svg { width: 1.25rem; height: 1.25rem; color: hsl(var(--muted-foreground));}
+    .user-info span { font-weight: 600; color: hsl(var(--fg));}
 
     .btn {
       --bcol: var(--border);
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px; /* --- UI FIX: Reduced gap for icons --- */
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px; 
       padding: 10px 14px; border-radius: 12px; border: 1px solid hsl(var(--bcol));
-      background: hsl(var(--card)); color: hsl(var(--fg));
-      box-shadow: var(--shadow-md);
-      transition: all var(--duration) var(--ease);
-      cursor: pointer;
-      font-weight: 600; /* --- UI FIX: Bolder buttons --- */
+      background: hsl(var(--card)); color: hsl(var(--fg)); box-shadow: var(--shadow-md);
+      transition: all var(--duration) var(--ease); cursor: pointer; font-weight: 600; 
     }
     .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
     .btn:active { transform: translateY(-1px) scale(0.98); box-shadow: var(--shadow-md); }
@@ -248,23 +154,17 @@ $pdo = null;
     .btn.destructive { background: hsl(var(--danger)); color: hsl(0 0% 100%); border-color: hsl(var(--danger)); }
     .btn.ghost { background: transparent; box-shadow: none; border-color: hsl(var(--border)); }
     .btn.ghost:hover { background: hsl(var(--muted)); box-shadow: none; }
-    /* --- UI FIX: Styles for smaller icon buttons in the table --- */
     .btn.icon-btn { padding: 8px; box-shadow: var(--shadow-sm); }
     .btn.icon-btn svg { width: 16px; height: 16px; }
-
     .main { grid-area: main; padding: 20px; background: hsl(var(--bg));}
-
     .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
     .card { background: hsl(var(--card)); color: hsl(var(--card-foreground)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-md); transition: all var(--duration) var(--ease); }
     .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
     .card h3 { margin: 0 0 6px; font-size: 14px; color: hsl(var(--muted-foreground)); font-weight: 600; }
     .card .value { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
-
     .section { margin-top: 24px; }
     .section-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
     .section-header h2 { font-size: 20px; margin: 0; font-weight: 700; }
-
-    /* Table --- UI FIX: Enhanced table styles for better readability and aesthetics. --- */
     .table-wrap { overflow: auto; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); box-shadow: var(--shadow-md); }
     table { width: 100%; border-collapse: collapse; min-width: 900px; }
     thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: hsl(var(--muted-foreground)); background: hsl(var(--bg)); position: sticky; top: 0; z-index: 1; }
@@ -272,59 +172,23 @@ $pdo = null;
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:nth-child(even) { background-color: hsl(var(--bg)); }
     tbody tr:hover { background: hsl(var(--muted)); }
-
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; width: 100%;}
     .toolbar .spacer { flex: 1; }
-
-    /* Toast Notifications */
-    .toast-wrap {
-      position: fixed;
-      bottom: 20px; /* --- UI FIX: Moved to bottom right --- */
-      right: 20px;
-      top: auto;
-      width: min(380px, 92vw);
-      display: grid;
-      gap: 12px;
-      z-index: 9999;
-      pointer-events: none;
-    }
-    .toast {
-      pointer-events: auto;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      border-radius: 10px;
-      color: hsl(var(--fg));
-      background: hsl(var(--card));
-      box-shadow: var(--shadow-lg);
-      border-left: 4px solid hsl(var(--primary));
-      animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards;
-    }
+    .toast-wrap { position: fixed; bottom: 20px; right: 20px; top: auto; width: min(380px, 92vw); display: grid; gap: 12px; z-index: 9999; pointer-events: none; }
+    .toast { pointer-events: auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--fg)); background: hsl(var(--card)); box-shadow: var(--shadow-lg); border-left: 4px solid hsl(var(--primary)); animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards; }
     .toast.success { border-left-color: hsl(var(--success)); }
     .toast.warning { border-left-color: hsl(var(--warning)); }
     .toast.error { border-left-color: hsl(var(--danger)); }
     .toast .close-btn { background: transparent; border: 0; color: hsl(var(--muted-foreground)); opacity: 0.7; cursor: pointer; font-size: 20px; }
     .toast .close-btn:hover { opacity: 1; }
-
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateY(100%); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes toastOut {
-      from { opacity: 1; transform: translateY(0); }
-      to { opacity: 0; transform: translateY(100%); }
-    }
-
-    /* Modal --- UI FIX: Enhanced modal styles --- */
+    @keyframes toastIn { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(100%); } }
     dialog { border: none; border-radius: 16px; padding: 0; background: hsl(var(--card)); color: hsl(var(--card-foreground)); width: min(860px, 94vw); box-shadow: var(--shadow-lg); }
     dialog::backdrop { background: hsl(222 47% 11% / 0.45); backdrop-filter: blur(4px); }
     .modal-header { padding: 16px 24px; border-bottom: 1px solid hsl(var(--border)); display: flex; justify-content: space-between; align-items: center; }
     .modal-header strong { font-size: 1.1rem; font-weight: 700; }
     .modal-body { padding: 24px; display: grid; gap: 16px; max-height: 70vh; overflow-y: auto; }
     .modal-footer { padding: 14px 24px; border-top: 1px solid hsl(var(--border)); display: flex; justify-content: flex-end; gap: 8px; }
-
     .field { display: grid; gap: 6px; }
     .field label { font-size: 13px; color: hsl(var(--muted-foreground)); font-weight: 600; }
     .field input, .field select, .field textarea { padding: 10px 12px; border-radius: 10px; border: 1px solid hsl(var(--border)); background: hsl(var(--bg)); color: hsl(var(--fg)); outline: none; font: inherit; transition: all var(--duration) var(--ease); }
@@ -333,64 +197,22 @@ $pdo = null;
     .field textarea { min-height: 60px; resize: vertical; }
     .field-checkbox { display: flex; align-items: center; gap: 8px; }
     .field-checkbox label { margin: 0; }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px 18px;
-    }
-
-    .details-grid {
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 16px;
-      font-size: 15px;
-    }
-    .details-grid dt {
-      font-weight: 600;
-      color: hsl(var(--muted-foreground));
-    }
-    .details-grid dd {
-      margin: 0;
-      word-break: break-all;
-    }
-    
-    .detail-section-header {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: hsl(var(--fg));
-      margin-top: 20px;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid hsl(var(--border));
-      grid-column: 1 / -1; /* Span across grid columns */
-    }
-    .detail-section-header:first-of-type {
-      margin-top: 0;
-    }
-    
-    .detail-parent-section h4 {
-        font-weight: 600;
-        margin-top: 16px;
-        margin-bottom: 8px;
-        color: hsl(var(--primary));
-    }
-
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+    .details-grid { display: grid; grid-template-columns: 140px 1fr; gap: 16px; font-size: 15px; }
+    .details-grid dt { font-weight: 600; color: hsl(var(--muted-foreground)); }
+    .details-grid dd { margin: 0; word-break: break-all; }
+    .detail-section-header { font-size: 1.1rem; font-weight: 700; color: hsl(var(--fg)); margin-top: 20px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid hsl(var(--border)); grid-column: 1 / -1; }
+    .detail-section-header:first-of-type { margin-top: 0; }
+    .detail-parent-section h4 { font-weight: 600; margin-top: 16px; margin-bottom: 8px; color: hsl(var(--primary)); }
+    .documents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+    .doc-item a { display: block; border: 1px solid hsl(var(--border)); border-radius: 8px; overflow: hidden; text-decoration: none; color: hsl(var(--fg)); transition: all .2s ease; }
+    .doc-item a:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .doc-item img { width: 100%; height: 120px; object-fit: cover; background-color: hsl(var(--muted)); }
+    .doc-item p { font-size: 13px; padding: 8px; text-align: center; font-weight: 500; }
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
-
-    /* Responsive */
-    @media (max-width: 1000px) {
-      .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .form-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 780px) {
-      .app { grid-template-columns: 1fr; grid-template-areas:
-          "header"
-          "main"; }
-      .sidebar { position: static; height: auto; display: none; /* --- UI FIX: Sidebar will be hidden on mobile, can be toggled with JS if needed. --- */ }
-      .cards { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 1000px) { .cards { grid-template-columns: repeat(2, minmax(0,1fr)); } .form-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 780px) { .app { grid-template-columns: 1fr; grid-template-areas: "header" "main"; } .sidebar { display: none; } .cards { grid-template-columns: 1fr; } }
   </style>
 
 </head>
@@ -438,14 +260,11 @@ $pdo = null;
       </nav>
     </aside>
 
-<header class="header" id="header">
+    <header class="header" id="header">
         <h1>Dashboard</h1>
-        <div style="flex-grow: 1;"></div>
-        <div class="user-info" style="display: flex; align-items: center; gap: 0.75rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.25rem; height: 1.25rem; color: hsl(var(--muted-foreground));"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span style="font-weight: 600; color: hsl(var(--fg));">
-                <?php echo htmlspecialchars($_SESSION['admin_user'] ?? 'Admin'); ?>
-            </span>
+        <div class="user-info">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span><?php echo htmlspecialchars($_SESSION['admin_user'] ?? 'Admin'); ?></span>
         </div>
     </header>
 
@@ -513,7 +332,6 @@ $pdo = null;
     </main>
   </div>
   
-  <!-- Modal: Add/Edit Student -->
   <dialog id="studentModal" aria-modal="true">
     <form method="dialog" id="studentForm">
       <div class="modal-header">
@@ -709,7 +527,6 @@ $pdo = null;
     </form>
   </dialog>
 
-  <!-- Modal: View Student Details -->
   <dialog id="detailsModal" aria-modal="true">
     <div class="modal-header">
       <strong>Student Details</strong>
@@ -718,14 +535,12 @@ $pdo = null;
       </button>
     </div>
     <div class="modal-body" id="detailsModalBody">
-      <!-- Details will be populated here -->
     </div>
     <div class="modal-footer">
       <button class="btn primary" type="button" id="okDetailsModal">OK</button>
     </div>
   </dialog>
   
-  <!-- Modal: Confirmation -->
   <dialog id="confirmModal" aria-modal="true">
     <div class="modal-header">
         <strong id="confirmTitle">Confirm Action</strong>
@@ -762,10 +577,10 @@ $pdo = null;
       selected: new Set(),
     };
     
-    function getSafePhotoUrl(path) {
-        if (!path) return PHOTO_PLACEHOLDER;
+    function getSafeUrl(path) {
+        if (!path) return `https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+Image`;
         const uploadsIndex = path.indexOf('uploads/');
-        if (uploadsIndex !== -1) return `/${path.substring(uploadsIndex)}`;
+        if (uploadsIndex !== -1) return `../Rform/${path}`;
         return path;
     }
 
@@ -792,19 +607,9 @@ $pdo = null;
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action, ...data }),
             });
-
             const responseText = await response.text(); 
-
-            if (!response.ok) {
-                throw new Error(responseText || `HTTP error ${response.status}`);
-            }
-            
-            try {
-                return JSON.parse(responseText);
-            } catch (e) {
-                throw new Error(`Invalid JSON response from server: ${responseText}`);
-            }
-
+            if (!response.ok) throw new Error(responseText || `HTTP error ${response.status}`);
+            try { return JSON.parse(responseText); } catch (e) { throw new Error(`Invalid JSON response from server: ${responseText}`); }
         } catch (error) {
             console.error('API Request Failed:', error.message);
             showToast(error.message, 'error', 8000);
@@ -824,9 +629,7 @@ $pdo = null;
     }
     
     const formElements = {};
-    document.querySelectorAll('#studentForm [name]').forEach(el => {
-        formElements[el.name] = el;
-    });
+    document.querySelectorAll('#studentForm [name]').forEach(el => { formElements[el.name] = el; });
 
     function showConfirm(title, message, confirmClass = 'destructive') {
       return new Promise(resolve => {
@@ -839,29 +642,9 @@ $pdo = null;
         confirmBtn.className = `btn ${confirmClass}`;
         
         let resolved = false;
-
-        const handleConfirm = () => {
-            if (resolved) return;
-            resolved = true;
-            confirmModal.close();
-            cleanup();
-            resolve(true);
-        };
-
-        const handleCancel = () => {
-            if (resolved) return;
-            resolved = true;
-            confirmModal.close();
-            cleanup();
-            resolve(false);
-        };
-        
-        const handleClose = () => {
-            if (resolved) return;
-            resolved = true;
-            cleanup();
-            resolve(false);
-        };
+        const handleConfirm = () => { if (resolved) return; resolved = true; confirmModal.close(); cleanup(); resolve(true); };
+        const handleCancel = () => { if (resolved) return; resolved = true; confirmModal.close(); cleanup(); resolve(false); };
+        const handleClose = () => { if (resolved) return; resolved = true; cleanup(); resolve(false); };
         
         const cleanup = () => {
             newConfirmBtn.removeEventListener('click', handleConfirm);
@@ -872,16 +655,12 @@ $pdo = null;
         const newConfirmBtn = confirmBtn.cloneNode(true);
         confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
         newConfirmBtn.addEventListener('click', handleConfirm, { once: true });
-
         const newCancelBtn = cancelBtn.cloneNode(true);
         cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
         newCancelBtn.addEventListener('click', handleCancel, { once: true });
-        
         confirmModal.addEventListener('close', handleClose, { once: true });
         
-        if (!confirmModal.open) {
-            confirmModal.showModal();
-        }
+        if (!confirmModal.open) { confirmModal.showModal(); }
       });
     }
     
@@ -898,38 +677,25 @@ $pdo = null;
           for (const key in formElements) {
               const element = formElements[key];
               if (student.hasOwnProperty(key) && element) {
-                  if (element.type === 'checkbox') {
-                      element.checked = !!student[key];
-                  } else if (element.type !== 'file' && !element.name.startsWith('preference')) {
-                      element.value = student[key] || '';
-                  }
+                  if (element.type === 'checkbox') { element.checked = !!student[key]; } 
+                  else if (element.type !== 'file' && !element.name.startsWith('preference')) { element.value = student[key] || ''; }
               }
           }
-          document.getElementById('photo_preview').src = getSafePhotoUrl(student.photo_url);
+          document.getElementById('photo_preview').src = getSafeUrl(student.photo_url);
 
           for (let i = 1; i <= 5; i++) {
               const selectEl = document.getElementById(`preference${i}`);
               selectEl.innerHTML = ''; 
-
               let placeholder = document.createElement('option');
-              placeholder.value = "";
-              placeholder.text = "Select a major";
-              placeholder.disabled = true;
+              placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
               selectEl.add(placeholder);
-
               for (const code in availableMajors) {
                   let option = document.createElement('option');
-                  option.value = code;
-                  option.text = availableMajors[code];
+                  option.value = code; option.text = availableMajors[code];
                   selectEl.add(option);
               }
-
               const prefValue = student.preferences ? student.preferences[i] : null;
-              if (prefValue) {
-                  selectEl.value = prefValue;
-              } else {
-                  selectEl.selectedIndex = 0; 
-              }
+              if (prefValue) { selectEl.value = prefValue; } else { selectEl.selectedIndex = 0; }
           }
       } 
       modal.showModal();
@@ -941,7 +707,7 @@ $pdo = null;
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
-        const photoUrl = getSafePhotoUrl(s.photo_url);
+        const photoUrl = getSafeUrl(s.photo_url);
 
         let preferencesHtml = '';
         if (s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0) {
@@ -955,32 +721,51 @@ $pdo = null;
             preferencesHtml += `</dl>`;
         }
         
+        const documents = [
+            { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' },
+            { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
+            { label: 'အောင်လက်မှတ်', key: 'doc_certificate' },
+            { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
+            { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' },
+            { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
+            { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' },
+            { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
+            { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' },
+            { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
+            { label: 'အမေ NRC (နောက်)', key: 'doc_mother_nrc_back' },
+        ];
+
+        let documentsHtml = '<h3 class="detail-section-header">Required Documents</h3><div class="documents-grid">';
+        documents.forEach(doc => {
+            const docPath = s[doc.key];
+            documentsHtml += `
+                <div class="doc-item">
+                    <a href="${getSafeUrl(docPath)}" target="_blank">
+                        <img src="${getSafeUrl(docPath)}" alt="${doc.label}" loading="lazy">
+                        <p>${doc.label}</p>
+                    </a>
+                </div>`;
+        });
+        documentsHtml += '</div>';
+
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
                  <img src="${photoUrl}" alt="Student Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border));">
             </div>
             <h3 class="detail-section-header">Student Information</h3>
             <dl class="details-grid">
-                <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd>
-                <dt>Name (EN)</dt><dd>${s.student_name_en || 'N/A'}</dd>
-                <dt>Name (MM)</dt><dd>${s.student_name_mm || 'N/A'}</dd>
-                <dt>Email</dt><dd>${s.student_email || 'N/A'}</dd>
-                <dt>Phone</dt><dd>${s.student_phone || 'N/A'}</dd>
-                <dt>NRC</dt><dd>${s.student_nrc || 'N/A'}</dd>
-                <dt>Date of Birth</dt><dd>${formatDate(s.student_dob)}</dd>
-                <dt>Birthplace</dt><dd>${s.student_birthplace || 'N/A'}</dd>
-                <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd>
-                <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
-                <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd>
-                <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
-                <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd>
-                <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
+                <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${s.student_name_en || 'N/A'}</dd>
+                <dt>Name (MM)</dt><dd>${s.student_name_mm || 'N/A'}</dd> <dt>Email</dt><dd>${s.student_email || 'N/A'}</dd>
+                <dt>Phone</dt><dd>${s.student_phone || 'N/A'}</dd> <dt>NRC</dt><dd>${s.student_nrc || 'N/A'}</dd>
+                <dt>Date of Birth</dt><dd>${formatDate(s.student_dob)}</dd> <dt>Birthplace</dt><dd>${s.student_birthplace || 'N/A'}</dd>
+                <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd> <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
+                <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd> <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
+                <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd> <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
                 <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
-                <dt>Year</dt><dd>${s.year || 'N/A'}</dd>
-                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
+                <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
                 <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
             </dl>
             ${preferencesHtml}
@@ -989,30 +774,23 @@ $pdo = null;
                 <h4>Father's Details</h4>
                 <dl class="details-grid">
                     <dt>Status</dt><dd>${s.father_deceased_year ? `Deceased (${s.father_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd>
-                    <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd>
-                    <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd>
-                    <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd>
-                    <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
                 </dl>
             </div>
             <div class="detail-parent-section">
                 <h4>Mother's Details</h4>
                 <dl class="details-grid">
                     <dt>Status</dt><dd>${s.mother_deceased_year ? `Deceased (${s.mother_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd>
-                    <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd>
-                    <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd>
-                    <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd>
-                    <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
                 </dl>
-            </div>`;
+            </div>
+            ${documentsHtml}`;
         detailsModal.showModal();
     }
 

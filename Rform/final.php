@@ -6,8 +6,12 @@ require_once "db.php";
 
 $modal_data = null; 
 
+// This variable will be used to disable the submit button if documents are missing.
+$all_documents_uploaded = isset($_SESSION['document_files']) && count($_SESSION['document_files']) === 11;
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_SESSION['form1_data']) || !isset($_SESSION['option_data'])) {
+    if (!isset($_SESSION['form1_data']) || !isset($_SESSION['option_data']) || !isset($_SESSION['document_files'])) {
         $modal_data = [
             'type' => 'error',
             'title' => 'Session Expired',
@@ -15,28 +19,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'buttonText' => 'Start Over',
             'redirectUrl' => isset($_SESSION['student_id']) ? 'verify_student.php' : 'form1.php?new=1'
         ];
+    } elseif (!$all_documents_uploaded) {
+        // Double-check on the server side
+        $modal_data = [
+            'type' => 'error',
+            'title' => 'Missing Documents',
+            'message' => 'Please upload all 11 required documents before submitting.',
+            'buttonText' => 'Go Back to Upload',
+            'redirectUrl' => 'documents.php'
+        ];
     } else {
         try {
             $pdo->beginTransaction();
 
             $form1 = $_SESSION['form1_data'];
             $option = $_SESSION['option_data'];
+            $documents = $_SESSION['document_files'];
 
-            // Check if it is a new student (from form1.php) or an old student (from verify_student.php)
             $is_old_student = isset($_SESSION['student_id']);
 
             if ($is_old_student) {
                 // --- LOGIC FOR OLD STUDENT (UPDATE existing record) ---
                 $student_id = $_SESSION['student_id'];
 
-                // For old students, update academic_year, seat_no and reset status.
                 $stmt_update = $pdo->prepare("
                     UPDATE students 
                     SET 
                         academic_year = :academic_year,
                         seat_no = :seat_no,
-                        status = 'pending', -- Reset status to pending for re-approval
-                        date = :submission_date
+                        status = 'pending',
+                        date = :submission_date,
+                        doc_recommendation = :doc_recommendation,
+                        doc_medical = :doc_medical,
+                        doc_certificate = :doc_certificate,
+                        doc_grades = :doc_grades,
+                        doc_household = :doc_household,
+                        doc_student_nrc_front = :doc_student_nrc_front,
+                        doc_student_nrc_back = :doc_student_nrc_back,
+                        doc_father_nrc_front = :doc_father_nrc_front,
+                        doc_father_nrc_back = :doc_father_nrc_back,
+                        doc_mother_nrc_front = :doc_mother_nrc_front,
+                        doc_mother_nrc_back = :doc_mother_nrc_back
                     WHERE student_id = :student_id
                 ");
 
@@ -44,7 +67,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':academic_year' => $form1['academic_year'] ?? null,
                     ':seat_no' => $form1['seat_no'] ?? null,
                     ':submission_date' => date('Y-m-d H:i:s'),
-                    ':student_id' => $student_id
+                    ':student_id' => $student_id,
+                    ':doc_recommendation' => $documents['doc_recommendation'] ?? null,
+                    ':doc_medical' => $documents['doc_medical'] ?? null,
+                    ':doc_certificate' => $documents['doc_certificate'] ?? null,
+                    ':doc_grades' => $documents['doc_grades'] ?? null,
+                    ':doc_household' => $documents['doc_household'] ?? null,
+                    ':doc_student_nrc_front' => $documents['doc_student_nrc_front'] ?? null,
+                    ':doc_student_nrc_back' => $documents['doc_student_nrc_back'] ?? null,
+                    ':doc_father_nrc_front' => $documents['doc_father_nrc_front'] ?? null,
+                    ':doc_father_nrc_back' => $documents['doc_father_nrc_back'] ?? null,
+                    ':doc_mother_nrc_front' => $documents['doc_mother_nrc_front'] ?? null,
+                    ':doc_mother_nrc_back' => $documents['doc_mother_nrc_back'] ?? null
                 ]);
 
             } else {
@@ -60,22 +94,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } catch (Exception $e) { /* Keep current datetime */ }
                 }
 
+                // Check for duplicate NRC only if it's not empty and not 'လျှောက်ထားဆဲ'
+                if (isset($form1['student_nrc']) && !empty(trim($form1['student_nrc'])) && $form1['student_nrc'] !== 'လျှောက်ထားဆဲ') {
+                    $stmt_check_nrc = $pdo->prepare("SELECT COUNT(*) FROM students WHERE student_nrc = ?");
+                    $stmt_check_nrc->execute([$form1['student_nrc']]);
+                    if ($stmt_check_nrc->fetchColumn() > 0) {
+                        throw new PDOException("This NRC number has already been registered.", 23000);
+                    }
+                }
+                
+                $stmt_check_seat = $pdo->prepare("SELECT COUNT(*) FROM students WHERE seat_no = ?");
+                $stmt_check_seat->execute([$form1['seat_no']]);
+                if ($stmt_check_seat->fetchColumn() > 0) {
+                    throw new PDOException("This Seat Number has already been registered.", 23000);
+                }
+
+                // Prepare NRC values: convert 'လျှောက်ထားဆဲ' or empty strings to NULL for DB insertion
+                $student_nrc_db = (isset($form1['student_nrc']) && ($form1['student_nrc'] === 'လျှောက်ထားဆဲ' || trim($form1['student_nrc']) === '')) ? null : ($form1['student_nrc'] ?? null);
+                $father_nrc_db = (isset($form1['father_nrc']) && ($form1['father_nrc'] === 'လျှောက်ထားဆဲ' || trim($form1['father_nrc']) === '')) ? null : ($form1['father_nrc'] ?? null);
+                $mother_nrc_db = (isset($form1['mother_nrc']) && ($form1['mother_nrc'] === 'လျှောက်ထားဆဲ' || trim($form1['mother_nrc']) === '')) ? null : ($form1['mother_nrc'] ?? null);
+
+
                 $stmt_student = $pdo->prepare("
                     INSERT INTO students
                     (year, academic_year, seat_no, entry_year, student_email, dormitory_preference, preferences,
                      student_name_mm, student_name_en, student_race, student_religion, student_nrc,
                      student_dob, student_birthplace, state_region, township, student_phone, student_address,
-                     date, photo_url, status)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+                     date, photo_url, status,
+                     doc_recommendation, doc_medical, doc_certificate, doc_grades, doc_household,
+                     doc_student_nrc_front, doc_student_nrc_back, doc_father_nrc_front, doc_father_nrc_back,
+                     doc_mother_nrc_front, doc_mother_nrc_back)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ");
                 $stmt_student->execute([
                     $form1['year'] ?? null, $form1['academic_year'] ?? null, $form1['seat_no'] ?? null,
                     $form1['entry_year'] ?? null, $form1['student_email'] ?? null, $option['dormitory_preference'] ?? null,
                     $preferences_json, $form1['student_name_mm'] ?? null, $form1['student_name_en'] ?? null,
-                    $form1['student_race'] ?? null, $form1['student_religion'] ?? null, $form1['student_nrc'] ?? null,
+                    $form1['student_race'] ?? null, $form1['student_religion'] ?? null, $student_nrc_db,
                     $form1['student_dob'] ?? null, $form1['student_birthplace'] ?? null, $form1['state_region'] ?? null,
                     $form1['township'] ?? null, $form1['student_phone'] ?? null, $form1['student_address'] ?? null,
-                    $submission_date, $form1['photo_url'] ?? null
+                    $submission_date, $form1['photo_url'] ?? null,
+                    $documents['doc_recommendation'] ?? null,
+                    $documents['doc_medical'] ?? null,
+                    $documents['doc_certificate'] ?? null,
+                    $documents['doc_grades'] ?? null,
+                    $documents['doc_household'] ?? null,
+                    $documents['doc_student_nrc_front'] ?? null,
+                    $documents['doc_student_nrc_back'] ?? null,
+                    $documents['doc_father_nrc_front'] ?? null,
+                    $documents['doc_father_nrc_back'] ?? null,
+                    $documents['doc_mother_nrc_front'] ?? null,
+                    $documents['doc_mother_nrc_back'] ?? null
                 ]);
                 $student_id = $pdo->lastInsertId();
 
@@ -87,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ");
                 $stmt_father->execute([
                     $student_id, $form1['father_name_mm'] ?? null, $form1['father_name_en'] ?? null,
-                    $form1['father_race'] ?? null, $form1['father_religion'] ?? null, $form1['father_nrc'] ?? null,
+                    $form1['father_race'] ?? null, $form1['father_religion'] ?? null, $father_nrc_db,
                     $form1['father_phone'] ?? null, $form1['father_info'] ?? null,
                     $form1['father_deceased_year'] ?? null, $form1['father_address'] ?? null
                 ]);
@@ -100,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ");
                 $stmt_mother->execute([
                     $student_id, $form1['mother_name_mm'] ?? null, $form1['mother_name_en'] ?? null,
-                    $form1['mother_race'] ?? null, $form1['mother_religion'] ?? null, $form1['mother_nrc'] ?? null,
+                    $form1['mother_race'] ?? null, $form1['mother_religion'] ?? null, $mother_nrc_db,
                     $form1['mother_phone'] ?? null, $form1['mother_info'] ?? null,
                     $form1['mother_deceased_year'] ?? null, $form1['mother_address'] ?? null
                 ]);
@@ -116,13 +185,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'type' => 'success', 'title' => 'Success', 'message' => $success_message,
                 'buttonText' => 'Go to Homepage', 'redirectUrl' => '../index.php'
             ];
-
         } catch (PDOException $e) {
             $pdo->rollBack();
             error_log("Database submission error: " . $e->getMessage());
             
             $error_message_user = "Could not save data due to a system error. Please try again later.";
-            // Check for duplicate entry error (SQLSTATE 23000)
             if ($e->getCode() == '23000') {
                  if (strpos(strtolower($e->getMessage()), 'seat_no') !== false) { 
                      $error_message_user = "This Seat Number has already been registered."; 
@@ -153,6 +220,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
         .modal-overlay { transition: opacity 0.3s ease; }
         .modal-content { transition: all 0.3s ease; }
+        .disabled-button {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .disabled-button:hover {
+            background-color: #9ca3af;
+        }
     </style>
 </head>
 <body class="p-4 bg-gray-50 flex flex-col items-center justify-center min-h-screen">
@@ -164,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p class="text-gray-500">Please review your details carefully.</p>
     </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         <a href="<?php echo isset($_SESSION['student_id']) ? 'cur_form.php' : 'form1.php'; ?>" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
             <span class="text-3xl mb-2"><?php echo isset($_SESSION['form1_data']) ? '✔️' : '❌'; ?></span>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 1</p>
@@ -190,13 +264,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p class="text-xs font-medium text-gray-400 mb-1">Step 3</p>
             <p class="font-semibold text-lg text-gray-700 text-center">Accommodation</p>
         </a>
+
+        <a href="documents.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+            <span class="text-3xl mb-2"><?php echo $all_documents_uploaded ? '✔️' : '❌'; ?></span>
+            <p class="text-xs font-medium text-gray-400 mb-1">Step 4</p>
+            <p class="font-semibold text-lg text-gray-700 text-center">Required Documents</p>
+        </a>
     </div>
 
     <!-- Review Details Section -->
     <div class="border-t border-gray-200 pt-8 mt-8 space-y-6">
         <h3 class="text-2xl font-bold text-gray-800 text-center">Your Details</h3>
         
-        <!-- Personal Info -->
         <div class="bg-gray-50 p-4 sm:p-6 rounded-xl border">
             <div class="flex justify-between items-center mb-4">
                 <h4 class="font-semibold text-lg text-gray-700">Personal Information</h4>
@@ -210,9 +289,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <!-- Preferences & Accommodation -->
         <div class="grid grid-cols-1 <?php if (!isset($_SESSION['student_id'])): ?>md:grid-cols-2<?php endif; ?> gap-6">
-            <?php if (!isset($_SESSION['student_id'])): // New Student: Show Major Preferences ?>
+            <?php if (!isset($_SESSION['student_id'])): ?>
             <div class="bg-gray-50 p-4 sm:p-6 rounded-xl border">
                 <div class="flex justify-between items-center mb-4">
                     <h4 class="font-semibold text-lg text-gray-700">Major Preferences</h4>
@@ -228,7 +306,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endif; ?>
                 </ul>
             </div>
-            <?php endif; // Old students will not see the Major block ?>
+            <?php endif; ?>
 
             <div class="bg-gray-50 p-4 sm:p-6 rounded-xl border <?php if (isset($_SESSION['student_id'])): ?>md:col-span-2<?php endif; ?>">
                 <div class="flex justify-between items-center mb-4">
@@ -251,9 +329,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
-        <a href="option.php" class="w-full sm:w-auto px-6 py-3 rounded-full border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition-colors text-center shadow-sm hover:shadow-md">Back</a>
+        <a href="documents.php" class="w-full sm:w-auto px-6 py-3 rounded-full border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition-colors text-center shadow-sm hover:shadow-md">Back</a>
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="w-full sm:w-auto">
-            <button type="submit" class="w-full sm:w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105 shadow-md">Submit</button>
+            <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105 shadow-md <?php if (!$all_documents_uploaded) echo 'disabled-button'; ?>" <?php if (!$all_documents_uploaded) echo 'disabled'; ?>>
+                <?php echo $all_documents_uploaded ? 'Submit' : 'Documents Incomplete'; ?>
+            </button>
         </form>
     </div>
 </div>
@@ -307,14 +387,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     <?php endif; ?>
 
-    const finalForm = document.querySelector('form[action*="final.php"]');
-    if (finalForm) {
-        finalForm.addEventListener('submit', function(e) {
-            const submitButton = e.target.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.innerHTML = 'Submitting...';
-        });
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn.disabled) {
+            submitBtn.title = 'Please upload all 11 required documents.';
+        }
+        
+        const finalForm = document.querySelector('form[action*="final.php"]');
+        if (finalForm) {
+            finalForm.addEventListener('submit', function(e) {
+                if(submitBtn.disabled){
+                   e.preventDefault(); // Prevent form submission if button is disabled
+                   return;
+                }
+                submitBtn.innerHTML = 'Submitting...';
+            });
+        }
+    });
 </script>
 
 </body>

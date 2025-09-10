@@ -1,7 +1,7 @@
 <?php
 // Include the database connection file
 require_once 'auth_check.php';
-
+require_once '../Rform/db.php';
 
 header('Content-Type: application/json');
 
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Define the public-facing directory for result images.
+    // Define the target directory for result images, which is one level up from the current directory.
     $targetDir = __DIR__ . "/../uploadResults/";
 
     // Create the directory if it doesn't exist
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
 
     // Check if multiple files were uploaded
-    if (is_array($_FILES["result_image"]["name"])) {
+    if (isset($_FILES["result_image"]["name"]) && is_array($_FILES["result_image"]["name"])) {
         // Loop through each file
         for ($i = 0; $i < count($_FILES["result_image"]["name"]); $i++) {
             $file = [
@@ -73,20 +73,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (move_uploaded_file($file["tmp_name"], $targetFile)) {
                 // File uploaded successfully, now insert data into database
                 try {
+                    // Store the path relative to the admin directory for correct display
                     $imagePathForDB = "../uploadResults/" . basename($targetFile);
                     $stmt = $pdo->prepare("INSERT INTO exam_results (year, semester, major, image_path) VALUES (?, ?, ?, ?)");
                     $stmt->execute([$year, $semester, $major, $imagePathForDB]);
                     $files_uploaded_count++;
                 } catch (PDOException $e) {
                     $errors[] = 'Database error: ' . $e->getMessage();
-                    break;
+                    // If the database insert fails, delete the uploaded file
+                    unlink($targetFile);
+                    break; 
                 }
             } else {
                 $errors[] = "Sorry, there was an error uploading file " . htmlspecialchars($file['name']) . ".";
             }
         }
     } else {
-        echo json_encode(['success' => false, 'message' => 'Unexpected file upload format. Please try again.']);
+        echo json_encode(['success' => false, 'message' => 'No files were selected or unexpected file upload format. Please try again.']);
         exit;
     }
 
@@ -104,3 +107,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
 }
 ?>
+
