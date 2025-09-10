@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `stats_settings` (
 
 CREATE TABLE `pre_approved_students` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `sequence_no` INT NOT NULL UNIQUE COMMENT 'စဉ် (ကျောင်းဝင်အမှတ်)',
+  `sequence_no` VARCHAR(255) NOT NULL UNIQUE COMMENT 'စဉ် (ကျောင်းဝင်အမှတ်)',
   `seat_no` VARCHAR(255) NOT NULL UNIQUE COMMENT 'တက္ကသိုလ်ဝင်တန်း ခုံအမှတ်',
   `student_name_mm` VARCHAR(255) NOT NULL COMMENT 'ကျောင်းသား/သူ အမည် (မြန်မာ)',
   `nrc` VARCHAR(255) NOT NULL UNIQUE COMMENT 'နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်',
@@ -250,6 +250,7 @@ INSERT INTO `pre_approved_students` (`sequence_no`, `seat_no`, `student_name_mm`
 (1, 'ဆပလ ၃၇၉၉', 'မောင်အောင်ကြည်စိုး', '၁/ရကန(နိုင်)၀၇၄၄၇၇', '2005-01-15', 0),
 (2, 'မမ-၁၀၁၄', 'မသွန်းသီရိခင်', '၁၂/ကတတ(နိုင်)၀၃၃၈၆၃', '2005-03-22', 0),
 (3, 'ဒနက-၁၈', 'မအိထက်နိုင်', '၁၁/အမန(နိုင်) ၀၉၈၇၆၅', '2004-11-30', 0);
+
 
 ALTER TABLE pre_approved_students
 DROP COLUMN is_enrolled;

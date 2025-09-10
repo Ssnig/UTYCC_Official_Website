@@ -24,7 +24,10 @@ if (isset($_POST['delete'])) {
 // Handle Add/Update
 if (isset($_POST['save'])) {
     $id = $_POST['id'] ?? null;
+
+    // Store Myanmar sequence number directly
     $sequence_no = $_POST['sequence_no'];
+    
     $seat_no = $_POST['seat_no'];
     $student_name_mm = $_POST['student_name_mm'];
     $nrc = $_POST['nrc'];
@@ -57,7 +60,7 @@ if (isset($_GET['edit'])) {
 $students = $pdo->query("SELECT * FROM pre_approved_students ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -96,7 +99,7 @@ $students = $pdo->query("SELECT * FROM pre_approved_students ORDER BY id DESC")-
             <input type="hidden" name="id" value="<?php echo $edit_student['id'] ?? ''; ?>">
             <div>
                 <label for="sequence_no" class="block text-sm font-medium">စဉ် (No.)</label>
-                <input type="number" name="sequence_no" required class="mt-1 block w-full border border-gray-300 rounded-md p-2" value="<?php echo htmlspecialchars($edit_student['sequence_no'] ?? ''); ?>">
+                <input type="text" name="sequence_no" required class="mt-1 block w-full border border-gray-300 rounded-md p-2" value="<?php echo htmlspecialchars($edit_student['sequence_no'] ?? ''); ?>">
             </div>
             <div>
                 <label for="seat_no" class="block text-sm font-medium">Seat No.</label>
@@ -160,6 +163,31 @@ $students = $pdo->query("SELECT * FROM pre_approved_students ORDER BY id DESC")-
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function convertToMyanmarNumber(str) {
+        const english_numerals = [/0/g, /1/g, /2/g, /3/g, /4/g, /5/g, /6/g, /7/g, /8/g, /9/g];
+        const myanmar_numerals = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
+        let newStr = String(str);
+        for (let i = 0; i < english_numerals.length; i++) {
+            newStr = newStr.replace(english_numerals[i], myanmar_numerals[i]);
+        }
+        return newStr;
+    }
+
+    const sequenceInput = document.querySelector('input[name="sequence_no"]');
+    if (sequenceInput) {
+        sequenceInput.addEventListener('input', function() {
+            const myanmarValue = convertToMyanmarNumber(this.value);
+            const sanitizedValue = myanmarValue.replace(/[^၀-၉]/g, '');
+            if (this.value !== sanitizedValue) {
+               this.value = sanitizedValue;
+            }
+        });
+    }
+});
+</script>
 
 </body>
 </html>

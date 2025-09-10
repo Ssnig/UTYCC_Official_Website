@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="sequence_no" class="block text-sm font-medium text-gray-700 mb-1">စဉ် (ကျောင်းဝင်အမှတ်)</label>
                 <input type="text" id="sequence_no" name="sequence_no" value="<?php echo htmlspecialchars($sequence_no); ?>" required
                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                       placeholder="e.g., 1">
+                       placeholder="e.g., ၁၂၃">
             </div>
 
             <div>
@@ -140,8 +140,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
                        placeholder="e.g., ဆပလ ၃၇၉၉">
             </div>
-
-           
 
             <div>
                 <label for="nrc_group" class="block text-sm font-medium text-gray-700 mb-1">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
@@ -167,7 +165,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // --- NRC Input Group Logic (Copied from form1.php) ---
+    // --- NRC Input Group Logic ---
+    function convertToMyanmarNumber(str) {
+        const english_numerals = [/0/g, /1/g, /2/g, /3/g, /4/g, /5/g, /6/g, /7/g, /8/g, /9/g];
+        const myanmar_numerals = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
+        let newStr = String(str);
+        for (let i = 0; i < english_numerals.length; i++) {
+            newStr = newStr.replace(english_numerals[i], myanmar_numerals[i]);
+        }
+        return newStr;
+    }
+
     const nrcTownships = {
         1: ["အဂယ", "အတန", "ဗကန", "ဗမန", "ဒဖယ", "ဟပန", "ဆဒန", "ဆပဘ", "ကမန", "ကမတ", "ကပတ", "ခဘဒ", "ခလဖ", "ခဖန", "လဂန", "မဂဒ", "မကန","မကတ", "မကသ", "မခဘ", "မလန", "မမန", "မညန", "မစန","မတန","နမန","ပမန","ပနဒ","ပတအ","ပဝန","ဖကန","ရဗယ", "ဆဘန", "ဆဘတ", "စကန", "ဆလန", "စပဘ", "တနန","ဝမန","သဝတ","ဝမန","ရကန"],
         2: ["ဘလခ", "ဒမဆ", "ဖဆန", "ထတပ","ခစန", "လကန", "မစန", "ဖလဆ", "ဖရဆ", "ရသန","စစန","ရတန"],
@@ -192,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         container.innerHTML = ''; 
         const wrapper = document.createElement('div');
-        wrapper.className = 'space-y-2';
+        wrapper.className = 'flex flex-col space-y-2';
 
         const dropdownContainer = document.createElement('div');
         dropdownContainer.className = 'grid grid-cols-3 gap-2';
@@ -205,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 1; i <= 14; i++) {
             const option = document.createElement('option');
             option.value = i;
-            option.textContent = i;
+            option.textContent = convertToMyanmarNumber(i);
             stateSelect.appendChild(option);
         }
 
@@ -228,10 +236,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const numberInput = document.createElement('input');
         numberInput.type = 'text';
         numberInput.name = `${namePrefix}_number`;
-        numberInput.className = inputClass;
-        numberInput.placeholder = '123456';
+        numberInput.className = inputClass + ' mt-2';
+        numberInput.placeholder = '၁၂၃၄၅၆';
         numberInput.maxLength = 6;
-        numberInput.pattern = '\\d{6}';
+        numberInput.pattern = '[၀-၉]{6}';
+        numberInput.title = 'မြန်မာဂဏန်း ၆ လုံး ထည့်သွင်းပါ။';
 
         wrapper.append(dropdownContainer, numberInput);
         container.append(wrapper);
@@ -243,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const township = townshipSelect.value;
                 const type = typeSelect.value;
                 const number = numberInput.value;
-                if (state && township && type && number.match(/^\d{6}$/)) {
+                if (state && township && type && number.match(/^[၀-၉]{6}$/)) {
                     hiddenInput.value = `${state}/${township}${type}${number}`;
                 } else {
                     hiddenInput.value = '';
@@ -267,7 +276,15 @@ document.addEventListener('DOMContentLoaded', function() {
         stateSelect.addEventListener('change', updateNrcTownships);
         townshipSelect.addEventListener('change', updateHiddenNrcInput);
         typeSelect.addEventListener('change', updateHiddenNrcInput);
-        numberInput.addEventListener('input', updateHiddenNrcInput);
+        
+        numberInput.addEventListener('input', function() {
+            const myanmarValue = convertToMyanmarNumber(this.value);
+            const sanitizedValue = myanmarValue.replace(/[^၀-၉]/g, '');
+            if (this.value !== sanitizedValue) {
+               this.value = sanitizedValue;
+            }
+            updateHiddenNrcInput();
+        });
         
         updateNrcTownships();
     }
@@ -278,3 +295,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+
