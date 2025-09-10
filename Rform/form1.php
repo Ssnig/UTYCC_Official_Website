@@ -4,7 +4,7 @@
     // Set the default timezone to Myanmar time
     date_default_timezone_set('Asia/Yangon');
 
-    
+
 if (!isset($_SESSION['pre_approved_data'])) {
         // Redirect them back to the verification page.
         header('Location: Verify_new.php');
@@ -621,7 +621,7 @@ if (!isset($_SESSION['pre_approved_data'])) {
 
             <!-- Navigation Buttons -->
             <div class="nav-buttons mt-8 flex justify-between items-center">
-                <a href="form1.php?new=1" class="nav-button-back text-gray-600 hover:text-gray-900 font-medium">Start Over</a>
+                <a href="Verify_new.php?new=1" class="nav-button-back text-gray-600 hover:text-gray-900 font-medium">Start Over</a>
                 <button type="submit" class="nav-button-next">Next Step</button>
             </div>
 

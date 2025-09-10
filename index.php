@@ -553,7 +553,7 @@ $pdo = null;
                 <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
                     <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4 " data-lang-key="enroll_new_title">New Students</h3>
                     <p class="text-base sm:text-lg text-gray-700 mb-6 max-w-sm" data-lang-key="enroll_new_text">Start your journey with us! Click here to enroll for the upcoming academic year.</p>
-                    <a href="./Rform/form1.php" class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect" data-lang-key="enroll_new_button">Enroll as a Fresher</a>
+                    <a href="./Rform/Verify_new.php" class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect" data-lang-key="enroll_new_button">Enroll as a Fresher</a>
                 </div>
                 <div class="border-t md:border-t-0 md:border-l border-gray-300"></div>
                 <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
