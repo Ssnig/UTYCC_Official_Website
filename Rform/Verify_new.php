@@ -120,6 +120,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="space-y-6">
+            <div>
+                <label for="student_name_mm" class="block text-sm font-medium text-gray-700 mb-1">ကျောင်းသား/သူ အမည် (မြန်မာ)</label>
+                <input type="text" id="student_name_mm" name="student_name_mm" value="<?php echo htmlspecialchars($student_name_mm); ?>" required
+                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                       placeholder="e.g., မောင်အောင်အောင်">
+            </div>
+
              <div>
                 <label for="sequence_no" class="block text-sm font-medium text-gray-700 mb-1">စဉ် (ကျောင်းဝင်အမှတ်)</label>
                 <input type="text" id="sequence_no" name="sequence_no" value="<?php echo htmlspecialchars($sequence_no); ?>" required
@@ -134,12 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                        placeholder="e.g., ဆပလ ၃၇၉၉">
             </div>
 
-             <div>
-                <label for="student_name_mm" class="block text-sm font-medium text-gray-700 mb-1">ကျောင်းသား/သူ အမည် (မြန်မာ)</label>
-                <input type="text" id="student_name_mm" name="student_name_mm" value="<?php echo htmlspecialchars($student_name_mm); ?>" required
-                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                       placeholder="e.g., မောင်အောင်အောင်">
-            </div>
+           
 
             <div>
                 <label for="nrc_group" class="block text-sm font-medium text-gray-700 mb-1">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
