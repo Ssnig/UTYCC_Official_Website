@@ -261,12 +261,35 @@ $students = $pdo->query("SELECT * FROM pre_approved_students ORDER BY id DESC")-
                     <input type="text" name="student_name_mm" required class="form-input mt-1 block w-full rounded-md p-2" value="<?php echo htmlspecialchars($edit_student['student_name_mm'] ?? ''); ?>">
                 </div>
                 <div>
-                    <label for="nrc" class="block text-sm font-medium">NRC</label>
-                    <input type="text" name="nrc" required class="form-input mt-1 block w-full rounded-md p-2" value="<?php echo htmlspecialchars($edit_student['nrc'] ?? ''); ?>">
+                    <div class="flex justify-between items-center">
+                        <label for="nrc_input" class="block text-sm font-medium">NRC</label>
+                        <div class="flex items-center gap-2">
+                             <input type="checkbox" id="nrc_applying" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                             <label for="nrc_applying" class="text-sm">လျှောက်ထားဆဲ</label>
+                        </div>
+                    </div>
+                    <input type="text" id="nrc_input" name="nrc" required class="form-input mt-1 block w-full rounded-md p-2" value="<?php echo htmlspecialchars($edit_student['nrc'] ?? ''); ?>">
                 </div>
                 <div>
-                    <label for="dob" class="block text-sm font-medium">Date of Birth</label>
-                    <input type="date" name="dob" required class="form-input mt-1 block w-full rounded-md p-2" value="<?php echo htmlspecialchars($edit_student['dob'] ?? ''); ?>">
+                    <label class="block text-sm font-medium">Date of Birth</label>
+                    <div class="grid grid-cols-3 gap-3 mt-1">
+                        <div>
+                            <select id="dob_year" class="form-input block w-full rounded-md p-2" required>
+                                <option value="">Year</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="dob_month" class="form-input block w-full rounded-md p-2" required>
+                                <option value="">Month</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="dob_day" class="form-input block w-full rounded-md p-2" required>
+                                <option value="">Day</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="dob_hidden_input" name="dob" value="<?php echo htmlspecialchars($edit_student['dob'] ?? ''); ?>">
                 </div>
                 <div class="lg:col-span-3 flex justify-end gap-3 mt-6">
                      <?php if ($edit_student): ?>
@@ -279,7 +302,12 @@ $students = $pdo->query("SELECT * FROM pre_approved_students ORDER BY id DESC")-
 
         <!-- Student List -->
         <div class="card p-6">
-            <h2 class="text-2xl font-bold mb-4">Pre-Approved Student List</h2>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Pre-Approved Student List</h2>
+                <span class="text-lg font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 px-3 py-1 rounded-full">
+                    Total Students: <?php echo count($students); ?>
+                </span>
+            </div>
             <div class="overflow-x-auto">
                 <table>
                     <thead>
@@ -321,8 +349,8 @@ $students = $pdo->query("SELECT * FROM pre_approved_students ORDER BY id DESC")-
 </div>
 
 <script>
-    // --- MYANMAR NUMBER CONVERSION SCRIPT ---
     document.addEventListener('DOMContentLoaded', function() {
+        // --- MYANMAR NUMBER CONVERSION SCRIPT ---
         function convertToMyanmarNumber(str) {
             const english_numerals = [/0/g, /1/g, /2/g, /3/g, /4/g, /5/g, /6/g, /7/g, /8/g, /9/g];
             const myanmar_numerals = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
@@ -343,8 +371,125 @@ $students = $pdo->query("SELECT * FROM pre_approved_students ORDER BY id DESC")-
                 }
             });
         }
+        
+        // --- NRC "APPLYING" LOGIC ---
+        const nrcApplyingCheckbox = document.getElementById('nrc_applying');
+        const nrcInput = document.getElementById('nrc_input');
+
+        function toggleNrcAdmin(isApplying) {
+            if (isApplying) {
+                nrcInput.value = 'လျှောက်ထားဆဲ';
+                nrcInput.disabled = true;
+                nrcInput.classList.add('bg-gray-200', 'dark:bg-gray-700');
+            } else {
+                if (nrcInput.value === 'လျှောက်ထားဆဲ') {
+                    nrcInput.value = '';
+                }
+                nrcInput.disabled = false;
+                nrcInput.classList.remove('bg-gray-200', 'dark:bg-gray-700');
+            }
+        }
+
+        if (nrcApplyingCheckbox && nrcInput) {
+            // Event listener for the checkbox
+            nrcApplyingCheckbox.addEventListener('change', function() {
+                toggleNrcAdmin(this.checked);
+            });
+
+            // Initial state on page load (for editing)
+            if (nrcInput.value === 'လျှောက်ထားဆဲ') {
+                nrcApplyingCheckbox.checked = true;
+                toggleNrcAdmin(true);
+            }
+        }
+
+        // --- DATE OF BIRTH DROPDOWNS ---
+        const yearSelect = document.getElementById('dob_year');
+        const monthSelect = document.getElementById('dob_month');
+        const daySelect = document.getElementById('dob_day');
+        const dobHiddenInput = document.getElementById('dob_hidden_input');
+
+        if (yearSelect && monthSelect && daySelect && dobHiddenInput) {
+            const currentYear = new Date().getFullYear();
+            const startYear = currentYear - 100;
+
+            // Populate years
+            for (let i = currentYear - 16; i >= startYear; i--) { // Must be at least 16
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                yearSelect.appendChild(option);
+            }
+
+            // Populate months with numbers
+            for (let i = 1; i <= 12; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                monthSelect.appendChild(option);
+            }
+
+            function populateDays(dayToPreselect = null) {
+                const year = parseInt(yearSelect.value, 10);
+                const month = parseInt(monthSelect.value, 10);
+                
+                const currentSelectedDay = dayToPreselect || daySelect.value;
+
+                daySelect.innerHTML = '<option value="">Day</option>';
+
+                if (year && month) {
+                    const daysInMonth = new Date(year, month, 0).getDate();
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        const option = document.createElement('option');
+                        option.value = i;
+                        option.textContent = i;
+                        daySelect.appendChild(option);
+                    }
+                    
+                    if (currentSelectedDay && currentSelectedDay <= daysInMonth) {
+                        daySelect.value = currentSelectedDay;
+                    }
+                }
+            }
+
+            function updateHiddenDob() {
+                const year = yearSelect.value;
+                const month = monthSelect.value;
+                const day = daySelect.value;
+
+                if (year && month && day) {
+                    const monthPadded = String(month).padStart(2, '0');
+                    const dayPadded = String(day).padStart(2, '0');
+                    dobHiddenInput.value = `${year}-${monthPadded}-${dayPadded}`;
+                } else {
+                    dobHiddenInput.value = '';
+                }
+            }
+
+            // Repopulate from hidden input value on page load (for editing)
+            const initialDob = dobHiddenInput.value;
+            if (initialDob) {
+                const dateParts = initialDob.split('-');
+                if (dateParts.length === 3) {
+                    const initialYear = parseInt(dateParts[0], 10);
+                    const initialMonth = parseInt(dateParts[1], 10);
+                    const initialDay = parseInt(dateParts[2], 10);
+
+                    yearSelect.value = initialYear;
+                    monthSelect.value = initialMonth;
+                    
+                    populateDays(initialDay);
+                }
+            }
+
+            // Event Listeners
+            yearSelect.addEventListener('change', () => { populateDays(); updateHiddenDob(); });
+            monthSelect.addEventListener('change', () => { populateDays(); updateHiddenDob(); });
+            daySelect.addEventListener('change', updateHiddenDob);
+        }
     });
 </script>
 
 </body>
 </html>
+

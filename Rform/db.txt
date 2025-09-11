@@ -255,6 +255,27 @@ INSERT INTO `pre_approved_students` (`sequence_no`, `seat_no`, `student_name_mm`
 (3, 'ဒနက-၁၈', 'မအိထက်နိုင်', '၁၁/အမန(နိုင်) ၀၉၈၇၆၅', '2004-11-30');
 
 
+-- Recommended Method: Remove the UNIQUE constraint without deleting data
+-- data မပျက်စေဘဲ 'nrc' column မှ UNIQUE ကန့်သတ်ချက်ကို ဖယ်ရှားရန် (ဤနည်းလမ်းကို အကြံပြုပါသည်)
+ALTER TABLE `pre_approved_students` DROP INDEX `nrc`;
+
+
+
+-- -----------------------------------------------------------------------------------
+
+-- Alternative Method (Deletes all existing NRC data)
+-- 'nrc' column ကို ဖျက်ပြီးမှ ပြန်ထည့်မည့်နည်း (ရှိပြီးသား NRC data အားလုံး ပျက်သွားပါမည်)
+
+-- Step 1: Delete the existing column (ဤ command သည် 'nrc' column ကို ဖျက်ပါမည်)
+-- ALTER TABLE `pre_approved_students` DROP COLUMN `nrc`;
+
+-- Step 2: Add the column back without the UNIQUE constraint (UNIQUE မပါဘဲ column ကို ပြန်ထည့်ရန်)
+-- ALTER TABLE `pre_approved_students` ADD `nrc` VARCHAR(255) NOT NULL COMMENT 'နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်' AFTER `student_name_mm`;
+
+
+
+
+
 
 
 

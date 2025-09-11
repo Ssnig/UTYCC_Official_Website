@@ -1,6 +1,13 @@
 <?php
 session_start();
 date_default_timezone_set('Asia/Yangon');
+
+// If already verified, redirect to form1 to prevent re-verification
+// if (isset($_SESSION['pre_approved_data'])) {
+//     header('Location: form1.php');
+//     exit;
+// }
+
 require_once "db.php"; // Make sure your DB connection file is included
 
 $errors = [];
@@ -38,32 +45,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         try {
-            $stmt = $pdo->prepare("
-                SELECT * FROM pre_approved_students 
-                WHERE sequence_no = :sequence_no AND seat_no = :seat_no AND student_name_mm = :student_name_mm AND nrc = :nrc AND dob = :dob
-            ");
-            $stmt->execute([
+            // Base query and parameters
+            $sql = "SELECT * FROM pre_approved_students 
+                    WHERE sequence_no = :sequence_no AND seat_no = :seat_no AND student_name_mm = :student_name_mm AND dob = :dob";
+            
+            $params = [
                 ':sequence_no' => $sequence_no,
                 ':seat_no' => $seat_no,
                 ':student_name_mm' => $student_name_mm,
-                ':nrc' => $nrc,
                 ':dob' => $dob
-            ]);
+            ];
+
+            // If NRC is not 'လျှောက်ထားဆဲ', add it to the query for stricter verification.
+            // Otherwise, we verify based on the other 4 unique fields.
+            if ($nrc !== 'လျှောက်ထားဆဲ') {
+                $sql .= " AND nrc = :nrc";
+                $params[':nrc'] = $nrc;
+            }
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
             $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($student) {
                 if ($student['is_enrolled']) {
                     $errors[] = 'သင်သည် ကျောင်းအပ်နှံခြင်းလုပ်ငန်းစဉ်ကို ပြီးမြောက်ပြီးဖြစ်ပါသည်။';
                 } else {
-                    // Verification successful, store pre-approved data in session
-                    $_SESSION['pre_approved_data'] = [
-                        'id' => $student['id'],
-                        'sequence_no' => $student['sequence_no'],
-                        'seat_no' => $student['seat_no'],
-                        'student_name_mm' => $student['student_name_mm'],
-                        'nrc' => $student['nrc'],
-                        'dob' => $student['dob']
-                    ];
+                    // Verification successful, store pre-approved data in session.
+                    // Storing the whole record is better.
+                    $_SESSION['pre_approved_data'] = $student;
 
                     // Clear any old form data before starting new
                     unset($_SESSION['form1_data']);
@@ -142,16 +152,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div>
-                <label for="nrc_group" class="block text-sm font-medium text-gray-700 mb-1">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                <div class="flex justify-between items-center mb-1">
+                    <label for="nrc_group" class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="nrc_applying" name="nrc_applying" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                        <label for="nrc_applying" class="ml-2 block text-sm text-gray-900">လျှောက်ထားဆဲ</label>
+                    </div>
+                </div>
                 <div id="nrc_group" class="mt-1"></div>
-                <input type="hidden" name="nrc" id="nrc_hidden">
+                <input type="hidden" name="nrc" id="nrc_hidden" value="<?php echo htmlspecialchars($nrc); ?>">
             </div>
 
             <div>
-                <label for="dob" class="block text-sm font-medium text-gray-700 mb-1">မွေးသက္ကရာဇ်</label>
-                <input type="date" id="dob" name="dob" value="<?php echo htmlspecialchars($dob); ?>" required
-                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <label class="block text-sm font-medium text-gray-700 mb-1">မွေးသက္ကရာဇ်</label>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <select id="dob_year" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            <option value="">ခုနှစ်</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="dob_month" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            <option value="">လ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="dob_day" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            <option value="">ရက်</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="hidden" id="dob" name="dob" value="<?php echo htmlspecialchars($dob); ?>">
             </div>
+
 
             <div>
                 <button type="submit"
@@ -165,6 +198,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- Date of Birth Dropdown Logic ---
+    const yearSelect = document.getElementById('dob_year');
+    const monthSelect = document.getElementById('dob_month');
+    const daySelect = document.getElementById('dob_day');
+    const dobHiddenInput = document.getElementById('dob');
+
+    const currentYear = new Date().getFullYear();
+    const startYear = currentYear - 100; // Allow ages up to 100
+
+    // Populate years
+    for (let i = currentYear - 16; i >= startYear; i--) { // Must be at least 16
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        yearSelect.appendChild(option);
+    }
+
+    // Populate months with numbers
+    for (let i = 1; i <= 12; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        monthSelect.appendChild(option);
+    }
+
+    function populateDays() {
+        const year = parseInt(yearSelect.value, 10);
+        const month = parseInt(monthSelect.value, 10);
+        const currentDay = daySelect.value;
+        daySelect.innerHTML = '<option value="">ရက်</option>'; // Clear existing days
+
+        if (year && month) {
+            const daysInMonth = new Date(year, month, 0).getDate();
+            for (let i = 1; i <= daysInMonth; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                daySelect.appendChild(option);
+            }
+            if (currentDay && currentDay <= daysInMonth) {
+                daySelect.value = currentDay;
+            }
+        }
+    }
+
+    function updateHiddenDob() {
+        const year = yearSelect.value;
+        const month = monthSelect.value;
+        const day = daySelect.value;
+
+        if (year && month && day) {
+            // Pad month and day with leading zero if needed
+            const monthPadded = String(month).padStart(2, '0');
+            const dayPadded = String(day).padStart(2, '0');
+            dobHiddenInput.value = `${year}-${monthPadded}-${dayPadded}`;
+        } else {
+            dobHiddenInput.value = '';
+        }
+    }
+
+    // Repopulate from hidden input value on page load (if form fails)
+    const initialDob = dobHiddenInput.value;
+    if (initialDob) {
+        const dateParts = initialDob.split('-');
+        if (dateParts.length === 3) {
+            yearSelect.value = parseInt(dateParts[0], 10);
+            monthSelect.value = parseInt(dateParts[1], 10);
+            populateDays(); // Important to populate days before setting day value
+            daySelect.value = parseInt(dateParts[2], 10);
+        }
+    }
+    
+    // Event Listeners
+    yearSelect.addEventListener('change', () => { populateDays(); updateHiddenDob(); });
+    monthSelect.addEventListener('change', () => { populateDays(); updateHiddenDob(); });
+    daySelect.addEventListener('change', updateHiddenDob);
+
+
     // --- NRC Input Group Logic ---
     function convertToMyanmarNumber(str) {
         const english_numerals = [/0/g, /1/g, /2/g, /3/g, /4/g, /5/g, /6/g, /7/g, /8/g, /9/g];
@@ -247,13 +359,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const updateHiddenNrcInput = () => {
             const hiddenInput = document.getElementById(`${namePrefix}_hidden`);
+            const checkbox = document.getElementById(`${namePrefix}_applying`);
+            if (hiddenInput && checkbox && checkbox.checked) {
+                hiddenInput.value = 'လျှောက်ထားဆဲ';
+                return; // Stop here if applying
+            }
+
             if (hiddenInput) {
                 const state = stateSelect.value;
                 const township = townshipSelect.value;
                 const type = typeSelect.value;
                 const number = numberInput.value;
                 if (state && township && type && number.match(/^[၀-၉]{6}$/)) {
-                    hiddenInput.value = `${state}/${township}${type}${number}`;
+                    hiddenInput.value = `${convertToMyanmarNumber(state)}/${township}${type}${number}`;
                 } else {
                     hiddenInput.value = '';
                 }
@@ -288,8 +406,52 @@ document.addEventListener('DOMContentLoaded', function() {
         
         updateNrcTownships();
     }
+    
+    function setupNrcApplyingLogic(prefix) {
+        const checkbox = document.getElementById(`${prefix}_applying`);
+        const nrcGroup = document.getElementById(`${prefix}_group`);
+        const hiddenInput = document.getElementById(`${prefix}_hidden`);
+        if (!checkbox || !nrcGroup || !hiddenInput) return;
+
+        const nrcInputs = nrcGroup.querySelectorAll('select, input');
+
+        const toggleNrcFields = (isApplying) => {
+            nrcInputs.forEach(input => {
+                input.disabled = isApplying;
+                 if(isApplying) {
+                    input.classList.add('bg-gray-100', 'cursor-not-allowed');
+                } else {
+                    input.classList.remove('bg-gray-100', 'cursor-not-allowed');
+                }
+            });
+
+            if (isApplying) {
+                hiddenInput.value = 'လျှောက်ထားဆဲ';
+            } else {
+                // When unchecking, trigger an input event on the number field
+                // to force the hidden field's value to be recalculated by its existing listener.
+                const numberInput = nrcGroup.querySelector(`input[name="${prefix}_number"]`);
+                if (numberInput) {
+                    numberInput.dispatchEvent(new Event('input', { 'bubbles': true }));
+                } else {
+                    hiddenInput.value = ''; // fallback
+                }
+            }
+        };
+
+        checkbox.addEventListener('change', function() {
+            toggleNrcFields(this.checked);
+        });
+        
+        // Initial state on page load
+        if (hiddenInput.value === 'လျှောက်ထားဆဲ') {
+            checkbox.checked = true;
+        }
+        toggleNrcFields(checkbox.checked);
+    }
 
     createNrcInputGroup('nrc_group', 'nrc');
+    setupNrcApplyingLogic('nrc');
 });
 </script>
 
