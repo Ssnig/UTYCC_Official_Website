@@ -51,27 +51,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($student) {
-                // Step 2: Verify the rest of the information and collect all specific errors.
-                if ($student['seat_no'] !== $seat_no) {
+                // Step 2: Verify the rest of the information, ignoring spaces.
+                if (str_replace(' ', '', $student['seat_no']) !== str_replace(' ', '', $seat_no)) {
                     $errors[] = 'တက္ကသိုလ်ဝင်တန်း ခုံအမှတ် မှားယွင်းနေပါသည်။';
                 }
-                if ($student['student_name_mm'] !== $student_name_mm) {
+                if (str_replace(' ', '', $student['student_name_mm']) !== str_replace(' ', '', $student_name_mm)) {
                     $errors[] = 'ကျောင်းသား/သူ အမည် (မြန်မာ) မှားယွင်းနေပါသည်။';
                 }
                 if ($student['dob'] !== $dob) {
                     $errors[] = 'မွေးသက္ကရာဇ် မှားယွင်းနေပါသည်။';
                 }
 
-                // More robust NRC check for 'လျှောက်ထားဆဲ' case.
+                // More robust NRC check for 'လျှောက်ထားဆဲ' case and space insensitivity.
                 $isNrcValid = false;
                 if ($nrc === 'လျှောက်ထားဆဲ') {
-                    // If user is applying, the DB record for NRC should be empty, NULL, or the text 'လျှောက်ထားဆဲ'.
                     if (empty($student['nrc']) || $student['nrc'] === 'လျှောက်ထားဆဲ') {
                         $isNrcValid = true;
                     }
                 } else {
-                    // If user provides a specific NRC, it must match the one in the database.
-                    if ($student['nrc'] === $nrc) {
+                    // Normalize by removing spaces and slashes for a more flexible comparison
+                    $normalized_user_nrc = preg_replace('/[\s\/]+/', '', $nrc);
+                    $normalized_db_nrc = preg_replace('/[\s\/]+/', '', $student['nrc']);
+                    if ($normalized_db_nrc === $normalized_user_nrc) {
                         $isNrcValid = true;
                     }
                 }
@@ -94,10 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header("Location: form1.php");
                     exit;
                 }
-                // If there were validation errors, the script will fall through and display them.
                 
             } else {
-                // Student not found by sequence_no. Give a specific error for this case.
+                // Student not found by sequence_no.
                 $errors[] = 'သင်ဖြည့်သွင်းလိုက်သော စဉ် (ကျောင်းဝင်အမှတ်) သည် မှတ်တမ်းများတွင် မရှိပါ။';
             }
         } catch (PDOException $e) {
@@ -213,6 +213,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
+    // --- Shared Function to Convert English to Myanmar Numerals ---
+    function convertToMyanmarNumber(str) {
+        const english_numerals = [/0/g, /1/g, /2/g, /3/g, /4/g, /5/g, /6/g, /7/g, /8/g, /9/g];
+        const myanmar_numerals = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
+        let newStr = String(str);
+        for (let i = 0; i < english_numerals.length; i++) {
+            newStr = newStr.replace(english_numerals[i], myanmar_numerals[i]);
+        }
+        return newStr;
+    }
+
+    // --- Myanmar Number Input for Sequence No ---
+    const sequenceInput = document.getElementById('sequence_no');
+    if (sequenceInput) {
+        sequenceInput.addEventListener('input', function() {
+            const myanmarValue = convertToMyanmarNumber(this.value);
+            const sanitizedValue = myanmarValue.replace(/[^၀-၉]/g, ''); // Only allow myanmar numbers
+            if (this.value !== sanitizedValue) {
+               this.value = sanitizedValue;
+            }
+        });
+    }
+
     // --- Date of Birth Dropdown Logic ---
     const yearSelect = document.getElementById('dob_year');
     const monthSelect = document.getElementById('dob_month');
@@ -220,17 +243,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const dobHiddenInput = document.getElementById('dob');
 
     const currentYear = new Date().getFullYear();
-    const startYear = currentYear - 100; // Allow ages up to 100
+    const startYear = currentYear - 100;
 
-    // Populate years
-    for (let i = currentYear - 16; i >= startYear; i--) { // Must be at least 16
+    for (let i = currentYear - 16; i >= startYear; i--) {
         const option = document.createElement('option');
         option.value = i;
         option.textContent = i;
         yearSelect.appendChild(option);
     }
 
-    // Populate months with numbers
     for (let i = 1; i <= 12; i++) {
         const option = document.createElement('option');
         option.value = i;
@@ -242,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const year = parseInt(yearSelect.value, 10);
         const month = parseInt(monthSelect.value, 10);
         const currentDay = daySelect.value;
-        daySelect.innerHTML = '<option value="">ရက်</option>'; // Clear existing days
+        daySelect.innerHTML = '<option value="">ရက်</option>';
 
         if (year && month) {
             const daysInMonth = new Date(year, month, 0).getDate();
@@ -264,7 +285,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const day = daySelect.value;
 
         if (year && month && day) {
-            // Pad month and day with leading zero if needed
             const monthPadded = String(month).padStart(2, '0');
             const dayPadded = String(day).padStart(2, '0');
             dobHiddenInput.value = `${year}-${monthPadded}-${dayPadded}`;
@@ -273,35 +293,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Repopulate from hidden input value on page load (if form fails)
     const initialDob = dobHiddenInput.value;
     if (initialDob) {
         const dateParts = initialDob.split('-');
         if (dateParts.length === 3) {
             yearSelect.value = parseInt(dateParts[0], 10);
             monthSelect.value = parseInt(dateParts[1], 10);
-            populateDays(); // Important to populate days before setting day value
+            populateDays();
             daySelect.value = parseInt(dateParts[2], 10);
         }
     }
     
-    // Event Listeners
     yearSelect.addEventListener('change', () => { populateDays(); updateHiddenDob(); });
     monthSelect.addEventListener('change', () => { populateDays(); updateHiddenDob(); });
     daySelect.addEventListener('change', updateHiddenDob);
 
 
     // --- NRC Input Group Logic ---
-    function convertToMyanmarNumber(str) {
-        const english_numerals = [/0/g, /1/g, /2/g, /3/g, /4/g, /5/g, /6/g, /7/g, /8/g, /9/g];
-        const myanmar_numerals = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
-        let newStr = String(str);
-        for (let i = 0; i < english_numerals.length; i++) {
-            newStr = newStr.replace(english_numerals[i], myanmar_numerals[i]);
-        }
-        return newStr;
-    }
-
     const nrcTownships = {
         1: ["အဂယ", "အတန", "ဗကန", "ဗမန", "ဒဖယ", "ဟပန", "ဆဒန", "ဆပဘ", "ကမန", "ကမတ", "ကပတ", "ခဘဒ", "ခလဖ", "ခဖန", "လဂန", "မဂဒ", "မကန","မကတ", "မကသ", "မခဘ", "မလန", "မမန", "မညန", "မစန","မတန","နမန","ပမန","ပနဒ","ပတအ","ပဝန","ဖကန","ရဗယ", "ဆဘန", "ဆဘတ", "စကန", "ဆလန", "စပဘ", "တနန","ဝမန","သဝတ","ဝမန","ရကန"],
         2: ["ဘလခ", "ဒမဆ", "ဖဆန", "ထတပ","ခစန", "လကန", "မစန", "ဖလဆ", "ဖရဆ", "ရသန","စစန","ရတန"],
@@ -376,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const checkbox = document.getElementById(`${namePrefix}_applying`);
             if (hiddenInput && checkbox && checkbox.checked) {
                 hiddenInput.value = 'လျှောက်ထားဆဲ';
-                return; // Stop here if applying
+                return; 
             }
 
             if (hiddenInput) {
@@ -410,11 +418,7 @@ document.addEventListener('DOMContentLoaded', function() {
         typeSelect.addEventListener('change', updateHiddenNrcInput);
         
         numberInput.addEventListener('input', function() {
-            const myanmarValue = convertToMyanmarNumber(this.value);
-            const sanitizedValue = myanmarValue.replace(/[^၀-၉]/g, '');
-            if (this.value !== sanitizedValue) {
-               this.value = sanitizedValue;
-            }
+            this.value = convertToMyanmarNumber(this.value).replace(/[^၀-၉]/g, '');
             updateHiddenNrcInput();
         });
         
@@ -442,13 +446,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isApplying) {
                 hiddenInput.value = 'လျှောက်ထားဆဲ';
             } else {
-                // When unchecking, trigger an input event on the number field
-                // to force the hidden field's value to be recalculated by its existing listener.
                 const numberInput = nrcGroup.querySelector(`input[name="${prefix}_number"]`);
                 if (numberInput) {
                     numberInput.dispatchEvent(new Event('input', { 'bubbles': true }));
                 } else {
-                    hiddenInput.value = ''; // fallback
+                    hiddenInput.value = ''; 
                 }
             }
         };
@@ -457,7 +459,6 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleNrcFields(this.checked);
         });
         
-        // Initial state on page load
         if (hiddenInput.value === 'လျှောက်ထားဆဲ') {
             checkbox.checked = true;
         }
