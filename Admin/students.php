@@ -1224,11 +1224,22 @@ $pdo = null;
       document.getElementById('exportBtn').addEventListener('click', handleExport);
     }
     
-    // --- EXPORT FUNCTION ---
-    
+    // --- MODIFIED EXPORT FUNCTION ---
     function handleExport() {
-        if (state.students.length === 0) {
-            showToast('No students to export.', 'warning');
+        // First, determine which data set to export
+        let dataToExport;
+        const selectedIds = Array.from(state.selected);
+
+        if (selectedIds.length > 0) {
+            // If items are selected, export only those.
+            dataToExport = state.students.filter(s => selectedIds.includes(s.student_id));
+        } else {
+            // If no items are selected, export the currently filtered list.
+            dataToExport = getFilteredSorted();
+        }
+
+        if (dataToExport.length === 0) {
+            showToast('No data to export based on current selection or filters.', 'warning');
             return;
         }
 
@@ -1250,7 +1261,8 @@ $pdo = null;
             return val;
         };
 
-        for (const s of state.students) {
+        // Use the 'dataToExport' array instead of the full 'state.students'
+        for (const s of dataToExport) {
             // FIX: Wrap phone numbers in Excel's text formula `="<number>"` to prevent scientific notation
             const row = [
                 s.student_id, s.seat_no, s.student_name_en, s.student_name_mm, s.student_email, 
@@ -1283,7 +1295,7 @@ $pdo = null;
             link.click();
             document.body.removeChild(link);
         }
-        showToast('Student data exported.', 'success');
+        showToast(`${dataToExport.length} student record(s) exported.`, 'success');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1293,4 +1305,3 @@ $pdo = null;
   </script>
 </body>
 </html>
-
