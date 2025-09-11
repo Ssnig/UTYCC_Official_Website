@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="text-center mb-8">
             <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" class="mx-auto w-20 h-20 mb-4"/>
             <h1 class="text-3xl font-extrabold text-gray-800">Enrollment Verification</h1>
-            <p class="text-gray-500 mt-2">ကျောင်းအပ်ရန် သင်၏အချက်အလက်များကို စစ်ဆေးပါ။</p>
+            <p class="text-gray-500 mt-2">"တက္ကသိုလ်ဝင်ခွင့်ရရှိသူများစာရင်း"မှ အချက်အလက်များကိုထည့်သွင်းရန်</p>
         </div>
 
         <?php if (!empty($errors)): ?>
