@@ -874,11 +874,9 @@ $pdo = null;
       const filteredStudents = getFilteredSorted();
       const total = filteredStudents.length;
       const dormitory = filteredStudents.filter(s => s.dormitory_preference).length;
-      const today_string = todayStr();
-      const today = filteredStudents.filter(s => s.date && s.date.startsWith(today_string)).length;
       document.getElementById('statTotal').textContent = total;
       document.getElementById('statDormitory').textContent = dormitory;
-      document.getElementById('statToday').textContent = today;
+      // Today's stat is now handled by fetchDashboardStats() and is not recalculated here
     }
 
     function renderTable() {
@@ -1100,14 +1098,24 @@ $pdo = null;
         }
       });
     }
+    async function fetchDashboardStats() {
+        const response = await apiRequest('get_dashboard_stats', {});
+        if (response.status === 'success' && response.data) {
+            document.getElementById('statTotal').textContent = response.data.pending_applications;
+            document.getElementById('statDormitory').textContent = response.data.dormitory_requests;
+            document.getElementById('statToday').textContent = response.data.today_applications;
+        }
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
       if (<?php echo json_encode(empty($students_json) || $students_json === '[]'); ?> && state.students.length === 0) {
         console.warn("Initial student data is empty. This could indicate a PHP error during data fetching.");
       }
       addEventListeners();
+      fetchDashboardStats();
       render();
     });
   </script>
 </body>
 </html>
+

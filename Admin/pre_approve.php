@@ -67,11 +67,13 @@ $sql = "SELECT * FROM pre_approved_students";
 $params = [];
 
 if ($search_term) {
-    // Search across multiple relevant columns
-    $sql .= " WHERE sequence_no LIKE ? OR seat_no LIKE ? OR student_name_mm LIKE ? OR nrc LIKE ?";
+    // Search across multiple relevant columns, making NRC search space-insensitive
+    $sql .= " WHERE sequence_no LIKE ? OR seat_no LIKE ? OR student_name_mm LIKE ? OR REPLACE(nrc, ' ', '') LIKE ?";
     $search_like = "%" . $search_term . "%";
-    $params = [$search_like, $search_like, $search_like, $search_like];
+    $nrc_search_like = "%" . str_replace(' ', '', $search_term) . "%";
+    $params = [$search_like, $search_like, $search_like, $nrc_search_like];
 }
+
 
 // Apply the validated sort order
 $sql .= " ORDER BY id " . $sort_order;
@@ -281,16 +283,19 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <label for="student_name_mm" class="block text-sm font-medium">Student Name (MM)</label>
                     <input type="text" name="student_name_mm" required class="form-input mt-1 block w-full rounded-md p-2" value="<?php echo htmlspecialchars($edit_student['student_name_mm'] ?? ''); ?>">
                 </div>
+                
                 <div>
                     <div class="flex justify-between items-center">
-                        <label for="nrc_input" class="block text-sm font-medium">NRC</label>
+                        <label for="nrc_group" class="block text-sm font-medium">NRC</label>
                         <div class="flex items-center gap-2">
                              <input type="checkbox" id="nrc_applying" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
                              <label for="nrc_applying" class="text-sm">လျှောက်ထားဆဲ</label>
                         </div>
                     </div>
-                    <input type="text" id="nrc_input" name="nrc" required class="form-input mt-1 block w-full rounded-md p-2" value="<?php echo htmlspecialchars($edit_student['nrc'] ?? ''); ?>">
+                    <div id="nrc_group" class="mt-1"></div>
+                    <input type="hidden" name="nrc" id="nrc_hidden" value="<?php echo htmlspecialchars($edit_student['nrc'] ?? ''); ?>">
                 </div>
+
                 <div>
                     <label class="block text-sm font-medium">Date of Birth</label>
                     <div class="grid grid-cols-3 gap-3 mt-1">
@@ -335,8 +340,8 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <input type="text" name="search" class="form-input rounded-md p-2 w-auto flex-grow sm:w-64" placeholder="Search by Name, Seat No, etc." value="<?php echo htmlspecialchars($search_term); ?>">
                     <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Search</button>
                     <select name="sort" class="form-input rounded-md p-2" onchange="this.form.submit()">
-                        <option value="desc" <?php if ($sort_option === 'desc') echo 'selected'; ?>>အသစ်ကို အရင်ပြရန်</option>
-                        <option value="asc" <?php if ($sort_option === 'asc') echo 'selected'; ?>>အဟောင်းကို အရင်ပြရန်</option>
+                        <option value="desc" <?php if ($sort_option === 'desc') echo 'selected'; ?>>အသစ်ဆုံး အရင်ပြရန်</option>
+                        <option value="asc" <?php if ($sort_option === 'asc') echo 'selected'; ?>>အဟောင်းဆုံး အရင်ပြရန်</option>
                     </select>
                     <?php if ($search_term || $sort_option !== 'desc'): ?>
                         <a href="<?php echo $self_url; ?>" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Clear</a>
@@ -407,36 +412,142 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
         }
         
-        // --- NRC "APPLYING" LOGIC ---
-        const nrcApplyingCheckbox = document.getElementById('nrc_applying');
-        const nrcInput = document.getElementById('nrc_input');
+        // --- START OF NRC LOGIC ---
+        function setupNrcSection(containerId, prefix) {
+            const container = document.getElementById(containerId);
+            const hiddenInput = document.getElementById(`${prefix}_hidden`);
+            const checkbox = document.getElementById(`${prefix}_applying`);
+            if (!container || !hiddenInput || !checkbox) return;
 
-        function toggleNrcAdmin(isApplying) {
-            if (isApplying) {
-                nrcInput.value = 'လျှောက်ထားဆဲ';
-                nrcInput.disabled = true;
-                nrcInput.classList.add('bg-gray-200', 'dark:bg-gray-700');
-            } else {
-                if (nrcInput.value === 'လျှောက်ထားဆဲ') {
-                    nrcInput.value = '';
-                }
-                nrcInput.disabled = false;
-                nrcInput.classList.remove('bg-gray-200', 'dark:bg-gray-700');
+            const nrcTownships = {
+                1: ["အဂယ", "အတန", "ဗကန", "ဗမန", "ဒဖယ", "ဟပန", "ဆဒန", "ဆပဘ", "ကမန", "ကမတ", "ကပတ", "ခဘဒ", "ခလဖ", "ခဖန", "လဂန", "မဂဒ", "မကန","မကတ", "မကသ", "မခဘ", "မလန", "မမန", "မညန", "မစန","မတန","နမန","ပမန","ပနဒ","ပတအ","ပဝန","ဖကန","ရဗယ", "ဆဘန", "ဆဘတ", "စကန", "ဆလန", "စပဘ", "တနန","ဝမန","သဝတ","ဝမန","ရကန"],
+                2: ["ဘလခ", "ဒမဆ", "ဖဆန", "ထတပ","ခစန", "လကန", "မစန", "ဖလဆ", "ဖရဆ", "ရသန","စစန","ရတန"],
+                3: ["ဘအန", "ဘဂလ", "ဘသဆ", "ကဒန", "ကကရ", "ကမမ","ကဆက", "ကတခ", "လဘန", "လသန","မဆလ", "မဝတ", "ပကန", "ဖအန", "ဖပန", "စကလ","သတက","သတန","ဝလမ","ရရသ"],
+                4: ["ဟခန", "ဖလန", "ဆမန", "ထတလ", "ကခန", "ကပလ","မတန", "မတပ", "ပလဝ", "ရခဒ","ရဇန", "တတန", "တဇန"],
+                5: ["အထန", "အမဇ", "အတန", "အရတ", "ဗမန", "ဘတလ", "ဒဟန", "ဓကန", "ဒပယ", "ဟမလ", "ထခန", "ထပခ", "ကဘလ", "ကလထ","ကလန", "ကလတ", "ကလသ", "ကလဝ", "ကနန", "ကဆလ", "ကသန", "ခဥန", "ခပန", "ခတန", "ခဥတ","လဟန", "လရန", "မကန", "မလန", "မမန", "မမတ","မပလ", "မသန", "မရန", "နယန", "ငစန", "ငဇန", "ပလဘ", "ပလန", "ပဆန", "ဖပန","စကန", "ဆလက", "ဆမရ", "တဥန", "တမန", "တဆန","ဝလန", "ဝသန", "ရဥန", "ရဘန", "ယမပ"],
+                6: ["အမရ", "ဘပန", "ဟသတ", "ထဝန", "ကလအ", "ကပန", "ကစန", "ကသမ", "ကသန", "ကရရ", "ခမက","လလန", "မအန", "မအရ", "မမလ", "မမန","မတန", "ပကမ", "ပလန", "ပလတ", "တသရ", "သရခ", "ရဖန"],
+                7: ["အဖန", "အတန", "ဘသရ", "ဒဥန", "ထတပ", "ကကန", "ကပက", "ကတခ","ကဝန", "လပတ", "မလန", "မညန", "မဝတ", "နတလ", "ညလပ", "ပခန","ပခတ", "ပမန", "ပစတ", "ပတန", "ပတတ", "ဖမန", "တငန", "သကန","သနပ","သဝတ","ဝမန","ရကန","ရတန","ရတရ","ဇကန"],
+                8: ["အလန", "ဘကလ", "ဂဂန", "ဆမန", "ထလန", "ကထန", "ကမန", "ခမန","မဘန", "မဂဒ", "မထလ", "မထန", "မကန", "မလန", "မမန", "မတန", "မသန", "မရဆ", "နမန", "ငဖန", "ပခက", "ပမန" , "ပဖန", "စလန","ဆပဝ","ဆဖန", "စတရ", "တတက", "သရန", "ရနခ", "ရစက"],
+                9: ["အခန", "အမဘ", "အမရ", "အမဇ", "အစန", "အရတ", "ဥတသ", "ဒခသ", "ကမန", "ကပတ", "ကဆန", "ခအဇ", "ခမခ","ခမမ", "ခမန", "ခမစ", "ခမသ", "ခမဇ", "လကန", "လဝန", "မဟမ", "မထလ", "မကခ", "မကန","မခန", "မလန", "မမန", "မနမ", "မနတ", "မစန","မတလ", "မတန", "မတရ", "မသန", "မရမ", "မရတ", "နထက", "နမန", "နနမ", "နတက", "ငသရ","ငဇန", "ညဉန", "ပဥလ", "ပဘန", "ပဗသ", "ပကခ","ပခက", "ပခမ", "ပမန", "ပသက", "စကန", "စကတ", "တကတ" , "တတဥ", "တသန", "သပက", "သစန", "သတရ", "သဝန", "ဝတန", "ရဥန","ရမသ","ဇဗသ","ဇယသ"],
+                10: ["ဘအန", "ဘလန", "ထထန", "ကထန", "ကမလ", "ကမရ", "ခဆန", "ခဇန", "လမန", "မဒန", "မလမ","မစန", "ပမန", "ဖပန", "သထန", "သဖရ", "ရမန"],
+                11: ["အမန", "ဘသတ", "ဂမန", "ကဖန", "ကတလ", "ကတန", "လမတ", "မအတ","မအန", "မဥန", "မမန", "မပန", "မပတ", "မတန", "ပဏက", "ပတန", "စတန", "တကန", "တပဝ", "သတန", "ရဗန", "ရတန" , "ရတသ", "ရသတ"],
+                12: ["အလန", "အစန", "ဥကမ", "ဥကတ", "ဗဟန", "ဗတထ", "ဒဂမ", "ဒဂန", "ဒဂဆ", "ဒဂရ", "ဒလန", "ဒပန", "ထတပ", "ကကက", "ကခက", "ကမန", "ကမတ", "ကမရ", "ကတန", "ကတတ", "ခရန", "လကန" , "လမန", "လမတ", "လသန", "လသယ", "လယန", "လယရ", "မဥက", "မဘန","မဂဒ", "မဂတ", "မရက", "ပဘတ", "ပဇတ", "ဆကခ", "စခန", "တဥက", "တကန", "တမန", "တတန", "တတတ", "သဃက", "သကတ", "သခန", "သလန","ရကန","ရပသ"],
+                13: ["အပန", "အသရ", "အတန", "ဟမန", "ဟပန", "ဟပတ", "ကဟန", "ကကန", "ကခန", "ကလဒ", "ကလထ", "ကလန", "ကလတ", "ကမန", "ကတလ", "ကတန", "ကတတ", "ကသန", "ခလန", "ခရဟ", "လကန", "လခန", "လခတ", "လလန" ,"လရန", "မဘန", "မဟရ", "မထထ", "မကထ", "မကန", "မကတ", "မခန", "မခတ", "မလန", "မလတ", "မမထ", "မမန", "မနန", "မနတ", "မငန", "မပထ", "မပန", "မပတ", "မဖန", "မဖတ", "မရန", "မရတ", "မဆန", "မဆတ", "မတန", "မတတ", "မယထ", "မယန", "မယတ", "နခန", "နခတ" ,"နမတ", "နဖန", "နစန", "နတန", "နတရ", "ညရန" , "ပဆတ", "ပလထ", "ပလန", "ပလတ", "ပပက", "ပဆန", "ပဝန", "ပယန", "ဖခန", "ဆဆန", "တကန" ,"တခလ", "တလန", "တမည", "တတန", "တယန", "သနန",  "သပန", "ဝကန","ရငန","ရညန" ,"ရစန"],
+                14: ["အမတ", "အဂပ", "အမန", "အပန", "အစန", "ဘကလ", "ဒဒရ", "ဓနဖ", "ဟကက", "ဟသတ", "ကကထ", "ကကန", "ကခန", "ကလန" , "ကမန", "ကမသ", "ကပန", "လမန", "လပတ", "မအန", "မအပ", "မမက", "မမန", "မရက", "ငပတ", "ငဆန", "ငသခ" , "ငရက", "ညတန", "ပကခ", "မပလ", "ပတန", "ပသန", "ပသရ", "ဖပန", "တမန", "သပန" ,"ဝခမ", "ရကန", "ရသယ", "ဇလန"]
+            };
+            const nrcTypes = ["နိုင်", "ဧည့်", "ပြု", "သာ", "ယာယီ"];
+
+            container.innerHTML = `
+                <div class="flex flex-col space-y-2">
+                    <div class="grid grid-cols-3 gap-2">
+                        <select name="${prefix}_state" class="form-input w-full rounded-md p-2"></select>
+                        <select name="${prefix}_township" class="form-input w-full rounded-md p-2"></select>
+                        <select name="${prefix}_type" class="form-input w-full rounded-md p-2"></select>
+                    </div>
+                    <input type="text" name="${prefix}_number" class="form-input w-full rounded-md p-2 mt-2" placeholder="၁၂၃၄၅၆" maxlength="6" pattern="[၀-၉]{6}">
+                </div>
+            `;
+
+            const stateSelect = container.querySelector(`select[name="${prefix}_state"]`);
+            const townshipSelect = container.querySelector(`select[name="${prefix}_township"]`);
+            const typeSelect = container.querySelector(`select[name="${prefix}_type"]`);
+            const numberInput = container.querySelector(`input[name="${prefix}_number"]`);
+            const allNrcInputs = [stateSelect, townshipSelect, typeSelect, numberInput];
+
+            for (let i = 1; i <= 14; i++) {
+                stateSelect.add(new Option(convertToMyanmarNumber(i), i));
             }
-        }
-
-        if (nrcApplyingCheckbox && nrcInput) {
-            // Event listener for the checkbox
-            nrcApplyingCheckbox.addEventListener('change', function() {
-                toggleNrcAdmin(this.checked);
+            nrcTypes.forEach(type => {
+                typeSelect.add(new Option(`(${type})`, `(${type})`));
             });
 
-            // Initial state on page load (for editing)
-            if (nrcInput.value === 'လျှောက်ထားဆဲ') {
-                nrcApplyingCheckbox.checked = true;
-                toggleNrcAdmin(true);
+            const updateHiddenNrcInput = () => {
+                if (checkbox.checked) {
+                    hiddenInput.value = 'လျှောက်ထားဆဲ';
+                    return;
+                }
+                if (stateSelect.value && townshipSelect.value && typeSelect.value && numberInput.value.match(/^[၀-၉]{6}$/)) {
+                    hiddenInput.value = `${convertToMyanmarNumber(stateSelect.value)}/${townshipSelect.value}${typeSelect.value}${numberInput.value}`;
+                } else {
+                    hiddenInput.value = '';
+                }
+            };
+
+            const updateNrcTownships = (townshipToSelect = null) => {
+                const selectedState = stateSelect.value;
+                const townships = nrcTownships[selectedState] || [];
+                townshipSelect.innerHTML = '';
+                townships.forEach(township => {
+                    townshipSelect.add(new Option(township, township));
+                });
+                if (townshipToSelect && townships.includes(townshipToSelect)) {
+                    townshipSelect.value = townshipToSelect;
+                }
+                updateHiddenNrcInput();
+            };
+
+            const convertToEnglishNumber = (myanmarStr) => {
+                const map = {'၀':'0', '၁':'1', '၂':'2', '၃':'3', '၄':'4', '၅':'5', '၆':'6', '၇':'7', '၈':'8', '၉':'9'};
+                return String(myanmarStr).replace(/[၀-၉]/g, m => map[m]);
+            };
+
+            const parseAndRepopulateNrc = () => {
+                const nrcValue = hiddenInput.value;
+                if (!nrcValue || nrcValue === 'လျှောက်ထားဆဲ') return;
+
+                const nrcRegex = /^([၀-၉]{1,2})\/([က-အ]+)\((.+?)\)([၀-၉]{6})$/;
+                const match = nrcValue.match(nrcRegex);
+                if (match) {
+                    stateSelect.value = convertToEnglishNumber(match[1]);
+                    // Manually trigger change to update townships, THEN set the values
+                    stateSelect.dispatchEvent(new Event('change'));
+                    setTimeout(() => {
+                        townshipSelect.value = match[2];
+                        typeSelect.value = `(${match[3]})`;
+                        numberInput.value = match[4];
+                         updateHiddenNrcInput();
+                    }, 50); // Small delay to ensure township dropdown is populated
+                }
+            };
+            
+            const toggleNrcFields = (isApplying) => {
+                allNrcInputs.forEach(input => {
+                    input.disabled = isApplying;
+                    input.classList.toggle('bg-gray-200', isApplying);
+                    input.classList.toggle('dark:bg-gray-700', isApplying);
+                });
+                if (isApplying) {
+                    hiddenInput.value = 'လျှောက်ထားဆဲ';
+                } else {
+                    updateHiddenNrcInput();
+                }
+            };
+
+            allNrcInputs.forEach(input => input.addEventListener('change', updateHiddenNrcInput));
+            numberInput.addEventListener('input', function() {
+                this.value = convertToMyanmarNumber(this.value).replace(/[^၀-၉]/g, '');
+                updateHiddenNrcInput();
+            });
+            stateSelect.addEventListener('change', () => updateNrcTownships());
+            checkbox.addEventListener('change', () => toggleNrcFields(checkbox.checked));
+
+            // Initial setup
+            if (hiddenInput.value) {
+                if (hiddenInput.value === 'လျှောက်ထားဆဲ') {
+                    checkbox.checked = true;
+                    toggleNrcFields(true);
+                } else {
+                    parseAndRepopulateNrc();
+                    toggleNrcFields(false);
+                }
+            } else {
+                 updateNrcTownships();
+                 toggleNrcFields(false);
             }
         }
+
+        setupNrcSection('nrc_group', 'nrc');
+        // --- END OF NRC LOGIC ---
 
         // --- DATE OF BIRTH DROPDOWNS ---
         const yearSelect = document.getElementById('dob_year');
@@ -448,15 +559,13 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
             const currentYear = new Date().getFullYear();
             const startYear = currentYear - 100;
 
-            // Populate years
-            for (let i = currentYear - 16; i >= startYear; i--) { // Must be at least 16
+            for (let i = currentYear - 16; i >= startYear; i--) {
                 const option = document.createElement('option');
                 option.value = i;
                 option.textContent = i;
                 yearSelect.appendChild(option);
             }
 
-            // Populate months with numbers
             for (let i = 1; i <= 12; i++) {
                 const option = document.createElement('option');
                 option.value = i;
@@ -467,9 +576,7 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
             function populateDays(dayToPreselect = null) {
                 const year = parseInt(yearSelect.value, 10);
                 const month = parseInt(monthSelect.value, 10);
-                
                 const currentSelectedDay = dayToPreselect || daySelect.value;
-
                 daySelect.innerHTML = '<option value="">Day</option>';
 
                 if (year && month) {
@@ -480,7 +587,6 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         option.textContent = i;
                         daySelect.appendChild(option);
                     }
-                    
                     if (currentSelectedDay && currentSelectedDay <= daysInMonth) {
                         daySelect.value = currentSelectedDay;
                     }
@@ -501,7 +607,6 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 }
             }
 
-            // Repopulate from hidden input value on page load (for editing)
             const initialDob = dobHiddenInput.value;
             if (initialDob) {
                 const dateParts = initialDob.split('-');
@@ -509,15 +614,12 @@ $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     const initialYear = parseInt(dateParts[0], 10);
                     const initialMonth = parseInt(dateParts[1], 10);
                     const initialDay = parseInt(dateParts[2], 10);
-
                     yearSelect.value = initialYear;
                     monthSelect.value = initialMonth;
-                    
                     populateDays(initialDay);
                 }
             }
 
-            // Event Listeners
             yearSelect.addEventListener('change', () => { populateDays(); updateHiddenDob(); });
             monthSelect.addEventListener('change', () => { populateDays(); updateHiddenDob(); });
             daySelect.addEventListener('change', updateHiddenDob);
