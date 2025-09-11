@@ -56,8 +56,29 @@ if (isset($_GET['edit'])) {
     $edit_student = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Fetch all students
-$students = $pdo->query("SELECT * FROM pre_approved_students ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+// --- Fetching Students with Search/Filter and Sort Logic ---
+$search_term = trim($_GET['search'] ?? '');
+$sort_option = trim($_GET['sort'] ?? 'desc'); // Default to 'desc' (newest first)
+
+// Validate sort option to prevent potential SQL injection issues
+$sort_order = ($sort_option === 'asc') ? 'ASC' : 'DESC';
+
+$sql = "SELECT * FROM pre_approved_students";
+$params = [];
+
+if ($search_term) {
+    // Search across multiple relevant columns
+    $sql .= " WHERE sequence_no LIKE ? OR seat_no LIKE ? OR student_name_mm LIKE ? OR nrc LIKE ?";
+    $search_like = "%" . $search_term . "%";
+    $params = [$search_like, $search_like, $search_like, $search_like];
+}
+
+// Apply the validated sort order
+$sql .= " ORDER BY id " . $sort_order;
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$students = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -302,11 +323,25 @@ $students = $pdo->query("SELECT * FROM pre_approved_students ORDER BY id DESC")-
 
         <!-- Student List -->
         <div class="card p-6">
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
                 <h2 class="text-2xl font-bold">Pre-Approved Student List</h2>
-                <span class="text-lg font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 px-3 py-1 rounded-full">
+                <span class="text-lg font-semibold text-gray-700 dark:text-gray-300">
                     Total Students: <?php echo count($students); ?>
                 </span>
+            </div>
+            <div class="mb-4">
+                <!-- Search and Sort Form -->
+                <form action="<?php echo $self_url; ?>" method="GET" class="flex flex-wrap items-center gap-2">
+                    <input type="text" name="search" class="form-input rounded-md p-2 w-auto flex-grow sm:w-64" placeholder="Search by Name, Seat No, etc." value="<?php echo htmlspecialchars($search_term); ?>">
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Search</button>
+                    <select name="sort" class="form-input rounded-md p-2" onchange="this.form.submit()">
+                        <option value="desc" <?php if ($sort_option === 'desc') echo 'selected'; ?>>အသစ်ကို အရင်ပြရန်</option>
+                        <option value="asc" <?php if ($sort_option === 'asc') echo 'selected'; ?>>အဟောင်းကို အရင်ပြရန်</option>
+                    </select>
+                    <?php if ($search_term || $sort_option !== 'desc'): ?>
+                        <a href="<?php echo $self_url; ?>" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Clear</a>
+                    <?php endif; ?>
+                </form>
             </div>
             <div class="overflow-x-auto">
                 <table>
