@@ -494,6 +494,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response = ['status' => 'success', 'message' => 'All student data has been cleared.'];
                 break;
 
+            case 'get_dashboard_stats':
+                date_default_timezone_set('Asia/Yangon');
+                $today_date = date('Y-m-d');
+                
+                $stmt_pending = $pdo->query("SELECT COUNT(*) FROM students WHERE status = 'pending'");
+                $pending_count = $stmt_pending->fetchColumn();
+
+                $stmt_dorm = $pdo->query("SELECT COUNT(*) FROM students WHERE dormitory_preference = 1 AND status = 'pending'");
+                $dorm_count = $stmt_dorm->fetchColumn();
+
+                $stmt_today = $pdo->prepare("SELECT COUNT(*) FROM students WHERE date = ?");
+                $stmt_today->execute([$today_date]);
+                $today_count = $stmt_today->fetchColumn();
+                
+                $response = [
+                    'status' => 'success',
+                    'data' => [
+                        'pending_applications' => $pending_count,
+                        'dormitory_requests' => $dorm_count,
+                        'today_applications' => $today_count,
+                    ]
+                ];
+                break;
+
             case 'get_analytics_data':
                 $sqlMajors = "SELECT academic_year, COUNT(student_id) as student_count FROM students GROUP BY academic_year ORDER BY student_count DESC";
                 $stmtMajors = $pdo->prepare($sqlMajors);
@@ -527,3 +551,4 @@ ob_end_clean(); // Clean any stray output
 echo json_encode($response);
 $pdo = null; // Close connection
 ?>
+
