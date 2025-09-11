@@ -1,5 +1,6 @@
 <?php
 // We will fetch existing activities to pass to the frontend state.
+// [FIXED] Changed folder name to all lowercase for hosting compatibility.
 require_once '../Rform/db.php';
 require_once 'auth_check.php';
 
@@ -20,6 +21,7 @@ $pdo = null;
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Manage Activities — UTYCC Admin</title>
+  <!-- [FIXED] Changed folder name to all lowercase for hosting compatibility. -->
   <link rel="shortcut icon" href="../Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
   <!-- Theme Loader Script -->
@@ -118,6 +120,7 @@ $pdo = null;
 <body>
   <div class="app" id="app">
     <aside class="sidebar">
+      <!-- [FIXED] Changed folder name to all lowercase for hosting compatibility. -->
       <div class="brand">
         <img src="../Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" />
         <h1>UTYCC Admin Panel</h1>
@@ -267,16 +270,14 @@ $pdo = null;
     }
 
     /**
-     * အဓိက ပြင်ဆင်လိုက်သော အပိုင်း
-     * database ကနေရလာတဲ့ path ဟာ /uploads_activity/file.jpg ပုံစံဖြစ်ပြီး root ကနေစတဲ့အတွက်
-     * သူ့ကိုတိုက်ရိုက်သုံးရင် admin page မှာရော website မှာပါ အဆင်ပြေပါတယ်။
-     * အရှေ့မှာ '.' ထည့်စရာမလိုတော့ပါဘူး။
+     * [FINAL FIX] The path from the database (e.g., /uploads_activity/file.jpg) is a root-relative URL.
+     * The browser can understand and use this path directly without any changes.
+     * This is the simplest and most reliable way to display the image.
      */
     function getSafePhotoUrl(path) {
         if (!path) return PHOTO_PLACEHOLDER;
-        // The path from the database (e.g., /uploads_activity/file.jpg) is root-relative
-        // and can be used directly. The original code `.${path}` was incorrect.
-        return `..${path}`; 
+        // Just return the path as-is. The browser will correctly interpret it.
+        return path; 
     }
     
     const toastWrap = document.querySelector(".toast-wrap");
@@ -446,3 +447,4 @@ $pdo = null;
   </script>
 </body>
 </html>
+

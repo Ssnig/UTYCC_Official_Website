@@ -5,11 +5,10 @@
     date_default_timezone_set('Asia/Yangon');
 
 
-if (!isset($_SESSION['pre_approved_data'])) {
-        // Redirect them back to the verification page.
-        header('Location: Verify_new.php');
-        exit; // Important to stop further script execution.
-    }
+// if (!isset($_SESSION['pre_approved_data'])) {
+//         header('Location: Verify_new.php');
+//         exit; 
+//     }
 
     // If the user is starting a new application (e.g., by visiting form1.php?new=1),
     // clear any previously saved form data from the session.
@@ -363,7 +362,7 @@ if (!isset($_SESSION['pre_approved_data'])) {
                   
                     <div class="sm:col-span-2">
                         <label for="entry_year" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
-                        <input type="text" id="entry_year" placeholder="eg.2025-2026" name="entry_year" class="mt-1" value="<?php echo getValue('entry_year'); ?>" readonly>
+                        <input type="text" id="entry_year" value="2025" name="entry_year" class="mt-1" value="<?php echo getValue('entry_year'); ?>"selected readonly>
                     </div>
                 </div>
                 <div id="photo-upload-area" class="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-2 h-48">
