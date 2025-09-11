@@ -266,9 +266,17 @@ $pdo = null;
       try { return new Date(iso).toLocaleDateString('en-CA'); } catch { return iso; }
     }
 
+    /**
+     * အဓိက ပြင်ဆင်လိုက်သော အပိုင်း
+     * database ကနေရလာတဲ့ path ဟာ /uploads_activity/file.jpg ပုံစံဖြစ်ပြီး root ကနေစတဲ့အတွက်
+     * သူ့ကိုတိုက်ရိုက်သုံးရင် admin page မှာရော website မှာပါ အဆင်ပြေပါတယ်။
+     * အရှေ့မှာ '.' ထည့်စရာမလိုတော့ပါဘူး။
+     */
     function getSafePhotoUrl(path) {
         if (!path) return PHOTO_PLACEHOLDER;
-        return `.${path}`; // Prepending dot assuming path is like /uploads/..
+        // The path from the database (e.g., /uploads_activity/file.jpg) is root-relative
+        // and can be used directly. The original code `.${path}` was incorrect.
+        return `..${path}`; 
     }
     
     const toastWrap = document.querySelector(".toast-wrap");
@@ -438,4 +446,3 @@ $pdo = null;
   </script>
 </body>
 </html>
-
