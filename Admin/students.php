@@ -417,7 +417,7 @@ $pdo = null;
       <h1>Approved Students</h1>
       <form class="search" role="search" aria-label="Search students" onsubmit="event.preventDefault()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/></svg>
-        <input id="search" name="q" placeholder="Search by name, email, or seat no..." autocomplete="off" />
+        <input id="search" name="q" placeholder="Search by name, email, seat no, phone, or NRC..." autocomplete="off" />
       </form>
       <div class="userbar">
         <button class="btn ghost" id="exportBtn" title="Export CSV" aria-label="Export CSV">Export</button>
@@ -449,6 +449,15 @@ $pdo = null;
                 </select>
              </div>
              <!-- END: Year Filter Dropdown -->
+             <!-- NEW: Dormitory Filter Dropdown -->
+             <div class="field" style="min-width: 200px;">
+                <select id="dormitoryFilter" aria-label="Filter by Dormitory">
+                    <option value="all">All Dormitory</option>
+                    <option value="yes">Dormitory: Yes</option>
+                    <option value="no">Dormitory: No</option>
+                </select>
+             </div>
+             <button class="btn ghost" id="clearFiltersBtn" style="margin-left: 8px;">Clear Filters</button>
             <div class="spacer"></div>
             <button class="btn destructive" id="bulkDeleteBtn" disabled>Delete Selected</button>
           </div>
@@ -728,6 +737,7 @@ $pdo = null;
       students: <?php echo json_encode($students); ?>,
       q: '',
       year: 'all', // Add year for filtering
+      dormitory: 'all', // NEW: Add dormitory for filtering
       page: 1,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
@@ -1001,10 +1011,22 @@ $pdo = null;
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
       const selectedYear = state.year;
+      const selectedDormitory = state.dormitory;
+
       const base = state.students.filter(s => {
-          const matchesSearch = !q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q));
+          const matchesSearch = !q || 
+                                (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || 
+                                (s.student_email && s.student_email.toLowerCase().includes(q)) || 
+                                (s.seat_no && s.seat_no.toLowerCase().includes(q)) ||
+                                (s.student_phone && s.student_phone.includes(q)) || // Phone numbers don't need toLowerCase
+                                (s.student_nrc && s.student_nrc.toLowerCase().includes(q));
           const matchesYear = selectedYear === 'all' || s.academic_year === selectedYear;
-          return matchesSearch && matchesYear;
+          
+          const matchesDormitory = selectedDormitory === 'all' ||
+                                   (selectedDormitory === 'yes' && s.dormitory_preference) ||
+                                   (selectedDormitory === 'no' && !s.dormitory_preference);
+
+          return matchesSearch && matchesYear && matchesDormitory;
       });
 
       const { key, dir } = state.sort;
@@ -1066,7 +1088,27 @@ $pdo = null;
           render();
       });
 
+      document.getElementById('dormitoryFilter').addEventListener('change', (e) => {
+        state.dormitory = e.target.value;
+        state.page = 1;
+        render();
+      });
+
       document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
+      
+      // NEW: Event listener for the clear filters button
+      document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+        document.getElementById('search').value = '';
+        document.getElementById('yearFilter').value = 'all';
+        document.getElementById('dormitoryFilter').value = 'all';
+        state.q = '';
+        state.year = 'all';
+        state.dormitory = 'all';
+        state.page = 1;
+        render();
+        showToast('Filters cleared', 'success');
+      });
+
       document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
       document.getElementById('nextPage').addEventListener('click', () => { 
           const rows = getFilteredSorted();
@@ -1305,3 +1347,5 @@ $pdo = null;
   </script>
 </body>
 </html>
+
+
