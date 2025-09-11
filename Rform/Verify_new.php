@@ -45,34 +45,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         try {
-            // Base query and parameters
-            $sql = "SELECT * FROM pre_approved_students 
-                    WHERE sequence_no = :sequence_no AND seat_no = :seat_no AND student_name_mm = :student_name_mm AND dob = :dob";
-            
-            $params = [
-                ':sequence_no' => $sequence_no,
-                ':seat_no' => $seat_no,
-                ':student_name_mm' => $student_name_mm,
-                ':dob' => $dob
-            ];
-
-            // If NRC is not 'လျှောက်ထားဆဲ', add it to the query for stricter verification.
-            // Otherwise, we verify based on the other 4 unique fields.
-            if ($nrc !== 'လျှောက်ထားဆဲ') {
-                $sql .= " AND nrc = :nrc";
-                $params[':nrc'] = $nrc;
-            }
-
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute($params);
+            // Step 1: Find the student by a primary identifier, like sequence_no.
+            $stmt = $pdo->prepare("SELECT * FROM pre_approved_students WHERE sequence_no = :sequence_no");
+            $stmt->execute([':sequence_no' => $sequence_no]);
             $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($student) {
-                if ($student['is_enrolled']) {
-                    $errors[] = 'သင်သည် ကျောင်းအပ်နှံခြင်းလုပ်ငန်းစဉ်ကို ပြီးမြောက်ပြီးဖြစ်ပါသည်။';
+                // Step 2: Verify the rest of the information and collect all specific errors.
+                if ($student['seat_no'] !== $seat_no) {
+                    $errors[] = 'တက္ကသိုလ်ဝင်တန်း ခုံအမှတ် မှားယွင်းနေပါသည်။';
+                }
+                if ($student['student_name_mm'] !== $student_name_mm) {
+                    $errors[] = 'ကျောင်းသား/သူ အမည် (မြန်မာ) မှားယွင်းနေပါသည်။';
+                }
+                if ($student['dob'] !== $dob) {
+                    $errors[] = 'မွေးသက္ကရာဇ် မှားယွင်းနေပါသည်။';
+                }
+
+                // More robust NRC check for 'လျှောက်ထားဆဲ' case.
+                $isNrcValid = false;
+                if ($nrc === 'လျှောက်ထားဆဲ') {
+                    // If user is applying, the DB record for NRC should be empty, NULL, or the text 'လျှောက်ထားဆဲ'.
+                    if (empty($student['nrc']) || $student['nrc'] === 'လျှောက်ထားဆဲ') {
+                        $isNrcValid = true;
+                    }
                 } else {
+                    // If user provides a specific NRC, it must match the one in the database.
+                    if ($student['nrc'] === $nrc) {
+                        $isNrcValid = true;
+                    }
+                }
+
+                if (!$isNrcValid) {
+                    $errors[] = 'နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် မှားယွင်းနေပါသည်။';
+                }
+
+
+                // Step 3: If there are no errors after all checks, proceed.
+                if (empty($errors)) {
                     // Verification successful, store pre-approved data in session.
-                    // Storing the whole record is better.
                     $_SESSION['pre_approved_data'] = $student;
 
                     // Clear any old form data before starting new
@@ -83,8 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header("Location: form1.php");
                     exit;
                 }
+                // If there were validation errors, the script will fall through and display them.
+                
             } else {
-                $errors[] = 'သင်ဖြည့်သွင်းလိုက်သော အချက်အလက်များသည် မှတ်တမ်းများနှင့် ကိုက်ညီမှုမရှိပါ။ ကျေးဇူးပြု၍ ကျောင်းသားရေးရာဌာနသို့ ဆက်သွယ်ပါ။';
+                // Student not found by sequence_no. Give a specific error for this case.
+                $errors[] = 'သင်ဖြည့်သွင်းလိုက်သော စဉ် (ကျောင်းဝင်အမှတ်) သည် မှတ်တမ်းများတွင် မရှိပါ။';
             }
         } catch (PDOException $e) {
             error_log("Verification Error: " . $e->getMessage());
