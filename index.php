@@ -401,9 +401,9 @@ $pdo = null;
     <div id="main-content">
         <section class="hero-container">
             <div class="hero-slideshow">
-                <div class="hero-slide active" style="background-image: url(./Img/hero-carousel/2.jpg)"></div>
+                <div class="hero-slide active" style="background-image: url(./Img/hero-carousel/2.JPG)"></div>
                 <div class="hero-slide" style="background-image: url(./Img/hero-carousel/5.JPG)"></div>
-                <div class="hero-slide" style="background-image: url(./Img/hero-carousel/7.jpg)"></div>
+                <div class="hero-slide" style="background-image: url(./Img/hero-carousel/7.JPG)"></div>
                 <div class="hero-slide" style="background-image: url(./Img/utycc_buildings/front_view2.JPG)"></div>
                 <div class="hero-slide" style="background-image: url(./Img/utycc_buildings/lab.JPG)"></div>
                 <div class="hero-slide" style="background-image: url(./Img/utycc_buildings/lab3.JPG)"></div>
@@ -494,7 +494,7 @@ $pdo = null;
                         <a href="./Majors/ce.php" class="program-card" style="--i:2;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img\logo\CE.webp" alt="Computer Engineering" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ce">Computer Engineering (CE)</h3></div></a>
                         <a href="./Majors/ece.php" class="program-card" style="--i:3;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img/logo/EcE.jpg" alt="Electronics Engineering" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ece">Electronics Engineering (EcE)</h3></div></a>
                         <a href="./Majors/pre.php" class="program-card" style="--i:4;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img/logo/PrE.png" alt="Precision Engineering" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_pre">Precision Engineering (PrE)</h3></div></a>
-                        <a href="./Majors/ame.php" class="program-card" style="--i:5;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img\logo\Ame_updated.jpg" alt="Advanced Materials Engineering" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ame">Advanced Materials Engineering (AME)</h3></div></a>
+                        <a href="./Majors/ame.php" class="program-card" style="--i:5;"><div class="card-hover-effect border border-gray-200 rounded-lg p-6 hover:border-blue-500 h-full"><img src="Img\logo\AME_updated.jpg" alt="Advanced Materials Engineering" loading="lazy" /><h3 class="text-lg font-bold text-blue-900" data-lang-key="program_ame">Advanced Materials Engineering (AME)</h3></div></a>
                     </div>
                 </div>
 
@@ -513,9 +513,9 @@ $pdo = null;
                     <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style="background-image: url('./Img/utycc_buildings/roadmap.JPG');"></div>
                     <div class="absolute inset-0 bg-black opacity-60"></div>
                     <div class="relative z-10 p-6 md:p-10 text-white flex flex-col items-center justify-center text-center min-h-[250px]">
-                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-md">View Your Exam Results</h2>
-                        <p class="max-w-md mb-8 text-sm md:text-base drop-shadow-sm">Access your academic performance and check your latest exam results from all years and semesters.</p>
-                        <a href="./Rform/examResults.php" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">Check Results</a>
+                        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-md"data-lang-key="view">View Your Exam Results</h2>
+                        <p class="max-w-md mb-8 text-sm md:text-base drop-shadow-sm"data-lang-key="view1">Access your academic performance and check your latest exam results from all years and semesters.</p>
+                        <a href="./Rform/examResults.php" class="inline-block px-8 py-3 bg-white text-blue-900 font-bold rounded-full shadow-lg transition-transform duration-300 transform-gpu hover:scale-105 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50"data-lang-key="view2">Check Results</a>
                     </div>
                 </div>
             </section>
@@ -708,6 +708,9 @@ $pdo = null;
                 admission_closed_title: "ကျောင်းအပ်လက်ခံခြင်း ယာယီပိတ်ထားပါသည်",
                 admission_closed_text: "တက္ကသိုလ်မှ ကျောင်းသား/သူအသစ်များ လက်ခံခြင်းကို လက်ရှိတွင် ရပ်ဆိုင်းထားပါသည်။",
                 footer_link_dp: "ဒေတာကာကွယ်ရေး",
+                view:"စာမေးပွဲရလဒ်ကြည့်ရန်",
+                view1:"သင်၏ပညာရေးဆောင်ရွက်မှုကိုကြည့်ရှုပြီး နှစ်နှင့် semestersအားလုံးမှ နောက်ဆုံးစာမေးပွဲရလဒ်များကို စစ်ဆေးနိုင်ပါသည်။",
+                view2:"ရလဒ်များကြည့်ရန်",
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -769,6 +772,9 @@ $pdo = null;
                 admission_closed_title: "ADMISSIONS ARE CURRENTLY CLOSED",
                 admission_closed_text: "Our university is not accepting new student applications at this time.",
                 footer_link_dp: "Data Protection",
+                view:"View Your Exam Results",
+                view1:"Access your academic performance and check your latest exam results from all years and semesters.",
+                view2:"Check Results",
             },
         };
 

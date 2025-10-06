@@ -863,8 +863,8 @@
       mobileMenu.classList.toggle("hidden");
     });
   </script>
-  <script src="../js/Des_Major.js"></script>
-  <script src="../js/BE_Advantages.js"></script>
+  <script src="../JS/Des_Major.js"></script>
+  <script src="../JS/BE_Advantages.js"></script>
   <script>
     // --- Translation Script ---
     const translations = {

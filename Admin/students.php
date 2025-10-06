@@ -746,7 +746,8 @@ $pdo = null;
     // NEW/MODIFIED: Unified function to handle all file paths
     function getSafeUrl(path) {
         if (!path) {
-            return 'https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+File';
+            return 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
+            // return 'https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+File';
         }
         // Path can be stored as '/uploads/...' or 'uploads/...'
         // We need to find the 'uploads/' segment and build the correct relative path from there.
