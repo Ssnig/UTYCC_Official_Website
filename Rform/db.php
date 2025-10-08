@@ -2,9 +2,9 @@
 // db.php - Database connection using PDO
            // Database host
 $host = "localhost";           // Database host
-$dbname = "hakjwsylap_registration_db";   // Database name
-$user = "hakjwsylap_registration_db";                // MySQL username
-$pass = "[n(uZopEltdo";                // MySQL password
+$dbname = "registration_db";   // Database name
+$user = "root";                // MySQL username
+$pass = "";                // MySQL password
 
 try {
     // Create PDO instance
