@@ -317,7 +317,7 @@ $pdo = null;
                     data-lang-key="nav_about">ကျွန်ုပ်တို့အကြောင်း</a>
                 <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_activity">လှုပ်ရှားမှုများ</a>
-                <a href="./rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+                <a href="./Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
                     data-lang-key="nav_examresult">အောင်စာရင်းများ</a>
                 <div class="relative ml-4">
                     <div id="lang-switcher-container-desktop">
@@ -592,7 +592,7 @@ $pdo = null;
                     <p class="text-blue-200 text-sm mt-4"><a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay Region, Myanmar</a></p>
                     <div class="mt-4 text-sm text-blue-200">
                         <a href="mailto:utyccstudentaffair2010@gmail.com">Email: info@utycc.site utyccstudentaffair2010@gmail.com</a>
-                        <a href="tel:+959445767834">Phone: +959445767834 </a>
+                        <br><a href="tel:+959445767834">Phone: +959445767834 </a>
                     </div>
                 </div>
                 <div class="animate-on-scroll" style="--i:2;">

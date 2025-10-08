@@ -504,7 +504,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_dorm = $pdo->query("SELECT COUNT(*) FROM students WHERE dormitory_preference = 1 AND status = 'pending'");
                 $dorm_count = $stmt_dorm->fetchColumn();
 
-                $stmt_today = $pdo->prepare("SELECT COUNT(*) FROM students WHERE date = ?");
+                $stmt_today = $pdo->prepare("SELECT COUNT(*) FROM students WHERE DATE(date) = ?");
                 $stmt_today->execute([$today_date]);
                 $today_count = $stmt_today->fetchColumn();
                 
@@ -551,4 +551,3 @@ ob_end_clean(); // Clean any stray output
 echo json_encode($response);
 $pdo = null; // Close connection
 ?>
-

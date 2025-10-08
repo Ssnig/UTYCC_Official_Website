@@ -186,7 +186,7 @@
         data-lang-key="nav_about_mobile">About Us</a>
       <a href="./activity.php" class="block py-2 text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_activity_mobile">Activities</a>
-      <a href="./exam_results.php" class="block py-2 text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="./Rform/examResults.php" class="block py-2 text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_examresult_mobile">Exam Results</a>
       <div class="relative mt-4 pt-4 border-t">
         <div id="lang-switcher-container-mobile" class="relative">
@@ -439,7 +439,7 @@
 
     const translations = {
       my: {
-        about_title: "ကျွန်ုပ်တို့ တက္ကသိုလ်အကြောင်း",
+        about_title: "ကျွန်ုပ်တို့တက္ကသိုလ်အကြောင်း",
         AOU: "ကျွန်ုပ်တို့၏ လေးစားထိုက်သော အဖွဲ့အစည်းတွင် ပညာရေးဆိုင်ရာ ထူးချွန်မှု၊ ဝေဖန်ပိုင်းခြားတွေးခေါ်မှုနှင့် တက်ကြွသောအသိုင်းအဝိုင်းကို ပြုစုပျိုးထောင်ရန် ရည်စူးပါသည်။ ကျောင်းသားများအား ၎င်းတို့နှစ်သက်ရာနယ်ပယ်တွင် ထူးချွန်ရန်နှင့် ကမ္ဘာကြီးအပေါ် အဓိပ္ပာယ်ပြည့်ဝသော အကျိုးသက်ရောက်မှုဖြစ်စေရန် လိုအပ်သော ကျွမ်းကျင်မှုနှင့် အသိပညာများ တပ်ဆင်ပေးနိုင်ရန် ဒီဇိုင်းထုတ်ထားသည့် ကွဲပြားသော ပရိုဂရမ်များကို ပေးအပ်ပါသည်။",
         mission_title: "ကျွန်ုပ်တို့၏ ရည်မှန်းချက်",
         mission_text: "ကမ္ဘာ့အဆင့်မီ နည်းပညာပညာရေးကို ပံ့ပိုးပေးရန်၊ သုတေသနနှင့် ဆန်းသစ်တီထွင်မှုကို မြှင့်တင်ရန်၊ နိုင်ငံ၏ နည်းပညာတိုးတက်မှုနှင့် လူမှုဘဝသာယာဝပြောရေးကို အထောက်အကူပြုနိုင်သော အရည်အချင်းပြည့်ဝသည့် ဘွဲ့ရများ မွေးထုတ်ရန်။",

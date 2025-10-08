@@ -20,15 +20,15 @@
 
         try {
             $mail->isSMTP();
-            $mail->Host       = 'smtp.privateemail.com';
+            $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'admission@utycc.site';
-            $mail->Password   = 'admission';
+            $mail->Username   = 'mailutycc@gmail.com';
+            $mail->Password   = 'thpo qwtd dpwf mprw';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $mail->Port       = 465;
             $mail->CharSet    = 'UTF-8';
 
-            $mail->setFrom('admission@utycc.site', 'UTYCC Student Affairs');
+            $mail->setFrom('mailutycc@gmail.com', 'UTYCC Student Affairs');
             $mail->addAddress($recipientEmail, $recipientName);
 
             $mail->isHTML(true);
@@ -41,18 +41,6 @@
     <p>Further information will be sent to you shortly.</p>
     <p>Best regards,</p>
     <p><strong>UTYCC Administration Office</strong></p>
-
-    <h2 style='color: #0056b3;'>ပထမနှစ်ဝင်ခွင့် ကျောင်းအပ်ရာတွင် လိုအပ်သောအချက်အလက်များ</h2>
-    <ul>
-        <li>(၁) ရပ်ကွက်၊ ရဲစခန်းထောက်ခံစာ (မူရင်း) <span style='color: #888;'>(Optional)</span></li>
-        <li>(၂) ဆေးထောက်ခံစာ (မူရင်း) <span style='color:#888;'>(Optional)</span></li>
-        <li>(၃) အောင်လက်မှတ် (မူရင်း/မိတ္တူ)</li>
-        <li>(၄) အမှတ်စာရင်း (မူရင်း/မိတ္တူ)</li>
-        <li>(၅) ကျောင်းသား/မိဘ မှတ်ပုံတင် (မူရင်း/မိတ္တူ)</li>
-        <li>(၆) အိမ်ထောင်စုဇယား (မူရင်း/မိတ္တူ)</li>
-        <li>(၇) လိုင်စင်ဓာတ်ပုံ</li>
-        <li>(၈) ပုံ (မှတ်ပုံတင်နံပါတ်ပါရှိသည့်ပုံ)</li>
-    </ul>
 </div>
         ";
             $mail->AltBody = "Dear {$recipientName},\n\nWe are thrilled to inform you that your registration has been accepted...\n\nBest regards,\nUTYCC Administration Office";
@@ -80,15 +68,15 @@
 
         try {
             $mail->isSMTP();
-            $mail->Host       = 'smtp.privateemail.com';
+            $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'admission@utycc.site';
-            $mail->Password   = 'admission';
+            $mail->Username   = 'mailutycc@gmail.com';
+            $mail->Password   = 'thpo qwtd dpwf mprw';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $mail->Port       = 465;
             $mail->CharSet    = 'UTF-8';
 
-            $mail->setFrom('admission@utycc.site', 'UTYCC Student Affairs');
+            $mail->setFrom('mailutycc@gmail.com', 'UTYCC Student Affairs');
             $mail->addAddress($recipientEmail, $recipientName);
 
             $mail->isHTML(true);
@@ -137,19 +125,17 @@
         try {
             // SMTP settings
             $mail->isSMTP();
-            $mail->Host       = 'smtp.privateemail.com';
+         $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'support@utycc.site';
-            $mail->Password   = 'support';
+            $mail->Username   = 'mailutycc@gmail.com';
+            $mail->Password   = 'thpo qwtd dpwf mprw';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $mail->Port       = 465;
             $mail->CharSet    = 'UTF-8';
 
             // Recipients
-            $mail->setFrom('support@utycc.site', 'UTYCC Support');
+            $mail->setFrom('mailutycc@gmail.com', 'UTYCC Support');
             $mail->addAddress($recipientEmail, $recipientName);
-            $mail->addReplyTo('support@utycc.site', 'UTYCC Support');
-
             // Email content
             $mail->isHTML(true);
             $mail->Subject = $subject;

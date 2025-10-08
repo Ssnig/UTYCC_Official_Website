@@ -299,7 +299,7 @@ if (isset($_GET['status'])) {
               id="name"
               name="name"
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
-              placeholder="John Doe"
+              placeholder="Your Name"
               required
             />
           </div>
@@ -315,7 +315,7 @@ if (isset($_GET['status'])) {
               id="email"
               name="email"
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
-              placeholder="john@example.com"
+              placeholder="student@gmail.com"
             />
           </div>
           <div class="opacity-0 animate-fade-up" style="animation-delay: 1s">

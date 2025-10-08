@@ -190,7 +190,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </form>
             </div>
             <div class="login-image-panel">
-                <img src="../Img/hero-carousel/3.JPG" alt="UTYCC Campus">
+                <img src="../Img/hero-carousel/3.jpg" alt="UTYCC Campus">
             </div>
         </div>
     </div>

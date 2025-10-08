@@ -65,7 +65,7 @@
           data-lang-key="nav_about">About Us</a>
         <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_activity">Activities</a>
-        <a href="../exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="../Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult">Exam Results</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
@@ -116,7 +116,7 @@
       <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
-      <a href="../rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="../Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
@@ -179,7 +179,7 @@
   <header class="mb-12 rounded-3xl overflow-hidden shadow-2xl py-4">
     <div class="relative h-96">
       <!-- ဒီအောက်ကဟာ ကြိုက်တဲ့ပုံထည့်လို့ရတယ် ဥပမာ majorနဲ့ဆိုင်တဲ့ buildingတွေ ပုံတွေက "./Img/utycc_buildings/"ထဲက ဟာတွေယူသုံး srcမှာနော် -->
-      <img src="../Img/utycc_buildings/Lab3.JPG" alt="Hero image of a bustling university campus"
+      <img src="../Img/utycc_buildings/lab3.JPG" alt="Hero image of a bustling university campus"
         class="absolute inset-0 w-full h-full object-cover brightness-75" loading="lazy"/>
       <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-40">
         <div class="text-center text-white p-4">
@@ -789,7 +789,7 @@
           </p>
           <div class="mt-4 text-sm text-blue-200">
             <a href="mailto:utyccstudentaffair2010@gmail.com">Email: info@utycc.site utyccstudentaffair2010@gmail.com</a>
-                        <a href="tel:+959445767834">Phone: +959445767834 </a>
+                       <br> <a href="tel:+959445767834">Phone: +959445767834 </a>
           </div>
         </div>
 
@@ -913,8 +913,8 @@
       mobileMenu.classList.toggle("hidden");
     });
   </script>
-  <script src="../js/Des_Major.js"></script>
-  <script src="../js/BE_Advantages.js"></script>
+  <script src="../JS/Des_Major.js"></script>
+  <script src="../JS/BE_Advantages.js"></script>
   <script>
     // --- Translation Script ---
     const translations = {
@@ -1174,7 +1174,7 @@
       setLanguage(savedLang);
     });
   </script>
-  <script src="../js/lgl.js"></script>
+  <script src="../JS/lgl.js"></script>
 </body>
 
 </html>

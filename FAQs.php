@@ -395,7 +395,7 @@
 
   <header class="mb-12 rounded-3xl overflow-hidden shadow-2xl py-4">
     <div class="relative h-96">
-      <img src="../Img/utycc_buildings/Lab3.JPG" alt="Hero image of a bustling university campus" class="absolute inset-0 w-full h-full object-cover brightness-75" loading="lazy"/>
+      <img src="../Img/utycc_buildings/lab3.JPG" alt="Hero image of a bustling university campus" class="absolute inset-0 w-full h-full object-cover brightness-75" loading="lazy"/>
       <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-40">
         <div class="text-center text-white p-4 animate-fadeIn">
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4" data-lang-key="faq">

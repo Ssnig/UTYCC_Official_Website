@@ -64,7 +64,7 @@
           data-lang-key="nav_about">About Us</a>
         <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_activity">Activities</a>
-        <a href="../exam_results.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+        <a href="../Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
           data-lang-key="nav_examresult">Exam Results</a>
 
         <!-- Language Switcher Dropdown - Updated Style -->
@@ -115,7 +115,7 @@
       <a href="../activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_activity_mobile">Activities</a>
         <br><br>
-      <a href="../rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
+      <a href="../Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium"
         data-lang-key="nav_examresult_mobile">Exam Results</a>
         <br><br>
       <div class="relative mt-4 pt-4 border-t">
@@ -812,7 +812,7 @@
             </a>
           </p>
           <div class="mt-4 text-sm text-blue-200">
-            <a href="mailto:utyccstudentaffair2010@gmail.com">Email: info@utycc.site utyccstudentaffair2010@gmail.com</a>
+            <a href="mailto:utyccstudentaffair2010@gmail.com">Email: info@utycc.site utyccstudentaffair2010@gmail.com</a><br>
                         <a href="tel:+959445767834">Phone: +959445767834 </a>
           </div>
         </div>
@@ -933,8 +933,8 @@
       mobileMenu.classList.toggle("hidden");
     });
   </script>
-  <script src="../js/Des_Major.js"></script>
-  <script src="../js/BE_Advantages.js"></script>
+  <script src="../JS/Des_Major.js"></script>
+  <script src="../JS/BE_Advantages.js"></script>
   <script>
     // --- Translation Script ---
     const translations = {
@@ -1186,7 +1186,7 @@
       setLanguage(savedLang);
     });
   </script>
-  <script src="../js/lgl.js"></script>
+  <script src="../JS/lgl.js"></script>
 </body>
 
 </html>

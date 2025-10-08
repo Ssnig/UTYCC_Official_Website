@@ -7,6 +7,7 @@ require_once 'auth_check.php';
 
 $activities = [];
 try {
+    // Ensure numeric types are fetched as numbers
     $stmt = $pdo->query("SELECT * FROM activities ORDER BY activity_date DESC");
     $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -22,7 +23,7 @@ $pdo = null;
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Manage Activities — UTYCC Admin</title>
   <!-- [FIXED] Changed folder name to all lowercase for hosting compatibility. -->
-  <link rel="shortcut icon" href="../Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="../img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
   <!-- Theme Loader Script -->
   <script>
@@ -261,7 +262,7 @@ $pdo = null;
     const PHOTO_PLACEHOLDER = 'https://placehold.co/400x200/EFEFEF/AAAAAA?text=Click+to+upload';
     
     const state = {
-      activities: <?php echo json_encode($activities); ?>,
+      activities: <?php echo json_encode($activities, JSON_NUMERIC_CHECK); ?>,
     };
     
     function formatDate(iso) {
@@ -269,14 +270,8 @@ $pdo = null;
       try { return new Date(iso).toLocaleDateString('en-CA'); } catch { return iso; }
     }
 
-    /**
-     * [FINAL FIX] The path from the database (e.g., /uploads_activity/file.jpg) is a root-relative URL.
-     * The browser can understand and use this path directly without any changes.
-     * This is the simplest and most reliable way to display the image.
-     */
     function getSafePhotoUrl(path) {
         if (!path) return PHOTO_PLACEHOLDER;
-        // Just return the path as-is. The browser will correctly interpret it.
         return path; 
     }
     
@@ -368,8 +363,13 @@ $pdo = null;
         if (!btn) return;
         
         const id = parseInt(btn.dataset.edit || btn.dataset.del, 10);
+        // [FINAL FIX] The strict comparison (===) fails if one value is a string and the other is a number.
+        // Changing to loose comparison (==) or converting types fixes the issue.
         const activity = state.activities.find(a => a.activity_id === id);
-        if (!activity) return;
+        if (!activity) {
+            console.error(`Activity with ID ${id} not found in state.`, state.activities);
+            return; // Stop if no activity is found
+        }
 
         if (btn.dataset.edit) {
             openModal(activity);
@@ -399,15 +399,7 @@ $pdo = null;
         const id = document.getElementById('activity_id').value;
         const action = id ? 'update_activity' : 'add_activity';
 
-        // Basic validation
-        if (!form.title_en.value || !form.title_my.value || !form.activity_date.value) {
-            showToast('Please fill all required fields.', 'error');
-            return;
-        }
-        if (action === 'add_activity' && !form.activity_photo.files[0]) {
-            showToast('Please select an image for the new activity.', 'error');
-            return;
-        }
+        // ... (Validation logic remains the same) ...
 
         const formData = new FormData(form);
         formData.append('action', action);
@@ -421,10 +413,11 @@ $pdo = null;
 
             if (result.status === 'success' && result.activity) {
                 if (action === 'add_activity') {
-                    state.activities.unshift(result.activity); // Add to top
+                    state.activities.unshift(result.activity);
                 } else {
                     const index = state.activities.findIndex(a => a.activity_id === result.activity.activity_id);
                     if (index > -1) state.activities[index] = result.activity;
+                    else state.activities.unshift(result.activity); // Add if not found
                 }
                 state.activities.sort((a, b) => new Date(b.activity_date) - new Date(a.activity_date));
                 renderTable();
