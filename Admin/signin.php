@@ -39,6 +39,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['admin_loggedin'] = true;
                     $_SESSION['admin_id'] = $admin['id'];
                     $_SESSION['admin_user'] = $admin['admin_user'];
+
+                    // ✅ Check if this admin is a super admin (super admin ဟုတ်မဟုတ် စစ်ဆေးခြင်း)
+                    $superCheck = $pdo->prepare("SELECT super_admin_id FROM super_admins WHERE super_admin_id = :id");
+                    $superCheck->bindParam(':id', $admin['id'], PDO::PARAM_INT);
+                    $superCheck->execute();
+
+                    $_SESSION['is_super_admin'] = $superCheck->rowCount() > 0 ? true : false;
                     
                     // Admin dashboard သို့ redirect လုပ်ပါ။
                     header("Location: admin_dashboard.php");
@@ -190,7 +197,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </form>
             </div>
             <div class="login-image-panel">
-                <img src="../Img/hero-carousel/3.jpg" alt="UTYCC Campus">
+                <img src="../Img/hero-carousel/3.JPG" alt="UTYCC Campus">
             </div>
         </div>
     </div>
