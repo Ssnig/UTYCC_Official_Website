@@ -216,7 +216,7 @@
             if (empty($_POST['mother_race'])) $validation_errors['mother_race'] = "အမိ(အရင်း)၏ လူမျိုးထည့်သွင်းရန်လိုအပ်ပါသည်။";
             if (empty($_POST['mother_info'])) $validation_errors['mother_info'] = "အမိ(အရင်း)၏ အလုပ်အကိုင်/ပညာအရည်အချင်း ထည့်သွင်းရန်လိုအပ်ပါသည်။";
             if (empty($_POST['mother_nrc'])) $validation_errors['mother_nrc'] = "အမိ(အရင်း)၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
-            if (empty($_POST['mother_address'])) $validation_errors['mother_address'] = "အမိ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်�စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
+            if (empty($_POST['mother_address'])) $validation_errors['mother_address'] = "အမိ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
             if (empty($_POST['mother_phone'])) $validation_errors['mother_phone'] = "အမိ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
         }
 
@@ -374,7 +374,7 @@
                 </div>
                     <div class="relative pb-5">
                         <label for="seat_no" class="block text-sm font-medium text-gray-700">ခုံအမှတ်</label>
-                        <input type="text" placeholder="တက္ကသိုလ်ဝင်တန်း ခုံအမှတ်" id="seat_no" name="seat_no" class="mt-1" value="<?php echo getValue('seat_no'); ?>">
+                        <input type="text" placeholder="Roll No" id="seat_no" name="seat_no" class="mt-1" value="<?php echo getValue('seat_no'); ?>">
                         <?php if (isset($errors['seat_no'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['seat_no']; ?></p><?php endif; ?>
                     </div>
                   
