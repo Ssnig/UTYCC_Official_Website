@@ -1,11 +1,23 @@
 <?php
 require_once 'auth_check.php';
 require_once '../Rform/db.php';
+require_once 'auth_check_super_admin.php';
 
-// Fetch current admins
+// Fetch current admins with superadmin checks
 $admins = [];
 try {
-    $stmt = $pdo->query("SELECT id, admin_user FROM admins ORDER BY admin_user ASC");
+    $stmt = $pdo->query("
+        SELECT 
+            a.id,
+            a.admin_user,
+            CASE 
+                WHEN s.super_admin_id IS NOT NULL THEN 1 
+                ELSE 0 
+            END AS is_super_admin
+        FROM admins a
+        LEFT JOIN super_admins s ON a.id = s.super_admin_id
+        ORDER BY a.admin_user ASC
+    ");
     $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     error_log("Could not fetch admins: " . $e->getMessage());
@@ -37,7 +49,6 @@ try {
         'enrollment_status' => 'closed'
     ];
 }
-
 
 $pdo = null; // Close the connection
 ?>
@@ -125,7 +136,7 @@ $pdo = null; // Close the connection
         .danger-zone { border-color: hsl(var(--danger) / 0.5); }
         .danger-zone h3 .icon { color: hsl(var(--danger)); }
         .toast-wrap { position: fixed; top: 20px; right: 20px; width: min(360px, 92vw); display: grid; gap: 12px; z-index: 9999; pointer-events: none; }
-        .toast { pointer-events: auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--primary-foreground)); background: hsl(var(--fg)); box-shadow: var(--shadow-card); border-left: 4px solid hsl(var(--primary)); animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards; }
+        .toast { pointer-events: auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color:var(--fg); background: hsl(var(--bg)); box-shadow: var(--shadow-card); border-left: 4px solid hsl(var(--primary)); animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards; }
         .toast.success { border-left-color: hsl(var(--success)); }
         .toast.warning { border-left-color: hsl(var(--warning)); }
         .toast.error { border-left-color: hsl(var(--danger)); }
@@ -146,6 +157,70 @@ $pdo = null; // Close the connection
         .admin-list li:not(:last-child) { border-bottom: 1px solid hsl(var(--border)); }
         @media (max-width: 780px) { .app { grid-template-columns: 1fr; grid-template-areas: "header" "main"; } .sidebar { display: none; } }
         @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } .admin-management-grid { grid-template-columns: 1fr; } }
+        .admin-badge {
+            background-color: #007bff;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-size: 0.8em;
+        }
+
+        .super-admin-badge {
+            background-color: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-size: 0.8em;
+        }
+        .hidden {
+        display: none !important; /* hides the element completely */
+        }
+
+        .checkboxLabel {
+            margin: 10px 0;
+        }
+
+        .checkboxLabel label{
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        user-select: none;
+        }
+
+        .checkboxLabel input[type="checkbox"] {
+        appearance: none; /* remove default checkbox */
+        width: 20px;
+        height: 20px;
+        border: 2px solid hsl(var(--border));
+        border-radius: 4px;
+        background-color: hsl(var(--card));
+        position: relative;
+        transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease);
+        cursor: pointer;
+        }
+
+        /* checked state */
+        .checkboxLabel input[type="checkbox"]:checked {
+        background-color: hsl(var(--primary));
+        border-color: hsl(var(--primary));
+        }
+
+        /* checkmark */
+        .checkboxLabel input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 9px;
+        width: 4px;
+        height: 10px;
+        border: solid hsl(var(--primary-foreground));
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        }
+
     </style>
 </head>
 <body>
@@ -205,11 +280,14 @@ $pdo = null; // Close the connection
                     <?php echo htmlspecialchars($_SESSION['admin_user'] ?? 'Admin'); ?>
                 </span>
             </div>
+            <div style="text-align: right; margin-left:10px;">
+                <button class="btn destructive" id="logoutBtn">Logout</button>
+            </div>
         </header>
 
         <main class="main" id="main">
             <div class="cards">
-                <div class="card" style="grid-column: 1 / -1;">
+                <div class="card <?php echo !$is_super_admin_flag ? 'hidden' : ''; ?>" style="grid-column: 1 / -1;">
                     <h3><i class="fas fa-users-cog icon"></i>Admin Management</h3>
                     <p class="card-description">Add new admin accounts or remove existing ones.</p>
                     <div class="admin-management-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
@@ -224,6 +302,11 @@ $pdo = null; // Close the connection
                                     <label for="adminPassword">Password</label>
                                     <input type="password" id="adminPassword" required placeholder="••••••••">
                                 </div>
+                                <div class="field checkboxLabel">
+                                    <label>
+                                        <input type="checkbox" id="isSuperAdmin"> Make Super Admin
+                                    </label>
+                                </div>
                                 <button type="submit" class="btn primary">Add Admin</button>
                             </form>
                         </div>
@@ -236,7 +319,7 @@ $pdo = null; // Close the connection
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card <?php echo !$is_super_admin_flag ? 'hidden' : ''; ?>">
                     <h3><i class="fas fa-bullhorn icon"></i>Announcement Management</h3>
                     <p class="card-description">Control the announcement banner on the student portal.</p>
                     <div class="field">
@@ -255,19 +338,8 @@ $pdo = null; // Close the connection
                     </div>
                 </div>
                 
-                <div class="card">
-                    <h3><i class="fas fa-palette icon"></i>Appearance</h3>
-                    <p class="card-description">Customize the look and feel of the admin panel.</p>
-                    <div class="field">
-                        <label>Theme</label>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn" id="themeLight">Light</button>
-                            <button class="btn" id="themeDark">Dark</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
+                
+                <div class="card <?php echo !$is_super_admin_flag ? 'hidden' : ''; ?>">
                     <h3><i class="fas fa-clipboard-check icon"></i>Enrollment Settings</h3>
                     <p class="card-description">Enable or disable the student registration form.</p>
                     <div class="field">
@@ -279,6 +351,18 @@ $pdo = null; // Close the connection
                     </div>
                 </div>
 
+                <div class="card">
+                    <h3><i class="fas fa-palette icon"></i>Appearance</h3>
+                    <p class="card-description">Customize the look and feel of the admin panel.</p>
+                    <div class="field">
+                        <label>Theme</label>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn" id="themeLight">Light</button>
+                            <button class="btn" id="themeDark">Dark</button>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="card danger-zone">
                     <h3><i class="fas fa-user-circle icon"></i>Account</h3>
                     <p class="card-description">Log out of your admin account.</p>
@@ -402,19 +486,31 @@ $pdo = null; // Close the connection
         function renderAdminList() {
             const adminList = document.getElementById('adminList');
             adminList.innerHTML = '';
+
             if (state.admins.length === 0) {
                 adminList.innerHTML = '<li style="color: hsl(var(--muted-foreground));">No admins found.</li>';
                 return;
             }
+
             state.admins.forEach(admin => {
                 const li = document.createElement('li');
+
+                // Determine admin type
+                const adminType = admin.is_super_admin ? 'Super Admin' : 'Admin';
+                const adminClass = admin.is_super_admin ? 'super-admin-badge' : 'admin-badge';
+
                 li.innerHTML = `
-                    <span>${admin.admin_user}</span>
+                    <span>    
+                        <span>${admin.admin_user}</span>
+                        <span class="${adminClass}">${adminType}</span>
+                    </span>
                     <button class="btn destructive" data-id="${admin.id}">Delete</button>
                 `;
+
                 adminList.appendChild(li);
             });
         }
+
 
         document.addEventListener('DOMContentLoaded', () => {
             renderAdminList();
@@ -423,13 +519,14 @@ $pdo = null; // Close the connection
                 e.preventDefault();
                 const username = document.getElementById('adminUsername').value;
                 const password = document.getElementById('adminPassword').value;
+                const isSuperAdmin = document.getElementById('isSuperAdmin').checked ? 1 : 0;
 
                 if (!username || !password) {
                     showToast('Username and password are required.', 'warning');
                     return;
                 }
 
-                const response = await apiClient.admin('add_admin', { username, password });
+                const response = await apiClient.admin('add_admin', { username, password, is_super_admin: isSuperAdmin});
                 
                 if (response.status === 'success' && response.admin) {
                     state.admins.push(response.admin);
