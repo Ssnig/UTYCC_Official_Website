@@ -28,7 +28,7 @@ try {
     date_default_timezone_set('Asia/Yangon');
 
     $students = [];
-    $sql = "SELECT s.*, s.preferences,
+    $sql = "SELECT s.*, s.preferences, s.selected_major,
                    f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                    m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
             FROM students s
@@ -47,6 +47,7 @@ try {
         if (!empty($row['mother_deceased_year'])) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
         
         $row['preferences'] = !empty($row['preferences']) ? json_decode($row['preferences'], true) : null;
+        // selected_major is already a string, no need to decode
 
         $students[] = $row;
     }
@@ -246,7 +247,7 @@ $pdo = null;
             Pre-Approved
         </a>
         <a class="nav-link" href="upload_result.php">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           Upload Results
         </a>
         <a class="nav-link" href="manage_results.php">
@@ -259,7 +260,7 @@ $pdo = null;
             Manage Stats
         </a>
         <a class="nav-link" href="activity.php">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2 2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
             Upload Activity
         </a>
         <a class="nav-link" href="support.php">
@@ -702,22 +703,64 @@ $pdo = null;
           }
           document.getElementById('photo_preview').src = getSafeUrl(student.photo_url);
 
-          for (let i = 1; i <= 5; i++) {
-              const selectEl = document.getElementById(`preference${i}`);
-              selectEl.innerHTML = ''; 
-              let placeholder = document.createElement('option');
-              placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
-              selectEl.add(placeholder);
-              for (const code in availableMajors) {
-                  let option = document.createElement('option');
-                  option.value = code; option.text = availableMajors[code];
-                  selectEl.add(option);
+          // Check if student has selected_major (from final1.php) or preferences (from final.php)
+          const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
+          const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
+
+          if (hasSelectedMajor) {
+              // Student from final1.php - Show selected major in preference1 and disable all
+              for (let i = 1; i <= 5; i++) {
+                  const selectEl = document.getElementById(`preference${i}`);
+                  selectEl.innerHTML = ''; 
+                  let placeholder = document.createElement('option');
+                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
+                  selectEl.add(placeholder);
+                  for (const code in availableMajors) {
+                      let option = document.createElement('option');
+                      option.value = code; option.text = availableMajors[code];
+                      selectEl.add(option);
+                  }
+                  if (i === 1) {
+                      selectEl.value = student.selected_major;
+                  } else {
+                      selectEl.selectedIndex = 0;
+                  }
+                  selectEl.disabled = true;
               }
-              const prefValue = student.preferences ? student.preferences[i] : null;
-              if (prefValue) { selectEl.value = prefValue; } else { selectEl.selectedIndex = 0; }
+          } else if (hasPreferences) {
+              // Student from final.php - Show all preferences
+              for (let i = 1; i <= 5; i++) {
+                  const selectEl = document.getElementById(`preference${i}`);
+                  selectEl.innerHTML = ''; 
+                  let placeholder = document.createElement('option');
+                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
+                  selectEl.add(placeholder);
+                  for (const code in availableMajors) {
+                      let option = document.createElement('option');
+                      option.value = code; option.text = availableMajors[code];
+                      selectEl.add(option);
+                  }
+                  const prefValue = student.preferences[i];
+                  if (prefValue) { 
+                      selectEl.value = prefValue; 
+                  } else { 
+                      selectEl.selectedIndex = 0; 
+                  }
+                  selectEl.disabled = true;
+              }
+          } else {
+              // No major information - disable all preference dropdowns
+              for (let i = 1; i <= 5; i++) {
+                  const selectEl = document.getElementById(`preference${i}`);
+                  selectEl.innerHTML = ''; 
+                  let placeholder = document.createElement('option');
+                  placeholder.value = ""; placeholder.text = "No major data"; placeholder.disabled = true;
+                  selectEl.add(placeholder);
+                  selectEl.disabled = true;
+              }
           }
 
-          // --- NEW: Populate document files in Edit Modal ---
+          // --- Populate document files in Edit Modal ---
           const documentsGrid = document.getElementById('edit-documents-grid');
           documentsGrid.innerHTML = ''; // Clear previous documents
 
@@ -756,7 +799,6 @@ $pdo = null;
           } else {
               documentsGrid.innerHTML = documentsHtml;
           }
-          // --- END NEW SECTION ---
       } 
       modal.showModal();
       formElements.student_name_en.focus();
@@ -769,8 +811,18 @@ $pdo = null;
         const detailsModalBody = document.getElementById('detailsModalBody');
         const photoUrl = getSafeUrl(s.photo_url);
 
+        // Check if student has selected_major or preferences
+        const hasSelectedMajor = s.selected_major && s.selected_major.trim() !== '';
+        const hasPreferences = s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0;
+
         let preferencesHtml = '';
-        if (s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0) {
+        if (hasSelectedMajor) {
+            // Student from final1.php - show selected major
+            preferencesHtml += `<h3 class="detail-section-header">Selected Major</h3><dl class="details-grid">`;
+            preferencesHtml += `<dt>Selected Major</dt><dd>${availableMajors[s.selected_major] || 'Unknown Major'}</dd>`;
+            preferencesHtml += `</dl>`;
+        } else if (hasPreferences) {
+            // Student from final.php - show all preferences
             preferencesHtml += `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
             for (let i = 1; i <= 5; i++) {
                 const prefCode = s.preferences[i];

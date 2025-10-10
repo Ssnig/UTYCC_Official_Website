@@ -1,0 +1,619 @@
+<?php
+session_start();
+// echo '<pre>';
+// print_r($_SESSION);
+
+$errors = [];
+$dormitory_preference = null;
+
+// Determine the correct back page URL based on whether the student is old or new
+$back_page_url = isset($_SESSION['student_id']) ? 'cur_form.php' : 'form2.php';
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["dormitory"])) {
+        $dormitory_preference = htmlspecialchars(trim($_POST["dormitory"]));
+    } else {
+        $errors['dormitory'] = "Please select an accommodation preference.";
+    }
+
+    if (empty($errors)) {
+        // Save to session
+        $_SESSION['option_data'] = [
+            'dormitory_preference' => $dormitory_preference
+        ];
+
+        // Redirect based on choice
+        if ($dormitory_preference === '1') {
+            header("Location: hostel1.php");
+            exit;
+        } else {
+            header("Location: final1.php");
+            exit;
+        }
+    }
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Accommodation</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .floating-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.05);
+            animation: gentleFloat 8s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 5rem;
+            right: 5rem;
+            width: 8rem;
+            height: 8rem;
+        }
+
+        .floating-element:nth-child(2) {
+            bottom: 5rem;
+            left: 5rem;
+            width: 6rem;
+            height: 6rem;
+            animation-delay: 4s;
+        }
+
+        @keyframes gentleFloat {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .form-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 42rem;
+            position: relative;
+            z-index: 10;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: slideInUp 0.6s ease-out 0.2s both;
+        }
+
+        .header-icon {
+            width: 5rem;
+            height: 5rem;
+            margin: 0 auto 1.5rem;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bluePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes bluePulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+        }
+
+        .header-icon svg {
+            width: 2.5rem;
+            height: 2.5rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.125rem;
+            color: #6b7280;
+        }
+
+        .options {
+            margin-bottom: 2rem;
+        }
+
+        .option {
+            margin-bottom: 1.5rem;
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .option:nth-child(2) {
+            animation: slideInRight 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .option-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+        }
+
+        .option-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .option-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .radio-button {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #d1d5db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0; /* Prevent radio button from shrinking */
+        }
+
+        .option-card.selected .radio-button {
+            border-color: #3b82f6;
+            background-color: #3b82f6;
+        }
+
+        .radio-button svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .option-card.selected .radio-button svg {
+            opacity: 1;
+        }
+
+        .option-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            color: #3b82f6;
+        }
+
+        .option-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .option-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .option-subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .hidden-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .notice {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            animation: slideInUp 0.6s ease-out 0.8s both;
+        }
+
+        .notice p {
+            font-size: 0.875rem;
+            color: #374151;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1.5rem;
+            animation: slideInUp 0.6s ease-out 1s both;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            background: white;
+            border: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .btn-back:hover:not(:disabled) {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* --- Improved Responsive Design --- */
+        @media (max-width: 640px) {
+            .container {
+                /* On small screens, align form to the top to prevent content */
+                /* from being pushed off-screen if it's taller than the viewport. */
+                align-items: flex-start;
+                padding-top: 2rem;
+                padding-bottom: 2rem;
+            }
+
+            .form-card {
+                padding: 1.5rem;
+                width: 100%; /* Ensure it takes full width */
+            }
+
+            .header {
+                margin-bottom: 1.5rem;
+            }
+
+            .header-icon {
+                width: 4rem;
+                height: 4rem;
+                margin-bottom: 1rem;
+            }
+
+            .header-icon svg {
+                width: 2rem;
+                height: 2rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+                line-height: 1.2;
+            }
+
+            .header p {
+                font-size: 0.95rem;
+            }
+
+            .options {
+                margin-bottom: 1.5rem;
+            }
+            
+            .option {
+                margin-bottom: 1rem;
+            }
+
+            .option-card {
+                padding: 1rem;
+            }
+            
+            .option-left {
+                gap: 0.75rem; /* Tighter spacing for smaller screens */
+            }
+            
+            .option-title {
+                font-size: 1rem;
+            }
+
+            .option-subtitle {
+                font-size: 0.875rem;
+                line-height: 1.4; /* Better line spacing for wrapped text */
+            }
+
+            .notice {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .notice p {
+                font-size: 0.875rem;
+            }
+
+            .nav-buttons {
+                /* Stack buttons vertically, with 'Next' appearing first for better UX */
+                flex-direction: column-reverse; 
+                gap: 1rem;
+            }
+
+            /* Hide decorative floating elements on mobile to save space and reduce clutter */
+            .floating-element {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="floating-bg">
+            <div class="floating-element"></div> 
+            <div class="floating-element"></div>
+        </div>
+
+        <div class="form-card">
+            <form id="dormitoryForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST" novalidate>
+                <div class="header">
+                    <div class="header-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                    </div>
+                    <h1>Choose Your Accommodation</h1>
+                    <p>Please select your dormitory preference</p>
+                </div>
+<!-- option 1 -->
+                <div class="options">
+                    <div class="option">
+                        <div class="option-card <?php echo ($dormitory_preference === '1') ? 'selected' : ''; ?>" data-value="1">
+                            <input type="radio" name="dormitory" value="1" id="dormitory-yes" class="hidden-input" <?php echo ($dormitory_preference === '1') ? 'checked' : ''; ?>>
+                            <div class="option-content">
+                                <div class="option-left">
+                                    <div class="radio-button">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <svg class="option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                        </path>
+                                    </svg>
+                                    <div class="option-text">
+                                        <span class="option-title">ကျောင်းအတွင်းဆောင်လျှောက်မည့်သူများ</span>
+                                        <span class="option-subtitle">Students applying for dormitory
+                                            accommodation</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+<!-- option 2 -->
+                    <div class="option">
+                        <div class="option-card <?php echo ($dormitory_preference === '0') ? 'selected' : ''; ?>" data-value="0">
+                            <input type="radio" name="dormitory" value="0" id="dormitory-no" class="hidden-input" <?php echo ($dormitory_preference === '0') ? 'checked' : ''; ?>>
+                            <div class="option-content">
+                                <div class="option-left">
+                                    <div class="radio-button">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    </div>
+                                    <svg class="option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                        </path>
+                                    </svg>
+                                    <div class="option-text">
+                                        <span class="option-title">ကျောင်းအတွင်းဆောင်မလျှောက်လိုသူများ</span>
+                                        <span class="option-subtitle">Students not applying for dormitory
+                                            accommodation</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notice">
+                    <p>မန္တလေးတိုင်းဒေသကြီးအတွင်းမှ ကျောင်းသား/ကျောင်းသူများအား ကျောင်းအတွင်းဆောင်ပေးမည်မဟုတ်ပါ</p>
+                </div> 
+                
+                <?php if (!empty($errors['dormitory'])): ?>
+                    <div class="text-center text-red-500 mb-4"><?php echo $errors['dormitory']; ?></div>
+                <?php endif; ?>
+
+
+                <div class="nav-buttons">
+                    <a href="<?php echo $back_page_url; ?>" class="btn btn-back">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
+                        Back
+                    </a>
+
+                    <button type="submit" class="btn btn-next" id="nextBtn" disabled>
+                        Next
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('dormitoryForm');
+        const options = document.querySelectorAll('.option-card');
+        const nextButton = document.getElementById('nextBtn');
+    
+        // Function to update the UI based on selection
+        function updateUI(selectedCard) {
+            options.forEach(card => {
+                card.classList.remove('selected');
+            });
+    
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                nextButton.disabled = false;
+            } else {
+                nextButton.disabled = true;
+            }
+        }
+    
+        // Add click event listeners to each option card
+        options.forEach(card => {
+            card.addEventListener('click', () => {
+                const radio = card.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    updateUI(card);
+                }
+            });
+        });
+        
+        // Check for pre-selected option on page load
+        window.addEventListener('load', () => {
+            const selectedRadio = form.querySelector('input[name="dormitory"]:checked');
+            if (selectedRadio) {
+                const selectedCard = selectedRadio.closest('.option-card');
+                updateUI(selectedCard);
+            }
+        });
+    </script>
+</body>
+</html>
