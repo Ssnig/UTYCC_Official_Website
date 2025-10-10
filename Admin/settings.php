@@ -281,7 +281,7 @@ $pdo = null; // Close the connection
                 </span>
             </div>
             <div style="text-align: right; margin-left:10px;">
-                <button class="btn destructive" id="logoutBtn">Logout</button>
+                <button class="btn destructive logout-btn">Logout</button>
             </div>
         </header>
 
@@ -367,7 +367,7 @@ $pdo = null; // Close the connection
                     <h3><i class="fas fa-user-circle icon"></i>Account</h3>
                     <p class="card-description">Log out of your admin account.</p>
                     <div style="text-align: right; margin-top: 16px;">
-                        <button class="btn destructive" id="logoutBtn">Logout</button>
+                        <button class="btn destructive logout-btn">Logout</button>
                     </div>
                 </div>
             </div>
@@ -633,15 +633,17 @@ $pdo = null; // Close the connection
                 }
             });
 
-            document.getElementById('logoutBtn').addEventListener('click', async () => {
-                const confirmed = await showConfirm(
-                    'Logout',
-                    'Are you sure you want to logout?',
-                    'primary'
-                );
-                if (confirmed) {
-                    window.location.href = 'logout.php';
-                }
+            document.querySelectorAll('.logout-btn').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const confirmed = await showConfirm(
+                        'Logout',
+                        'Are you sure you want to logout?',
+                        'primary'
+                    );
+                    if (confirmed) {
+                        window.location.href = 'logout.php';
+                    }
+                });
             });
 
             // Initial UI state updates
@@ -652,4 +654,3 @@ $pdo = null; // Close the connection
     </script>
 </body>
 </html>
-

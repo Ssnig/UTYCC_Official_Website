@@ -113,12 +113,16 @@ if (!isset($_SESSION['pre_approved_data'])) {
         $validation_errors = [];
 
         // --- Handle Photo Upload ---
-        $original_photo_on_load = $_SESSION['form1_data']['photo_url']; // Now it gets the correct existing path
+        $original_photo_on_load = $_SESSION['form1_data']['photo_url'] ?? ''; 
         $is_new_upload_attempt = isset($_FILES["photo_upload"]) && $_FILES["photo_upload"]["error"] != UPLOAD_ERR_NO_FILE;
         $is_removal_request = !empty($_POST['remove_photo']) && $_POST['remove_photo'] == '1';
 
         if ($is_new_upload_attempt && $_FILES["photo_upload"]["error"] == UPLOAD_ERR_OK) {
-            $target_dir ="../uploads/";
+            // Physical path is now relative to form1.php, creating /Rform/uploads/
+            $target_dir = "uploads/";
+            // URL path stored in session/DB mimics api.php by storing a partial path.
+            $url_dir = "/uploads/";
+
             if (!is_dir($target_dir)) {
                 mkdir($target_dir, 0777, true);
             }
@@ -144,22 +148,36 @@ if (!isset($_SESSION['pre_approved_data'])) {
 
             if ($uploadOk == 1) {
                 if (move_uploaded_file($_FILES["photo_upload"]["tmp_name"], $target_file)) {
-                    // If a new photo is uploaded, delete the old one
-                    if (!empty($original_photo_on_load) && file_exists($original_photo_on_load)) {
-                        unlink($original_photo_on_load);
+                    // If a new photo is uploaded, delete the old one.
+                    $old_file_to_delete = '';
+                    if (!empty($original_photo_on_load)) {
+                        // $original_photo_on_load is like '/uploads/photo.jpg'
+                        // The file is physically located in the local 'uploads/' directory.
+                        $old_filename = basename($original_photo_on_load);
+                        $old_file_to_delete = $target_dir . $old_filename;
                     }
-                    $_SESSION['form1_data']['photo_url'] = $target_file; // Save new path to session
+                    if (!empty($old_file_to_delete) && file_exists($old_file_to_delete)) {
+                        unlink($old_file_to_delete);
+                    }
+                    $_SESSION['form1_data']['photo_url'] = $url_dir . $unique_name; // Save new partial URL path to session
                 } else {
                     $validation_errors['photo_upload'] = "Sorry, there was an error uploading your file.";
                 }
             }
         } elseif ($is_removal_request) {
-            // If photo removal is requested
-            if (!empty($original_photo_on_load) && file_exists($original_photo_on_load)) {
-                unlink($original_photo_on_load);
+            // If photo removal is requested, delete the file.
+             $file_to_delete_on_remove = '';
+            if (!empty($original_photo_on_load)) {
+                 $filename_to_remove = basename($original_photo_on_load);
+                 // The physical file is in the 'uploads/' directory relative to this script.
+                 $file_to_delete_on_remove = 'uploads/' . $filename_to_remove;
+            }
+            if (!empty($file_to_delete_on_remove) && file_exists($file_to_delete_on_remove)) {
+                unlink($file_to_delete_on_remove);
             }
             $_SESSION['form1_data']['photo_url'] = ''; // Clear photo URL from session
         }
+
 
         // Explicitly save the student's NRC data to the session to ensure it persists.
         if (isset($_POST['student_nrc'])) {
@@ -637,6 +655,14 @@ if (!isset($_SESSION['pre_approved_data'])) {
         $repopulate_state    = getValue('state_region');
         $repopulate_township = getValue('township');
         $first_error_key = !empty($errors) ? array_key_first($errors) : '';
+        
+        // Prepare the photo URL for JS preview.
+        // The stored path is '/uploads/file.jpg', but the file is physically located at 'uploads/file.jpg' relative to this script.
+        $photo_url_for_js = '';
+        $stored_photo_url = getValue('photo_url');
+        if ($stored_photo_url) {
+            $photo_url_for_js = 'uploads/' . basename($stored_photo_url);
+        }
     ?>
 
 <script>
@@ -644,7 +670,7 @@ if (!isset($_SESSION['pre_approved_data'])) {
     const previouslySelectedState = '<?php echo $repopulate_state; ?>';
     const previouslySelectedTownship = '<?php echo $repopulate_township; ?>';
     const repopulateNrcData = <?php echo json_encode($repopulate_nrc); ?>;
-    const photoUrlFromServer = '<?php echo getValue('photo_url', ''); ?>';
+    const photoUrlFromServer = '<?php echo $photo_url_for_js; ?>';
     const firstErrorKeyFromServer = '<?php echo $first_error_key; ?>';
 
 
@@ -1168,3 +1194,5 @@ if (!isset($_SESSION['pre_approved_data'])) {
 
 </body>
 </html>
+
+
