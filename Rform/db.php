@@ -3,12 +3,13 @@
            // Database host
 $host = "localhost";           // Database host
 $dbname = "registration_db";   // Database name
+$port = 3307;                   // Database port (default is 3306, change if necessary)
 $user = "root";                // MySQL username
 $pass = "";                // MySQL password
 
 try {
     // Create PDO instance
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);
+    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", $user, $pass);
     
     // Set error mode to exception
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
