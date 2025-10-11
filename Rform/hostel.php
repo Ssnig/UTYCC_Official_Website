@@ -1,16 +1,29 @@
 <?php
     
     session_start();
-    // echo '<pre>';
-    // print_r($_SESSION);
+    
     // Check if form1 data exists, if not, redirect back to form1
     if (!isset($_SESSION['form1_data'])) {
         header("location: form1.php");
         exit;
     }
 
-    // Get the photo URL from the session data
-    $photo_url = $_SESSION['form1_data']['photo_url'] ?? '';
+    // --- Photo URL Handling for Display ---
+    $session_photo_url = $_SESSION['form1_data']['photo_url'] ?? '';
+    $photo_display_url = 'https://placehold.co/192x224/e2e8f0/64748b?text=No+Photo'; // Default placeholder
+
+    if (!empty($session_photo_url)) {
+        // $session_photo_url is like '/uploads/photo.jpg'
+        // Filesystem path for checking existence: /path/to/Rform/uploads/photo.jpg
+        $photo_filesystem_path = __DIR__ . $session_photo_url;
+        
+        // URL path for display (relative to hostel.php): uploads/photo.jpg
+        $relative_photo_url = ltrim($session_photo_url, '/');
+        
+        if (file_exists($photo_filesystem_path)) {
+            $photo_display_url = $relative_photo_url;
+        }
+    }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
@@ -21,6 +34,7 @@
 
             if (in_array($_FILES['student_photo']['type'], $allowed_types) && $_FILES['student_photo']['size'] <= $max_size) {
                 
+                // Physical path to the uploads directory, it will be created inside /Rform/
                 $upload_dir = __DIR__ . "/uploads/";
                 if (!is_dir($upload_dir)) {
                     mkdir($upload_dir, 0777, true);
@@ -31,12 +45,15 @@
 
                 if (move_uploaded_file($_FILES["student_photo"]["tmp_name"], $target_file)) {
                     // Successfully uploaded new photo, now delete the old one
-                    $old_photo_url = $_SESSION['form1_data']['photo_url'] ?? '';
-                    if (!empty($old_photo_url) && file_exists(__DIR__ . $old_photo_url)) {
-                        unlink(__DIR__ . $old_photo_url);
+                    $old_photo_session_url = $_SESSION['form1_data']['photo_url'] ?? '';
+                    if (!empty($old_photo_session_url)) {
+                        $old_photo_filesystem_path = __DIR__ . $old_photo_session_url;
+                        if (file_exists($old_photo_filesystem_path)) {
+                            unlink($old_photo_filesystem_path);
+                        }
                     }
                     
-                    // Save the new file path into session
+                    // Save the new URL path (/uploads/filename.jpg) into session
                     $_SESSION['form1_data']['photo_url'] = "/uploads/" . $file_name;
 
                 } else {
@@ -71,7 +88,7 @@
                  <div class="upload-area w-48 text-center">
                     <div id="preview-container" class="relative">
                         <img id="image-preview" 
-                             src="<?php echo !empty($photo_url) && file_exists($photo_url) ? htmlspecialchars($photo_url) : 'https://placehold.co/192x224/e2e8f0/64748b?text=No+Photo'; ?>" 
+                             src="<?php echo htmlspecialchars($photo_display_url); ?>" 
                              alt="Student Photo" 
                              class="w-full h-full object-cover rounded-lg mb-2 border">
                     </div>
@@ -327,4 +344,3 @@
 </body>
 
 </html>
-

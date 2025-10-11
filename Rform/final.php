@@ -215,6 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Final Submission</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
@@ -231,6 +232,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="p-4 bg-gray-50 flex flex-col items-center justify-center min-h-screen">
 
+<?php
+$check_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-green-100 text-green-600"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>';
+$cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-red-100 text-red-600"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div>';
+?>
+
 <div class="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl py-12 px-8 md:px-12 space-y-8">
     <div class="text-center space-y-2 mb-6">
         <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" class="mx-auto w-20 h-20"/>
@@ -240,36 +246,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         <a href="<?php echo isset($_SESSION['student_id']) ? 'cur_form.php' : 'form1.php'; ?>" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-            <span class="text-3xl mb-2"><?php echo isset($_SESSION['form1_data']) ? '✔️' : '❌'; ?></span>
+            <?php echo isset($_SESSION['form1_data']) ? $check_icon : $cross_icon; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 1</p>
-            <p class="font-semibold text-lg text-gray-700 text-center">Personal Information</p>
+            <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">Personal Information</p>
         </a>
         
         <?php if (!isset($_SESSION['student_id'])): // Only show for new students ?>
         <a href="form2.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-            <span class="text-3xl mb-2"><?php echo isset($_SESSION['form2_data']) ? '✔️' : '❌'; ?></span>
+            <?php echo isset($_SESSION['form2_data']) ? $check_icon : $cross_icon; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 2</p>
-            <p class="font-semibold text-lg text-gray-700 text-center">Major Preferences</p>
+            <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">Major Preferences</p>
         </a>
         <?php else: // Placeholder for old students to maintain grid structure ?>
         <div class="bg-gray-100 p-6 rounded-xl flex flex-col items-center justify-center shadow-inner border border-gray-200">
-            <span class="text-3xl mb-2">✔️</span>
+            <?php echo $check_icon; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 2</p>
-            <p class="font-semibold text-lg text-gray-700 text-center">Major</p>
+            <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">Major</p>
         </div>
         <?php endif; ?>
 
         <a href="option.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-            <span class="text-3xl mb-2"><?php echo isset($_SESSION['option_data']) ? '✔️' : '❌'; ?></span>
+            <?php echo isset($_SESSION['option_data']) ? $check_icon : $cross_icon; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 3</p>
-            <p class="font-semibold text-lg text-gray-700 text-center">Accommodation</p>
+            <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">Accommodation</p>
         </a>
 
-        <a href="documents.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
-            <span class="text-3xl mb-2"><?php echo $all_documents_uploaded ? '✔️' : '❌'; ?></span>
-            <p class="text-xs font-medium text-gray-400 mb-1">Step 4</p>
-            <p class="font-semibold text-lg text-gray-700 text-center">Required Documents</p>
-        </a>
+        <?php if (!$all_documents_uploaded): ?>
+            <a href="javascript:void(0);" onclick="showModal('error', 'Missing Documents', 'Please upload all 11 required documents before submitting.', 'Go to Uploads', 'documents.php')" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-red-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <?php echo $cross_icon; ?>
+                <p class="text-xs font-medium text-gray-400 mb-1">Step 4</p>
+                <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">Required Documents</p>
+            </a>
+        <?php else: ?>
+            <a href="documents.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+                <?php echo $check_icon; ?>
+                <p class="text-xs font-medium text-gray-400 mb-1">Step 4</p>
+                <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">Required Documents</p>
+            </a>
+        <?php endif; ?>
     </div>
 
     <!-- Review Details Section -->
@@ -331,7 +345,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
         <a href="documents.php" class="w-full sm:w-auto px-6 py-3 rounded-full border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition-colors text-center shadow-sm hover:shadow-md">Back</a>
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="w-full sm:w-auto">
-            <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105 shadow-md <?php if (!$all_documents_uploaded) echo 'disabled-button'; ?>" <?php if (!$all_documents_uploaded) echo 'disabled'; ?>>
+            <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105 shadow-md <?php if (!$all_documents_uploaded) echo 'disabled-button'; ?>">
                 <?php echo $all_documents_uploaded ? 'Submit' : 'Documents Incomplete'; ?>
             </button>
         </form>
@@ -388,18 +402,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     document.addEventListener('DOMContentLoaded', function() {
+        const allDocumentsUploaded = <?php echo $all_documents_uploaded ? 'true' : 'false'; ?>;
         const submitBtn = document.getElementById('submitBtn');
-        if (submitBtn.disabled) {
+
+        if (!allDocumentsUploaded) {
             submitBtn.title = 'Please upload all 11 required documents.';
         }
         
         const finalForm = document.querySelector('form[action*="final.php"]');
         if (finalForm) {
             finalForm.addEventListener('submit', function(e) {
-                if(submitBtn.disabled){
-                   e.preventDefault(); // Prevent form submission if button is disabled
+                // Prevent submission and show modal if documents are incomplete
+                if (!allDocumentsUploaded) {
+                   e.preventDefault(); 
+                   showModal(
+                       'error', 
+                       'Missing Documents', 
+                       'Please upload all 11 required documents before submitting.', 
+                       'Go to Uploads', 
+                       'documents.php'
+                   );
                    return;
                 }
+
+                // If documents are complete, show submitting state
+                submitBtn.disabled = true;
                 submitBtn.innerHTML = 'Submitting...';
             });
         }

@@ -5,6 +5,7 @@ $host = "localhost";            // Database host
 $port = 3306;                   // Database port (default is 3306, change if necessary)
 $host = "localhost";           // Database host
 $dbname = "registration_db";   // Database name
+$port = 3307;                   // Database port (default is 3306, change if necessary)
 $user = "root";                // MySQL username
 $pass = "";                // MySQL password
 
