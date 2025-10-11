@@ -39,6 +39,20 @@ function processStudentRow($studentRow) {
         // And the script is in 'admin' directory, so we go up one level.
         $studentRow['photo_url'] = '../Rform' . $studentRow['photo_url'];
     }
+    
+    // Also process document URLs
+    $documentFields = [
+        'doc_recommendation', 'doc_medical', 'doc_certificate', 'doc_grades', 'doc_household',
+        'doc_student_nrc_front', 'doc_student_nrc_back', 'doc_father_nrc_front', 'doc_father_nrc_back',
+        'doc_mother_nrc_front', 'doc_mother_nrc_back'
+    ];
+    
+    foreach ($documentFields as $docField) {
+        if (isset($studentRow[$docField]) && !empty($studentRow[$docField])) {
+            $studentRow[$docField] = '../Rform' . $studentRow[$docField];
+        }
+    }
+    
     return $studentRow;
 }
 
@@ -209,11 +223,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sanitized_ids = array_map('intval', $ids);
                     $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
                     
-                    // First get all student data including file paths before approval
+                    // FIX: First get all student data including file paths before approval
                     $sqlFetch = "SELECT student_id, student_name_en, student_email, photo_url, 
                                 doc_recommendation, doc_medical, doc_certificate, doc_grades, doc_household,
                                 doc_student_nrc_front, doc_student_nrc_back, doc_father_nrc_front, doc_father_nrc_back,
-                                doc_mother_nrc_front, doc_mother_nrc_back
+                                doc_mother_nrc_front, doc_mother_nrc_back,
+                                preferences, selected_major, year, academic_year, seat_no, entry_year,
+                                dormitory_preference, student_name_mm, student_race, student_religion, 
+                                student_nrc, student_dob, student_birthplace, state_region, township, 
+                                student_phone, student_address, date
                                 FROM students WHERE student_id IN ($placeholders)";
                     $stmtFetch = $pdo->prepare($sqlFetch);
                     $stmtFetch->execute($sanitized_ids);

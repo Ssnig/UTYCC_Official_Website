@@ -609,11 +609,29 @@ $pdo = null;
       selected: new Set(),
     };
     
+    // FIXED: Improved getSafeUrl function to handle photo URLs properly
     function getSafeUrl(path) {
         if (!path) return `https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+Image`;
-        const uploadsIndex = path.indexOf('uploads/');
-        if (uploadsIndex !== -1) return `../Rform/${path}`;
-        return path;
+        
+        // If it's already a full URL, return as is
+        if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+            return path;
+        }
+        
+        // If path starts with /uploads/, prepend ../Rform
+        if (path.startsWith('/uploads/')) {
+            return `../Rform${path}`;
+        }
+        
+        // If path contains uploads/, use it directly with ../Rform/
+        if (path.includes('uploads/')) {
+            // Remove any leading slashes or incorrect paths
+            const cleanPath = path.replace(/^\.\.\/Rform\//, '').replace(/^\//, '');
+            return `../Rform/${cleanPath}`;
+        }
+        
+        // Default case - assume it's relative to Rform directory
+        return `../Rform/${path}`;
     }
 
     // Function to get display major from student data
@@ -723,6 +741,7 @@ $pdo = null;
                   else if (element.type !== 'file' && !element.name.startsWith('preference')) { element.value = student[key] || ''; }
               }
           }
+          // FIXED: Use getSafeUrl to ensure photo URL is correct
           document.getElementById('photo_preview').src = getSafeUrl(student.photo_url);
 
           // Check if student has selected_major (from final1.php) or preferences (from final.php)
@@ -831,6 +850,7 @@ $pdo = null;
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
+        // FIXED: Use getSafeUrl to ensure photo URL is correct
         const photoUrl = getSafeUrl(s.photo_url);
 
         // Check if student has selected_major or preferences
