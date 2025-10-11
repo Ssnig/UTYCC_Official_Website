@@ -318,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <?php endif; ?>
 
-        <a href="option1.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+        <a href="option1.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center    justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
             <span class="text-3xl mb-2"><?php echo isset($_SESSION['option_data']) ? '✔️' : '❌'; ?></span>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 2</p>
             <p class="font-semibold text-lg text-gray-700 text-center">Accommodation</p>

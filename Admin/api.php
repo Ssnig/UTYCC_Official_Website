@@ -209,11 +209,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sanitized_ids = array_map('intval', $ids);
                     $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
                     
-                    $sqlFetch = "SELECT student_id, student_name_en, student_email FROM students WHERE student_id IN ($placeholders)";
+                    // First get all student data including file paths before approval
+                    $sqlFetch = "SELECT student_id, student_name_en, student_email, photo_url, 
+                                doc_recommendation, doc_medical, doc_certificate, doc_grades, doc_household,
+                                doc_student_nrc_front, doc_student_nrc_back, doc_father_nrc_front, doc_father_nrc_back,
+                                doc_mother_nrc_front, doc_mother_nrc_back
+                                FROM students WHERE student_id IN ($placeholders)";
                     $stmtFetch = $pdo->prepare($sqlFetch);
                     $stmtFetch->execute($sanitized_ids);
                     $students_to_email = $stmtFetch->fetchAll(PDO::FETCH_ASSOC);
 
+                    // FIX: Only update the status field, preserve all file paths and other data
                     $sql = "UPDATE students SET status = 'approved' WHERE student_id IN ($placeholders)";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute($sanitized_ids);
@@ -257,20 +263,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmtFetch->execute($sanitized_ids);
                     $students_to_email_rejection = $stmtFetch->fetchAll(PDO::FETCH_ASSOC);
 
-                    $stmtSelect = $pdo->prepare("SELECT photo_url FROM students WHERE student_id IN ($placeholders)");
+                    $stmtSelect = $pdo->prepare("SELECT photo_url, 
+                                doc_recommendation, doc_medical, doc_certificate, doc_grades, doc_household,
+                                doc_student_nrc_front, doc_student_nrc_back, doc_father_nrc_front, doc_father_nrc_back,
+                                doc_mother_nrc_front, doc_mother_nrc_back
+                                FROM students WHERE student_id IN ($placeholders)");
                     $stmtSelect->execute($sanitized_ids);
-                    $photoUrls = $stmtSelect->fetchAll(PDO::FETCH_COLUMN);
+                    $filesData = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
 
                     $sql = "DELETE FROM students WHERE student_id IN ($placeholders)";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute($sanitized_ids);
                     $deleted_count = $stmt->rowCount();
                     
-                    foreach ($photoUrls as $url) {
-                        if (!empty($url)) {
-                           $fileName = basename($url);
-                           $fileSystemPath = $fileSystemUploadDir . $fileName;
-                           if (file_exists($fileSystemPath)) unlink($fileSystemPath);
+                    // Delete all associated files
+                    foreach ($filesData as $fileData) {
+                        $filesToDelete = array_filter([
+                            $fileData['photo_url'] ?? null,
+                            $fileData['doc_recommendation'] ?? null,
+                            $fileData['doc_medical'] ?? null,
+                            $fileData['doc_certificate'] ?? null,
+                            $fileData['doc_grades'] ?? null,
+                            $fileData['doc_household'] ?? null,
+                            $fileData['doc_student_nrc_front'] ?? null,
+                            $fileData['doc_student_nrc_back'] ?? null,
+                            $fileData['doc_father_nrc_front'] ?? null,
+                            $fileData['doc_father_nrc_back'] ?? null,
+                            $fileData['doc_mother_nrc_front'] ?? null,
+                            $fileData['doc_mother_nrc_back'] ?? null
+                        ]);
+                        
+                        foreach ($filesToDelete as $url) {
+                            if (!empty($url)) {
+                               $fileName = basename($url);
+                               $fileSystemPath = $fileSystemUploadDir . $fileName;
+                               if (file_exists($fileSystemPath)) unlink($fileSystemPath);
+                            }
                         }
                     }
                     

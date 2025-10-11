@@ -517,7 +517,7 @@
                             <h4 class="font-semibold text-gray-700 mt-2">အဘ (အရင်း)</h4>
                             <!-- Father Deceased -->
                             <div class="relative pb-5">
-                                <label for="father_deceased_year" class="block text-sm font-medium text-gray-700">ကွယ်�လွန်သည့်ခုနှစ် (ကွယ်လွန်ပါက)</label>
+                                <label for="father_deceased_year" class="block text-sm font-medium text-gray-700">ကွယ်လွန်သည့်ခုနှစ် (ကွယ်လွန်ပါက)</label>
                                 <input type="text" id="father_deceased_year" name="father_deceased_year" class="mt-1" placeholder="ဥပမာ - 2010" value="<?php echo getValue('father_deceased_year'); ?>">
                             </div>
                             <!-- Father Name MM -->
@@ -578,7 +578,7 @@
                             <h4 class="font-semibold text-gray-700 mt-2">အမိ (အရင်း)</h4>
                              <!-- Mother Deceased -->
                             <div class="relative pb-5">
-                                <label for="mother_deceased_year" class="block text-sm font-medium text-gray-700">ကွယ်�လွန်သည့်ခုနှစ် (ကွယ်လွန်ပါက)</label>
+                                <label for="mother_deceased_year" class="block text-sm font-medium text-gray-700">ကွယ်လွန်သည့်ခုနှစ် (ကွယ်လွန်ပါက)</label>
                                 <input type="text" id="mother_deceased_year" name="mother_deceased_year" class="mt-1" placeholder="ဥပမာ - 2010" value="<?php echo getValue('mother_deceased_year'); ?>">
                             </div>
                             <!-- Mother Name MM -->

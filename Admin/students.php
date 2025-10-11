@@ -3,8 +3,6 @@
 require_once '../Rform/db.php';
 require_once 'auth_check.php';
 
-
-
 // --- FETCH ALL APPROVED STUDENT DATA ---
 $students = [];
 // MODIFICATION: Added s.preferences to the SELECT statement
@@ -743,25 +741,33 @@ $pdo = null;
       selected: new Set(),
     };
     
-    // NEW/MODIFIED: Unified function to handle all file paths
+    // FIXED: Improved getSafeUrl function to handle various path formats
     function getSafeUrl(path) {
-        if (!path) {
+        if (!path || path.trim() === '' || path === 'null') {
             return 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
-            // return 'https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+File';
         }
-        // Path can be stored as '/uploads/...' or 'uploads/...'
-        // We need to find the 'uploads/' segment and build the correct relative path from there.
-        const uploadsIndex = path.indexOf('uploads/');
-        if (uploadsIndex !== -1) {
-            // Get the part of the string from 'uploads/' onwards
-            const relativePath = path.substring(uploadsIndex);
-            // Construct the correct path from the 'admin' directory
-            return `../Rform/${relativePath}`;
+        
+        // If it's already a full URL, return as is
+        if (path.startsWith('http://') || path.startsWith('https://')) {
+            return path;
         }
-        // Fallback for any other format
-        return path;
+        
+        // Clean the path
+        let cleanPath = path.trim();
+        
+        // Remove leading slashes
+        cleanPath = cleanPath.replace(/^\//, '');
+        
+        // Handle different path formats
+        if (cleanPath.startsWith('Rform/uploads/')) {
+            return `../${cleanPath}`;
+        } else if (cleanPath.startsWith('uploads/')) {
+            return `../Rform/${cleanPath}`;
+        } else {
+            // Assume it's just a filename in uploads folder
+            return `../Rform/uploads/${cleanPath}`;
+        }
     }
-
 
     function todayStr(d = new Date()) { return d.toISOString().split('T')[0]; }
 
@@ -834,45 +840,6 @@ $pdo = null;
         confirmModal.showModal();
       });
     }
-    // NEW: Function to generate and render document grid
-    function renderDocuments(student, containerElement) {
-        const documents = [
-            { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' },
-            { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
-            { label: 'အောင်လက်မှတ်', key: 'doc_certificate' },
-            { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
-            { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' },
-            { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
-            { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' },
-            { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
-            { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' },
-            { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
-            { label: 'အမေ NRC (နောက်)', key: 'doc_mother_nrc_back' },
-        ];
-        
-        let documentsHtml = '';
-        let hasDocuments = false;
-        documents.forEach(doc => {
-            const docPath = student[doc.key];
-            if (docPath) {
-                hasDocuments = true;
-                documentsHtml += `
-                    <div class="doc-item">
-                        <a href="${getSafeUrl(docPath)}" target="_blank" title="View ${doc.label}">
-                            <img src="${getSafeUrl(docPath)}" alt="${doc.label}" loading="lazy">
-                            <p>${doc.label}</p>
-                        </a>
-                    </div>`;
-            }
-        });
-
-        if (!hasDocuments) {
-            containerElement.innerHTML = '<p style="color: hsl(var(--muted-foreground));">No documents were submitted.</p>';
-        } else {
-            containerElement.innerHTML = documentsHtml;
-        }
-        return `<h3 class="detail-section-header">Submitted Documents</h3><div class="documents-grid">${documentsHtml || '<p style="color: hsl(var(--muted-foreground));">No documents were submitted.</p>'}</div>`;
-    }
 
     function openModal(mode, student = null) {
       const modal = document.getElementById('studentModal');
@@ -893,28 +860,106 @@ $pdo = null;
                   }
               }
           }
+          // FIXED: Use the improved getSafeUrl function for photo preview
           document.getElementById('photo_preview').src = student.photo_url ? getSafeUrl(student.photo_url) : PHOTO_PLACEHOLDER;
           
-          for (let i = 1; i <= 5; i++) {
-              const selectEl = document.getElementById(`preference${i}`);
-              selectEl.innerHTML = ''; 
+          // Check if student has selected_major (from final1.php) or preferences (from final.php)
+          const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
+          const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
 
-              for (const code in availableMajors) {
-                  let option = document.createElement('option');
-                  option.value = code;
-                  option.text = availableMajors[code];
-                  selectEl.add(option);
+          if (hasSelectedMajor) {
+              // Student from final1.php - Show selected major in preference1 and disable all
+              for (let i = 1; i <= 5; i++) {
+                  const selectEl = document.getElementById(`preference${i}`);
+                  selectEl.innerHTML = ''; 
+                  let placeholder = document.createElement('option');
+                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
+                  selectEl.add(placeholder);
+                  for (const code in availableMajors) {
+                      let option = document.createElement('option');
+                      option.value = code; option.text = availableMajors[code];
+                      selectEl.add(option);
+                  }
+                  if (i === 1) {
+                      selectEl.value = student.selected_major;
+                  } else {
+                      selectEl.selectedIndex = 0;
+                  }
+                  selectEl.disabled = true;
               }
-
-              const prefValue = student.preferences ? student.preferences[i] : null;
-              if (prefValue) {
-                  selectEl.value = prefValue;
-              } else {
-                  selectEl.selectedIndex = -1; 
+          } else if (hasPreferences) {
+              // Student from final.php - Show all preferences
+              for (let i = 1; i <= 5; i++) {
+                  const selectEl = document.getElementById(`preference${i}`);
+                  selectEl.innerHTML = ''; 
+                  let placeholder = document.createElement('option');
+                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
+                  selectEl.add(placeholder);
+                  for (const code in availableMajors) {
+                      let option = document.createElement('option');
+                      option.value = code; option.text = availableMajors[code];
+                      selectEl.add(option);
+                  }
+                  const prefValue = student.preferences[i];
+                  if (prefValue) { 
+                      selectEl.value = prefValue; 
+                  } else { 
+                      selectEl.selectedIndex = 0; 
+                  }
+                  selectEl.disabled = true;
+              }
+          } else {
+              // No major information - disable all preference dropdowns
+              for (let i = 1; i <= 5; i++) {
+                  const selectEl = document.getElementById(`preference${i}`);
+                  selectEl.innerHTML = ''; 
+                  let placeholder = document.createElement('option');
+                  placeholder.value = ""; placeholder.text = "No major data"; placeholder.disabled = true;
+                  selectEl.add(placeholder);
+                  selectEl.disabled = true;
               }
           }
-          // NEW: Render documents in edit modal
-          renderDocuments(student, document.getElementById('edit-documents-grid'));
+
+          // --- Populate document files in Edit Modal ---
+          const documentsGrid = document.getElementById('edit-documents-grid');
+          documentsGrid.innerHTML = ''; // Clear previous documents
+
+          const documents = [
+              { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' },
+              { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
+              { label: 'အောင်လက်မှတ်', key: 'doc_certificate' },
+              { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
+              { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' },
+              { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
+              { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' },
+              { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
+              { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' },
+              { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
+              { label: 'အမေ NRC (နောက်)', key: 'doc_mother_nrc_back' },
+          ];
+
+          let documentsHtml = '';
+          let hasDocuments = false;
+          documents.forEach(doc => {
+              const docPath = student[doc.key];
+              if (docPath) {
+                  hasDocuments = true;
+                  // FIXED: Use the improved getSafeUrl function for documents too
+                  documentsHtml += `
+                      <div class="doc-item">
+                          <a href="${getSafeUrl(docPath)}" target="_blank" title="View ${doc.label}">
+                              <img src="${getSafeUrl(docPath)}" alt="${doc.label}" loading="lazy">
+                              <p>${doc.label}</p>
+                          </a>
+                      </div>`;
+              }
+          });
+
+          if (!hasDocuments) {
+              documentsGrid.innerHTML = '<p style="color: hsl(var(--muted-foreground));">No documents were submitted.</p>';
+          } else {
+              documentsGrid.innerHTML = documentsHtml;
+          }
       } else {
           // Clear documents if it's an 'add' modal
           document.getElementById('edit-documents-grid').innerHTML = '<p style="color: hsl(var(--muted-foreground));">No documents available for new student.</p>';
@@ -928,10 +973,21 @@ $pdo = null;
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
+        // FIXED: Use the improved getSafeUrl function for details modal photo
         const photoUrl = s.photo_url ? getSafeUrl(s.photo_url) : PHOTO_PLACEHOLDER;
 
+        // Check if student has selected_major or preferences
+        const hasSelectedMajor = s.selected_major && s.selected_major.trim() !== '';
+        const hasPreferences = s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0;
+
         let preferencesHtml = '';
-        if (s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0) {
+        if (hasSelectedMajor) {
+            // Student from final1.php - show selected major
+            preferencesHtml += `<h3 class="detail-section-header">Selected Major</h3><dl class="details-grid">`;
+            preferencesHtml += `<dt>Selected Major</dt><dd>${availableMajors[s.selected_major] || 'Unknown Major'}</dd>`;
+            preferencesHtml += `</dl>`;
+        } else if (hasPreferences) {
+            // Student from final.php - show all preferences
             preferencesHtml += `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
             for (let i = 1; i <= 5; i++) {
                 const prefCode = s.preferences[i];
@@ -942,8 +998,35 @@ $pdo = null;
             preferencesHtml += `</dl>`;
         }
         
-        // NEW: Generate documents HTML for details view
-        const documentsHtml = renderDocuments(s, document.createElement('div'));
+        const documents = [
+            { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' },
+            { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
+            { label: 'အောင်လက်မှတ်', key: 'doc_certificate' },
+            { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
+            { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' },
+            { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
+            { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' },
+            { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
+            { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' },
+            { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
+            { label: 'အမေ NRC (နောက်)', key: 'doc_mother_nrc_back' },
+        ];
+
+        let documentsHtml = '<h3 class="detail-section-header">Required Documents</h3><div class="documents-grid">';
+        documents.forEach(doc => {
+            const docPath = s[doc.key];
+            if (docPath) {
+                // FIXED: Use the improved getSafeUrl function for documents in details modal
+                documentsHtml += `
+                    <div class="doc-item">
+                        <a href="${getSafeUrl(docPath)}" target="_blank">
+                            <img src="${getSafeUrl(docPath)}" alt="${doc.label}" loading="lazy">
+                            <p>${doc.label}</p>
+                        </a>
+                    </div>`;
+            }
+        });
+        documentsHtml += '</div>';
 
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
@@ -951,26 +1034,18 @@ $pdo = null;
             </div>
             <h3 class="detail-section-header">Student Information</h3>
             <dl class="details-grid">
-                <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd>
-                <dt>Name (EN)</dt><dd>${s.student_name_en || 'N/A'}</dd>
-                <dt>Name (MM)</dt><dd>${s.student_name_mm || 'N/A'}</dd>
-                <dt>Email</dt><dd>${s.student_email || 'N/A'}</dd>
-                <dt>Phone</dt><dd>${s.student_phone || 'N/A'}</dd>
-                <dt>NRC</dt><dd>${s.student_nrc || 'N/A'}</dd>
-                <dt>Date of Birth</dt><dd>${formatDate(s.student_dob)}</dd>
-                <dt>Birthplace</dt><dd>${s.student_birthplace || 'N/A'}</dd>
-                <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd>
-                <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
-                <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd>
-                <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
-                <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd>
-                <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
+                <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${s.student_name_en || 'N/A'}</dd>
+                <dt>Name (MM)</dt><dd>${s.student_name_mm || 'N/A'}</dd> <dt>Email</dt><dd>${s.student_email || 'N/A'}</dd>
+                <dt>Phone</dt><dd>${s.student_phone || 'N/A'}</dd> <dt>NRC</dt><dd>${s.student_nrc || 'N/A'}</dd>
+                <dt>Date of Birth</dt><dd>${formatDate(s.student_dob)}</dd> <dt>Birthplace</dt><dd>${s.student_birthplace || 'N/A'}</dd>
+                <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd> <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
+                <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd> <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
+                <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd> <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
                 <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
-                <dt>Year</dt><dd>${s.year || 'N/A'}</dd>
-                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
+                <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
                 <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
             </dl>
             ${preferencesHtml}
@@ -979,31 +1054,23 @@ $pdo = null;
                 <h4>Father's Details</h4>
                 <dl class="details-grid">
                     <dt>Status</dt><dd>${s.father_deceased_year ? `Deceased (${s.father_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd>
-                    <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd>
-                    <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd>
-                    <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd>
-                    <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
                 </dl>
             </div>
             <div class="detail-parent-section">
                 <h4>Mother's Details</h4>
                 <dl class="details-grid">
                     <dt>Status</dt><dd>${s.mother_deceased_year ? `Deceased (${s.mother_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd>
-                    <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd>
-                    <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd>
-                    <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd>
-                    <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
                 </dl>
             </div>
-            ${documentsHtml}`; // Add documents here
+            ${documentsHtml}`;
         detailsModal.showModal();
     }
 
@@ -1036,45 +1103,45 @@ $pdo = null;
       return base;
     }
 
-   // students.php ရဲ့ JavaScript ကဏ္ဍမှာ ဒီ function ကို ရှာပြီး အစားထိုးပါ
-function renderTable() {
-  const rows = getFilteredSorted();
-  const total = rows.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  state.page = Math.min(state.page, totalPages);
-  const start = (state.page - 1) * PAGE_SIZE;
-  const pageRows = rows.slice(start, start + PAGE_SIZE);
-  const tbody = document.getElementById('tbody');
+    function renderTable() {
+      const rows = getFilteredSorted();
+      const total = rows.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      state.page = Math.min(state.page, totalPages);
+      const start = (state.page - 1) * PAGE_SIZE;
+      const pageRows = rows.slice(start, start + PAGE_SIZE);
+      const tbody = document.getElementById('tbody');
 
-  tbody.innerHTML = '';
-  if(pageRows.length === 0){
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No approved students found matching criteria.</td></tr>';
-  } else {
-    for (const s of pageRows) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-        <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
-        <td>${s.seat_no || ''}</td>
-        <td>${s.student_name_en || ''}</td>
-        <td>${s.student_email || ''}</td>
-        <td>${s.student_phone || ''}</td>
-        <td>${formatDate(s.date)}</td>
-        <td>
-            <div style="display:flex; gap:6px;">
-            <button class="btn ghost" data-details="${s.student_id}">Details</button>
-            <button class="btn ghost" data-edit="${s.student_id}">Edit</button>
-            <button class="btn destructive" data-del="${s.student_id}">Delete</button>
-            </div>
-        </td>`;
-        tbody.appendChild(tr);
+      tbody.innerHTML = '';
+      if(pageRows.length === 0){
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No approved students found matching criteria.</td></tr>';
+      } else {
+        for (const s of pageRows) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
+            <td>${s.seat_no || ''}</td>
+            <td>${s.student_name_en || ''}</td>
+            <td>${s.student_email || ''}</td>
+            <td>${s.student_phone || ''}</td>
+            <td>${formatDate(s.date)}</td>
+            <td>
+                <div style="display:flex; gap:6px;">
+                <button class="btn ghost" data-details="${s.student_id}">Details</button>
+                <button class="btn ghost" data-edit="${s.student_id}">Edit</button>
+                <button class="btn destructive" data-del="${s.student_id}">Delete</button>
+                </div>
+            </td>`;
+            tbody.appendChild(tr);
+        }
+      }
+
+      document.getElementById('pageInfo').textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
+      document.getElementById('prevPage').disabled = state.page <= 1;
+      document.getElementById('nextPage').disabled = state.page >= totalPages;
+      document.getElementById('bulkDeleteBtn').disabled = state.selected.size === 0;
     }
-  }
 
-  document.getElementById('pageInfo').textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
-  document.getElementById('prevPage').disabled = state.page <= 1;
-  document.getElementById('nextPage').disabled = state.page >= totalPages;
-  document.getElementById('bulkDeleteBtn').disabled = state.selected.size === 0;
-}
     function render() {
       const filteredCount = getFilteredSorted().length;
       document.getElementById('studentCountDisplay').textContent = `Total Students: ${filteredCount}`;
@@ -1347,5 +1414,3 @@ function renderTable() {
   </script>
 </body>
 </html>
-
-

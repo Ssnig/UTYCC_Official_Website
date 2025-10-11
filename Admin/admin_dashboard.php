@@ -221,6 +221,7 @@ $pdo = null;
     .doc-item p { font-size: 13px; padding: 8px; text-align: center; font-weight: 500; }
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
+    #majorFilterContainer { transition: all var(--duration) var(--ease); }
     @media (max-width: 1000px) { .cards { grid-template-columns: repeat(2, minmax(0,1fr)); } .form-grid { grid-template-columns: 1fr; } }
     @media (max-width: 780px) { .app { grid-template-columns: 1fr; grid-template-areas: "header" "main"; } .sidebar { display: none; } .cards { grid-template-columns: 1fr; } }
   </style>
@@ -311,6 +312,16 @@ $pdo = null;
                     <option value="Fourth Year">Fourth Year</option>
                     <option value="Fifth Year">Fifth Year</option>
                     <option value="Sixth Year">Sixth Year (Final)</option>
+                </select>
+             </div>
+             <div class="field" id="majorFilterContainer" style="display: none; min-width: 200px;">
+                <select id="majorFilter" aria-label="Filter by Major">
+                    <option value="all">All Majors</option>
+                    <option value="IST">သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာအင်ဂျင်နီယာဘာသာရပ်(IST)</option>
+                    <option value="CE">ကွန်ပျူတာအင်ဂျင်နီယာ ဘာသာရပ်(CE)</option>
+                    <option value="EcE">အီလက်ထရောနစ် အင်ဂျင်နီယာ ဘာသာရပ်(EcE)</option>
+                    <option value="PrE">တိကျပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ ဘာသာရပ်(PrE)</option>
+                    <option value="AME">အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ ဘာသာရပ်(AME)</option>
                 </select>
              </div>
              <div class="spacer"></div>
@@ -592,6 +603,7 @@ $pdo = null;
       students: <?php echo $students_json; ?>,
       q: '',
       year: 'all',
+      major: 'all', // Added major filter state
       page: 1,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
@@ -602,6 +614,16 @@ $pdo = null;
         const uploadsIndex = path.indexOf('uploads/');
         if (uploadsIndex !== -1) return `../Rform/${path}`;
         return path;
+    }
+
+    // Function to get display major from student data
+    function getDisplayMajor(student) {
+        if (student.selected_major && student.selected_major.trim() !== '') {
+            return student.selected_major;
+        } else if (student.preferences && typeof student.preferences === 'object' && student.preferences[1]) {
+            return student.preferences[1];
+        }
+        return null;
     }
 
     function todayStr(d = new Date()) { return d.toISOString().split('T')[0]; }
@@ -909,10 +931,19 @@ $pdo = null;
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
       const selectedYear = state.year;
+      const selectedMajor = state.major;
       const base = state.students.filter(s => {
         const matchesSearch = !q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q));
         const matchesYear = selectedYear === 'all' || s.academic_year === selectedYear;
-        return matchesSearch && matchesYear;
+        
+        // Major filter - only apply for Second Year to Sixth Year
+        let matchesMajor = true;
+        if (selectedMajor !== 'all' && (selectedYear === 'Second Year' || selectedYear === 'Third Year' || selectedYear === 'Fourth Year' || selectedYear === 'Fifth Year' || selectedYear === 'Sixth Year')) {
+            const displayMajor = getDisplayMajor(s);
+            matchesMajor = displayMajor === selectedMajor;
+        }
+        
+        return matchesSearch && matchesYear && matchesMajor;
       });
       const { key, dir } = state.sort;
       base.sort((a,b) => {
@@ -981,6 +1012,25 @@ $pdo = null;
     function addEventListeners() {
       document.getElementById('yearFilter').addEventListener('change', (e) => {
           state.year = e.target.value;
+          state.page = 1;
+          
+          // Show/hide major filter based on year selection
+          const majorFilterContainer = document.getElementById('majorFilterContainer');
+          if (['Second Year', 'Third Year', 'Fourth Year', 'Fifth Year', 'Sixth Year'].includes(state.year)) {
+              majorFilterContainer.style.display = 'block';
+          } else {
+              majorFilterContainer.style.display = 'none';
+              // Reset major filter when hidden
+              state.major = 'all';
+              document.getElementById('majorFilter').value = 'all';
+          }
+          
+          render();
+      });
+
+      // Add major filter event listener
+      document.getElementById('majorFilter').addEventListener('change', (e) => {
+          state.major = e.target.value;
           state.page = 1;
           render();
       });
