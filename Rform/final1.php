@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'title' => 'Session Expired',
             'message' => 'Your session has expired. Please start the process again.',
             'buttonText' => 'Start Over',
-            'redirectUrl' => isset($_SESSION['student_id']) ? 'verify_student.php' : 'form1.php?new=1'
+            'redirectUrl' => isset($_SESSION['student_id']) ? 'verify_student.php' : 'data_add.php?new=1'
         ];
     } elseif (!$all_documents_uploaded) {
         // Double-check on the server side
@@ -303,7 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-        <a href="<?php echo isset($_SESSION['student_id']) ? 'cur_form.php' : 'form1.php'; ?>" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+        <a href="<?php echo isset($_SESSION['student_id']) ? 'cur_form.php' : 'data_add.php'; ?>" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
             <span class="text-3xl mb-2"><?php echo isset($_SESSION['form1_data']) ? '✔️' : '❌'; ?></span>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 1</p>
             <p class="font-semibold text-lg text-gray-700 text-center">Personal Information</p>

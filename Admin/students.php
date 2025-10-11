@@ -834,7 +834,6 @@ $pdo = null;
         confirmModal.showModal();
       });
     }
-
     // NEW: Function to generate and render document grid
     function renderDocuments(student, containerElement) {
         const documents = [
@@ -883,7 +882,6 @@ $pdo = null;
       form.reset();
       document.getElementById('photo_preview').src = PHOTO_PLACEHOLDER;
       formElements.student_id.value = '';
-
       if (mode === 'edit' && student) {
           for (const key in formElements) {
               const element = formElements[key];
@@ -1038,44 +1036,45 @@ $pdo = null;
       return base;
     }
 
-    function renderTable() {
-      const rows = getFilteredSorted();
-      const total = rows.length;
-      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-      state.page = Math.min(state.page, totalPages);
-      const start = (state.page - 1) * PAGE_SIZE;
-      const pageRows = rows.slice(start, start + PAGE_SIZE);
-      const tbody = document.getElementById('tbody');
+   // students.php ရဲ့ JavaScript ကဏ္ဍမှာ ဒီ function ကို ရှာပြီး အစားထိုးပါ
+function renderTable() {
+  const rows = getFilteredSorted();
+  const total = rows.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  state.page = Math.min(state.page, totalPages);
+  const start = (state.page - 1) * PAGE_SIZE;
+  const pageRows = rows.slice(start, start + PAGE_SIZE);
+  const tbody = document.getElementById('tbody');
 
-      tbody.innerHTML = '';
-      if(pageRows.length === 0){
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No approved students found matching criteria.</td></tr>';
-      } else {
-        for (const s of pageRows) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-            <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
-            <td>${s.seat_no || ''}</td>
-            <td>${s.student_name_en || ''}</td>
-            <td>${s.student_email || ''}</td>
-            <td>${s.student_phone || ''}</td>
-            <td>${formatDate(s.date)}</td>
-            <td>
-                <div style="display:flex; gap:6px;">
-                <button class="btn ghost" data-details="${s.student_id}">Details</button>
-                <button class="btn ghost" data-edit="${s.student_id}">Edit</button>
-                <button class="btn destructive" data-del="${s.student_id}">Delete</button>
-                </div>
-            </td>`;
-            tbody.appendChild(tr);
-        }
-      }
-
-      document.getElementById('pageInfo').textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
-      document.getElementById('prevPage').disabled = state.page <= 1;
-      document.getElementById('nextPage').disabled = state.page >= totalPages;
+  tbody.innerHTML = '';
+  if(pageRows.length === 0){
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No approved students found matching criteria.</td></tr>';
+  } else {
+    for (const s of pageRows) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+        <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
+        <td>${s.seat_no || ''}</td>
+        <td>${s.student_name_en || ''}</td>
+        <td>${s.student_email || ''}</td>
+        <td>${s.student_phone || ''}</td>
+        <td>${formatDate(s.date)}</td>
+        <td>
+            <div style="display:flex; gap:6px;">
+            <button class="btn ghost" data-details="${s.student_id}">Details</button>
+            <button class="btn ghost" data-edit="${s.student_id}">Edit</button>
+            <button class="btn destructive" data-del="${s.student_id}">Delete</button>
+            </div>
+        </td>`;
+        tbody.appendChild(tr);
     }
+  }
 
+  document.getElementById('pageInfo').textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
+  document.getElementById('prevPage').disabled = state.page <= 1;
+  document.getElementById('nextPage').disabled = state.page >= totalPages;
+  document.getElementById('bulkDeleteBtn').disabled = state.selected.size === 0;
+}
     function render() {
       const filteredCount = getFilteredSorted().length;
       document.getElementById('studentCountDisplay').textContent = `Total Students: ${filteredCount}`;
