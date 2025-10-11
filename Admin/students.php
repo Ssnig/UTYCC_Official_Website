@@ -455,6 +455,18 @@ $pdo = null;
                     <option value="no">Dormitory: No</option>
                 </select>
              </div>
+             <!-- NEW: Major Filter Dropdown -->
+             <div class="field" style="min-width: 200px;">
+                <select id="majorFilter" aria-label="Filter by Major">
+                    <option value="all">All Majors</option>
+                    <option value="IST">Information Science & Technology (IST)</option>
+                    <option value="CE">Computer Engineering (CE)</option>
+                    <option value="EcE">Electronic Engineering (EcE)</option>
+                    <option value="PrE">Precision Engineering (PrE)</option>
+                    <option value="AME">Advanced Materials Engineering (AME)</option>
+                    <option value="unknown">Unknown/No Major</option>
+                </select>
+             </div>
              <button class="btn ghost" id="clearFiltersBtn" style="margin-left: 8px;">Clear Filters</button>
             <div class="spacer"></div>
             <button class="btn destructive" id="bulkDeleteBtn" disabled>Delete Selected</button>
@@ -734,8 +746,9 @@ $pdo = null;
     const state = {
       students: <?php echo json_encode($students); ?>,
       q: '',
-      year: 'all', // Add year for filtering
-      dormitory: 'all', // NEW: Add dormitory for filtering
+      year: 'all',
+      dormitory: 'all',
+      major: 'all', // NEW: Add major for filtering
       page: 1,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
@@ -1073,10 +1086,37 @@ $pdo = null;
         detailsModal.showModal();
     }
 
+    // NEW: Helper function to check if student has any major data
+    function hasMajorData(student) {
+        const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
+        const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
+        return hasSelectedMajor || hasPreferences;
+    }
+
+    // NEW: Helper function to check if student has a specific major
+    function hasSpecificMajor(student, majorCode) {
+        // Check selected_major (from final1.php)
+        if (student.selected_major && student.selected_major === majorCode) {
+            return true;
+        }
+        
+        // Check preferences (from final.php)
+        if (student.preferences && typeof student.preferences === 'object') {
+            for (let i = 1; i <= 5; i++) {
+                if (student.preferences[i] === majorCode) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
       const selectedYear = state.year;
       const selectedDormitory = state.dormitory;
+      const selectedMajor = state.major; // NEW
 
       const base = state.students.filter(s => {
           const matchesSearch = !q || 
@@ -1091,7 +1131,12 @@ $pdo = null;
                                    (selectedDormitory === 'yes' && s.dormitory_preference) ||
                                    (selectedDormitory === 'no' && !s.dormitory_preference);
 
-          return matchesSearch && matchesYear && matchesDormitory;
+          // NEW: Major filtering logic
+          const matchesMajor = selectedMajor === 'all' || 
+                              (selectedMajor === 'unknown' && !hasMajorData(s)) ||
+                              (selectedMajor !== 'unknown' && hasSpecificMajor(s, selectedMajor));
+
+          return matchesSearch && matchesYear && matchesDormitory && matchesMajor;
       });
 
       const { key, dir } = state.sort;
@@ -1160,6 +1205,13 @@ $pdo = null;
         render();
       });
 
+      // NEW: Major filter event listener
+      document.getElementById('majorFilter').addEventListener('change', (e) => {
+        state.major = e.target.value;
+        state.page = 1;
+        render();
+      });
+
       document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
       
       // NEW: Event listener for the clear filters button
@@ -1167,9 +1219,11 @@ $pdo = null;
         document.getElementById('search').value = '';
         document.getElementById('yearFilter').value = 'all';
         document.getElementById('dormitoryFilter').value = 'all';
+        document.getElementById('majorFilter').value = 'all'; // NEW
         state.q = '';
         state.year = 'all';
         state.dormitory = 'all';
+        state.major = 'all'; // NEW
         state.page = 1;
         render();
         showToast('Filters cleared', 'success');
