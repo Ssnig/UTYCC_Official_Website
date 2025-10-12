@@ -1,175 +1,156 @@
 <?php
-/**
- * activity_api.php
- *
- * Handles all backend data manipulation for activities (Create, Read, Update, Delete).
- * This script handles GET for fetching data and POST for modifications.
- */
-
-ob_start(); // Start output buffering to prevent any stray output from breaking JSON.
-require_once 'auth_check.php';
-
+// Set headers for JSON response and error reporting
 header('Content-Type: application/json');
-require_once '../Rform/db.php'; // Provides the $pdo database connection object.
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // Do not display errors to the client
+ini_set('log_errors', 1); // Log errors to a file
 
-$requestMethod = $_SERVER['REQUEST_METHOD'];
-$action = null;
-$response = ['status' => 'error', 'message' => 'Invalid Request'];
+// --- UPDATED FILE PATHS ---
+$dataFile = 'gallery_data.json';
+// The new upload directory is at the root level, one level up from this file's directory (Admin)
+$uploadDir = '../uploads_activity/';
 
-// Determine the action based on the request method.
-if ($requestMethod === 'GET') {
-    $action = $_GET['action'] ?? null;
-} elseif ($requestMethod === 'POST') {
-    // Action can come from a multipart form or a JSON payload.
-    $action = $_POST['action'] ?? (json_decode(file_get_contents('php://input'), true)['action'] ?? null);
-}
-
-// Exit if no action is specified to prevent invalid requests.
-if (!$action) {
-    http_response_code(400); // Bad Request
-    $response['message'] = 'No action specified.';
-    echo json_encode($response);
-    exit;
-}
-
-// Define upload directories.
-$fileSystemUploadDir = '../uploads_activity/';
-$urlUploadDir = '/uploads_activity/'; 
-
-// Create the uploads directory if it doesn't exist.
-if (!is_dir($fileSystemUploadDir)) {
-    if (!mkdir($fileSystemUploadDir, 0775, true)) {
+// --- DIRECTORY AND FILE SETUP ---
+// Ensure the upload directory exists and is writable
+if (!is_dir($uploadDir)) {
+    if (!mkdir($uploadDir, 0775, true)) {
         http_response_code(500);
-        $response['message'] = 'Failed to create uploads directory.';
-        echo json_encode($response);
+        echo json_encode(['error' => 'Failed to create upload directory. Check permissions on the root folder.']);
+        exit;
+    }
+}
+// Ensure the data file exists and is writable
+if (!file_exists($dataFile)) {
+    if (file_put_contents($dataFile, json_encode([])) === false) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to create data file. Check permissions on the Admin folder.']);
         exit;
     }
 }
 
-try {
-    switch ($action) {
-        // Case to fetch all activities (for the public page).
-        case 'get_activities':
-            if ($requestMethod !== 'GET') throw new Exception('Invalid request method for this action.');
-            
-            $stmt = $pdo->query("SELECT activity_id, image_url, title_en, title_my, description_en, description_my, activity_date FROM activities ORDER BY activity_date DESC");
-            $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $response = ['status' => 'success', 'activities' => $activities];
-            break;
-
-        // Cases to add or update an activity.
-        case 'add_activity':
-        case 'update_activity':
-            if ($requestMethod !== 'POST') throw new Exception('Invalid request method for this action.');
-            
-            $data = $_POST;
-            if (empty($data['title_en']) || empty($data['title_my']) || empty($data['activity_date'])) {
-                throw new Exception('Required fields (titles and date) are missing.');
-            }
-
-            $imageUrl = null;
-            // If updating, fetch the existing image URL to potentially replace the file.
-            if ($action === 'update_activity') {
-                $stmt = $pdo->prepare("SELECT image_url FROM activities WHERE activity_id = ?");
-                $stmt->execute([$data['activity_id']]);
-                $imageUrl = $stmt->fetchColumn();
-            }
-
-            // Handle file upload if a new image is provided.
-            if (isset($_FILES['activity_photo']) && $_FILES['activity_photo']['error'] === UPLOAD_ERR_OK) {
-                // If updating and an old image exists, delete it.
-                if ($action === 'update_activity' && !empty($imageUrl)) {
-                    $oldFileSystemPath = $fileSystemUploadDir . basename($imageUrl);
-                    if (file_exists($oldFileSystemPath)) unlink($oldFileSystemPath);
-                }
-                
-                // Sanitize and create a unique filename.
-                $fileName = 'activity-' . uniqid() . '-' . basename(preg_replace("/[^a-zA-Z0-9\.\-\_]/", "", $_FILES['activity_photo']['name']));
-                $newFileSystemPath = $fileSystemUploadDir . $fileName;
-
-                if (move_uploaded_file($_FILES['activity_photo']['tmp_name'], $newFileSystemPath)) {
-                    $imageUrl = $urlUploadDir . $fileName;
-                } else {
-                    throw new Exception('Failed to move uploaded file.');
-                }
-            }
-            
-            if ($action === 'add_activity') {
-                if (!$imageUrl) throw new Exception('An image is required for a new activity.');
-                $sql = "INSERT INTO activities (title_en, title_my, description_en, description_my, activity_date, image_url) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([$data['title_en'], $data['title_my'], $data['description_en'], $data['description_my'], $data['activity_date'], $imageUrl]);
-                $newId = $pdo->lastInsertId();
-            } else { // update_activity
-                $sql = "UPDATE activities SET title_en = ?, title_my = ?, description_en = ?, description_my = ?, activity_date = ?";
-                $params = [$data['title_en'], $data['title_my'], $data['description_en'], $data['description_my'], $data['activity_date']];
-                // Only update the image URL if a new one was uploaded.
-                if ($imageUrl) {
-                    $sql .= ", image_url = ?";
-                    $params[] = $imageUrl;
-                }
-                $sql .= " WHERE activity_id = ?";
-                $params[] = $data['activity_id'];
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute($params);
-                $newId = $data['activity_id'];
-            }
-
-            // Fetch the final record to return to the frontend.
-            $stmtFetch = $pdo->prepare("SELECT * FROM activities WHERE activity_id = ?");
-            $stmtFetch->execute([$newId]);
-            $finalActivity = $stmtFetch->fetch(PDO::FETCH_ASSOC);
-            $response = ['status' => 'success', 'activity' => $finalActivity];
-            break;
-
-        // Case to delete one or more activities.
-        case 'delete_activity':
-            if ($requestMethod !== 'POST') throw new Exception('Invalid request method for this action.');
-            
-            $data = json_decode(file_get_contents('php://input'), true);
-            $ids = $data['ids'] ?? [];
-            if (!empty($ids) && is_array($ids)) {
-                $sanitized_ids = array_map('intval', $ids);
-                $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
-                
-                // First, get the image URLs to delete the files from the server.
-                $stmtSelect = $pdo->prepare("SELECT image_url FROM activities WHERE activity_id IN ($placeholders)");
-                $stmtSelect->execute($sanitized_ids);
-                $imageUrls = $stmtSelect->fetchAll(PDO::FETCH_COLUMN);
-
-                // Then, delete the records from the database.
-                $sql = "DELETE FROM activities WHERE activity_id IN ($placeholders)";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute($sanitized_ids);
-                
-                // Finally, delete the actual image files.
-                foreach ($imageUrls as $url) {
-                    if (!empty($url)) {
-                       $fileSystemPath = $fileSystemUploadDir . basename($url);
-                       if (file_exists($fileSystemPath)) unlink($fileSystemPath);
-                    }
-                }
-                $response = ['status' => 'success', 'message' => $stmt->rowCount() . ' activity(s) deleted.'];
-            } else {
-                $response['message'] = 'No activity IDs provided for deletion.';
-            }
-            break;
-            
-        default:
-             http_response_code(400); // Bad Request
-             $response['message'] = 'Invalid action specified.';
-             break;
-    }
-} catch (Exception $e) {
-    if ($pdo && $pdo->inTransaction()) {
-        $pdo->rollBack();
-    }
-    http_response_code(500);
-    $response['message'] = $e->getMessage();
+// --- HELPER FUNCTIONS ---
+function getGalleryData($file) {
+    $data = file_get_contents($file);
+    return json_decode($data, true) ?: [];
 }
 
-ob_end_clean(); // Clean the output buffer.
-echo json_encode($response); // Send the final JSON response.
-$pdo = null; // Close the database connection.
+function saveGalleryData($file, $data) {
+    // Sort data so newest items appear first in the admin panel
+    usort($data, function($a, $b) {
+        return (isset($b['timestamp']) ? $b['timestamp'] : 0) <=> (isset($a['timestamp']) ? $a['timestamp'] : 0);
+    });
+    file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+}
+
+// --- REQUEST HANDLING ---
+$method = $_SERVER['REQUEST_METHOD'];
+
+switch ($method) {
+    case 'GET':
+        echo json_encode(getGalleryData($dataFile));
+        break;
+
+    case 'POST':
+        // --- Validation ---
+        if (!isset($_FILES['image']) || empty($_POST['title_en']) || empty($_POST['title_my']) || empty($_POST['description_en']) || empty($_POST['description_my']) || empty($_POST['tag'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'All fields are required.']);
+            exit;
+        }
+
+        $file = $_FILES['image'];
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(500);
+            echo json_encode(['error' => 'File upload error code: ' . $file['error']]);
+            exit;
+        }
+
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!in_array($file['type'], $allowedTypes)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid file type. Only JPG, PNG, and WEBP are allowed.']);
+            exit;
+        }
+        
+        if ($file['size'] > 5 * 1024 * 1024) { // 5 MB
+            http_response_code(400);
+            echo json_encode(['error' => 'File size exceeds 5MB limit.']);
+            exit;
+        }
+
+        // --- File Processing ---
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $uniqueName = uniqid('img_', true) . '.' . $extension;
+        $destination = $uploadDir . $uniqueName;
+
+        if (move_uploaded_file($file['tmp_name'], $destination)) {
+            $data = getGalleryData($dataFile);
+            $newItem = [
+                'id' => uniqid(),
+                // --- UPDATED IMAGE PATH ---
+                // Path is now relative to project root, without leading slash
+                'image_path' => 'uploads_activity/' . $uniqueName,
+                'tag' => htmlspecialchars($_POST['tag']),
+                'title' => [
+                    'en' => htmlspecialchars($_POST['title_en']),
+                    'my' => htmlspecialchars($_POST['title_my'])
+                ],
+                'description' => [
+                    'en' => htmlspecialchars($_POST['description_en']),
+                    'my' => htmlspecialchars($_POST['description_my'])
+                ],
+                'timestamp' => time() // For sorting
+            ];
+            $data[] = $newItem;
+            saveGalleryData($dataFile, $data);
+            echo json_encode(['success' => true, 'item' => $newItem]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Could not save the uploaded file.']);
+        }
+        break;
+
+    case 'DELETE':
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!isset($input['id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing item ID.']);
+            exit;
+        }
+
+        $idToDelete = $input['id'];
+        $data = getGalleryData($dataFile);
+        $itemToDelete = null;
+        $found = false;
+
+        $newData = array_filter($data, function($item) use ($idToDelete, &$found, &$itemToDelete) {
+            if (isset($item['id']) && $item['id'] === $idToDelete) {
+                $found = true;
+                $itemToDelete = $item;
+                return false; // Remove item from array
+            }
+            return true;
+        });
+
+        if ($found && $itemToDelete) {
+            // Delete the physical image file from the root uploads_activity folder
+            $filePath = '../' . $itemToDelete['image_path'];
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            saveGalleryData($dataFile, array_values($newData)); // Re-index array
+            echo json_encode(['success' => true]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Item not found.']);
+        }
+        break;
+
+    default:
+        http_response_code(405);
+        echo json_encode(['error' => 'Method Not Allowed']);
+        break;
+}
 ?>
 
