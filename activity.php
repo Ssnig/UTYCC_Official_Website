@@ -120,6 +120,107 @@
       border-left-color: #3b82f6;
     }
 
+    .river-wrapper {
+      position: relative;
+      padding: 80px 0;
+      margin-bottom: 4rem;
+    }
+
+    .river-background {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .river-background::before,
+    .river-background::after {
+      content: "";
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(0.5px);
+      opacity: 0.7;
+      background: linear-gradient(135deg, rgba(191, 219, 254, 0.65), rgba(59, 130, 246, 0.45));
+    }
+
+    .river-background::before {
+      width: min(1200px, 90vw);
+      height: clamp(160px, 28vw, 240px);
+    }
+
+    .river-background::after {
+      width: min(1000px, 75vw);
+      height: clamp(120px, 20vw, 200px);
+      transform: rotate(-3deg);
+      background: linear-gradient(135deg, rgba(96, 165, 250, 0.35), rgba(30, 64, 175, 0.4));
+    }
+
+    .river-carousel {
+      position: relative;
+      width: min(1200px, 92vw);
+      height: clamp(200px, 32vw, 280px);
+      margin: 0 auto;
+      overflow: hidden;
+      --river-duration: 40s;
+    }
+
+    .river-carousel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(191, 219, 254, 0.35), transparent 65%);
+      filter: blur(5px);
+      z-index: 0;
+    }
+
+    .river-track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      display: flex;
+      gap: clamp(1rem, 2vw, 1.75rem);
+      padding-right: clamp(1rem, 2vw, 1.75rem);
+      transform: translate(0, -50%);
+      animation: river-scroll var(--river-duration) linear infinite;
+      will-change: transform;
+      z-index: 1;
+    }
+
+    .river-item {
+      flex: 0 0 clamp(140px, 16vw, 200px);
+      height: clamp(105px, 12vw, 150px);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px -18px rgba(15, 23, 42, 0.55);
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .river-item::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0) 45%, rgba(15, 23, 42, 0.35));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .river-item:hover::after {
+      opacity: 1;
+    }
+
+    @keyframes river-scroll {
+      from {
+        transform: translate(0, -50%);
+      }
+      to {
+        transform: translate(-50%, -50%);
+      }
+    }
+
     .language-selector {
       position: relative;
       display: inline-block;
@@ -476,6 +577,21 @@
         </div>
       </section>
 
+      <!-- River Carousel Section -->
+      <section class="mb-20">
+        <div class="text-center max-w-3xl mx-auto mb-10">
+          <span class="inline-block uppercase tracking-[0.3em] text-xs text-blue-600 font-semibold mb-3">Featured Moments</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-blue-900 mb-3">Glide Through Campus Life</h2>
+          <p class="text-gray-600 text-base md:text-lg">
+            Drift along a ribbon of highlights featuring activities, labs, and daily life at UTYCC. Watch the snapshots flow by like a river weaving through our community.
+          </p>
+        </div>
+        <div class="river-wrapper">
+          <div class="river-background" aria-hidden="true"></div>
+          <div class="river-carousel" id="riverCarousel" role="list"></div>
+        </div>
+      </section>
+
       <!-- Activities Grid -->
       <section id="programs ">
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-12" data-lang-key="academic_programs">Academic Programs</h2>
@@ -567,6 +683,21 @@
         { image: './Img/activity/ce_project.jpg', titles: { en: 'CE Project Gathering', my: 'ကွန်ပျူတာ အင်ဂျင်နီယာဌာန Project' }, descriptions: { en: 'A glimpse of students collaborating and sharing ideas during the Project Gathering.', my: 'ကျောင်းသား/သူများ အဖွဲ့လိုက် ပူးပေါင်းဆောင်ရွက်သည့် Project Gathering မြင်ကွင်း။' }, date: 'Aug 1, 2025' },
         { image: './Img/activity/ce_project_show.jpg', titles: { en: 'CE Project Show', my: 'CE ပရောဂျက် ပြပွဲ' }, descriptions: { en: 'A showcase of students’ creativity and dedication during the Project Exhibition.', my: 'ကျောင်းသား/သူများ၏ စွမ်းဆောင်ရည်ကို ဖော်ပြသည့် Project ပြပွဲ မြင်ကွင်း။' }, date: 'Aug 1, 2025' }
     ];
+
+    const riverImages = [
+      './Img/activity/football.jpg',
+      './Img/activity/ce_project_show.jpg',
+      './Img/activity/ce_lab.jpg',
+      './Img/activity/trip.jpg',
+      './Img/activity/ce_presentation.jpg',
+      './Img/activity/ce_project.jpg',
+      './Img/utycc_buildings/front_view3.JPG',
+      './Img/utycc_buildings/canteen3.JPG',
+      './Img/utycc_buildings/lab4.JPG',
+      './Img/activity/kahtane.jpg'
+    ];
+
+    const riverAnimationDuration = 40;
 
     // This hardcoded data for the "Learn More" modals remains unchanged.
     const clubsData = {
@@ -718,6 +849,33 @@
       currentSlide = (currentSlide - 1 + slides.length) % slides.length;
       slides[currentSlide].classList.add('active');
     }
+
+    function setupRiverCarousel(images) {
+      const container = document.getElementById('riverCarousel');
+      if (!container || !images.length) return;
+
+      container.innerHTML = '';
+      container.style.setProperty('--river-duration', `${riverAnimationDuration}s`);
+
+      const track = document.createElement('div');
+      track.className = 'river-track';
+      track.setAttribute('role', 'presentation');
+
+      const appendImages = (list) => {
+        list.forEach((src) => {
+          const item = document.createElement('div');
+          item.className = 'river-item';
+          item.style.backgroundImage = `url(${src})`;
+          item.setAttribute('role', 'listitem');
+          track.appendChild(item);
+        });
+      };
+
+      appendImages(images);
+      appendImages(images);
+
+      container.appendChild(track);
+    }
     
     // --- All other functions (modal, etc.) are assumed to be here and correct ---
     function closeModal() {
@@ -763,6 +921,8 @@
         } catch (error) {
             console.error("Could not fetch dynamic activities. Will use fallback data.", error);
         }
+
+        setupRiverCarousel(riverImages);
 
         function setupLangSwitcher(type) {
             const container = document.getElementById(`lang-switcher-container-${type}`);
