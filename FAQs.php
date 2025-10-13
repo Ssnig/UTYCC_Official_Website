@@ -502,6 +502,12 @@
       <p data-lang-key="ca2">Our team is here to help! Reach out to us directly for personalized assistance.</p>
       <a href="./Rform/feedback.php" class="btn" data-lang-key="ca3">Contact Support</a>
     </section>
+    <br>
+    <section id="contact" class="cta-section mt-16 animate-fadeIn">
+      <h2 data-lang-key="dev1">Or Contact The Development Team</h2>
+      <p data-lang-key="dev2">Our team is here to help! Reach out to us directly for personalized assistance.</p>
+      <a href="./devTeam.php" class="btn" data-lang-key="dev3">Contact Dev</a>
+    </section>
   </main>
 
   <footer id="contact" class="bg-blue-900 text-white">
@@ -709,7 +715,10 @@
         tab_general: "အထွေထွေ",
         tab_academics: "ပညာရေး",
         tab_admissions: "ဝင်ခွင့်နှင့် ဘွဲ့",
-        no_results: "ကိုက်ညီသောမေးခွန်းများ မတွေ့ပါ။"
+        no_results: "ကိုက်ညီသောမေးခွန်းများ မတွေ့ပါ။",
+        dev1: "သို့မဟုတ် Project Team ဆက်သွယ်ပါ",
+        dev2: "ကျွန်ုပ်တို့၏အဖွဲ့သည် ကူညီရန် အသင့်ရှိပါသည်။ တစ်ဦးချင်းအကူအညီအတွက် ကျွန်ုပ်တို့ထံ တိုက်ရိုက်ဆက်သွယ်ပါ။",
+        dev3: "Project Team ဆက်သွယ်ရန်"
       },
       en: {
         faq: "Frequently Asked Questions",
@@ -756,7 +765,10 @@
         tab_general: "General",
         tab_academics: "Academics",
         tab_admissions: "Admissions & Graduation",
-        no_results: "No matching questions found."
+        no_results: "No matching questions found.",
+        dev1: "Or Contact The Development Team",
+        dev2: "Our team is here to help! Reach out to us directly for personalized assistance.",
+        dev3: "Contact Dev"
       },
     };
 
