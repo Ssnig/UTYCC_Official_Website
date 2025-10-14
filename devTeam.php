@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UTYCC Development Team</title>
+    <title> Dev Team</title>
     <link rel="stylesheet" href="./CSS/devTeam.css">
     <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
 
@@ -98,7 +98,7 @@
         </section>
 
         <section class="team-section" id="team">
-            <h2>The Development Team</h2>
+            <h2>Meet The Development Team</h2>
 
             <div class="role-group">
                 <header>
@@ -112,7 +112,7 @@
                                 <img src="./Img/dev/ksh.jpg" alt="Kyaw San Htun">
                             </div>
                             <h3>Kyaw San Htun</h3>
-                            <p class="role">Team Leader / Frontend Developer</p>
+                            <p class="role" style="font-size: smaller;">Team Leader / Frontend Developer</p>
                         </div>
                         <div class="card-detail" aria-hidden="true">
                             <div class="detail-avatar">
@@ -120,7 +120,7 @@
                             </div>
                             <div class="detail-content">
                                 <h4>Kyaw San Htun</h4>
-                                <p><span>Role:</span> Team Leader / Frontend Developer</p>
+                                <p style="font-size: x-small;"><span>Role:</span> Team Leader / Frontend Developer</p>
                                 <p><span>Year:</span> 3rd Year</p>
                                 <p><span>Contact:</span> <a href="mailto:kyawsanh402@gmail.com" style="font-size: smaller;">kyawsanh402@gmail.com</a></p>
                             </div>
@@ -191,14 +191,14 @@
                     <article class="team-card" data-member="member-4">
                         <div class="card-front">
                             <div class="avatar-wrapper">
-                                <img src="./Img/devTeam/member4.jpg" alt="Member 4">
+                                <img src="./Img/dev/llha.jpg" alt="Member 4">
                             </div>
                             <h3>Linn Latt Htut Aung</h3>
                             <p class="role">Full Stack Developer</p>
                         </div>
                         <div class="card-detail" aria-hidden="true">
                             <div class="detail-avatar">
-                                <img src="./Img/devTeam/member4.jpg" alt="Member 4 portrait">
+                                <img src="./Img/dev/llha.jpg" alt="Member 4 portrait">
                             </div>
                             <div class="detail-content">
                                 <h4>Lin Latt Htut Aung</h4>
@@ -213,14 +213,14 @@
                     <article class="team-card" data-member="member-5">
                         <div class="card-front">
                             <div class="avatar-wrapper">
-                                <img src="./Img/devTeam/member5.jpg" alt="Member 5">
+                                <img src="./Img/dev/amh.jpg" alt="Member 5">
                             </div>
                             <h3>Aung Myat Htun</h3>
                             <p class="role">Full Stack Developer</p>
                         </div>
                         <div class="card-detail" aria-hidden="true">
                             <div class="detail-avatar">
-                                <img src="./Img/devTeam/member5.jpg" alt="Member 5 portrait">
+                                <img src="./Img/dev/amh.jpg" alt="Member 5 portrait">
                             </div>
                             <div class="detail-content">
                                 <h4>Aung Myat Htun</h4>
@@ -243,14 +243,14 @@
                     <article class="team-card" data-member="member-6">
                         <div class="card-front">
                             <div class="avatar-wrapper">
-                                <img src="./Img/devTeam/member6.jpg" alt="Member 6">
+                                <img src="./Img/dev/mmh.jpg" alt="Member 6">
                             </div>
                             <h3>Myat Min Htet</h3>
                             <p class="role">Backend Developer</p>
                         </div>
                         <div class="card-detail" aria-hidden="true">
                             <div class="detail-avatar">
-                                <img src="./Img/devTeam/member6.jpg" alt="Member 6 portrait">
+                                <img src="./Img/dev/mmh.jpg" alt="Member 6 portrait">
                             </div>
                             <div class="detail-content">
                                 <h4>Myat Min Htet</h4>
@@ -265,14 +265,14 @@
                     <article class="team-card" data-member="member-7">
                         <div class="card-front">
                             <div class="avatar-wrapper">
-                                <img src="./Img/devTeam/member7.jpg" alt="Member 7">
+                                <img src="./Img/dev/nlh2.jpg" alt="Member 7">
                             </div>
                             <h3>Naing Linn Htun</h3>
                             <p class="role">Backend Developer</p>
                         </div>
                         <div class="card-detail" aria-hidden="true">
                             <div class="detail-avatar">
-                                <img src="./Img/devTeam/member7.jpg" alt="Member 7 portrait">
+                                <img src="./Img/dev/nlh2.jpg" alt="Member 7 portrait">
                             </div>
                             <div class="detail-content">
                                 <h4>Naing Linn Htun</h4>
@@ -306,7 +306,7 @@
                             </div>
                             <div class="detail-content">
                                 <h4>Ya Min Shwe Sin</h4>
-                                <p><span>Role:</span> Content &amp; QA Assistant</p>
+                                <p style="font-size: smaller;"><span>Role:</span> Content &amp; QA Assistant</p>
                                 <p><span>Year:</span> 3rd Year</p>
                                 <p><span>Contact:</span> <a href="mailto:ymin34305@gmail.com" style="font-size: smaller;">ymin34305@gmail.com</a></p>
                             </div>
@@ -328,7 +328,7 @@
                             </div>
                             <div class="detail-content">
                                 <h4>Soe Sandar Win</h4>
-                                <p><span>Role:</span> Content &amp; QA Assistant</p>
+                                <p style="font-size: smaller;"><span>Role:</span> Content &amp; QA Assistant</p>
                                 <p><span>Year:</span> 3rd Year</p>
                                 <p><span>Contact:</span> <a href="mailto:soesandarwin992@gmail.com" style="font-size: smaller;">soesandarwin992@gmail.com</a></p>
                             </div>
@@ -350,7 +350,7 @@
                             </div>
                             <div class="detail-content">
                                 <h4>Eaindray Htet Htet</h4>
-                                <p><span>Role:</span> Content &amp; QA Assistant</p>
+                                <p style="font-size: smaller;"><span>Role:</span> Content &amp; QA Assistant</p>
                                 <p><span>Year:</span> 3rd Year</p>
                                 <p><span>Contact:</span> <a href="mailto:eaindrayhtet245@gmail.com" style="font-size: smaller;">eaindrayhtet245@gmail.com</a></p>
                             </div>
@@ -379,7 +379,7 @@
                                 <img src="./Img/dev/LWT.jpg" alt="Member 11 portrait">
                             </div>
                             <div class="detail-content">
-                                <h4>La Wun Thu1</h4>
+                                <h4>La Wun Thu</h4>
                                 <p><span>Role:</span> Data Researcher</p>
                                 <p><span>Year:</span> 3rd Year</p>
                                 <p><span>Contact:</span> <a href="mailto:lawinthulwt222@gmail.com" style="font-size: smaller;">lawinthulwt222@gmail.com</a></p>
@@ -443,14 +443,14 @@
                     <article class="team-card" data-member="member-14">
                         <div class="card-front">
                             <div class="avatar-wrapper">
-                                <img src="./Img/devTeam/member14.jpg" alt="Member 14">
+                                <img src="./Img/dev/bbmh.jpg" alt="Member 14">
                             </div>
                             <h3>Bo Bo Min Han</h3>
                             <p class="role">Information Coordinator</p>
                         </div>
                         <div class="card-detail" aria-hidden="true">
                             <div class="detail-avatar">
-                                <img src="./Img/devTeam/member14.jpg" alt="Member 14 portrait">
+                                <img src="./Img/dev/bbmh.jpg" alt="Member 14 portrait">
                             </div>
                             <div class="detail-content">
                                 <h4>Bo Bo Min Han</h4>
@@ -533,7 +533,7 @@
             <nav aria-label="Footer navigation">
                 <a href="about.php">About</a>
                 <a href="activity.php">Activities</a>
-                <a href="contact.php">Contact</a>
+                
             </nav>
         </div>
     </footer>
