@@ -379,7 +379,7 @@
         <div class="hidden md:flex items-center space-x-6">
           <a href="./about.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_about">About Us</a>
           <a href="./activity.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_activity">Activities</a>
-          <a href="/Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_examresult">Exam Results</a>
+          <a href="./Rform/examResults.php" class="nav-link text-gray-700 hover:text-blue-800 transition font-medium" data-lang-key="nav_examresult">Exam Results</a>
           
           <!-- Language Switcher - Desktop -->
           <div class="relative ml-4">
