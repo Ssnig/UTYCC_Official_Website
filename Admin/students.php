@@ -498,6 +498,28 @@ $pdo = null;
       </section>
     </main>
   </div>
+  
+    <!-- NEW Modal: Choose Add Student Type -->
+    <dialog id="addStudentTypeModal" aria-modal="true">
+        <div class="modal-header">
+            <strong>Add New Student</strong>
+            <button class="btn ghost" type="button" id="closeAddTypeModal" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+            <p style="margin-bottom: 24px;">Select Student Type</p>
+            <div style="display: flex; gap: 16px; justify-content: center;">
+                <button class="btn" id="addNewStudentBtn" style="flex: 1; flex-direction: column; height: auto; padding: 16px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; margin-bottom: 8px;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+                    <span>New Student (Without Major)</span>
+                </button>
+                <button class="btn primary" id="addTransferStudentBtn" style="flex: 1; flex-direction: column; height: auto; padding: 16px;">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; margin-bottom: 8px;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="m22 14-4.5 4.5L13 14"></path><path d="M17.5 18.5V4"></path></svg>
+                    <span>Transfer/Existing (With Major)</span>
+                </button>
+            </div>
+        </div>
+    </dialog>
+
 
   <!-- Modal: Add/Edit Student -->
   <dialog id="studentModal" aria-modal="true">
@@ -603,6 +625,10 @@ $pdo = null;
 
             <h3 class="detail-section-header">Father's Information</h3>
             <div class="field">
+                <label for="father_deceased_year">Deceased Year (if applicable)</label>
+                <input id="father_deceased_year" name="father_deceased_year" type="number" placeholder="YYYY" />
+            </div>
+            <div class="field">
                 <label for="father_name_en">Name (EN)</label>
                 <input id="father_name_en" name="father_name_en" />
             </div>
@@ -634,12 +660,12 @@ $pdo = null;
                 <label for="father_address">Address</label>
                 <textarea id="father_address" name="father_address"></textarea>
             </div>
-             <div class="field">
-                <label for="father_deceased_year">Deceased Year (if applicable)</label>
-                <input id="father_deceased_year" name="father_deceased_year" type="number" placeholder="YYYY" />
-            </div>
 
             <h3 class="detail-section-header">Mother's Information</h3>
+            <div class="field">
+                <label for="mother_deceased_year">Deceased Year (if applicable)</label>
+                <input id="mother_deceased_year" name="mother_deceased_year" type="number" placeholder="YYYY" />
+            </div>
             <div class="field">
                 <label for="mother_name_en">Name (EN)</label>
                 <input id="mother_name_en" name="mother_name_en" />
@@ -672,12 +698,9 @@ $pdo = null;
                 <label for="mother_address">Address</label>
                 <textarea id="mother_address" name="mother_address"></textarea>
             </div>
-             <div class="field">
-                <label for="mother_deceased_year">Deceased Year (if applicable)</label>
-                <input id="mother_deceased_year" name="mother_deceased_year" type="number" placeholder="YYYY" />
-            </div>
+            
             <!-- NEW: Document section for Edit Modal -->
-            <h3 class="detail-section-header">Submitted Documents</h3>
+            <h3 class="detail-section-header" id="documents-header">Submitted Documents</h3>
             <div id="edit-documents-grid" class="documents-grid" style="grid-column: 1 / -1;">
                 <!-- JS will populate this -->
             </div>
@@ -718,6 +741,23 @@ $pdo = null;
     </div>
   </dialog>
 
+  <!-- NEW Modal: Validation Errors -->
+  <dialog id="validationErrorModal" aria-modal="true">
+    <div class="modal-header">
+        <strong>Required Information Missing</strong>
+        <button class="btn ghost" type="button" id="closeValidationErrorModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+        <p>Please fill in the following required fields:</p>
+        <ul id="validationErrorList" style="list-style-type: disc; padding-left: 20px; color: hsl(var(--danger));">
+            <!-- Errors will be populated here by JavaScript -->
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="btn primary" type="button" id="okValidationErrorModal">OK</button>
+    </div>
+  </dialog>
+
   <div class="toast-wrap"></div>
 
   <script>
@@ -750,24 +790,19 @@ $pdo = null;
             return 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
         }
         
-        // If it's already a full URL, return as is
         if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
             return path;
         }
         
-        // If path starts with /uploads/, prepend ../Rform
         if (path.startsWith('/uploads/')) {
             return `../Rform${path}`;
         }
         
-        // If path contains uploads/, use it directly with ../Rform/
         if (path.includes('uploads/')) {
-            // Remove any leading slashes or incorrect paths
             const cleanPath = path.replace(/^\.\.\/Rform\//, '').replace(/^\//, '');
             return `../Rform/${cleanPath}`;
         }
         
-        // Default case - assume it's relative to Rform directory
         return `../Rform/${path}`;
     }
 
@@ -843,86 +878,136 @@ $pdo = null;
       });
     }
 
-    // NEW: Function to update major section based on student year - FIXED VERSION
-    function updateMajorSection(studentYear, student = null) {
+    // MODIFICATION: Function to update major section for add and edit modes
+    function updateMajorSection(mode, student = null) {
         const majorSection = document.getElementById('majorSection');
-        
-        if (studentYear === 'First Year') {
-            // For First Year students, show assigned major selection
-            const selectedMajor = student ? (student.selected_major || '') : '';
+        majorSection.innerHTML = ''; // Clear previous content
+
+        if (mode === 'add_new') {
+            let preferencesHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                preferencesHTML += `
+                    <div class="field">
+                        <label for="preference${i}">ဦးစားပေး ${i}</label>
+                        <select id="preference${i}" name="preferences[${i}]">
+                            <option value="">-- ဦးစားပေးရွေးချယ်ပါ --</option>
+                            ${Object.entries(availableMajors).map(([code, name]) => `<option value="${code}">${name}</option>`).join('')}
+                        </select>
+                    </div>`;
+            }
             majorSection.innerHTML = `
-                <h3 class="detail-section-header">Major Assignment (First Year)</h3>
+                <h3 class="detail-section-header">Major Preferences</h3>
+                <div class="form-grid">${preferencesHTML}</div>`;
+        } else if (mode === 'add_transfer') {
+            majorSection.innerHTML = `
+                <h3 class="detail-section-header">Major Assignment</h3>
                 <div class="field">
                     <label for="selected_major">Assigned Major</label>
-                    <select id="selected_major" name="selected_major">
+                    <select id="selected_major" name="selected_major" required>
                         <option value="">-- Select Major --</option>
-                        ${Object.entries(availableMajors).map(([code, name]) => 
-                            `<option value="${code}" ${selectedMajor === code ? 'selected' : ''}>${name}</option>`
-                        ).join('')}
+                        ${Object.entries(availableMajors).map(([code, name]) => `<option value="${code}">${name}</option>`).join('')}
                     </select>
-                </div>
-            `;
-        } else {
-            // For other years, show the assigned major (if exists) or preferences
-            const hasSelectedMajor = student && student.selected_major && student.selected_major.trim() !== '';
-            const hasPreferences = student && student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
-
-            if (hasSelectedMajor) {
+                </div>`;
+        } else if (mode === 'edit' && student) {
+            const studentYear = student.year;
+            if (studentYear === 'First Year') {
+                const selectedMajor = student.selected_major || '';
                 majorSection.innerHTML = `
-                    <h3 class="detail-section-header">Major Information</h3>
+                    <h3 class="detail-section-header">Major Assignment (First Year)</h3>
                     <div class="field">
-                        <label>Selected Major</label>
-                        <input type="text" value="${availableMajors[student.selected_major] || student.selected_major}" disabled />
-                    </div>
-                `;
-            } else if (hasPreferences) {
-                let preferencesHTML = '';
-                for (let i = 1; i <= 5; i++) {
-                    const prefValue = student.preferences[i];
-                    if (prefValue) {
-                        preferencesHTML += `
-                            <div class="field">
-                                <label>Preference ${i}</label>
-                                <input type="text" value="${availableMajors[prefValue] || prefValue}" disabled />
-                            </div>
-                        `;
-                    }
-                }
-                majorSection.innerHTML = `
-                    <h3 class="detail-section-header">Major Preferences</h3>
-                    ${preferencesHTML}
-                `;
+                        <label for="selected_major">Assigned Major</label>
+                        <select id="selected_major" name="selected_major">
+                            <option value="">-- Select Major --</option>
+                            ${Object.entries(availableMajors).map(([code, name]) => 
+                                `<option value="${code}" ${selectedMajor === code ? 'selected' : ''}>${name}</option>`
+                            ).join('')}
+                        </select>
+                    </div>`;
             } else {
-                majorSection.innerHTML = `
-                    <h3 class="detail-section-header">Major Information</h3>
-                    <div class="field">
-                        <label>Major Data</label>
-                        <input type="text" value="No major data available" disabled />
-                    </div>
-                `;
+                const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
+                const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
+
+                if (hasSelectedMajor) {
+                    majorSection.innerHTML = `
+                        <h3 class="detail-section-header">Major Information</h3>
+                        <div class="field">
+                            <label>Selected Major</label>
+                            <input type="text" value="${availableMajors[student.selected_major] || student.selected_major}" disabled />
+                        </div>`;
+                } else if (hasPreferences) {
+                    let preferencesHTML = '';
+                    for (let i = 1; i <= 5; i++) {
+                        const prefValue = student.preferences[i];
+                        if (prefValue) {
+                            preferencesHTML += `
+                                <div class="field">
+                                    <label>Preference ${i}</label>
+                                    <input type="text" value="${availableMajors[prefValue] || prefValue}" disabled />
+                                </div>`;
+                        }
+                    }
+                    majorSection.innerHTML = `<h3 class="detail-section-header">Major Preferences</h3>${preferencesHTML}`;
+                } else {
+                    majorSection.innerHTML = `
+                        <h3 class="detail-section-header">Major Information</h3>
+                        <div class="field">
+                            <label>Major Data</label>
+                            <input type="text" value="No major data available" disabled />
+                        </div>`;
+                }
             }
         }
+    }
+
+    function toggleParentFields(parent, isDeceased) {
+        const fieldsToDisable = [
+            document.getElementById(`${parent}_info`), // Occupation
+            document.getElementById(`${parent}_address`),
+            document.getElementById(`${parent}_phone`)
+        ];
+
+        fieldsToDisable.forEach(field => {
+            if (field) {
+                field.disabled = isDeceased;
+                field.style.backgroundColor = isDeceased ? 'hsl(var(--muted))' : 'hsl(var(--bg))';
+                if (isDeceased) {
+                    field.value = ''; 
+                }
+            }
+        });
     }
 
     function openModal(mode, student = null) {
       const modal = document.getElementById('studentModal');
       const form = document.getElementById('studentForm');
-      document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Edit Student' : 'Add Student';
-      
+      form.dataset.currentMode = mode; // Store the current mode (add_new, add_transfer, edit)
       form.reset();
       document.getElementById('photo_preview').src = PHOTO_PLACEHOLDER;
       formElements.student_id.value = '';
       
-      // MODIFICATION: Enable year field for editing and add change listener
-      formElements.year.disabled = false;
+      const documentsHeader = document.getElementById('documents-header');
+      const documentsGrid = document.getElementById('edit-documents-grid');
+      const saveButton = document.getElementById('saveStudent');
       
-      if (mode === 'edit' && student) {
+      // Reset parent fields to enabled state
+      toggleParentFields('father', false);
+      toggleParentFields('mother', false);
+
+      if (mode === 'add_new' || mode === 'add_transfer') {
+        document.getElementById('modalTitle').textContent = mode === 'add_new' ? 'Add New Student (Preferences)' : 'Add Transfer Student (Major Assigned)';
+        saveButton.textContent = 'Add Student';
+        updateMajorSection(mode, null);
+        documentsHeader.style.display = 'none';
+        documentsGrid.style.display = 'none';
+      } else if (mode === 'edit' && student) {
+          document.getElementById('modalTitle').textContent = 'Edit Student';
+          saveButton.textContent = 'Save Changes';
           for (const key in formElements) {
               const element = formElements[key];
               if (element) {
                   if (element.type === 'checkbox') {
                       element.checked = !!student[key];
-                  } else if (element.type !== 'file' && !element.name.startsWith('preference')) {
+                  } else if (element.type !== 'file') {
                       element.value = student[key] || '';
                   }
               }
@@ -930,24 +1015,22 @@ $pdo = null;
           
           document.getElementById('photo_preview').src = student.photo_url ? getSafeUrl(student.photo_url) : PHOTO_PLACEHOLDER;
           
-          // Update major section based on student year
-          updateMajorSection(student.year, student);
+          updateMajorSection('edit', student);
+          
+          // Toggle parent fields based on existing data
+          toggleParentFields('father', !!student.father_deceased_year);
+          toggleParentFields('mother', !!student.mother_deceased_year);
 
-          // --- Populate document files in Edit Modal ---
-          const documentsGrid = document.getElementById('edit-documents-grid');
+          documentsHeader.style.display = 'block';
+          documentsGrid.style.display = 'grid';
           documentsGrid.innerHTML = ''; // Clear previous documents
 
           const documents = [
-              { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' },
-              { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
-              { label: 'အောင်လက်မှတ်', key: 'doc_certificate' },
-              { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
-              { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' },
-              { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
-              { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' },
-              { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
-              { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' },
-              { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
+              { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' }, { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
+              { label: 'အောင်လက်မှတ်', key: 'doc_certificate' }, { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
+              { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' }, { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
+              { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' }, { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
+              { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' }, { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
               { label: 'အမေ NRC (နောက်)', key: 'doc_mother_nrc_back' },
           ];
 
@@ -957,7 +1040,6 @@ $pdo = null;
               const docPath = student[doc.key];
               if (docPath) {
                   hasDocuments = true;
-                  // FIXED: Use the improved getSafeUrl function for documents too
                   documentsHtml += `
                       <div class="doc-item">
                           <a href="${getSafeUrl(docPath)}" target="_blank" title="View ${doc.label}">
@@ -973,42 +1055,25 @@ $pdo = null;
           } else {
               documentsGrid.innerHTML = documentsHtml;
           }
-      } else {
-          // For new student, set default major section
-          updateMajorSection('');
-          // Clear documents if it's an 'add' modal
-          document.getElementById('edit-documents-grid').innerHTML = '<p style="color: hsl(var(--muted-foreground));">No documents available for new student.</p>';
       }
-      
-      // Add event listener for year change to update major section dynamically
-      formElements.year.addEventListener('change', function() {
-          updateMajorSection(this.value, student);
-      });
       
       modal.showModal();
       formElements.student_name_en.focus();
     }
     
-    function closeModalSafe() { document.getElementById('studentModal').close(); }
+    function closeModalSafe(modalId) { document.getElementById(modalId).close(); }
     
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
-        // FIXED: Use the improved getSafeUrl function for details modal photo
         const photoUrl = s.photo_url ? getSafeUrl(s.photo_url) : PHOTO_PLACEHOLDER;
-
-        // Check if student has selected_major or preferences
         const hasSelectedMajor = s.selected_major && s.selected_major.trim() !== '';
         const hasPreferences = s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0;
 
         let majorHtml = '';
         if (hasSelectedMajor) {
-            // Student has assigned major
-            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid">`;
-            majorHtml += `<dt>Major</dt><dd>${availableMajors[s.selected_major] || s.selected_major}</dd>`;
-            majorHtml += `</dl>`;
+            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid"><dt>Major</dt><dd>${availableMajors[s.selected_major] || s.selected_major}</dd></dl>`;
         } else if (hasPreferences) {
-            // Student has preferences
             majorHtml = `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
             for (let i = 1; i <= 5; i++) {
                 const prefCode = s.preferences[i];
@@ -1018,22 +1083,15 @@ $pdo = null;
             }
             majorHtml += `</dl>`;
         } else {
-            majorHtml = `<h3 class="detail-section-header">Major Information</h3><dl class="details-grid">`;
-            majorHtml += `<dt>Status</dt><dd>No major data available</dd>`;
-            majorHtml += `</dl>`;
+            majorHtml = `<h3 class="detail-section-header">Major Information</h3><dl class="details-grid"><dt>Status</dt><dd>No major data available</dd></dl>`;
         }
         
         const documents = [
-            { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' },
-            { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
-            { label: 'အောင်လက်မှတ်', key: 'doc_certificate' },
-            { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
-            { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' },
-            { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
-            { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' },
-            { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
-            { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' },
-            { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
+            { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' }, { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
+            { label: 'အောင်လက်မှတ်', key: 'doc_certificate' }, { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
+            { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' }, { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
+            { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' }, { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
+            { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' }, { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
             { label: 'အမေ NRC (နောက်)', key: 'doc_mother_nrc_back' },
         ];
 
@@ -1041,7 +1099,6 @@ $pdo = null;
         documents.forEach(doc => {
             const docPath = s[doc.key];
             if (docPath) {
-                // FIXED: Use the improved getSafeUrl function for documents in details modal
                 documentsHtml += `
                     <div class="doc-item">
                         <a href="${getSafeUrl(docPath)}" target="_blank">
@@ -1099,21 +1156,17 @@ $pdo = null;
         detailsModal.showModal();
     }
 
-    // NEW: Helper function to check if student has any major data
     function hasMajorData(student) {
         const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
         const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
         return hasSelectedMajor || hasPreferences;
     }
 
-    // NEW: Helper function to check if student has a specific major
     function hasSpecificMajor(student, majorCode) {
-        // Check selected_major (from final1.php)
         if (student.selected_major && student.selected_major === majorCode) {
             return true;
         }
         
-        // Check preferences (from final.php)
         if (student.preferences && typeof student.preferences === 'object') {
             for (let i = 1; i <= 5; i++) {
                 if (student.preferences[i] === majorCode) {
@@ -1129,14 +1182,14 @@ $pdo = null;
       const q = state.q.toLowerCase();
       const selectedYear = state.year;
       const selectedDormitory = state.dormitory;
-      const selectedMajor = state.major; // NEW
+      const selectedMajor = state.major;
 
       const base = state.students.filter(s => {
           const matchesSearch = !q || 
                                 (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || 
                                 (s.student_email && s.student_email.toLowerCase().includes(q)) || 
                                 (s.seat_no && s.seat_no.toLowerCase().includes(q)) ||
-                                (s.student_phone && s.student_phone.includes(q)) || // Phone numbers don't need toLowerCase
+                                (s.student_phone && s.student_phone.includes(q)) ||
                                 (s.student_nrc && s.student_nrc.toLowerCase().includes(q));
           const matchesYear = selectedYear === 'all' || s.year === selectedYear;
           
@@ -1144,7 +1197,6 @@ $pdo = null;
                                    (selectedDormitory === 'yes' && s.dormitory_preference) ||
                                    (selectedDormitory === 'no' && !s.dormitory_preference);
 
-          // NEW: Major filtering logic
           const matchesMajor = selectedMajor === 'all' || 
                               (selectedMajor === 'unknown' && !hasMajorData(s)) ||
                               (selectedMajor !== 'unknown' && hasSpecificMajor(s, selectedMajor));
@@ -1211,7 +1263,7 @@ $pdo = null;
     function addEventListeners() {
       document.getElementById('yearFilter').addEventListener('change', (e) => {
           state.year = e.target.value;
-          state.page = 1; // Reset page to 1 when filter changes
+          state.page = 1;
           render();
       });
 
@@ -1221,7 +1273,6 @@ $pdo = null;
         render();
       });
 
-      // NEW: Major filter event listener
       document.getElementById('majorFilter').addEventListener('change', (e) => {
         state.major = e.target.value;
         state.page = 1;
@@ -1230,19 +1281,13 @@ $pdo = null;
 
       document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
       
-      // NEW: Event listener for the clear filters button
       document.getElementById('clearFiltersBtn').addEventListener('click', () => {
         document.getElementById('search').value = '';
         document.getElementById('yearFilter').value = 'all';
         document.getElementById('dormitoryFilter').value = 'all';
-        document.getElementById('majorFilter').value = 'all'; // NEW
-        state.q = '';
-        state.year = 'all';
-        state.dormitory = 'all';
-        state.major = 'all'; // NEW
-        state.page = 1;
-        render();
-        showToast('Filters cleared', 'success');
+        document.getElementById('majorFilter').value = 'all';
+        state.q = ''; state.year = 'all'; state.dormitory = 'all'; state.major = 'all';
+        state.page = 1; render(); showToast('Filters cleared', 'success');
       });
 
       document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
@@ -1251,13 +1296,22 @@ $pdo = null;
           const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
           if (state.page < totalPages) { state.page++; render(); }
       });
-      document.getElementById('addBtn').addEventListener('click', () => openModal('add'));
-      document.getElementById('closeModal').addEventListener('click', closeModalSafe);
-      document.getElementById('cancelModal').addEventListener('click', closeModalSafe);
-      document.getElementById('closeDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
-      document.getElementById('okDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
+      
+      // MODIFICATION: Show add type modal instead of student form directly
+      document.getElementById('addBtn').addEventListener('click', () => document.getElementById('addStudentTypeModal').showModal());
+      document.getElementById('closeAddTypeModal').addEventListener('click', () => closeModalSafe('addStudentTypeModal'));
+      document.getElementById('addNewStudentBtn').addEventListener('click', () => { closeModalSafe('addStudentTypeModal'); openModal('add_new'); });
+      document.getElementById('addTransferStudentBtn').addEventListener('click', () => { closeModalSafe('addStudentTypeModal'); openModal('add_transfer'); });
 
-      // --- NEW: Event listeners for photo upload ---
+      document.getElementById('closeModal').addEventListener('click', () => closeModalSafe('studentModal'));
+      document.getElementById('cancelModal').addEventListener('click', () => closeModalSafe('studentModal'));
+      document.getElementById('closeDetailsModal').addEventListener('click', () => closeModalSafe('detailsModal'));
+      document.getElementById('okDetailsModal').addEventListener('click', () => closeModalSafe('detailsModal'));
+      
+      // NEW Listeners for validation error modal
+      document.getElementById('closeValidationErrorModal').addEventListener('click', () => closeModalSafe('validationErrorModal'));
+      document.getElementById('okValidationErrorModal').addEventListener('click', () => closeModalSafe('validationErrorModal'));
+
       document.getElementById('photo_preview').addEventListener('click', () => {
           document.getElementById('student_photo').click();
       });
@@ -1265,12 +1319,14 @@ $pdo = null;
           const file = event.target.files[0];
           if (file) {
               const reader = new FileReader();
-              reader.onload = (e) => {
-                  document.getElementById('photo_preview').src = e.target.result;
-              }
+              reader.onload = (e) => { document.getElementById('photo_preview').src = e.target.result; }
               reader.readAsDataURL(file);
           }
       });
+
+      // NEW: Event listeners to toggle parent fields when deceased year is entered
+      document.getElementById('father_deceased_year').addEventListener('input', (e) => toggleParentFields('father', e.target.value.trim() !== ''));
+      document.getElementById('mother_deceased_year').addEventListener('input', (e) => toggleParentFields('mother', e.target.value.trim() !== ''));
 
 
       document.querySelectorAll('th.sortable').forEach(th => {
@@ -1344,31 +1400,110 @@ $pdo = null;
         }
       });
 
-      // FIXED: Save student function with proper selected_major handling
+      function validateForm() {
+        const errors = [];
+        const form = document.getElementById('studentForm');
+        const mode = form.dataset.currentMode;
+
+        const studentId = document.getElementById('student_id').value;
+        const studentPhotoInput = document.getElementById('student_photo');
+        const photoPreview = document.getElementById('photo_preview').src;
+
+        if ((!studentId || photoPreview.includes('placehold.co')) && studentPhotoInput.files.length === 0) {
+            errors.push('Student Photo');
+        }
+        
+        // Explicitly check for major requirement based on the mode the form was opened in
+        if (mode === 'add_transfer') {
+            const selectedMajorEl = document.getElementById('selected_major');
+            if (!selectedMajorEl || !selectedMajorEl.value) { // Check for empty value
+                errors.push('Assigned Major');
+            }
+        }
+
+        // Also handle the case where a first-year student is being edited and needs a major assigned
+        if (mode === 'edit') {
+            const yearValue = document.getElementById('year').value;
+            if (yearValue === 'First Year') {
+                const selectedMajorEl = document.getElementById('selected_major');
+                if (selectedMajorEl && !selectedMajorEl.value) { // Check for empty value
+                    errors.push('Assigned Major');
+                }
+            }
+        }
+
+        const requiredFields = {
+            'student_name_en': 'Student Name (EN)',
+            'seat_no': 'Seat No.',
+            'student_email': 'Email',
+            'student_phone': 'Student Phone',
+            'student_nrc': 'Student NRC',
+            'student_dob': 'Date of Birth',
+            'student_address': 'Student Address',
+            'year': 'Year',
+            'academic_year': 'Academic Year'
+        };
+
+        for (const [id, name] of Object.entries(requiredFields)) {
+            const element = document.getElementById(id);
+            if (!element || !element.value.trim()) {
+                errors.push(name);
+            }
+        }
+
+        const fatherDeceasedYear = document.getElementById('father_deceased_year').value.trim();
+        if (!fatherDeceasedYear) {
+            const fatherFields = {
+                'father_name_en': "Father's Name (EN)",
+                'father_nrc': "Father's NRC",
+                'father_phone': "Father's Phone",
+                'father_info': "Father's Occupation",
+                'father_address': "Father's Address"
+            };
+            for (const [id, name] of Object.entries(fatherFields)) {
+                const element = document.getElementById(id);
+                if (!element || !element.value.trim()) {
+                    errors.push(name);
+                }
+            }
+        }
+
+        const motherDeceasedYear = document.getElementById('mother_deceased_year').value.trim();
+        if (!motherDeceasedYear) {
+            const motherFields = {
+                'mother_name_en': "Mother's Name (EN)",
+                'mother_nrc': "Mother's NRC",
+                'mother_phone': "Mother's Phone",
+                'mother_info': "Mother's Occupation",
+                'mother_address': "Mother's Address"
+            };
+            for (const [id, name] of Object.entries(motherFields)) {
+                const element = document.getElementById(id);
+                if (!element || !element.value.trim()) {
+                    errors.push(name);
+                }
+            }
+        }
+        return errors;
+      }
+
       document.getElementById('saveStudent').addEventListener('click', async (e) => {
         e.preventDefault();
+
+        const errors = validateForm();
+        if (errors.length > 0) {
+            const errorList = document.getElementById('validationErrorList');
+            errorList.innerHTML = errors.map(error => `<li>${error}</li>`).join('');
+            document.getElementById('validationErrorModal').showModal();
+            return;
+        }
         
         const form = document.getElementById('studentForm');
         const studentId = parseInt(formElements.student_id.value, 10) || null;
         
-        if (!formElements.student_name_en.value || !formElements.seat_no.value || !formElements.student_email.value) {
-            showToast('Please fill all required fields: Name (EN), Seat No, Email.', 'warning');
-            return;
-        }
-        
-        // Use FormData to send both file and text data
         const formData = new FormData(form);
         const action = studentId ? 'update' : 'add';
         formData.append('action', action);
-
-        // FIX: Get selected_major value directly from the form element
-        const selectedMajorElement = document.getElementById('selected_major');
-        if (selectedMajorElement) {
-            formData.append('selected_major', selectedMajorElement.value);
-        } else {
-            // If no selected_major element exists (for non-first year), set it to empty
-            formData.append('selected_major', '');
-        }
 
         try {
             const response = await fetch('api.php', {
@@ -1376,53 +1511,51 @@ $pdo = null;
                 body: formData,
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`HTTP error ${response.status}: ${errorText}`);
+            const responseText = await response.text();
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (jsonError) {
+                console.error("Failed to parse JSON from server. Response text:", responseText);
+                showToast("An unexpected error occurred. Please check console for details.", 'error');
+                return;
             }
 
-            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || `HTTP error ${response.status}`);
+            }
 
             if (result.status === 'success' && result.student) {
                 if (action === 'add') {
-                    // MODIFICATION: Add placeholder for preferences and selected_major on new student
-                    result.student.preferences = null;
-                    result.student.selected_major = null;
                     state.students.unshift(result.student);
                 } else {
                     const index = state.students.findIndex(s => s.student_id === studentId);
                     if (index !== -1) {
-                        // FIX: Update the student data with the response from API
                         state.students[index] = result.student;
                     }
                 }
                 render();
-                closeModalSafe();
+                closeModalSafe('studentModal');
                 showToast(`Student "${result.student.student_name_en}" saved.`, 'success');
             } else {
-                showToast(result.message || 'Failed to save student.', 'error');
+                 showToast(result.message || 'Failed to save student.', 'error');
             }
         } catch (error) {
             console.error('Save Student Failed:', error);
-            showToast(`Error: ${error.message}`, 'error');
+            showToast(error.message, 'error');
         }
       });
       
-      // --- EXPORT LISTENER ---
       document.getElementById('exportBtn').addEventListener('click', handleExport);
     }
     
-    // --- MODIFIED EXPORT FUNCTION ---
     function handleExport() {
-        // First, determine which data set to export
         let dataToExport;
         const selectedIds = Array.from(state.selected);
 
         if (selectedIds.length > 0) {
-            // If items are selected, export only those.
             dataToExport = state.students.filter(s => selectedIds.includes(s.student_id));
         } else {
-            // If no items are selected, export the currently filtered list.
             dataToExport = getFilteredSorted();
         }
 
@@ -1449,9 +1582,7 @@ $pdo = null;
             return val;
         };
 
-        // Use the 'dataToExport' array instead of the full 'state.students'
         for (const s of dataToExport) {
-            // FIX: Wrap phone numbers in Excel's text formula `="<number>"` to prevent scientific notation
             const row = [
                 s.student_id, s.seat_no, s.student_name_en, s.student_name_mm, s.student_email, 
                 s.student_phone ? `="${s.student_phone}"` : '', 
@@ -1494,3 +1625,4 @@ $pdo = null;
   </script>
 </body>
 </html>
+

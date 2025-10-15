@@ -305,7 +305,7 @@ $pdo = null;
           <div class="toolbar">
              <div class="field" style="min-width: 200px;">
                 <select id="yearFilter" aria-label="Filter by Year">
-                    <option value="all">All Academic Years</option>
+                    <option value="all">All Years</option>
                     <option value="First Year">First Year</option>
                     <option value="Second Year">Second Year</option>
                     <option value="Third Year">Third Year</option>
@@ -435,11 +435,19 @@ $pdo = null;
             <h3 class="detail-section-header">Academic Information</h3>
             <div class="field">
                 <label for="year">Year</label>
-                <input id="year" name="year" />
+                <select id="year" name="year">
+                    <option value="">Select Year</option>
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+                    <option value="Fifth Year">Fifth Year</option>
+                    <option value="Sixth Year">Sixth Year (Final)</option>
+                </select>
             </div>
             <div class="field">
                 <label for="academic_year">Academic Year</label>
-                <input id="academic_year" name="academic_year" />
+                <input id="academic_year" name="academic_year" placeholder="e.g., 2024-2025"/>
             </div>
             <div class="field">
                 <label for="entry_year">Entry Year</label>
@@ -954,7 +962,7 @@ $pdo = null;
       const selectedMajor = state.major;
       const base = state.students.filter(s => {
         const matchesSearch = !q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q));
-        const matchesYear = selectedYear === 'all' || s.academic_year === selectedYear;
+        const matchesYear = selectedYear === 'all' || s.year === selectedYear; // CORRECTED: filter by s.year
         
         // Major filter - only apply for Second Year to Sixth Year
         let matchesMajor = true;
