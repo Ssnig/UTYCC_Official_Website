@@ -328,12 +328,14 @@ require_once 'auth_check.php';
 
             const result = await response.json();
 
-            if (response.ok && result.status === 'success') {
+            // Check for `result.success` from the backend, not `result.status`.
+            // For errors, check `result.error` instead of `result.message`.
+            if (response.ok && result.success) {
                 showToast('Photo uploaded successfully!', 'success');
                 uploadForm.reset();
                 fetchPhotos();
             } else {
-                throw new Error(result.message || 'An unknown error occurred.');
+                throw new Error(result.error || 'An unknown error occurred.');
             }
         } catch (error) {
             console.error('Upload failed:', error);
@@ -351,18 +353,19 @@ require_once 'auth_check.php';
             
             if (confirm('Are you sure you want to delete this photo? This action cannot be undone.')) {
                 try {
-                    const response = await fetch('activity_api.php?action=delete', {
-                        method: 'POST',
+                    const response = await fetch('activity_api.php', {
+                        method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id: photoId })
                     });
                     
                     const result = await response.json();
-                    if (response.ok && result.status === 'success') {
+                    
+                    if (response.ok && result.success) {
                         showToast('Photo deleted successfully.', 'success');
                         fetchPhotos();
                     } else {
-                        throw new Error(result.message || 'Failed to delete photo.');
+                        throw new Error(result.error || 'Failed to delete photo.');
                     }
                 } catch (error) {
                      console.error('Delete failed:', error);
