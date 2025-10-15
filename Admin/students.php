@@ -1,12 +1,12 @@
 <?php
-  // Include the database configuration file
-  require_once '../Rform/db.php';
-  require_once 'auth_check.php';
+// Include the database configuration file
+require_once '../Rform/db.php';
+require_once 'auth_check.php';
 
 // --- FETCH ALL APPROVED STUDENT DATA ---
 $students = [];
-// MODIFICATION: Added s.preferences to the SELECT statement
-$sql = "SELECT s.*, s.preferences,
+// MODIFICATION: Added s.preferences AND s.selected_major to the SELECT statement
+$sql = "SELECT s.*, s.preferences, s.selected_major,
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
         FROM students s
@@ -15,29 +15,29 @@ $sql = "SELECT s.*, s.preferences,
         WHERE s.status = 'approved'
         ORDER BY s.date DESC";
 
-  try {
-      $stmt = $pdo->query($sql);
-      $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $stmt = $pdo->query($sql);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-      foreach ($results as $row) {
-          // Ensure numeric and boolean types are correctly cast for JSON
-          $row['student_id'] = (int)$row['student_id'];
-          $row['dormitory_preference'] = (bool)$row['dormitory_preference'];
-          if($row['father_deceased_year']) $row['father_deceased_year'] = (int)$row['father_deceased_year'];
-          if($row['mother_deceased_year']) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
+    foreach ($results as $row) {
+        // Ensure numeric and boolean types are correctly cast for JSON
+        $row['student_id'] = (int)$row['student_id'];
+        $row['dormitory_preference'] = (bool)$row['dormitory_preference'];
+        if($row['father_deceased_year']) $row['father_deceased_year'] = (int)$row['father_deceased_year'];
+        if($row['mother_deceased_year']) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
 
-          // MODIFICATION: Decode the JSON preferences string into an array
-          $row['preferences'] = $row['preferences'] ? json_decode($row['preferences'], true) : null;
+        // MODIFICATION: Decode the JSON preferences string into an array
+        $row['preferences'] = $row['preferences'] ? json_decode($row['preferences'], true) : null;
 
-        $students[] = $row;
+        $students[] = $row; 
     }
 } catch (PDOException $e) {
     // For a real application, you might want to log this error and show a friendly message.
     die("Error fetching student data: " . $e->getMessage());
 }
 
-  // Close the connection by setting the PDO object to null
-  $pdo = null;
+// Close the connection by setting the PDO object to null
+$pdo = null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -577,7 +577,15 @@ $sql = "SELECT s.*, s.preferences,
             <h3 class="detail-section-header">Academic Information</h3>
             <div class="field">
                 <label for="year">Year</label>
-                <input id="year" name="year" required/>
+                <select id="year" name="year">
+                    <option value="">Select Year</option>
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+                    <option value="Fifth Year">Fifth Year</option>
+                    <option value="Sixth Year">Sixth Year (Final)</option>
+                </select>
             </div>
             <div class="field">
                 <label for="academic_year">Academic Year</label>
@@ -763,23 +771,6 @@ $sql = "SELECT s.*, s.preferences,
         return `../Rform/${path}`;
     }
 
-    //function to escape malicious inputs
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str).replace(/[&<>"'`=\/]/g, function (s) {
-        return ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;',
-          '`': '&#x60;',
-          '=': '&#x3D;',
-          '/': '&#x2F;'
-        })[s];
-      });
-    }
-
     function todayStr(d = new Date()) { return d.toISOString().split('T')[0]; }
 
     function formatDate(iso) {
@@ -852,26 +843,63 @@ $sql = "SELECT s.*, s.preferences,
       });
     }
 
-    // MODIFICATION START: Major preferences dropdown setup function
-    function setupMajorPreferencesDropdowns() {
-        for (let i = 1; i <= 5; i++) {
-            const selectEl = document.getElementById(`preference${i}`);
-            selectEl.innerHTML = ''; 
-            
-            // Add placeholder option
-            let placeholder = document.createElement('option');
-            placeholder.value = ""; 
-            placeholder.text = "Select a major"; 
-            placeholder.disabled = true;
-            placeholder.selected = true;
-            selectEl.add(placeholder);
-            
-            // Add all available majors
-            for (const code in availableMajors) {
-                let option = document.createElement('option');
-                option.value = code; 
-                option.text = availableMajors[code];
-                selectEl.add(option);
+    // NEW: Function to update major section based on student year - FIXED VERSION
+    function updateMajorSection(studentYear, student = null) {
+        const majorSection = document.getElementById('majorSection');
+        
+        if (studentYear === 'First Year') {
+            // For First Year students, show assigned major selection
+            const selectedMajor = student ? (student.selected_major || '') : '';
+            majorSection.innerHTML = `
+                <h3 class="detail-section-header">Major Assignment (First Year)</h3>
+                <div class="field">
+                    <label for="selected_major">Assigned Major</label>
+                    <select id="selected_major" name="selected_major">
+                        <option value="">-- Select Major --</option>
+                        ${Object.entries(availableMajors).map(([code, name]) => 
+                            `<option value="${code}" ${selectedMajor === code ? 'selected' : ''}>${name}</option>`
+                        ).join('')}
+                    </select>
+                </div>
+            `;
+        } else {
+            // For other years, show the assigned major (if exists) or preferences
+            const hasSelectedMajor = student && student.selected_major && student.selected_major.trim() !== '';
+            const hasPreferences = student && student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
+
+            if (hasSelectedMajor) {
+                majorSection.innerHTML = `
+                    <h3 class="detail-section-header">Major Information</h3>
+                    <div class="field">
+                        <label>Selected Major</label>
+                        <input type="text" value="${availableMajors[student.selected_major] || student.selected_major}" disabled />
+                    </div>
+                `;
+            } else if (hasPreferences) {
+                let preferencesHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    const prefValue = student.preferences[i];
+                    if (prefValue) {
+                        preferencesHTML += `
+                            <div class="field">
+                                <label>Preference ${i}</label>
+                                <input type="text" value="${availableMajors[prefValue] || prefValue}" disabled />
+                            </div>
+                        `;
+                    }
+                }
+                majorSection.innerHTML = `
+                    <h3 class="detail-section-header">Major Preferences</h3>
+                    ${preferencesHTML}
+                `;
+            } else {
+                majorSection.innerHTML = `
+                    <h3 class="detail-section-header">Major Information</h3>
+                    <div class="field">
+                        <label>Major Data</label>
+                        <input type="text" value="No major data available" disabled />
+                    </div>
+                `;
             }
         }
     }
@@ -975,13 +1003,17 @@ $sql = "SELECT s.*, s.preferences,
 
         let majorHtml = '';
         if (hasSelectedMajor) {
-            preferencesHtml = `<h3 class="detail-section-header">Selected Major</h3><dl class="details-grid"><dt>Selected Major</dt><dd>${availableMajors[s.selected_major] || 'Unknown Major'}</dd></dl>`;
+            // Student has assigned major
+            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid">`;
+            majorHtml += `<dt>Major</dt><dd>${availableMajors[s.selected_major] || s.selected_major}</dd>`;
+            majorHtml += `</dl>`;
         } else if (hasPreferences) {
-            preferencesHtml += `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
+            // Student has preferences
+            majorHtml = `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
             for (let i = 1; i <= 5; i++) {
                 const prefCode = s.preferences[i];
                 if (prefCode) {
-                    preferencesHtml += `<dt>Preference ${i}</dt><dd>${availableMajors[prefCode] || 'Unknown Major'}</dd>`;
+                    majorHtml += `<dt>Preference ${i}</dt><dd>${availableMajors[prefCode] || prefCode}</dd>`;
                 }
             }
             majorHtml += `</dl>`;
@@ -1034,11 +1066,11 @@ $sql = "SELECT s.*, s.preferences,
                 <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd> <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
                 <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd> <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
                 <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd> <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
-                <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
+                <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
-                <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
+                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
                 <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
             </dl>
             ${majorHtml}
@@ -1046,21 +1078,21 @@ $sql = "SELECT s.*, s.preferences,
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${escapeHtml(s.father_deceased_year) ? `Deceased (${s.father_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${escapeHtml(s.father_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.father_name_mm) || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${escapeHtml(s.father_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.father_race) || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${escapeHtml(s.father_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.father_info) || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${escapeHtml(s.father_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.father_phone) || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${s.father_deceased_year ? `Deceased (${s.father_deceased_year})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
                 </dl>
             </div>
             <div class="detail-parent-section">
                 <h4>Mother's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${escapeHtml(s.mother_deceased_year) ? `Deceased (${s.mother_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${escapeHtml(s.mother_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.mother_name_mm) || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${escapeHtml(s.mother_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.mother_race) || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${escapeHtml(s.mother_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.mother_info) || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${escapeHtml(s.mother_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.mother_phone) || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${s.mother_deceased_year ? `Deceased (${s.mother_deceased_year})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
                 </dl>
             </div>
             ${documentsHtml}`;
@@ -1150,6 +1182,7 @@ $sql = "SELECT s.*, s.preferences,
             <td>${s.student_name_en || ''}</td>
             <td>${s.student_email || ''}</td>
             <td>${s.student_phone || ''}</td>
+            <td>${s.year || ''}</td>
             <td>${formatDate(s.date)}</td>
             <td>
                 <div style="display:flex; gap:6px;">
@@ -1310,11 +1343,8 @@ $sql = "SELECT s.*, s.preferences,
             showToast(`${ids.length} student(s) deleted.`, 'success');
         }
       });
-      
-      document.getElementById('father_deceased_year').addEventListener('input', () => toggleParentRequired('father'));
-      document.getElementById('mother_deceased_year').addEventListener('input', () => toggleParentRequired('mother'));
 
-      // MODIFICATION START: Updated saveStudent event listener to handle major preferences for First Year students
+      // FIXED: Save student function with proper selected_major handling
       document.getElementById('saveStudent').addEventListener('click', async (e) => {
         e.preventDefault();
         
@@ -1403,7 +1433,7 @@ $sql = "SELECT s.*, s.preferences,
 
         const headers = [
             'student_id', 'seat_no', 'student_name_en', 'student_name_mm', 'student_email', 'student_phone', 'student_nrc', 'student_dob', 'student_birthplace', 'student_race', 'student_religion', 'student_address', 'township', 'state_region', 'dormitory_preference', 'year', 'academic_year', 'entry_year', 'date', 'photo_url',
-            'selected_major', 'preference1', 'preference2', 'preference3', 'preference4', 'preference5',
+            'preference1', 'preference2', 'preference3', 'preference4', 'preference5', 'selected_major',
             'father_name_en', 'father_name_mm', 'father_nrc', 'father_race', 'father_religion', 'father_info', 'father_address', 'father_phone', 'father_deceased_year',
             'mother_name_en', 'mother_name_mm', 'mother_nrc', 'mother_race', 'mother_religion', 'mother_info', 'mother_address', 'mother_phone', 'mother_deceased_year'
         ];
@@ -1464,4 +1494,3 @@ $sql = "SELECT s.*, s.preferences,
   </script>
 </body>
 </html>
-
