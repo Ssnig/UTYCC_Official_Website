@@ -26,8 +26,8 @@
 
     <main class="page-content">
         <section class="about-section" id="about">
-            <h1>About This Website</h1>
-            <p>
+            <h1 class="about-heading">About This Website</h1>
+            <p class="about-description">
                 We are students who gained
                 admission to the University of
                 Technology (Yadanarpon
@@ -97,7 +97,7 @@
             </p>
         </section>
 
-        <section class="team-section" id="team">
+         <section class="team-section" id="team">
             <h2>Meet The Development Team</h2>
 
             <div class="role-group">
@@ -139,14 +139,14 @@
                     <article class="team-card" data-member="member-2">
                         <div class="card-front">
                             <div class="avatar-wrapper">
-                                <img src="./Img/devTeam/member2.jpg" alt="Member 2">
+                                <img src="./Img/dev/HOW.jpg" alt="Member 2">
                             </div>
                             <h3>Htet Oo Wai</h3>
                             <p class="role">Frontend Developer</p>
                         </div>
                         <div class="card-detail" aria-hidden="true">
                             <div class="detail-avatar">
-                                <img src="./Img/devTeam/member2.jpg" alt="Member 2 portrait">
+                                <img src="./Img/dev/HOW.jpg" alt="Member 2 portrait">
                             </div>
                             <div class="detail-content">
                                 <h4>Htet Oo Wai</h4>
@@ -421,14 +421,14 @@
                     <article class="team-card" data-member="member-13">
                         <div class="card-front">
                             <div class="avatar-wrapper">
-                                <img src="./Img/devTeam/member13.jpg" alt="Member 13">
+                                <img src="./Img/dev/bha.jpg" alt="Member 13">
                             </div>
                             <h3>Bhone Htet Aung</h3>
                             <p class="role">Presenter / Communications Lead</p>
                         </div>
                         <div class="card-detail" aria-hidden="true">
                             <div class="detail-avatar">
-                                <img src="./Img/devTeam/member13.jpg" alt="Member 13 portrait">
+                                <img src="./Img/dev/bha.jpg" alt="Member 13 portrait">
                             </div>
                             <div class="detail-content">
                                 <h4>Bhone Htet Aung</h4>
@@ -495,19 +495,19 @@
                     <article class="team-card" data-member="member-16">
                         <div class="card-front">
                             <div class="avatar-wrapper">
-                                <img src="./Img/devTeam/member16.jpg" alt="Member 16">
+                                <img src="./Img/dev/kzh.jpg" alt="Member 16">
                             </div>
                             <h3>Kyaw Zin Hein</h3>
                             <p class="role">Quality Tester / Content Assistant</p>
                         </div>
                         <div class="card-detail" aria-hidden="true">
                             <div class="detail-avatar">
-                                <img src="./Img/devTeam/member16.jpg" alt="Member 16 portrait">
+                                <img src="./Img/dev/kzh.jpg" alt="Member 16 portrait">
                             </div>
                             <div class="detail-content">
                                 <h4>Kyaw Zin Hein</h4>
                                 <p style="font-size: smaller;"><span>Role:</span> Quality Tester / Content Assistant</p>
-                                <p><span>Year:</span> Year 2</p>
+                                <p><span>Year:</span> 3rd Year</p>
                                 <p><span>Contact:</span> <a href="mailto:kyawzinhein71004@gmail.com" style="font-size: smaller;">kyawzinhein71004@gmail.com</a></p>
                             </div>
                         </div>
@@ -516,6 +516,97 @@
                 </div>
             </div>
         </section>
+
+        <section class="timeline-section" id="journey">
+            <h2>The Journey</h2>
+            <p class="section-subtitle">
+                Milestones that shaped our collaboration and the platform you see today.
+            </p>
+            <div class="timeline">
+                <article class="timeline-item">
+                    <div class="timeline-marker" aria-hidden="true"></div>
+                    <div class="timeline-content" tabindex="0">
+                        <span class="timeline-date">August 1, 2025</span>
+                        <h3>Team Formation</h3>
+                        <p>Third-year students elected our leader, defined roles, and committed to build UTYCC’s student registration experience.</p>
+                    </div>
+                </article>
+                <article class="timeline-item">
+                    <div class="timeline-marker" aria-hidden="true"></div>
+                    <div class="timeline-content" tabindex="0">
+                        <span class="timeline-date">August 10, 2025</span>
+                        <h3>Requirements Sprint</h3>
+                        <p>Coordinated with the Student Affairs Office to gather forms, document workflows, and align on compliance needs.</p>
+                    </div>
+                </article>
+                <article class="timeline-item">
+                    <div class="timeline-marker" aria-hidden="true"></div>
+                    <div class="timeline-content" tabindex="0">
+                        <span class="timeline-date">August 24, 2025</span>
+                        <h3>Prototype &amp; Testing</h3>
+                        <p>Built the first interactive prototype, iterated on feedback, and ran end-to-end tests with real student scenarios.</p>
+                    </div>
+                </article>
+                <article class="timeline-item">
+                    <div class="timeline-marker" aria-hidden="true"></div>
+                    <div class="timeline-content" tabindex="0">
+                        <span class="timeline-date">September 12, 2025</span>
+                        <h3>Registrar Presentation</h3>
+                        <p>Delivered the live demo to UTYCC leadership, highlighting the student experience and our collaborative process.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="voices-section" id="voices">
+            <h2>Team Voices</h2>
+            <p class="section-subtitle">
+                What this project meant to the students behind it.
+            </p>
+            <div class="voice-slider" role="region" aria-label="Team reflections">
+                <button class="voice-control voice-control--prev" type="button" aria-label="Previous reflection"></button>
+                <div class="voice-window">
+                    <article class="voice-slide is-active" data-index="0" id="voice-slide-0" aria-hidden="false">
+                        <blockquote>
+                            “We wanted every admitted student to feel confident on day one. That meant building a journey that anticipates questions before they appear.”
+                        </blockquote>
+                        <p class="voice-author">
+                            <span>Kyaw San Htun,</span> Frontend Developer &amp; Team Leader
+                        </p>
+                    </article>
+                    <article class="voice-slide" data-index="1" id="voice-slide-1" aria-hidden="true">
+                        <blockquote>
+                            “Collaboration was our superpower—we paired designers with developers daily so decisions happened in real time, not in backlog meetings.”
+                        </blockquote>
+                        <p class="voice-author">
+                            <span>Lin Latt Htut Aung,</span> Full Stack Developer
+                        </p>
+                    </article>
+                    <article class="voice-slide" data-index="2" id="voice-slide-2" aria-hidden="true">
+                        <blockquote>
+                            “Shipping in forty-three days only worked because everyone owned quality. Testers sat with engineers, and we celebrated every bug we caught early.”
+                        </blockquote>
+                        <p class="voice-author">
+                            <span>Ya Min Shwe Sin,</span> Content &amp; QA Assistant
+                        </p>
+                    </article>
+                </div>
+                <button class="voice-control voice-control--next" type="button" aria-label="Next reflection"></button>
+                <div class="voice-dots" role="tablist" aria-label="Choose reflection">
+                    <button type="button" class="voice-dot is-active" role="tab" aria-selected="true" aria-controls="voice-slide-0" data-target="0">
+                        <span class="visually-hidden">Reflection 1</span>
+                    </button>
+                    <button type="button" class="voice-dot" role="tab" aria-selected="false" aria-controls="voice-slide-1" data-target="1">
+                        <span class="visually-hidden">Reflection 2</span>
+                    </button>
+                    <button type="button" class="voice-dot" role="tab" aria-selected="false" aria-controls="voice-slide-2" data-target="2">
+                        <span class="visually-hidden">Reflection 3</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+       
 
         <div class="cta-wrapper">
             <a class="cta-button" href="index.php">Back to UTYCC</a>
@@ -538,7 +629,8 @@
         </div>
     </footer>
 
-    <script src="./JS/devTeam.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-MxDBPPfCQYJ9j9XT3JZX2EhJzVqva43+gSMiZheIcn3BO33XM6GCMbQW8wNWK1CMjKAgbWCqGuWPOc1xuIt0TQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./JS/devTeam.js "></script>
 </body>
 
 </html>
