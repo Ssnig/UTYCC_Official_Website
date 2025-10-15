@@ -30,9 +30,27 @@ function processStudentRow($studentRow) {
     if(isset($studentRow['mother_deceased_year']) && $studentRow['mother_deceased_year']) {
         $studentRow['mother_deceased_year'] = (int)$studentRow['mother_deceased_year'];
     }
-    // MODIFICATION: Decode preferences for all responses
     if (isset($studentRow['preferences'])) {
         $studentRow['preferences'] = $studentRow['preferences'] ? json_decode($studentRow['preferences'], true) : null;
+    }
+    // Correctly construct the full URL for the photo
+    if (isset($studentRow['photo_url']) && !empty($studentRow['photo_url'])) {
+        // Assuming photo_url is stored like '/uploads/filename.jpg'
+        // And the script is in 'admin' directory, so we go up one level.
+        $studentRow['photo_url'] = '../Rform' . $studentRow['photo_url'];
+    }
+    
+    // Also process document URLs
+    $documentFields = [
+        'doc_recommendation', 'doc_medical', 'doc_certificate', 'doc_grades', 'doc_household',
+        'doc_student_nrc_front', 'doc_student_nrc_back', 'doc_father_nrc_front', 'doc_father_nrc_back',
+        'doc_mother_nrc_front', 'doc_mother_nrc_back'
+    ];
+    
+    foreach ($documentFields as $docField) {
+        if (isset($studentRow[$docField]) && !empty($studentRow[$docField])) {
+            $studentRow[$docField] = '../Rform' . $studentRow[$docField];
+        }
     }
     
     return $studentRow;
@@ -66,14 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                 }
 
-                // --- VALIDATION START ---
-                // 1. Email validation
-                if (!empty($student['student_email']) && !filter_var($student['student_email'], FILTER_VALIDATE_EMAIL)) {
-                    throw new Exception('Please provide a valid email address.');
-                }
-                // --- VALIDATION END ---
-
-
                 $studentIdToExclude = ($action === 'update' && !empty($student['student_id'])) ? $student['student_id'] : 0;
 
                 if (!empty($student['student_nrc'])) {
@@ -103,24 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $photoUrl = $stmt->fetchColumn();
                 }
 
-                $newPhotoUploaded = isset($_FILES['student_photo']) && $_FILES['student_photo']['error'] === UPLOAD_ERR_OK;
-
-                if ($newPhotoUploaded) {
-                    
-                    // --- VALIDATION START ---
-                    // 2. File Upload validation (size and type)
-                    $maxFileSize = 2 * 1024 * 1024; // 2 MB
-                    if ($_FILES['student_photo']['size'] > $maxFileSize) {
-                        throw new Exception('Photo file size must be less than 2MB.');
-                    }
-
-                    $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                    $fileMimeType = mime_content_type($_FILES['student_photo']['tmp_name']);
-                    if (!in_array($fileMimeType, $allowedMimeTypes)) {
-                        throw new Exception('Invalid photo file type. Only JPG, PNG, and GIF are accepted.');
-                    }
-                    // --- VALIDATION END ---
-
+                if (isset($_FILES['student_photo']) && $_FILES['student_photo']['error'] === UPLOAD_ERR_OK) {
                     if ($action === 'update' && !empty($photoUrl)) {
                         $oldFileName = basename($photoUrl);
                         $oldFileSystemPath = $fileSystemUploadDir . $oldFileName;
@@ -139,31 +132,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
 
-                // --- MODIFIED VALIDATION: Photo is mandatory (in Burmese) ---
-                if ($action === 'add' && !$newPhotoUploaded) {
-                    throw new Exception('ကျောင်းသားဓာတ်ပုံထည့်သွင်းရန် လိုအပ်ပါသည်။');
-                }
-                if ($action === 'update' && !$newPhotoUploaded && empty($photoUrl)) {
-                    // This case handles editing a student who, for some reason, has no photo.
-                    // A new photo becomes mandatory.
-                    throw new Exception('ဤကျောင်းသားတွင် ဓာတ်ပုံမရှိပါ။ အသစ်တစ်ခုတင်ပေးပါ။');
-                }
-                // --- END MODIFIED VALIDATION ---
-
-
+                // MODIFICATION: Include selected_major in SQL queries
                 if ($action === 'add') {
                      $sqlStudent = "INSERT INTO students (
                         year, academic_year, seat_no, entry_year, student_email, 
                         dormitory_preference, student_name_mm, student_name_en, 
                         student_race, student_religion, student_nrc, student_dob, 
                         student_birthplace, state_region, township, student_phone, 
-                        student_address, photo_url, date, status, preferences, selected_major
+                        student_address, photo_url, date, status, selected_major
                     ) VALUES (
                         :year, :academic_year, :seat_no, :entry_year, :student_email, 
                         :dormitory_preference, :student_name_mm, :student_name_en, 
                         :student_race, :student_religion, :student_nrc, :student_dob, 
                         :student_birthplace, :state_region, :township, :student_phone, 
-                        :student_address, :photo_url, CURDATE(), 'approved', :preferences, :selected_major
+                        :student_address, :photo_url, CURDATE(), 'approved', :selected_major
                     )";
                     $stmtStudent = $pdo->prepare($sqlStudent);
                 } else { // update
@@ -172,8 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         dormitory_preference = :dormitory_preference, student_name_mm = :student_name_mm, student_name_en = :student_name_en, 
                         student_race = :student_race, student_religion = :student_religion, student_nrc = :student_nrc, student_dob = :student_dob, 
                         student_birthplace = :student_birthplace, state_region = :state_region, township = :township, student_phone = :student_phone, 
-                        student_address = :student_address, photo_url = :photo_url, 
-                        preferences = :preferences, selected_major = :selected_major
+                        student_address = :student_address, photo_url = :photo_url, selected_major = :selected_major 
                         WHERE student_id = :student_id";
                     $stmtStudent = $pdo->prepare($sqlStudent);
                     $stmtStudent->bindValue(':student_id', $student['student_id']);
@@ -197,54 +178,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtStudent->bindValue(':student_phone', $student['student_phone'] ?? null);
                 $stmtStudent->bindValue(':student_address', $student['student_address'] ?? null);
                 $stmtStudent->bindValue(':photo_url', $photoUrl);
-
-                // --- NEW/MODIFIED MAJOR HANDLING LOGIC ---
-                $preferencesJson = null;
-                $selectedMajor = null;
-
-                if (!empty($student['selected_major'])) {
-                    // This is a student with a decided major
-                    $selectedMajor = $student['selected_major'];
-                    $preferencesJson = '[]'; // Store as an empty JSON array for consistency
-                } else {
-                    // This is a student with preferences
-                    $prefs = [];
-                    for ($i = 1; $i <= 5; $i++) {
-                        if (!empty($student["preference$i"])) {
-                            $prefs[$i] = $student["preference$i"];
-                        }
-                    }
-
-                    // --- VALIDATION START ---
-                    // 3. Check for duplicate major preferences
-                    if (count($prefs) > 0 && count($prefs) !== count(array_unique(array_values($prefs)))) {
-                        throw new Exception('Major preferences must be unique. Please do not select the same major twice.');
-                    }
-                    // --- VALIDATION END ---
-
-                    if (!empty($prefs)) {
-                       $preferencesJson = json_encode($prefs);
-                    }
-                }
-                $stmtStudent->bindValue(':preferences', $preferencesJson);
-                $stmtStudent->bindValue(':selected_major', $selectedMajor);
-                
+                // MODIFICATION: Add binding for selected_major
+                $stmtStudent->bindValue(':selected_major', $student['selected_major'] ?? null);
                 $stmtStudent->execute();
 
                 $student_id = ($action === 'add') ? $pdo->lastInsertId() : $student['student_id'];
 
                 foreach (['father', 'mother'] as $parent) {
-                    
-                    // --- VALIDATION START ---
-                    // 4. Deceased year validation
-                    if (!empty($student["{$parent}_deceased_year"])) {
-                        $year = $student["{$parent}_deceased_year"];
-                        if (!preg_match('/^\d{4}$/', $year) || (int)$year > (int)date('Y')) {
-                             throw new Exception(ucfirst($parent) . "'s deceased year is not a valid year.");
-                        }
-                    }
-                    // --- VALIDATION END ---
-
                     $stmtCheck = $pdo->prepare("SELECT {$parent}_id FROM {$parent}s WHERE student_id = ?");
                     $stmtCheck->execute([$student_id]);
                     $params = [
@@ -264,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $pdo->commit();
                 
+                // --- FIX: Correctly fetch all aliased parent columns to avoid name collisions ---
                 $fullRecordSql = "SELECT s.*,
                                        f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                                        m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
@@ -285,11 +226,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sanitized_ids = array_map('intval', $ids);
                     $placeholders = implode(',', array_fill(0, count($sanitized_ids), '?'));
                     
-                    $sqlFetch = "SELECT student_id, student_name_en, student_email FROM students WHERE student_id IN ($placeholders)";
+                    // FIX: First get all student data including file paths before approval
+                    $sqlFetch = "SELECT student_id, student_name_en, student_email, photo_url, 
+                                doc_recommendation, doc_medical, doc_certificate, doc_grades, doc_household,
+                                doc_student_nrc_front, doc_student_nrc_back, doc_father_nrc_front, doc_father_nrc_back,
+                                doc_mother_nrc_front, doc_mother_nrc_back,
+                                preferences, selected_major, year, academic_year, seat_no, entry_year,
+                                dormitory_preference, student_name_mm, student_race, student_religion, 
+                                student_nrc, student_dob, student_birthplace, state_region, township, 
+                                student_phone, student_address, date
+                                FROM students WHERE student_id IN ($placeholders)";
                     $stmtFetch = $pdo->prepare($sqlFetch);
                     $stmtFetch->execute($sanitized_ids);
                     $students_to_email = $stmtFetch->fetchAll(PDO::FETCH_ASSOC);
 
+                    // FIX: Only update the status field, preserve all file paths and other data
                     $sql = "UPDATE students SET status = 'approved' WHERE student_id IN ($placeholders)";
                     $stmt = $pdo->prepare($sql);
                     $stmt->execute($sanitized_ids);
@@ -346,8 +297,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute($sanitized_ids);
                     $deleted_count = $stmt->rowCount();
                     
+                    // Delete all associated files
                     foreach ($filesData as $fileData) {
-                        $filesToDelete = array_filter(array_values($fileData));
+                        $filesToDelete = array_filter([
+                            $fileData['photo_url'] ?? null,
+                            $fileData['doc_recommendation'] ?? null,
+                            $fileData['doc_medical'] ?? null,
+                            $fileData['doc_certificate'] ?? null,
+                            $fileData['doc_grades'] ?? null,
+                            $fileData['doc_household'] ?? null,
+                            $fileData['doc_student_nrc_front'] ?? null,
+                            $fileData['doc_student_nrc_back'] ?? null,
+                            $fileData['doc_father_nrc_front'] ?? null,
+                            $fileData['doc_father_nrc_back'] ?? null,
+                            $fileData['doc_mother_nrc_front'] ?? null,
+                            $fileData['doc_mother_nrc_back'] ?? null
+                        ]);
+                        
                         foreach ($filesToDelete as $url) {
                             if (!empty($url)) {
                                $fileName = basename($url);
@@ -408,14 +374,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'dormitory_preference' => (isset($s['dormitory_preference']) && $s['dormitory_preference'] == '1') ? 1 : 0,
                             'student_name_mm' => $s['student_name_mm'] ?? null, 'student_name_en' => $s['student_name_en'] ?? null, 'student_race' => $s['student_race'] ?? null, 'student_religion' => $s['student_religion'] ?? null, 'student_nrc' => $s['student_nrc'] ?? null, 'student_dob' => empty($s['student_dob']) ? null : $s['student_dob'],
                             'student_birthplace' => $s['student_birthplace'] ?? null, 'state_region' => $s['state_region'] ?? null, 'township' => $s['township'] ?? null, 'student_phone' => $s['student_phone'] ?? null, 'student_address' => $s['student_address'] ?? null, 'photo_url' => $s['photo_url'] ?? null,
-                            'date' => empty($s['date']) ? date('Y-m-d') : $s['date'], 'status' => 'approved'
+                            'date' => empty($s['date']) ? date('Y-m-d') : $s['date'], 'status' => 'approved',
+                            'selected_major' => $s['selected_major'] ?? null // MODIFICATION: Add selected_major
                         ];
                         
                         $prefs = [];
                         for ($i=1; $i<=5; $i++) { if (!empty($s["preference$i"])) $prefs[$i] = $s["preference$i"]; }
                         $studentData['preferences'] = !empty($prefs) ? json_encode($prefs) : null;
-                        $studentData['selected_major'] = $s['selected_major'] ?? null;
-
 
                         if ($existingStudentId) {
                             $studentData['student_id'] = $existingStudentId;
@@ -463,6 +428,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 break;
             
+            // --- MODIFIED: Fetch all settings at once ---
             case 'get_settings':
                 $sql = "SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN ('announcement_text', 'announcement_status', 'enrollment_status')";
                 $stmt = $pdo->prepare($sql);
@@ -472,12 +438,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $defaults = [
                     'announcement_text' => '',
                     'announcement_status' => 'disabled',
-                    'enrollment_status' => 'open'
+                    'enrollment_status' => 'open' // Default to 'open' if not in DB
                 ];
                 
                 $response = ['status' => 'success', 'settings' => array_merge($defaults, $settings)];
                 break;
 
+            // --- UNCHANGED ---
             case 'save_announcement':
                 $data = json_decode(file_get_contents('php://input'), true);
                 $text = $data['text'] ?? '';
@@ -502,12 +469,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response = ['status' => 'success', 'message' => 'Announcement settings saved.'];
                 break;
             
+            // --- NEW: Handle saving enrollment status ---
             case 'save_enrollment_status':
                 $data = json_decode(file_get_contents('php://input'), true);
                 $status = $data['status'] ?? 'open';
 
                 if (!in_array($status, ['open', 'closed'])) {
-                    $status = 'open';
+                    $status = 'open'; // Default to a safe value
                 }
 
                 $sql = "INSERT INTO site_settings (setting_key, setting_value) VALUES ('enrollment_status', ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)";
@@ -624,7 +592,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($pdo && $pdo->inTransaction()) {
             $pdo->rollBack();
         }
-        http_response_code(400);
+        http_response_code(500);
         $response['message'] = $e->getMessage();
     }
 }

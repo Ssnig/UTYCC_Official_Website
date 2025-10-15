@@ -5,8 +5,8 @@ require_once 'auth_check.php';
 
 // --- FETCH ALL APPROVED STUDENT DATA ---
 $students = [];
-// MODIFICATION: Added s.preferences to the SELECT statement
-$sql = "SELECT s.*, s.preferences,
+// MODIFICATION: Added s.preferences AND s.selected_major to the SELECT statement
+$sql = "SELECT s.*, s.preferences, s.selected_major,
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
         FROM students s
@@ -29,7 +29,7 @@ try {
         // MODIFICATION: Decode the JSON preferences string into an array
         $row['preferences'] = $row['preferences'] ? json_decode($row['preferences'], true) : null;
 
-        $students[] = $row;
+        $students[] = $row; 
     }
 } catch (PDOException $e) {
     // For a real application, you might want to log this error and show a friendly message.
@@ -197,7 +197,7 @@ $pdo = null;
     .main { grid-area: main; padding: 20px; background: hsl(var(--bg));}
 
     .section { margin-top: 0; }
-    .section-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .section-header { display: flex; justify-content: between; align-items: center; gap: 12px; margin-bottom: 12px; }
     .section-header h2 { font-size: 20px; margin: 0; }
 
     /* Table */
@@ -350,74 +350,6 @@ $pdo = null;
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
 
-    /* MODIFIED: Add Student Choice Modal UI */
-    .choice-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-    .choice-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem 1rem;
-      border-radius: var(--radius);
-      border: 1px solid hsl(var(--border));
-      background: hsl(var(--secondary));
-      cursor: pointer;
-      transition: all var(--duration) var(--ease);
-    }
-    .choice-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-card);
-      border-color: hsl(var(--primary));
-    }
-    .choice-card svg {
-      color: hsl(var(--primary));
-      margin-bottom: 1rem;
-    }
-    .choice-card h3 {
-      margin: 0 0 0.25rem 0;
-      font-size: 1.1rem;
-      color: hsl(var(--fg));
-    }
-    .choice-card p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: hsl(var(--muted-foreground));
-    }
-    .choice-card.primary {
-      background: hsl(var(--primary));
-      border-color: hsl(var(--primary));
-    }
-    .choice-card.primary:hover {
-       background: hsl(var(--primary) / 0.9);
-    }
-    .choice-card.primary svg,
-    .choice-card.primary h3,
-    .choice-card.primary p {
-      color: hsl(var(--primary-foreground));
-    }
-    
-    /* NEW: Alert Modal Styles */
-    .modal-icon-wrap {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-    .modal-icon-wrap.danger {
-        background-color: hsl(var(--danger) / 0.1);
-    }
-    .modal-icon-wrap.danger svg {
-        color: hsl(var(--danger));
-    }
-
     /* Responsive */
     @media (max-width: 1000px) {
       .form-grid { grid-template-columns: 1fr; }
@@ -427,11 +359,6 @@ $pdo = null;
           "header"
           "main"; }
       .sidebar { position: static; height: auto; display: none; }
-    }
-    @media (max-width: 600px) {
-      .choice-container {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
 
@@ -492,7 +419,7 @@ $pdo = null;
       </form>
       <div class="userbar">
         <button class="btn ghost" id="exportBtn" title="Export CSV" aria-label="Export CSV">Export</button>
-        <button class="btn primary" id="openAddChoiceBtn" aria-label="Add student">Add Student</button>
+        <button class="btn primary" id="addBtn" aria-label="Add student">Add Student</button>
         <div class="user-info" style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem; border-left: 1px solid hsl(var(--border)); padding-left: 1rem;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.25rem; height: 1.25rem; color: hsl(var(--muted-foreground));"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             <span style="font-weight: 600; color: hsl(var(--fg));">
@@ -555,6 +482,7 @@ $pdo = null;
                 <th data-sort="student_name_en" class="sortable">Name</th>
                 <th data-sort="student_email" class="sortable">Email</th>
                 <th data-sort="student_phone" class="sortable">Phone</th>
+                <th data-sort="year" class="sortable">Year</th>
                 <th data-sort="date" class="sortable">Registered</th>
                 <th>Actions</th>
               </tr>
@@ -571,38 +499,14 @@ $pdo = null;
     </main>
   </div>
 
-  <!-- MODIFIED: Add Student Choice Modal -->
-  <dialog id="addChoiceModal" aria-modal="true">
-    <div class="modal-header">
-        <strong>Add New Student</strong>
-        <button class="btn ghost" type="button" onclick="document.getElementById('addChoiceModal').close()" aria-label="Close">✕</button>
-    </div>
-    <div class="modal-body" style="padding: 2rem;">
-        <p style="text-align: center; margin-top: 0; margin-bottom: 2rem; color: hsl(var(--muted-foreground));">Select the type of student you want to add</p>
-        <div class="choice-container">
-            <div class="choice-card" id="addNewUndecided">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-                <h3>Undecided Major</h3>
-                <p>For students with 5 major preferences</p>
-            </div>
-            <div class="choice-card primary" id="addNewDecided">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
-                <h3>Decided Major</h3>
-                <p>For students with one selected major</p>
-            </div>
-        </div>
-    </div>
-  </dialog>
-
   <!-- Modal: Add/Edit Student -->
   <dialog id="studentModal" aria-modal="true">
-    <form method="dialog" id="studentForm" novalidate>
+    <form method="dialog" id="studentForm">
       <div class="modal-header">
         <strong id="modalTitle">Add Student</strong>
         <button class="btn ghost" type="button" id="closeModal" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
-        
         <input type="hidden" id="student_id" name="student_id" />
         <div class="form-grid">
             <!-- NEW: Image Upload Section -->
@@ -619,7 +523,7 @@ $pdo = null;
             </div>
             <div class="field">
                 <label for="student_name_mm">Name (MM)</label>
-                <input id="student_name_mm" name="student_name_mm" required/>
+                <input id="student_name_mm" name="student_name_mm" />
             </div>
             <div class="field">
                 <label for="seat_no">Seat No.</label>
@@ -631,39 +535,39 @@ $pdo = null;
             </div>
             <div class="field">
                 <label for="student_phone">Phone</label>
-                <input id="student_phone" name="student_phone" required/>
+                <input id="student_phone" name="student_phone" />
             </div>
             <div class="field">
                 <label for="student_nrc">NRC</label>
-                <input id="student_nrc" name="student_nrc" required/>
+                <input id="student_nrc" name="student_nrc" />
             </div>
             <div class="field">
                 <label for="student_dob">Date of Birth</label>
-                <input id="student_dob" name="student_dob" type="date" required/>
+                <input id="student_dob" name="student_dob" type="date" />
             </div>
              <div class="field">
                 <label for="student_birthplace">Birthplace</label>
-                <input id="student_birthplace" name="student_birthplace" required/>
+                <input id="student_birthplace" name="student_birthplace" />
             </div>
             <div class="field">
                 <label for="student_race">Race</label>
-                <input id="student_race" name="student_race" required/>
+                <input id="student_race" name="student_race" />
             </div>
             <div class="field">
                 <label for="student_religion">Religion</label>
-                <input id="student_religion" name="student_religion" required/>
+                <input id="student_religion" name="student_religion" />
             </div>
             <div class="field">
                 <label for="township">Township</label>
-                <input id="township" name="township" required/>
+                <input id="township" name="township" />
             </div>
             <div class="field">
                 <label for="state_region">State/Region</label>
-                <input id="state_region" name="state_region" required/>
+                <input id="state_region" name="state_region" />
             </div>
              <div class="field" style="grid-column: 1 / -1;">
                 <label for="student_address">Address</label>
-                <textarea id="student_address" name="student_address" required></textarea>
+                <textarea id="student_address" name="student_address"></textarea>
             </div>
             <div class="field-checkbox" style="grid-column: 1 / -1;">
                 <input id="dormitory_preference" name="dormitory_preference" type="checkbox" />
@@ -673,117 +577,105 @@ $pdo = null;
             <h3 class="detail-section-header">Academic Information</h3>
             <div class="field">
                 <label for="year">Year</label>
-                <input id="year" name="year" required/>
+                <select id="year" name="year">
+                    <option value="">Select Year</option>
+                    <option value="First Year">First Year</option>
+                    <option value="Second Year">Second Year</option>
+                    <option value="Third Year">Third Year</option>
+                    <option value="Fourth Year">Fourth Year</option>
+                    <option value="Fifth Year">Fifth Year</option>
+                    <option value="Sixth Year">Sixth Year (Final)</option>
+                </select>
             </div>
             <div class="field">
                 <label for="academic_year">Academic Year</label>
-                <input id="academic_year" name="academic_year" required/>
+                <input id="academic_year" name="academic_year" />
             </div>
             <div class="field">
                 <label for="entry_year">Entry Year</label>
-                <input id="entry_year" name="entry_year" required/>
+                <input id="entry_year" name="entry_year" />
             </div>
             
-            <!-- MODIFICATION START: Added Major Preferences Section -->
-            <h3 class="detail-section-header">Major Preferences</h3>
-            <div class="field">
-                <label for="preference1">ဦးစားပေး ၁</label>
-                <select id="preference1" name="preference1" disabled></select>
+            <!-- MODIFICATION: Dynamic Major Section -->
+            <div id="majorSection" style="grid-column: 1 / -1;">
+                <!-- This will be populated dynamically based on student year -->
             </div>
-             <div class="field">
-                <label for="preference2">ဦးစားပေး ၂</label>
-                <select id="preference2" name="preference2" disabled></select>
-            </div>
-             <div class="field">
-                <label for="preference3">ဦးစားပေး ၃</label>
-                <select id="preference3" name="preference3" disabled></select>
-            </div>
-             <div class="field">
-                <label for="preference4">ဦးစားပေး ၄</label>
-                <select id="preference4" name="preference4" disabled></select>
-            </div>
-             <div class="field">
-                <label for="preference5">ဦးစားပေး ၅</label>
-                <select id="preference5" name="preference5" disabled></select>
-            </div>
-            <!-- MODIFICATION END -->
 
             <h3 class="detail-section-header">Father's Information</h3>
             <div class="field">
-                <label for="father_deceased_year">Deceased Year (if applicable)</label>
-                <input id="father_deceased_year" name="father_deceased_year" type="number" placeholder="YYYY" />
-            </div>
-            <div class="field">
                 <label for="father_name_en">Name (EN)</label>
-                <input id="father_name_en" name="father_name_en" required/>
+                <input id="father_name_en" name="father_name_en" />
             </div>
             <div class="field">
                 <label for="father_name_mm">Name (MM)</label>
-                <input id="father_name_mm" name="father_name_mm" required/>
+                <input id="father_name_mm" name="father_name_mm" />
             </div>
              <div class="field">
                 <label for="father_nrc">NRC</label>
-                <input id="father_nrc" name="father_nrc" required/>
+                <input id="father_nrc" name="father_nrc" />
             </div>
             <div class="field">
                 <label for="father_phone">Phone</label>
-                <input id="father_phone" name="father_phone" required/>
+                <input id="father_phone" name="father_phone" />
             </div>
              <div class="field">
                 <label for="father_race">Race</label>
-                <input id="father_race" name="father_race" required/>
+                <input id="father_race" name="father_race" />
             </div>
             <div class="field">
                 <label for="father_religion">Religion</label>
-                <input id="father_religion" name="father_religion" required/>
+                <input id="father_religion" name="father_religion" />
             </div>
              <div class="field" style="grid-column: 1 / -1;">
                 <label for="father_info">Occupation</label>
-                <input id="father_info" name="father_info" required/>
+                <input id="father_info" name="father_info" />
             </div>
             <div class="field" style="grid-column: 1 / -1;">
                 <label for="father_address">Address</label>
-                <textarea id="father_address" name="father_address" required></textarea>
+                <textarea id="father_address" name="father_address"></textarea>
+            </div>
+             <div class="field">
+                <label for="father_deceased_year">Deceased Year (if applicable)</label>
+                <input id="father_deceased_year" name="father_deceased_year" type="number" placeholder="YYYY" />
             </div>
 
             <h3 class="detail-section-header">Mother's Information</h3>
             <div class="field">
-                <label for="mother_deceased_year">Deceased Year (if applicable)</label>
-                <input id="mother_deceased_year" name="mother_deceased_year" type="number" placeholder="YYYY" />
-            </div>
-            <div class="field">
                 <label for="mother_name_en">Name (EN)</label>
-                <input id="mother_name_en" name="mother_name_en" required/>
+                <input id="mother_name_en" name="mother_name_en" />
             </div>
             <div class="field">
                 <label for="mother_name_mm">Name (MM)</label>
-                <input id="mother_name_mm" name="mother_name_mm" required/>
+                <input id="mother_name_mm" name="mother_name_mm" />
             </div>
              <div class="field">
                 <label for="mother_nrc">NRC</label>
-                <input id="mother_nrc" name="mother_nrc" required/>
+                <input id="mother_nrc" name="mother_nrc" />
             </div>
             <div class="field">
                 <label for="mother_phone">Phone</label>
-                <input id="mother_phone" name="mother_phone" required/>
+                <input id="mother_phone" name="mother_phone" />
             </div>
              <div class="field">
                 <label for="mother_race">Race</label>
-                <input id="mother_race" name="mother_race" required/>
+                <input id="mother_race" name="mother_race" />
             </div>
             <div class="field">
                 <label for="mother_religion">Religion</label>
-                <input id="mother_religion" name="mother_religion" required/>
+                <input id="mother_religion" name="mother_religion" />
             </div>
              <div class="field" style="grid-column: 1 / -1;">
                 <label for="mother_info">Occupation</label>
-                <input id="mother_info" name="mother_info" required/>
+                <input id="mother_info" name="mother_info" />
             </div>
             <div class="field" style="grid-column: 1 / -1;">
                 <label for="mother_address">Address</label>
-                <textarea id="mother_address" name="mother_address" required></textarea>
+                <textarea id="mother_address" name="mother_address"></textarea>
             </div>
-
+             <div class="field">
+                <label for="mother_deceased_year">Deceased Year (if applicable)</label>
+                <input id="mother_deceased_year" name="mother_deceased_year" type="number" placeholder="YYYY" />
+            </div>
             <!-- NEW: Document section for Edit Modal -->
             <h3 class="detail-section-header">Submitted Documents</h3>
             <div id="edit-documents-grid" class="documents-grid" style="grid-column: 1 / -1;">
@@ -812,16 +704,15 @@ $pdo = null;
     </div>
   </dialog>
   
-  <!-- MODIFIED: Modal for Confirmation / Alert -->
+  <!-- Modal: Confirmation -->
   <dialog id="confirmModal" aria-modal="true">
-     <div class="modal-body" style="text-align: center; padding: 2.5rem 2rem;">
-        <div id="confirmIcon" class="modal-icon-wrap" style="display: none;">
-            <!-- SVG will be injected here -->
-        </div>
-        <h2 id="confirmTitle" style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.5rem;">Confirm Action</h2>
-        <p id="confirmMessage" style="margin-top: 0; color: hsl(var(--muted-foreground)); white-space: pre-wrap;"></p>
+    <div class="modal-header">
+        <strong id="confirmTitle">Confirm Action</strong>
     </div>
-    <div class="modal-footer" style="padding-top:0; justify-content: center;">
+    <div class="modal-body">
+        <p id="confirmMessage">Are you sure?</p>
+    </div>
+    <div class="modal-footer">
         <button class="btn ghost" id="confirmCancel">Cancel</button>
         <button class="btn destructive" id="confirmOK">Confirm</button>
     </div>
@@ -833,12 +724,13 @@ $pdo = null;
     const PAGE_SIZE = 8;
     const PHOTO_PLACEHOLDER = 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
     
+    // MODIFICATION: Added available majors map
     const availableMajors = {
-        'IST': 'Information Science & Technology (IST)',
-        'CE' : 'Computer Engineering (CE)',
-        'EcE': 'Electronic Engineering (EcE)',
-        'PrE': 'Precision Engineering (PrE)',
-        'AME': 'Advanced Materials Engineering (AME)',
+        'IST': 'သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာအင်ဂျင်နီယာဘာသာရပ်(IST)',
+        'CE' : 'ကွန်ပျူတာအင်ဂျင်နီယာ ဘာသာရပ်(CE)',
+        'EcE': 'အီလက်ထရောနစ် အင်ဂျင်နီယာ ဘာသာရပ်(EcE)',
+        'PrE': 'တိကျပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ ဘာသာရပ်(PrE)',
+        'AME': 'အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ ဘာသာရပ်(AME)',
     };
 
     const state = {
@@ -858,19 +750,24 @@ $pdo = null;
             return 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
         }
         
+        // If it's already a full URL, return as is
         if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
             return path;
         }
         
+        // If path starts with /uploads/, prepend ../Rform
         if (path.startsWith('/uploads/')) {
             return `../Rform${path}`;
         }
         
+        // If path contains uploads/, use it directly with ../Rform/
         if (path.includes('uploads/')) {
+            // Remove any leading slashes or incorrect paths
             const cleanPath = path.replace(/^\.\.\/Rform\//, '').replace(/^\//, '');
             return `../Rform/${cleanPath}`;
         }
         
+        // Default case - assume it's relative to Rform directory
         return `../Rform/${path}`;
     }
 
@@ -896,8 +793,8 @@ $pdo = null;
                 body: JSON.stringify({ action, ...data }),
             });
             if (!response.ok) {
-                const errorResult = await response.json();
-                throw new Error(errorResult.message || `HTTP error ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`HTTP error ${response.status}: ${errorText}`);
             }
             return await response.json();
         } catch (error) {
@@ -923,61 +820,13 @@ $pdo = null;
         formElements[el.name] = el;
     });
 
-    function showAlert(title, message, type = 'danger') {
-      const confirmModal = document.getElementById('confirmModal');
-      const iconWrap = document.getElementById('confirmIcon');
-      const confirmTitle = document.getElementById('confirmTitle');
-      const confirmMessage = document.getElementById('confirmMessage');
-      const confirmBtn = document.getElementById('confirmOK');
-      const cancelBtn = document.getElementById('confirmCancel');
-      
-      confirmTitle.textContent = title;
-      confirmMessage.innerHTML = message.replace(/\n/g, '<br>');
-
-      confirmBtn.className = 'btn primary';
-      confirmBtn.textContent = 'OK';
-      cancelBtn.style.display = 'none';
-
-      iconWrap.style.display = 'inline-flex';
-      iconWrap.className = `modal-icon-wrap ${type}`;
-      if(type === 'danger') {
-          iconWrap.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
-      } else { 
-          iconWrap.innerHTML = ``;
-      }
-
-      const handleConfirm = () => { 
-          confirmModal.close();
-          cancelBtn.style.display = '';
-          confirmBtn.textContent = 'Confirm';
-          iconWrap.style.display = 'none';
-          confirmBtn.removeEventListener('click', handleConfirm);
-          cancelBtn.removeEventListener('click', handleConfirm);
-      };
-      
-      confirmBtn.addEventListener('click', handleConfirm, { once: true });
-      cancelBtn.addEventListener('click', handleConfirm, { once: true }); 
-
-      confirmModal.showModal();
-    }
-
-
     function showConfirm(title, message, confirmClass = 'destructive') {
       return new Promise(resolve => {
         const confirmModal = document.getElementById('confirmModal');
-        const iconWrap = document.getElementById('confirmIcon');
-        const confirmTitle = document.getElementById('confirmTitle');
-        const confirmMessage = document.getElementById('confirmMessage');
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
         const confirmBtn = document.getElementById('confirmOK');
-        const cancelBtn = document.getElementById('confirmCancel');
         
-        iconWrap.style.display = 'none';
-        
-        confirmTitle.textContent = title;
-        confirmMessage.textContent = message;
-        
-        cancelBtn.style.display = '';
-        confirmBtn.textContent = 'Confirm';
         confirmBtn.className = `btn ${confirmClass}`;
 
         const handleConfirm = () => { confirmModal.close(); resolve(true); cleanup(); };
@@ -985,35 +834,72 @@ $pdo = null;
 
         const cleanup = () => {
             confirmBtn.removeEventListener('click', handleConfirm);
-            cancelBtn.removeEventListener('click', handleCancel);
+            document.getElementById('confirmCancel').removeEventListener('click', handleCancel);
         };
         
         confirmBtn.addEventListener('click', handleConfirm, { once: true });
-        cancelBtn.addEventListener('click', handleCancel, { once: true });
+        document.getElementById('confirmCancel').addEventListener('click', handleCancel, { once: true });
         confirmModal.showModal();
       });
     }
 
-    // MODIFICATION START: Major preferences dropdown setup function
-    function setupMajorPreferencesDropdowns() {
-        for (let i = 1; i <= 5; i++) {
-            const selectEl = document.getElementById(`preference${i}`);
-            selectEl.innerHTML = ''; 
-            
-            // Add placeholder option
-            let placeholder = document.createElement('option');
-            placeholder.value = ""; 
-            placeholder.text = "Select a major"; 
-            placeholder.disabled = true;
-            placeholder.selected = true;
-            selectEl.add(placeholder);
-            
-            // Add all available majors
-            for (const code in availableMajors) {
-                let option = document.createElement('option');
-                option.value = code; 
-                option.text = availableMajors[code];
-                selectEl.add(option);
+    // NEW: Function to update major section based on student year - FIXED VERSION
+    function updateMajorSection(studentYear, student = null) {
+        const majorSection = document.getElementById('majorSection');
+        
+        if (studentYear === 'First Year') {
+            // For First Year students, show assigned major selection
+            const selectedMajor = student ? (student.selected_major || '') : '';
+            majorSection.innerHTML = `
+                <h3 class="detail-section-header">Major Assignment (First Year)</h3>
+                <div class="field">
+                    <label for="selected_major">Assigned Major</label>
+                    <select id="selected_major" name="selected_major">
+                        <option value="">-- Select Major --</option>
+                        ${Object.entries(availableMajors).map(([code, name]) => 
+                            `<option value="${code}" ${selectedMajor === code ? 'selected' : ''}>${name}</option>`
+                        ).join('')}
+                    </select>
+                </div>
+            `;
+        } else {
+            // For other years, show the assigned major (if exists) or preferences
+            const hasSelectedMajor = student && student.selected_major && student.selected_major.trim() !== '';
+            const hasPreferences = student && student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
+
+            if (hasSelectedMajor) {
+                majorSection.innerHTML = `
+                    <h3 class="detail-section-header">Major Information</h3>
+                    <div class="field">
+                        <label>Selected Major</label>
+                        <input type="text" value="${availableMajors[student.selected_major] || student.selected_major}" disabled />
+                    </div>
+                `;
+            } else if (hasPreferences) {
+                let preferencesHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    const prefValue = student.preferences[i];
+                    if (prefValue) {
+                        preferencesHTML += `
+                            <div class="field">
+                                <label>Preference ${i}</label>
+                                <input type="text" value="${availableMajors[prefValue] || prefValue}" disabled />
+                            </div>
+                        `;
+                    }
+                }
+                majorSection.innerHTML = `
+                    <h3 class="detail-section-header">Major Preferences</h3>
+                    ${preferencesHTML}
+                `;
+            } else {
+                majorSection.innerHTML = `
+                    <h3 class="detail-section-header">Major Information</h3>
+                    <div class="field">
+                        <label>Major Data</label>
+                        <input type="text" value="No major data available" disabled />
+                    </div>
+                `;
             }
         }
     }
@@ -1026,6 +912,10 @@ $pdo = null;
       form.reset();
       document.getElementById('photo_preview').src = PHOTO_PLACEHOLDER;
       formElements.student_id.value = '';
+      
+      // MODIFICATION: Enable year field for editing and add change listener
+      formElements.year.disabled = false;
+      
       if (mode === 'edit' && student) {
           for (const key in formElements) {
               const element = formElements[key];
@@ -1037,65 +927,11 @@ $pdo = null;
                   }
               }
           }
-          // FIXED: Use the improved getSafeUrl function for photo preview
+          
           document.getElementById('photo_preview').src = student.photo_url ? getSafeUrl(student.photo_url) : PHOTO_PLACEHOLDER;
           
-          // Check if student has selected_major (from final1.php) or preferences (from final.php)
-          const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
-          const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
-
-          if (hasSelectedMajor) {
-              // Student from final1.php - Show selected major in preference1 and disable all
-              for (let i = 1; i <= 5; i++) {
-                  const selectEl = document.getElementById(`preference${i}`);
-                  selectEl.innerHTML = ''; 
-                  let placeholder = document.createElement('option');
-                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
-                  selectEl.add(placeholder);
-                  for (const code in availableMajors) {
-                      let option = document.createElement('option');
-                      option.value = code; option.text = availableMajors[code];
-                      selectEl.add(option);
-                  }
-                  if (i === 1) {
-                      selectEl.value = student.selected_major;
-                  } else {
-                      selectEl.selectedIndex = 0;
-                  }
-                  selectEl.disabled = true;
-              }
-          } else if (hasPreferences) {
-              // Student from final.php - Show all preferences
-              for (let i = 1; i <= 5; i++) {
-                  const selectEl = document.getElementById(`preference${i}`);
-                  selectEl.innerHTML = ''; 
-                  let placeholder = document.createElement('option');
-                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
-                  selectEl.add(placeholder);
-                  for (const code in availableMajors) {
-                      let option = document.createElement('option');
-                      option.value = code; option.text = availableMajors[code];
-                      selectEl.add(option);
-                  }
-                  const prefValue = student.preferences[i];
-                  if (prefValue) { 
-                      selectEl.value = prefValue; 
-                  } else { 
-                      selectEl.selectedIndex = 0; 
-                  }
-                  selectEl.disabled = true;
-              }
-          } else {
-              // No major information - disable all preference dropdowns
-              for (let i = 1; i <= 5; i++) {
-                  const selectEl = document.getElementById(`preference${i}`);
-                  selectEl.innerHTML = ''; 
-                  let placeholder = document.createElement('option');
-                  placeholder.value = ""; placeholder.text = "No major data"; placeholder.disabled = true;
-                  selectEl.add(placeholder);
-                  selectEl.disabled = true;
-              }
-          }
+          // Update major section based on student year
+          updateMajorSection(student.year, student);
 
           // --- Populate document files in Edit Modal ---
           const documentsGrid = document.getElementById('edit-documents-grid');
@@ -1138,51 +974,74 @@ $pdo = null;
               documentsGrid.innerHTML = documentsHtml;
           }
       } else {
+          // For new student, set default major section
+          updateMajorSection('');
           // Clear documents if it's an 'add' modal
           document.getElementById('edit-documents-grid').innerHTML = '<p style="color: hsl(var(--muted-foreground));">No documents available for new student.</p>';
       }
+      
+      // Add event listener for year change to update major section dynamically
+      formElements.year.addEventListener('change', function() {
+          updateMajorSection(this.value, student);
+      });
+      
       modal.showModal();
       formElements.student_name_en.focus();
     }
-    // MODIFICATION END
     
     function closeModalSafe() { document.getElementById('studentModal').close(); }
     
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
+        // FIXED: Use the improved getSafeUrl function for details modal photo
         const photoUrl = s.photo_url ? getSafeUrl(s.photo_url) : PHOTO_PLACEHOLDER;
 
+        // Check if student has selected_major or preferences
         const hasSelectedMajor = s.selected_major && s.selected_major.trim() !== '';
         const hasPreferences = s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0;
 
-        let preferencesHtml = '';
+        let majorHtml = '';
         if (hasSelectedMajor) {
-            preferencesHtml = `<h3 class="detail-section-header">Selected Major</h3><dl class="details-grid"><dt>Selected Major</dt><dd>${availableMajors[s.selected_major] || 'Unknown Major'}</dd></dl>`;
+            // Student has assigned major
+            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid">`;
+            majorHtml += `<dt>Major</dt><dd>${availableMajors[s.selected_major] || s.selected_major}</dd>`;
+            majorHtml += `</dl>`;
         } else if (hasPreferences) {
-            preferencesHtml += `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
+            // Student has preferences
+            majorHtml = `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
             for (let i = 1; i <= 5; i++) {
-                const prefCode = s.preferences ? (s.preferences[i] || null) : null;
+                const prefCode = s.preferences[i];
                 if (prefCode) {
-                    preferencesHtml += `<dt>Preference ${i}</dt><dd>${availableMajors[prefCode] || 'Unknown Major'}</dd>`;
+                    majorHtml += `<dt>Preference ${i}</dt><dd>${availableMajors[prefCode] || prefCode}</dd>`;
                 }
             }
-            preferencesHtml += `</dl>`;
+            majorHtml += `</dl>`;
+        } else {
+            majorHtml = `<h3 class="detail-section-header">Major Information</h3><dl class="details-grid">`;
+            majorHtml += `<dt>Status</dt><dd>No major data available</dd>`;
+            majorHtml += `</dl>`;
         }
         
         const documents = [
-            { label: 'Recommendation', key: 'doc_recommendation' }, { label: 'Medical', key: 'doc_medical' },
-            { label: 'Certificate', key: 'doc_certificate' }, { label: 'Grades', key: 'doc_grades' },
-            { label: 'Household', key: 'doc_household' }, { label: 'Student NRC (Front)', key: 'doc_student_nrc_front' },
-            { label: 'Student NRC (Back)', key: 'doc_student_nrc_back' }, { label: 'Father NRC (Front)', key: 'doc_father_nrc_front' },
-            { label: 'Father NRC (Back)', key: 'doc_father_nrc_back' }, { label: 'Mother NRC (Front)', key: 'doc_mother_nrc_front' },
-            { label: 'Mother NRC (Back)', key: 'doc_mother_nrc_back' },
+            { label: 'ရပ်ကွက်/ရဲစခန်း ထောက်ခံစာ', key: 'doc_recommendation' },
+            { label: 'ဆေးထောက်ခံစာ', key: 'doc_medical' },
+            { label: 'အောင်လက်မှတ်', key: 'doc_certificate' },
+            { label: 'အမှတ်စာရင်း', key: 'doc_grades' },
+            { label: 'အိမ်ထောင်စုဇယား', key: 'doc_household' },
+            { label: 'ကျောင်းသား NRC (ရှေ့)', key: 'doc_student_nrc_front' },
+            { label: 'ကျောင်းသား NRC (နောက်)', key: 'doc_student_nrc_back' },
+            { label: 'အဖေ NRC (ရှေ့)', key: 'doc_father_nrc_front' },
+            { label: 'အဖေ NRC (နောက်)', key: 'doc_father_nrc_back' },
+            { label: 'အမေ NRC (ရှေ့)', key: 'doc_mother_nrc_front' },
+            { label: 'အမေ NRC (နောက်)', key: 'doc_mother_nrc_back' },
         ];
 
         let documentsHtml = '<h3 class="detail-section-header">Required Documents</h3><div class="documents-grid">';
         documents.forEach(doc => {
             const docPath = s[doc.key];
             if (docPath) {
+                // FIXED: Use the improved getSafeUrl function for documents in details modal
                 documentsHtml += `
                     <div class="doc-item">
                         <a href="${getSafeUrl(docPath)}" target="_blank">
@@ -1207,14 +1066,14 @@ $pdo = null;
                 <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd> <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
                 <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd> <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
                 <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd> <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
-                <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
+                <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
-                <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
+                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
                 <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
             </dl>
-            ${preferencesHtml}
+            ${majorHtml}
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
@@ -1240,17 +1099,21 @@ $pdo = null;
         detailsModal.showModal();
     }
 
+    // NEW: Helper function to check if student has any major data
     function hasMajorData(student) {
         const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
         const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
         return hasSelectedMajor || hasPreferences;
     }
 
+    // NEW: Helper function to check if student has a specific major
     function hasSpecificMajor(student, majorCode) {
+        // Check selected_major (from final1.php)
         if (student.selected_major && student.selected_major === majorCode) {
             return true;
         }
         
+        // Check preferences (from final.php)
         if (student.preferences && typeof student.preferences === 'object') {
             for (let i = 1; i <= 5; i++) {
                 if (student.preferences[i] === majorCode) {
@@ -1266,21 +1129,22 @@ $pdo = null;
       const q = state.q.toLowerCase();
       const selectedYear = state.year;
       const selectedDormitory = state.dormitory;
-      const selectedMajor = state.major;
+      const selectedMajor = state.major; // NEW
 
       const base = state.students.filter(s => {
           const matchesSearch = !q || 
                                 (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || 
                                 (s.student_email && s.student_email.toLowerCase().includes(q)) || 
                                 (s.seat_no && s.seat_no.toLowerCase().includes(q)) ||
-                                (s.student_phone && s.student_phone.includes(q)) ||
+                                (s.student_phone && s.student_phone.includes(q)) || // Phone numbers don't need toLowerCase
                                 (s.student_nrc && s.student_nrc.toLowerCase().includes(q));
-          const matchesYear = selectedYear === 'all' || s.academic_year === selectedYear;
+          const matchesYear = selectedYear === 'all' || s.year === selectedYear;
           
           const matchesDormitory = selectedDormitory === 'all' ||
                                    (selectedDormitory === 'yes' && s.dormitory_preference) ||
                                    (selectedDormitory === 'no' && !s.dormitory_preference);
 
+          // NEW: Major filtering logic
           const matchesMajor = selectedMajor === 'all' || 
                               (selectedMajor === 'unknown' && !hasMajorData(s)) ||
                               (selectedMajor !== 'unknown' && hasSpecificMajor(s, selectedMajor));
@@ -1307,16 +1171,18 @@ $pdo = null;
 
       tbody.innerHTML = '';
       if(pageRows.length === 0){
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No approved students found matching criteria.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem;">No approved students found matching criteria.</td></tr>';
       } else {
         for (const s of pageRows) {
             const tr = document.createElement('tr');
+            
             tr.innerHTML = `
             <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
             <td>${s.seat_no || ''}</td>
             <td>${s.student_name_en || ''}</td>
             <td>${s.student_email || ''}</td>
             <td>${s.student_phone || ''}</td>
+            <td>${s.year || ''}</td>
             <td>${formatDate(s.date)}</td>
             <td>
                 <div style="display:flex; gap:6px;">
@@ -1338,13 +1204,14 @@ $pdo = null;
     function render() {
       const filteredCount = getFilteredSorted().length;
       document.getElementById('studentCountDisplay').textContent = `Total Students: ${filteredCount}`;
+      
       renderTable();
     }
     
     function addEventListeners() {
       document.getElementById('yearFilter').addEventListener('change', (e) => {
           state.year = e.target.value;
-          state.page = 1;
+          state.page = 1; // Reset page to 1 when filter changes
           render();
       });
 
@@ -1354,6 +1221,7 @@ $pdo = null;
         render();
       });
 
+      // NEW: Major filter event listener
       document.getElementById('majorFilter').addEventListener('change', (e) => {
         state.major = e.target.value;
         state.page = 1;
@@ -1362,15 +1230,16 @@ $pdo = null;
 
       document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
       
+      // NEW: Event listener for the clear filters button
       document.getElementById('clearFiltersBtn').addEventListener('click', () => {
         document.getElementById('search').value = '';
         document.getElementById('yearFilter').value = 'all';
         document.getElementById('dormitoryFilter').value = 'all';
-        document.getElementById('majorFilter').value = 'all';
+        document.getElementById('majorFilter').value = 'all'; // NEW
         state.q = '';
         state.year = 'all';
         state.dormitory = 'all';
-        state.major = 'all';
+        state.major = 'all'; // NEW
         state.page = 1;
         render();
         showToast('Filters cleared', 'success');
@@ -1382,26 +1251,13 @@ $pdo = null;
           const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
           if (state.page < totalPages) { state.page++; render(); }
       });
-      
-      document.getElementById('openAddChoiceBtn').addEventListener('click', () => {
-          document.getElementById('addChoiceModal').showModal();
-      });
-
-      document.getElementById('addNewUndecided').addEventListener('click', () => {
-          document.getElementById('addChoiceModal').close();
-          openModal('add', null, 'undecided');
-      });
-
-      document.getElementById('addNewDecided').addEventListener('click', () => {
-          document.getElementById('addChoiceModal').close();
-          openModal('add', null, 'decided');
-      });
-
+      document.getElementById('addBtn').addEventListener('click', () => openModal('add'));
       document.getElementById('closeModal').addEventListener('click', closeModalSafe);
       document.getElementById('cancelModal').addEventListener('click', closeModalSafe);
       document.getElementById('closeDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
       document.getElementById('okDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
 
+      // --- NEW: Event listeners for photo upload ---
       document.getElementById('photo_preview').addEventListener('click', () => {
           document.getElementById('student_photo').click();
       });
@@ -1415,6 +1271,7 @@ $pdo = null;
               reader.readAsDataURL(file);
           }
       });
+
 
       document.querySelectorAll('th.sortable').forEach(th => {
         th.addEventListener('click', () => {
@@ -1486,11 +1343,8 @@ $pdo = null;
             showToast(`${ids.length} student(s) deleted.`, 'success');
         }
       });
-      
-      document.getElementById('father_deceased_year').addEventListener('input', () => toggleParentRequired('father'));
-      document.getElementById('mother_deceased_year').addEventListener('input', () => toggleParentRequired('mother'));
 
-      // MODIFICATION START: Updated saveStudent event listener to handle major preferences for First Year students
+      // FIXED: Save student function with proper selected_major handling
       document.getElementById('saveStudent').addEventListener('click', async (e) => {
         e.preventDefault();
         
@@ -1507,28 +1361,38 @@ $pdo = null;
         const action = studentId ? 'update' : 'add';
         formData.append('action', action);
 
-          try {
-              const response = await fetch('api.php', {
-                  method: 'POST',
-                  body: formData,
-              });
+        // FIX: Get selected_major value directly from the form element
+        const selectedMajorElement = document.getElementById('selected_major');
+        if (selectedMajorElement) {
+            formData.append('selected_major', selectedMajorElement.value);
+        } else {
+            // If no selected_major element exists (for non-first year), set it to empty
+            formData.append('selected_major', '');
+        }
 
-              const result = await response.json();
+        try {
+            const response = await fetch('api.php', {
+                method: 'POST',
+                body: formData,
+            });
 
-              if (!response.ok) {
-                  throw new Error(result.message || `HTTP error ${response.status}`);
-              }
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error ${response.status}: ${errorText}`);
+            }
+
+            const result = await response.json();
 
             if (result.status === 'success' && result.student) {
                 if (action === 'add') {
-                    // MODIFICATION: Add placeholder for preferences on new student
+                    // MODIFICATION: Add placeholder for preferences and selected_major on new student
                     result.student.preferences = null;
+                    result.student.selected_major = null;
                     state.students.unshift(result.student);
                 } else {
                     const index = state.students.findIndex(s => s.student_id === studentId);
                     if (index !== -1) {
-                         // MODIFICATION: The API response doesn't include decoded preferences, so we copy them from the old record
-                        result.student.preferences = state.students[index].preferences;
+                        // FIX: Update the student data with the response from API
                         state.students[index] = result.student;
                     }
                 }
@@ -1543,15 +1407,24 @@ $pdo = null;
             showToast(`Error: ${error.message}`, 'error');
         }
       });
-      // MODIFICATION END
       
+      // --- EXPORT LISTENER ---
       document.getElementById('exportBtn').addEventListener('click', handleExport);
     }
     
+    // --- MODIFIED EXPORT FUNCTION ---
     function handleExport() {
-        let dataToExport = state.selected.size > 0 
-            ? state.students.filter(s => state.selected.has(s.student_id))
-            : getFilteredSorted();
+        // First, determine which data set to export
+        let dataToExport;
+        const selectedIds = Array.from(state.selected);
+
+        if (selectedIds.length > 0) {
+            // If items are selected, export only those.
+            dataToExport = state.students.filter(s => selectedIds.includes(s.student_id));
+        } else {
+            // If no items are selected, export the currently filtered list.
+            dataToExport = getFilteredSorted();
+        }
 
         if (dataToExport.length === 0) {
             showToast('No data to export based on current selection or filters.', 'warning');
@@ -1560,7 +1433,7 @@ $pdo = null;
 
         const headers = [
             'student_id', 'seat_no', 'student_name_en', 'student_name_mm', 'student_email', 'student_phone', 'student_nrc', 'student_dob', 'student_birthplace', 'student_race', 'student_religion', 'student_address', 'township', 'state_region', 'dormitory_preference', 'year', 'academic_year', 'entry_year', 'date', 'photo_url',
-            'selected_major', 'preference1', 'preference2', 'preference3', 'preference4', 'preference5',
+            'preference1', 'preference2', 'preference3', 'preference4', 'preference5', 'selected_major',
             'father_name_en', 'father_name_mm', 'father_nrc', 'father_race', 'father_religion', 'father_info', 'father_address', 'father_phone', 'father_deceased_year',
             'mother_name_en', 'mother_name_mm', 'mother_nrc', 'mother_race', 'mother_religion', 'mother_info', 'mother_address', 'mother_phone', 'mother_deceased_year'
         ];
@@ -1576,17 +1449,19 @@ $pdo = null;
             return val;
         };
 
+        // Use the 'dataToExport' array instead of the full 'state.students'
         for (const s of dataToExport) {
+            // FIX: Wrap phone numbers in Excel's text formula `="<number>"` to prevent scientific notation
             const row = [
                 s.student_id, s.seat_no, s.student_name_en, s.student_name_mm, s.student_email, 
                 s.student_phone ? `="${s.student_phone}"` : '', 
                 s.student_nrc, s.student_dob, s.student_birthplace, s.student_race, s.student_religion, s.student_address, s.township, s.state_region, s.dormitory_preference ? '1' : '0', s.year, s.academic_year, s.entry_year, s.date, s.photo_url,
-                s.selected_major || '',
                 s.preferences ? (s.preferences['1'] || '') : '',
                 s.preferences ? (s.preferences['2'] || '') : '',
                 s.preferences ? (s.preferences['3'] || '') : '',
                 s.preferences ? (s.preferences['4'] || '') : '',
                 s.preferences ? (s.preferences['5'] || '') : '',
+                s.selected_major || '',
                 s.father_name_en, s.father_name_mm, s.father_nrc, s.father_race, s.father_religion, s.father_info, s.father_address, 
                 s.father_phone ? `="${s.father_phone}"` : '', 
                 s.father_deceased_year,
@@ -1613,11 +1488,9 @@ $pdo = null;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      populateMajorDropdowns();
       addEventListeners();
       render();
     });
   </script>
 </body>
 </html>
-

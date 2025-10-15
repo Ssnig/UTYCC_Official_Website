@@ -1226,7 +1226,7 @@ $pdo = null;
             document.getElementById('statTotal').textContent = response.data.pending_applications;
             document.getElementById('statDormitory').textContent = response.data.dormitory_requests;
             document.getElementById('statToday').textContent = response.data.today_applications;
-        }
+        } 
     }
 
     document.addEventListener('DOMContentLoaded', () => {
