@@ -589,25 +589,28 @@ $pdo = null;
             
             <!-- MODIFICATION START: Added Major Preferences Section -->
             <h3 class="detail-section-header">Major Preferences</h3>
+            <div id="majorPreferencesNote" style="grid-column: 1 / -1; padding: 10px; background: hsl(var(--warning)/0.1); border: 1px solid hsl(var(--warning)); border-radius: 8px; color: hsl(var(--warning)); font-size: 14px; display: none;">
+                <strong>Note:</strong> Major preferences can only be edited for First Year students.
+            </div>
             <div class="field">
                 <label for="preference1">ဦးစားပေး ၁</label>
-                <select id="preference1" name="preference1" disabled></select>
+                <select id="preference1" name="preference1"></select>
             </div>
              <div class="field">
                 <label for="preference2">ဦးစားပေး ၂</label>
-                <select id="preference2" name="preference2" disabled></select>
+                <select id="preference2" name="preference2"></select>
             </div>
              <div class="field">
                 <label for="preference3">ဦးစားပေး ၃</label>
-                <select id="preference3" name="preference3" disabled></select>
+                <select id="preference3" name="preference3"></select>
             </div>
              <div class="field">
                 <label for="preference4">ဦးစားပေး ၄</label>
-                <select id="preference4" name="preference4" disabled></select>
+                <select id="preference4" name="preference4"></select>
             </div>
              <div class="field">
                 <label for="preference5">ဦးစားပေး ၅</label>
-                <select id="preference5" name="preference5" disabled></select>
+                <select id="preference5" name="preference5"></select>
             </div>
             <!-- MODIFICATION END -->
 
@@ -853,6 +856,30 @@ $pdo = null;
       });
     }
 
+    // MODIFICATION START: Major preferences dropdown setup function
+    function setupMajorPreferencesDropdowns() {
+        for (let i = 1; i <= 5; i++) {
+            const selectEl = document.getElementById(`preference${i}`);
+            selectEl.innerHTML = ''; 
+            
+            // Add placeholder option
+            let placeholder = document.createElement('option');
+            placeholder.value = ""; 
+            placeholder.text = "Select a major"; 
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            selectEl.add(placeholder);
+            
+            // Add all available majors
+            for (const code in availableMajors) {
+                let option = document.createElement('option');
+                option.value = code; 
+                option.text = availableMajors[code];
+                selectEl.add(option);
+            }
+        }
+    }
+
     function openModal(mode, student = null) {
       const modal = document.getElementById('studentModal');
       const form = document.getElementById('studentForm');
@@ -861,6 +888,10 @@ $pdo = null;
       form.reset();
       document.getElementById('photo_preview').src = PHOTO_PLACEHOLDER;
       formElements.student_id.value = '';
+      
+      // Setup major preferences dropdowns
+      setupMajorPreferencesDropdowns();
+      
       if (mode === 'edit' && student) {
           for (const key in formElements) {
               const element = formElements[key];
@@ -875,61 +906,37 @@ $pdo = null;
           // FIXED: Use the improved getSafeUrl function for photo preview
           document.getElementById('photo_preview').src = student.photo_url ? getSafeUrl(student.photo_url) : PHOTO_PLACEHOLDER;
           
+          // Check if student is First Year
+          const isFirstYear = student.year === 'First Year';
+          
+          // Show/hide major preferences note
+          const majorNote = document.getElementById('majorPreferencesNote');
+          if (!isFirstYear && (student.preferences || student.selected_major)) {
+              majorNote.style.display = 'block';
+          } else {
+              majorNote.style.display = 'none';
+          }
+
           // Check if student has selected_major (from final1.php) or preferences (from final.php)
           const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
           const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
 
           if (hasSelectedMajor) {
-              // Student from final1.php - Show selected major in preference1 and disable all
-              for (let i = 1; i <= 5; i++) {
-                  const selectEl = document.getElementById(`preference${i}`);
-                  selectEl.innerHTML = ''; 
-                  let placeholder = document.createElement('option');
-                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
-                  selectEl.add(placeholder);
-                  for (const code in availableMajors) {
-                      let option = document.createElement('option');
-                      option.value = code; option.text = availableMajors[code];
-                      selectEl.add(option);
-                  }
-                  if (i === 1) {
-                      selectEl.value = student.selected_major;
-                  } else {
-                      selectEl.selectedIndex = 0;
-                  }
-                  selectEl.disabled = true;
-              }
+              // Student from final1.php - Show selected major in preference1
+              document.getElementById('preference1').value = student.selected_major;
           } else if (hasPreferences) {
               // Student from final.php - Show all preferences
               for (let i = 1; i <= 5; i++) {
-                  const selectEl = document.getElementById(`preference${i}`);
-                  selectEl.innerHTML = ''; 
-                  let placeholder = document.createElement('option');
-                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
-                  selectEl.add(placeholder);
-                  for (const code in availableMajors) {
-                      let option = document.createElement('option');
-                      option.value = code; option.text = availableMajors[code];
-                      selectEl.add(option);
-                  }
                   const prefValue = student.preferences[i];
                   if (prefValue) { 
-                      selectEl.value = prefValue; 
-                  } else { 
-                      selectEl.selectedIndex = 0; 
+                      document.getElementById(`preference${i}`).value = prefValue; 
                   }
-                  selectEl.disabled = true;
               }
-          } else {
-              // No major information - disable all preference dropdowns
-              for (let i = 1; i <= 5; i++) {
-                  const selectEl = document.getElementById(`preference${i}`);
-                  selectEl.innerHTML = ''; 
-                  let placeholder = document.createElement('option');
-                  placeholder.value = ""; placeholder.text = "No major data"; placeholder.disabled = true;
-                  selectEl.add(placeholder);
-                  selectEl.disabled = true;
-              }
+          }
+
+          // Enable/disable major preferences based on whether student is First Year
+          for (let i = 1; i <= 5; i++) {
+              document.getElementById(`preference${i}`).disabled = !isFirstYear;
           }
 
           // --- Populate document files in Edit Modal ---
@@ -973,12 +980,20 @@ $pdo = null;
               documentsGrid.innerHTML = documentsHtml;
           }
       } else {
+          // For new student, enable all major preferences (assuming new students are First Year)
+          for (let i = 1; i <= 5; i++) {
+              document.getElementById(`preference${i}`).disabled = false;
+          }
+          // Hide major preferences note for new students
+          document.getElementById('majorPreferencesNote').style.display = 'none';
+          
           // Clear documents if it's an 'add' modal
           document.getElementById('edit-documents-grid').innerHTML = '<p style="color: hsl(var(--muted-foreground));">No documents available for new student.</p>';
       }
       modal.showModal();
       formElements.student_name_en.focus();
     }
+    // MODIFICATION END
     
     function closeModalSafe() { document.getElementById('studentModal').close(); }
     
@@ -1328,6 +1343,7 @@ $pdo = null;
         }
       });
 
+      // MODIFICATION START: Updated saveStudent event listener to handle major preferences for First Year students
       document.getElementById('saveStudent').addEventListener('click', async (e) => {
         e.preventDefault();
         
@@ -1339,10 +1355,25 @@ $pdo = null;
             return;
         }
         
+        // Check if student is First Year (for major editing)
+        const isFirstYear = formElements.year.value === 'First Year';
+        
         // Use FormData to send both file and text data
         const formData = new FormData(form);
         const action = studentId ? 'update' : 'add';
         formData.append('action', action);
+
+        // MODIFICATION: Add major preferences to form data if First Year student
+        if (isFirstYear) {
+            const preferences = {};
+            for (let i = 1; i <= 5; i++) {
+                const selectEl = document.getElementById(`preference${i}`);
+                if (selectEl && selectEl.value) {
+                    preferences[i] = selectEl.value;
+                }
+            }
+            formData.append('preferences', JSON.stringify(preferences));
+        }
 
         try {
             const response = await fetch('api.php', {
@@ -1359,15 +1390,22 @@ $pdo = null;
 
             if (result.status === 'success' && result.student) {
                 if (action === 'add') {
-                    // MODIFICATION: Add placeholder for preferences on new student
-                    result.student.preferences = null;
+                    // Add the new student with preferences
+                    result.student.preferences = isFirstYear ? JSON.parse(formData.get('preferences')) : null;
                     state.students.unshift(result.student);
                 } else {
                     const index = state.students.findIndex(s => s.student_id === studentId);
                     if (index !== -1) {
-                         // MODIFICATION: The API response doesn't include decoded preferences, so we copy them from the old record
-                        result.student.preferences = state.students[index].preferences;
-                        state.students[index] = result.student;
+                        // Update preferences if First Year
+                        if (isFirstYear) {
+                            state.students[index].preferences = JSON.parse(formData.get('preferences'));
+                        }
+                        // Update other fields
+                        Object.keys(result.student).forEach(key => {
+                            if (key !== 'preferences') {
+                                state.students[index][key] = result.student[key];
+                            }
+                        });
                     }
                 }
                 render();
@@ -1381,6 +1419,7 @@ $pdo = null;
             showToast(`Error: ${error.message}`, 'error');
         }
       });
+      // MODIFICATION END
       
       // --- EXPORT LISTENER ---
       document.getElementById('exportBtn').addEventListener('click', handleExport);
