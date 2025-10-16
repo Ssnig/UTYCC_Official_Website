@@ -185,7 +185,7 @@ $pdo = null;
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; width: 100%;}
     .toolbar .spacer { flex: 1; }
     .toast-wrap { position: fixed; bottom: 20px; right: 20px; top: auto; width: min(380px, 92vw); display: grid; gap: 12px; z-index: 9999; pointer-events: none; }
-    .toast { pointer-events: auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--fg)); background: hsl(var(--card)); box-shadow: var(--shadow-lg); border-left: 4px solid hsl(var(--primary)); animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards; }
+    .toast { pointer-events: auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--fg)); background: hsl(var(--bg)); box-shadow: var(--shadow-lg); border-left: 4px solid hsl(var(--primary)); animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards; }
     .toast.success { border-left-color: hsl(var(--success)); }
     .toast.warning { border-left-color: hsl(var(--warning)); }
     .toast.error { border-left-color: hsl(var(--danger)); }
