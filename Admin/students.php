@@ -434,19 +434,19 @@ $pdo = null;
         <div class="section-header">
           <div class="toolbar">
             <div id="studentCountDisplay" style="font-weight: 600; color: hsl(var(--muted-foreground)); margin-right: 16px;"></div>
-             <!-- START: Year Filter Dropdown -->
+             <!-- START: Academic Year Filter Dropdown -->
              <div class="field" style="min-width: 200px;">
-                <select id="yearFilter" aria-label="Filter by Year">
-                    <option value="all">All Years</option>
+                <select id="academicYearFilter" aria-label="Filter by Academic Year">
+                    <option value="all">All Academic Years</option>
                     <option value="First Year">First Year</option>
                     <option value="Second Year">Second Year</option>
                     <option value="Third Year">Third Year</option>
                     <option value="Fourth Year">Fourth Year</option>
                     <option value="Fifth Year">Fifth Year</option>
-                    <option value="Sixth Year">Sixth Year (Final)</option>
+                    <option value="Final Year">Final Year</option>
                 </select>
              </div>
-             <!-- END: Year Filter Dropdown -->
+             <!-- END: Academic Year Filter Dropdown -->
              <!-- NEW: Dormitory Filter Dropdown -->
              <div class="field" style="min-width: 200px;">
                 <select id="dormitoryFilter" aria-label="Filter by Dormitory">
@@ -482,7 +482,7 @@ $pdo = null;
                 <th data-sort="student_name_en" class="sortable">Name</th>
                 <th data-sort="student_email" class="sortable">Email</th>
                 <th data-sort="student_phone" class="sortable">Phone</th>
-                <th data-sort="year" class="sortable">Year</th>
+                <th data-sort="academic_year" class="sortable">Academic Year</th>
                 <th data-sort="date" class="sortable">Registered</th>
                 <th>Actions</th>
               </tr>
@@ -598,20 +598,20 @@ $pdo = null;
 
             <h3 class="detail-section-header">Academic Information</h3>
             <div class="field">
-                <label for="year">Year</label>
-                <select id="year" name="year">
-                    <option value="">Select Year</option>
+                <label for="academic_year">Academic Year</label>
+                <select id="academic_year" name="academic_year" required>
+                    <option value="">Select Academic Year</option>
                     <option value="First Year">First Year</option>
                     <option value="Second Year">Second Year</option>
                     <option value="Third Year">Third Year</option>
                     <option value="Fourth Year">Fourth Year</option>
                     <option value="Fifth Year">Fifth Year</option>
-                    <option value="Sixth Year">Sixth Year (Final)</option>
+                    <option value="Final Year">Final Year</option>
                 </select>
             </div>
             <div class="field">
-                <label for="academic_year">Academic Year</label>
-                <input id="academic_year" name="academic_year" />
+                <label for="year">Year</label>
+                <input id="year" name="year" readonly />
             </div>
             <div class="field">
                 <label for="entry_year">Entry Year</label>
@@ -776,7 +776,7 @@ $pdo = null;
     const state = {
       students: <?php echo json_encode($students); ?>,
       q: '',
-      year: 'all',
+      academicYear: 'all',
       dormitory: 'all',
       major: 'all', // NEW: Add major for filtering
       page: 1,
@@ -1123,11 +1123,10 @@ $pdo = null;
                 <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd> <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
                 <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd> <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
                 <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd> <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
-                <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
+                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd> <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
-                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
                 <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
             </dl>
             ${majorHtml}
@@ -1180,7 +1179,7 @@ $pdo = null;
 
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
-      const selectedYear = state.year;
+      const selectedAcademicYear = state.academicYear;
       const selectedDormitory = state.dormitory;
       const selectedMajor = state.major;
 
@@ -1191,7 +1190,7 @@ $pdo = null;
                                 (s.seat_no && s.seat_no.toLowerCase().includes(q)) ||
                                 (s.student_phone && s.student_phone.includes(q)) ||
                                 (s.student_nrc && s.student_nrc.toLowerCase().includes(q));
-          const matchesYear = selectedYear === 'all' || s.year === selectedYear;
+          const matchesAcademicYear = selectedAcademicYear === 'all' || s.academic_year === selectedAcademicYear;
           
           const matchesDormitory = selectedDormitory === 'all' ||
                                    (selectedDormitory === 'yes' && s.dormitory_preference) ||
@@ -1201,7 +1200,7 @@ $pdo = null;
                               (selectedMajor === 'unknown' && !hasMajorData(s)) ||
                               (selectedMajor !== 'unknown' && hasSpecificMajor(s, selectedMajor));
 
-          return matchesSearch && matchesYear && matchesDormitory && matchesMajor;
+          return matchesSearch && matchesAcademicYear && matchesDormitory && matchesMajor;
       });
 
       const { key, dir } = state.sort;
@@ -1234,7 +1233,7 @@ $pdo = null;
             <td>${s.student_name_en || ''}</td>
             <td>${s.student_email || ''}</td>
             <td>${s.student_phone || ''}</td>
-            <td>${s.year || ''}</td>
+            <td>${s.academic_year || ''}</td>
             <td>${formatDate(s.date)}</td>
             <td>
                 <div style="display:flex; gap:6px;">
@@ -1261,8 +1260,8 @@ $pdo = null;
     }
     
     function addEventListeners() {
-      document.getElementById('yearFilter').addEventListener('change', (e) => {
-          state.year = e.target.value;
+      document.getElementById('academicYearFilter').addEventListener('change', (e) => {
+          state.academicYear = e.target.value;
           state.page = 1;
           render();
       });
@@ -1283,10 +1282,10 @@ $pdo = null;
       
       document.getElementById('clearFiltersBtn').addEventListener('click', () => {
         document.getElementById('search').value = '';
-        document.getElementById('yearFilter').value = 'all';
+        document.getElementById('academicYearFilter').value = 'all';
         document.getElementById('dormitoryFilter').value = 'all';
         document.getElementById('majorFilter').value = 'all';
-        state.q = ''; state.year = 'all'; state.dormitory = 'all'; state.major = 'all';
+        state.q = ''; state.academicYear = 'all'; state.dormitory = 'all'; state.major = 'all';
         state.page = 1; render(); showToast('Filters cleared', 'success');
       });
 
@@ -1440,7 +1439,6 @@ $pdo = null;
             'student_nrc': 'Student NRC',
             'student_dob': 'Date of Birth',
             'student_address': 'Student Address',
-            'year': 'Year',
             'academic_year': 'Academic Year'
         };
 
@@ -1565,7 +1563,7 @@ $pdo = null;
         }
 
         const headers = [
-            'student_id', 'seat_no', 'student_name_en', 'student_name_mm', 'student_email', 'student_phone', 'student_nrc', 'student_dob', 'student_birthplace', 'student_race', 'student_religion', 'student_address', 'township', 'state_region', 'dormitory_preference', 'year', 'academic_year', 'entry_year', 'date', 'photo_url',
+            'student_id', 'seat_no', 'student_name_en', 'student_name_mm', 'student_email', 'student_phone', 'student_nrc', 'student_dob', 'student_birthplace', 'student_race', 'student_religion', 'student_address', 'township', 'state_region', 'dormitory_preference', 'academic_year', 'year', 'entry_year', 'date', 'photo_url',
             'preference1', 'preference2', 'preference3', 'preference4', 'preference5', 'selected_major',
             'father_name_en', 'father_name_mm', 'father_nrc', 'father_race', 'father_religion', 'father_info', 'father_address', 'father_phone', 'father_deceased_year',
             'mother_name_en', 'mother_name_mm', 'mother_nrc', 'mother_race', 'mother_religion', 'mother_info', 'mother_address', 'mother_phone', 'mother_deceased_year'
@@ -1586,7 +1584,7 @@ $pdo = null;
             const row = [
                 s.student_id, s.seat_no, s.student_name_en, s.student_name_mm, s.student_email, 
                 s.student_phone ? `="${s.student_phone}"` : '', 
-                s.student_nrc, s.student_dob, s.student_birthplace, s.student_race, s.student_religion, s.student_address, s.township, s.state_region, s.dormitory_preference ? '1' : '0', s.year, s.academic_year, s.entry_year, s.date, s.photo_url,
+                s.student_nrc, s.student_dob, s.student_birthplace, s.student_race, s.student_religion, s.student_address, s.township, s.state_region, s.dormitory_preference ? '1' : '0', s.academic_year, s.year, s.entry_year, s.date, s.photo_url,
                 s.preferences ? (s.preferences['1'] || '') : '',
                 s.preferences ? (s.preferences['2'] || '') : '',
                 s.preferences ? (s.preferences['3'] || '') : '',
@@ -1625,4 +1623,3 @@ $pdo = null;
   </script>
 </body>
 </html>
-
