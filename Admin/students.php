@@ -849,6 +849,22 @@ $pdo = null;
         toastWrap.appendChild(toast);
         setTimeout(removeToast, duration);
     }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[&<>"'`=\/]/g, function (s) {
+        return ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '`': '&#x60;',
+          '=': '&#x3D;',
+          '/': '&#x2F;'
+        })[s];
+      });
+    }
     
     const formElements = {};
     document.querySelectorAll('#studentForm [name]').forEach(el => {
@@ -1072,13 +1088,13 @@ $pdo = null;
 
         let majorHtml = '';
         if (hasSelectedMajor) {
-            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid"><dt>Major</dt><dd>${availableMajors[s.selected_major] || s.selected_major}</dd></dl>`;
+            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid"><dt>Major</dt><dd>${escapeHtml(availableMajors[s.selected_major]) || escapeHtml(s.selected_major)}</dd></dl>`;
         } else if (hasPreferences) {
             majorHtml = `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
             for (let i = 1; i <= 5; i++) {
                 const prefCode = s.preferences[i];
                 if (prefCode) {
-                    majorHtml += `<dt>Preference ${i}</dt><dd>${availableMajors[prefCode] || prefCode}</dd>`;
+                    majorHtml += `<dt>Preference ${i}</dt><dd>${escapeHtml(availableMajors[prefCode]) || escapeHtml(prefCode)}</dd>`;
                 }
             }
             majorHtml += `</dl>`;
@@ -1116,39 +1132,39 @@ $pdo = null;
             </div>
             <h3 class="detail-section-header">Student Information</h3>
             <dl class="details-grid">
-                <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${s.student_name_en || 'N/A'}</dd>
-                <dt>Name (MM)</dt><dd>${s.student_name_mm || 'N/A'}</dd> <dt>Email</dt><dd>${s.student_email || 'N/A'}</dd>
-                <dt>Phone</dt><dd>${s.student_phone || 'N/A'}</dd> <dt>NRC</dt><dd>${s.student_nrc || 'N/A'}</dd>
-                <dt>Date of Birth</dt><dd>${formatDate(s.student_dob)}</dd> <dt>Birthplace</dt><dd>${s.student_birthplace || 'N/A'}</dd>
-                <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd> <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
-                <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd> <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
-                <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd> <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
-                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd> <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
+                <dt>Seat No.</dt><dd>${escapeHtml(s.seat_no) || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${escapeHtml(s.student_name_en) || 'N/A'}</dd>
+                <dt>Name (MM)</dt><dd>${escapeHtml(s.student_name_mm) || 'N/A'}</dd> <dt>Email</dt><dd>${escapeHtml(s.student_email) || 'N/A'}</dd>
+                <dt>Phone</dt><dd>${escapeHtml(s.student_phone) || 'N/A'}</dd> <dt>NRC</dt><dd>${escapeHtml(s.student_nrc) || 'N/A'}</dd>
+                <dt>Date of Birth</dt><dd>${escapeHtml(formatDate(s.student_dob))}</dd> <dt>Birthplace</dt><dd>${escapeHtml(s.student_birthplace) || 'N/A'}</dd>
+                <dt>Race</dt><dd>${escapeHtml(s.student_race) || 'N/A'}</dd> <dt>Religion</dt><dd>${escapeHtml(s.student_religion) || 'N/A'}</dd>
+                <dt>Address</dt><dd>${escapeHtml(s.student_address) || 'N/A'}</dd> <dt>Township</dt><dd>${escapeHtml(s.township) || 'N/A'}</dd>
+                <dt>State/Region</dt><dd>${escapeHtml(s.state_region) || 'N/A'}</dd> <dt>Dormitory</dt><dd>${escapeHtml(s.dormitory_preference) ? 'Yes' : 'No'}</dd>
+                <dt>Academic Year</dt><dd>${escapeHtml(s.academic_year) || 'N/A'}</dd> <dt>Year</dt><dd>${escapeHtml(s.year) || 'N/A'}</dd> <dt>Registered On</dt><dd>${escapeHtml(formatDate(s.date))}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
-                <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
+                <dt>Entry Year</dt><dd>${escapeHtml(s.entry_year) || 'N/A'}</dd>
             </dl>
             ${majorHtml}
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${s.father_deceased_year ? `Deceased (${s.father_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${escapeHtml(s.father_deceased_year) ? `Deceased (${escapeHtml(s.father_deceased_year)})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${escapeHtml(s.father_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.father_name_mm) || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${escapeHtml(s.father_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.father_race) || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${escapeHtml(s.father_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.father_info) || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${escapeHtml(s.father_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.father_phone) || 'N/A'}</dd>
                 </dl>
             </div>
             <div class="detail-parent-section">
                 <h4>Mother's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${s.mother_deceased_year ? `Deceased (${s.mother_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${escapeHtml(s.mother_deceased_year) ? `Deceased (${escapeHtml(s.mother_deceased_year)})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${escapeHtml(s.mother_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.mother_name_mm) || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${escapeHtml(s.mother_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.mother_race) || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${escapeHtml(s.mother_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.mother_info) || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${escapeHtml(s.mother_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.mother_phone) || 'N/A'}</dd>
                 </dl>
             </div>
             ${documentsHtml}`;
@@ -1229,12 +1245,12 @@ $pdo = null;
             
             tr.innerHTML = `
             <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
-            <td>${s.seat_no || ''}</td>
-            <td>${s.student_name_en || ''}</td>
-            <td>${s.student_email || ''}</td>
-            <td>${s.student_phone || ''}</td>
-            <td>${s.academic_year || ''}</td>
-            <td>${formatDate(s.date)}</td>
+            <td>${escapeHtml(s.seat_no) || ''}</td>
+            <td>${escapeHtml(s.student_name_en) || ''}</td>
+            <td>${escapeHtml(s.student_email) || ''}</td>
+            <td>${escapeHtml(s.student_phone) || ''}</td>
+            <td>${escapeHtml(s.academic_year) || ''}</td>
+            <td>${escapeHtml(formatDate(s.date))}</td>
             <td>
                 <div style="display:flex; gap:6px;">
                 <button class="btn ghost" data-details="${s.student_id}">Details</button>
