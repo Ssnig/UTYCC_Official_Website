@@ -5,6 +5,12 @@ require_once 'auth_check.php';
 
 // --- FETCH ALL APPROVED STUDENT DATA ---
 $students = [];
+
+//page system
+$limit = 8; 
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // current page, default 1
+$offset = ($page - 1) * $limit;
+
 // MODIFICATION: Added s.preferences AND s.selected_major to the SELECT statement
 $sql = "SELECT s.*, s.preferences, s.selected_major,
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
@@ -13,7 +19,9 @@ $sql = "SELECT s.*, s.preferences, s.selected_major,
         LEFT JOIN fathers f ON s.student_id = f.student_id
         LEFT JOIN mothers m ON s.student_id = m.student_id
         WHERE s.status = 'approved'
-        ORDER BY s.date DESC";
+        ORDER BY s.date DESC
+        LIMIT $limit OFFSET $offset";
+
 
 try {
     $stmt = $pdo->query($sql);
@@ -35,6 +43,12 @@ try {
     // For a real application, you might want to log this error and show a friendly message.
     die("Error fetching student data: " . $e->getMessage());
 }
+
+$count_sql = "SELECT COUNT(*) AS total_students FROM students WHERE status = 'approved'";
+$result =$pdo->query($count_sql);
+$row = $result->fetch(PDO::FETCH_ASSOC);
+$total_students = $row['total_students'];
+
 
 // Close the connection by setting the PDO object to null
 $pdo = null;
@@ -772,6 +786,8 @@ $pdo = null;
         'PrE': 'တိကျပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ ဘာသာရပ်(PrE)',
         'AME': 'အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ ဘာသာရပ်(AME)',
     };
+    const total = <?php echo $total_students; ?>;
+
 
     const state = {
       students: <?php echo json_encode($students); ?>,
@@ -779,7 +795,7 @@ $pdo = null;
       academicYear: 'all',
       dormitory: 'all',
       major: 'all', // NEW: Add major for filtering
-      page: 1,
+      page: <?php echo $page ?>,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
     };
@@ -1229,11 +1245,9 @@ $pdo = null;
 
     function renderTable() {
       const rows = getFilteredSorted();
-      const total = rows.length;
       const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-      state.page = Math.min(state.page, totalPages);
-      const start = (state.page - 1) * PAGE_SIZE;
-      const pageRows = rows.slice(start, start + PAGE_SIZE);
+      const start = (state.page - 1) * PAGE_SIZE; //set to zero because we fetech from server from now on
+      const pageRows = rows.slice(0, PAGE_SIZE);
       const tbody = document.getElementById('tbody');
 
       tbody.innerHTML = '';
@@ -1263,14 +1277,13 @@ $pdo = null;
       }
 
       document.getElementById('pageInfo').textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
-      document.getElementById('prevPage').disabled = state.page <= 1;
-      document.getElementById('nextPage').disabled = state.page >= totalPages;
+      // document.getElementById('prevPage').disabled = state.page <= 1;
+      // document.getElementById('nextPage').disabled = state.page >= totalPages;
       document.getElementById('bulkDeleteBtn').disabled = state.selected.size === 0;
     }
 
     function render() {
-      const filteredCount = getFilteredSorted().length;
-      document.getElementById('studentCountDisplay').textContent = `Total Students: ${filteredCount}`;
+      document.getElementById('studentCountDisplay').textContent = `Total Students: ${total}`;
       
       renderTable();
     }
@@ -1305,12 +1318,25 @@ $pdo = null;
         state.page = 1; render(); showToast('Filters cleared', 'success');
       });
 
-      document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
-      document.getElementById('nextPage').addEventListener('click', () => { 
-          const rows = getFilteredSorted();
-          const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
-          if (state.page < totalPages) { state.page++; render(); }
+      document.getElementById('prevPage').addEventListener('click', () => {
+        if (state.page > 1) {
+          const prevPage = state.page - 1;
+          const url = new URL(window.location.href);
+          url.searchParams.set('page', prevPage);
+          window.location.replace (url.toString());
+        }
       });
+
+      document.getElementById('nextPage').addEventListener('click', () => {
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (state.page < totalPages) {
+          const nextPage = state.page + 1;
+          const url = new URL(window.location.href);
+          url.searchParams.set('page', nextPage);
+          window.location.replace (url.toString());
+        }
+      });
+
       
       // MODIFICATION: Show add type modal instead of student form directly
       document.getElementById('addBtn').addEventListener('click', () => document.getElementById('addStudentTypeModal').showModal());
