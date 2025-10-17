@@ -62,6 +62,11 @@ try {
     $students_json = '[]';
 }
 
+//last update fetch
+$stmt = $pdo->query("SELECT MAX(updated_at) AS last_update FROM students WHERE status='pending'");
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$lastUpdate = $row['last_update'];
+
 $pdo = null;
 ?>
 <!DOCTYPE html>
@@ -1187,6 +1192,33 @@ $pdo = null;
       fetchDashboardStats();
       render();
     });
+    let lastUpdate = "<?php echo $lastUpdate; ?>";
+
+    function pollChanges() {
+        fetch('check_update.php?last=' + encodeURIComponent(lastUpdate))
+            .then(res => res.json())
+            .then(data => {
+                if (!data.changed) return;
+
+                lastUpdate = data.last_update;
+
+                data.students.forEach(updatedStudent => {
+                    const index = state.students.findIndex(s => s.student_id === updatedStudent.student_id);
+                    if (index >= 0) {
+                        state.students[index] = updatedStudent;
+                    } else {
+                        state.students.unshift(updatedStudent); // newest first
+                    }
+                });
+
+                renderTable(); // re-render table with updated state
+            })
+            .catch(console.error);
+    }
+
+    // Poll every 3 seconds
+    setInterval(pollChanges, 3000);
+
   </script>
 </body>
 </html>
