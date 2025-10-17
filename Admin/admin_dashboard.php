@@ -28,7 +28,7 @@ try {
     date_default_timezone_set('Asia/Yangon');
 
     $students = [];
-    $sql = "SELECT s.*, s.preferences, s.selected_major,
+    $sql = "SELECT s.*, s.preferences,
                    f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                    m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
             FROM students s
@@ -47,7 +47,6 @@ try {
         if (!empty($row['mother_deceased_year'])) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
         
         $row['preferences'] = !empty($row['preferences']) ? json_decode($row['preferences'], true) : null;
-        // selected_major is already a string, no need to decode
 
         $students[] = $row;
     }
@@ -185,7 +184,7 @@ $pdo = null;
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; width: 100%;}
     .toolbar .spacer { flex: 1; }
     .toast-wrap { position: fixed; bottom: 20px; right: 20px; top: auto; width: min(380px, 92vw); display: grid; gap: 12px; z-index: 9999; pointer-events: none; }
-    .toast { pointer-events: auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--fg)); background: hsl(var(--bg)); box-shadow: var(--shadow-lg); border-left: 4px solid hsl(var(--primary)); animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards; }
+    .toast { pointer-events: auto; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 10px; color: hsl(var(--fg)); background: hsl(var(--card)); box-shadow: var(--shadow-lg); border-left: 4px solid hsl(var(--primary)); animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards; }
     .toast.success { border-left-color: hsl(var(--success)); }
     .toast.warning { border-left-color: hsl(var(--warning)); }
     .toast.error { border-left-color: hsl(var(--danger)); }
@@ -221,7 +220,6 @@ $pdo = null;
     .doc-item p { font-size: 13px; padding: 8px; text-align: center; font-weight: 500; }
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
-    #majorFilterContainer { transition: all var(--duration) var(--ease); }
     @media (max-width: 1000px) { .cards { grid-template-columns: repeat(2, minmax(0,1fr)); } .form-grid { grid-template-columns: 1fr; } }
     @media (max-width: 780px) { .app { grid-template-columns: 1fr; grid-template-areas: "header" "main"; } .sidebar { display: none; } .cards { grid-template-columns: 1fr; } }
   </style>
@@ -261,7 +259,7 @@ $pdo = null;
             Manage Stats
         </a>
         <a class="nav-link" href="activity.php">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2 2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
             Upload Activity
         </a>
         <a class="nav-link" href="support.php">
@@ -290,8 +288,8 @@ $pdo = null;
           <div class="value" id="statTotal">0</div>
         </article>
         <article class="card">
-            <h3>Dormitory Requests</h3>
-            <div class="value" id="statDormitory">0</div>
+            <h3>By Major (IST)</h3>
+            <div class="value" id="statMajorIST">0</div>
         </article>
         <article class="card">
           <h3>Today's Applications</h3>
@@ -304,24 +302,24 @@ $pdo = null;
           <h2>Pending Applications</h2>
           <div class="toolbar">
              <div class="field" style="min-width: 200px;">
+                <select id="majorFilter" aria-label="Filter by Major">
+                    <option value="all">All Majors</option>
+                    <option value="IST">Information Science & Technology (IST)</option>
+                    <option value="CE">Computer Engineering (CE)</option>
+                    <option value="EcE">Electronic Engineering (EcE)</option>
+                    <option value="PrE">Precision Engineering (PrE)</option>
+                    <option value="AME">Advanced Materials Engineering (AME)</option>
+                </select>
+             </div>
+             <div class="field" style="min-width: 200px;">
                 <select id="yearFilter" aria-label="Filter by Year">
-                    <option value="all">All Years</option>
+                    <option value="all">All Academic Years</option>
                     <option value="First Year">First Year</option>
                     <option value="Second Year">Second Year</option>
                     <option value="Third Year">Third Year</option>
                     <option value="Fourth Year">Fourth Year</option>
                     <option value="Fifth Year">Fifth Year</option>
                     <option value="Sixth Year">Sixth Year (Final)</option>
-                </select>
-             </div>
-             <div class="field" id="majorFilterContainer" style="display: none; min-width: 200px;">
-                <select id="majorFilter" aria-label="Filter by Major">
-                    <option value="all">All Majors</option>
-                    <option value="IST">သတင်းအချက်အလက်သိပ္ပံနှင့် နည်းပညာအင်ဂျင်နီယာဘာသာရပ်(IST)</option>
-                    <option value="CE">ကွန်ပျူတာအင်ဂျင်နီယာ ဘာသာရပ်(CE)</option>
-                    <option value="EcE">အီလက်ထရောနစ် အင်ဂျင်နီယာ ဘာသာရပ်(EcE)</option>
-                    <option value="PrE">တိကျပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ ဘာသာရပ်(PrE)</option>
-                    <option value="AME">အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ ဘာသာရပ်(AME)</option>
                 </select>
              </div>
              <div class="spacer"></div>
@@ -435,8 +433,12 @@ $pdo = null;
             <h3 class="detail-section-header">Academic Information</h3>
             <div class="field">
                 <label for="year">Year</label>
-                <select id="year" name="year">
-                    <option value="">Select Year</option>
+                <input id="year" name="year" />
+            </div>
+            <div class="field">
+                <label for="academic_year">Academic Year</label>
+                <select id="academic_year" name="academic_year">
+                    <option value="">Select Academic Year</option>
                     <option value="First Year">First Year</option>
                     <option value="Second Year">Second Year</option>
                     <option value="Third Year">Third Year</option>
@@ -444,10 +446,6 @@ $pdo = null;
                     <option value="Fifth Year">Fifth Year</option>
                     <option value="Sixth Year">Sixth Year (Final)</option>
                 </select>
-            </div>
-            <div class="field">
-                <label for="academic_year">Academic Year</label>
-                <input id="academic_year" name="academic_year" placeholder="e.g., 2024-2025"/>
             </div>
             <div class="field">
                 <label for="entry_year">Entry Year</label>
@@ -610,46 +608,18 @@ $pdo = null;
     const state = {
       students: <?php echo $students_json; ?>,
       q: '',
+      major: 'all',
       year: 'all',
-      major: 'all', // Added major filter state
       page: 1,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
     };
     
-    // FIXED: Improved getSafeUrl function to handle photo URLs properly
     function getSafeUrl(path) {
         if (!path) return `https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+Image`;
-        
-        // If it's already a full URL, return as is
-        if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
-            return path;
-        }
-        
-        // If path starts with /uploads/, prepend ../Rform
-        if (path.startsWith('/uploads/')) {
-            return `../Rform${path}`;
-        }
-        
-        // If path contains uploads/, use it directly with ../Rform/
-        if (path.includes('uploads/')) {
-            // Remove any leading slashes or incorrect paths
-            const cleanPath = path.replace(/^\.\.\/Rform\//, '').replace(/^\//, '');
-            return `../Rform/${cleanPath}`;
-        }
-        
-        // Default case - assume it's relative to Rform directory
-        return `../Rform/${path}`;
-    }
-
-    // Function to get display major from student data
-    function getDisplayMajor(student) {
-        if (student.selected_major && student.selected_major.trim() !== '') {
-            return student.selected_major;
-        } else if (student.preferences && typeof student.preferences === 'object' && student.preferences[1]) {
-            return student.preferences[1];
-        }
-        return null;
+        const uploadsIndex = path.indexOf('uploads/');
+        if (uploadsIndex !== -1) return `../Rform/${path}`;
+        return path;
     }
 
     function todayStr(d = new Date()) { return d.toISOString().split('T')[0]; }
@@ -749,67 +719,24 @@ $pdo = null;
                   else if (element.type !== 'file' && !element.name.startsWith('preference')) { element.value = student[key] || ''; }
               }
           }
-          // FIXED: Use getSafeUrl to ensure photo URL is correct
           document.getElementById('photo_preview').src = getSafeUrl(student.photo_url);
 
-          // Check if student has selected_major (from final1.php) or preferences (from final.php)
-          const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
-          const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
-
-          if (hasSelectedMajor) {
-              // Student from final1.php - Show selected major in preference1 and disable all
-              for (let i = 1; i <= 5; i++) {
-                  const selectEl = document.getElementById(`preference${i}`);
-                  selectEl.innerHTML = ''; 
-                  let placeholder = document.createElement('option');
-                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
-                  selectEl.add(placeholder);
-                  for (const code in availableMajors) {
-                      let option = document.createElement('option');
-                      option.value = code; option.text = availableMajors[code];
-                      selectEl.add(option);
-                  }
-                  if (i === 1) {
-                      selectEl.value = student.selected_major;
-                  } else {
-                      selectEl.selectedIndex = 0;
-                  }
-                  selectEl.disabled = true;
+          for (let i = 1; i <= 5; i++) {
+              const selectEl = document.getElementById(`preference${i}`);
+              selectEl.innerHTML = ''; 
+              let placeholder = document.createElement('option');
+              placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
+              selectEl.add(placeholder);
+              for (const code in availableMajors) {
+                  let option = document.createElement('option');
+                  option.value = code; option.text = availableMajors[code];
+                  selectEl.add(option);
               }
-          } else if (hasPreferences) {
-              // Student from final.php - Show all preferences
-              for (let i = 1; i <= 5; i++) {
-                  const selectEl = document.getElementById(`preference${i}`);
-                  selectEl.innerHTML = ''; 
-                  let placeholder = document.createElement('option');
-                  placeholder.value = ""; placeholder.text = "Select a major"; placeholder.disabled = true;
-                  selectEl.add(placeholder);
-                  for (const code in availableMajors) {
-                      let option = document.createElement('option');
-                      option.value = code; option.text = availableMajors[code];
-                      selectEl.add(option);
-                  }
-                  const prefValue = student.preferences[i];
-                  if (prefValue) { 
-                      selectEl.value = prefValue; 
-                  } else { 
-                      selectEl.selectedIndex = 0; 
-                  }
-                  selectEl.disabled = true;
-              }
-          } else {
-              // No major information - disable all preference dropdowns
-              for (let i = 1; i <= 5; i++) {
-                  const selectEl = document.getElementById(`preference${i}`);
-                  selectEl.innerHTML = ''; 
-                  let placeholder = document.createElement('option');
-                  placeholder.value = ""; placeholder.text = "No major data"; placeholder.disabled = true;
-                  selectEl.add(placeholder);
-                  selectEl.disabled = true;
-              }
+              const prefValue = student.preferences ? student.preferences[i] : null;
+              if (prefValue) { selectEl.value = prefValue; } else { selectEl.selectedIndex = 0; }
           }
 
-          // --- Populate document files in Edit Modal ---
+          // --- NEW: Populate document files in Edit Modal ---
           const documentsGrid = document.getElementById('edit-documents-grid');
           documentsGrid.innerHTML = ''; // Clear previous documents
 
@@ -848,6 +775,7 @@ $pdo = null;
           } else {
               documentsGrid.innerHTML = documentsHtml;
           }
+          // --- END NEW SECTION ---
       } 
       modal.showModal();
       formElements.student_name_en.focus();
@@ -858,26 +786,15 @@ $pdo = null;
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
-        // FIXED: Use getSafeUrl to ensure photo URL is correct
         const photoUrl = getSafeUrl(s.photo_url);
 
-        // Check if student has selected_major or preferences
-        const hasSelectedMajor = s.selected_major && s.selected_major.trim() !== '';
-        const hasPreferences = s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0;
-
         let preferencesHtml = '';
-        if (hasSelectedMajor) {
-            // Student from final1.php - show selected major
-            preferencesHtml += `<h3 class="detail-section-header">Selected Major</h3><dl class="details-grid">`;
-            preferencesHtml += `<dt>Selected Major</dt><dd>${escapeHtml(availableMajors[s.selected_major]) || 'Unknown Major'}</dd>`;
-            preferencesHtml += `</dl>`;
-        } else if (hasPreferences) {
-            // Student from final.php - show all preferences
+        if (s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0) {
             preferencesHtml += `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
             for (let i = 1; i <= 5; i++) {
                 const prefCode = s.preferences[i];
                 if (prefCode) {
-                    preferencesHtml += `<dt>ဦးစားပေး ${i}</dt><dd>${escapeHtml(availableMajors[prefCode]) || 'Unknown Major'}</dd>`;
+                    preferencesHtml += `<dt>ဦးစားပေး ${i}</dt><dd>${availableMajors[prefCode] || 'Unknown Major'}</dd>`;
                 }
             }
             preferencesHtml += `</dl>`;
@@ -916,40 +833,40 @@ $pdo = null;
             </div>
             <h3 class="detail-section-header">Student Information</h3>
             <dl class="details-grid">
-                <dt>Seat No.</dt><dd>${escapeHtml(s.seat_no) || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${escapeHtml(s.student_name_en) || 'N/A'}</dd>
-                <dt>Name (MM)</dt><dd>${escapeHtml(s.student_name_mm) || 'N/A'}</dd> <dt>Email</dt><dd>${escapeHtml(s.student_email) || 'N/A'}</dd>
-                <dt>Phone</dt><dd>${escapeHtml(s.student_phone) || 'N/A'}</dd> <dt>NRC</dt><dd>${escapeHtml(s.student_nrc) || 'N/A'}</dd>
-                <dt>Date of Birth</dt><dd>${escapeHtml(formatDate(s.student_dob))}</dd> <dt>Birthplace</dt><dd>${escapeHtml(s.student_birthplace) || 'N/A'}</dd>
-                <dt>Race</dt><dd>${escapeHtml(s.student_race) || 'N/A'}</dd> <dt>Religion</dt><dd>${escapeHtml(s.student_religion) || 'N/A'}</dd>
-                <dt>Address</dt><dd>${escapeHtml(s.student_address) || 'N/A'}</dd> <dt>Township</dt><dd>${escapeHtml(s.township) || 'N/A'}</dd>
-                <dt>State/Region</dt><dd>${escapeHtml(s.state_region) || 'N/A'}</dd> <dt>Dormitory</dt><dd>${escapeHtml(s.dormitory_preference) ? 'Yes' : 'No'}</dd>
-                <dt>Registered On</dt><dd>${escapeHtml(formatDate(s.date))}</dd>
+                <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${s.student_name_en || 'N/A'}</dd>
+                <dt>Name (MM)</dt><dd>${s.student_name_mm || 'N/A'}</dd> <dt>Email</dt><dd>${s.student_email || 'N/A'}</dd>
+                <dt>Phone</dt><dd>${s.student_phone || 'N/A'}</dd> <dt>NRC</dt><dd>${s.student_nrc || 'N/A'}</dd>
+                <dt>Date of Birth</dt><dd>${formatDate(s.student_dob)}</dd> <dt>Birthplace</dt><dd>${s.student_birthplace || 'N/A'}</dd>
+                <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd> <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
+                <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd> <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
+                <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd> <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
+                <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
-                <dt>Year</dt><dd>${escapeHtml(s.year) || 'N/A'}</dd> <dt>Academic Year</dt><dd>${escapeHtml(s.academic_year) || 'N/A'}</dd>
-                <dt>Entry Year</dt><dd>${escapeHtml(s.entry_year) || 'N/A'}</dd>
+                <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd>
+                <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
             </dl>
             ${preferencesHtml}
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${escapeHtml(s.father_deceased_year) ? `Deceased (${escapeHtml(s.father_deceased_year)})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${escapeHtml(s.father_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.father_name_mm) || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${escapeHtml(s.father_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.father_race) || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${escapeHtml(s.father_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.father_info) || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${escapeHtml(s.father_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.father_phone) || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${s.father_deceased_year ? `Deceased (${s.father_deceased_year})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
                 </dl>
             </div>
             <div class="detail-parent-section">
                 <h4>Mother's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${escapeHtml(s.mother_deceased_year) ? `Deceased (${escapeHtml(s.mother_deceased_year)})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${escapeHtml(s.mother_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.mother_name_mm) || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${escapeHtml(s.mother_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.mother_race) || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${escapeHtml(s.mother_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.mother_info) || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${escapeHtml(s.mother_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.mother_phone) || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${s.mother_deceased_year ? `Deceased (${s.mother_deceased_year})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
                 </dl>
             </div>
             ${documentsHtml}`;
@@ -958,21 +875,23 @@ $pdo = null;
 
     function getFilteredSorted() {
       const q = state.q.toLowerCase();
-      const selectedYear = state.year;
       const selectedMajor = state.major;
+      const selectedYear = state.year;
+      
       const base = state.students.filter(s => {
-        const matchesSearch = !q || (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || (s.student_email && s.student_email.toLowerCase().includes(q)) || (s.seat_no && s.seat_no.toLowerCase().includes(q));
-        const matchesYear = selectedYear === 'all' || s.year === selectedYear; // CORRECTED: filter by s.year
+        const matchesSearch = !q || 
+          (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || 
+          (s.student_email && s.student_email.toLowerCase().includes(q)) || 
+          (s.seat_no && s.seat_no.toLowerCase().includes(q));
         
-        // Major filter - only apply for Second Year to Sixth Year
-        let matchesMajor = true;
-        if (selectedMajor !== 'all' && (selectedYear === 'Second Year' || selectedYear === 'Third Year' || selectedYear === 'Fourth Year' || selectedYear === 'Fifth Year' || selectedYear === 'Sixth Year')) {
-            const displayMajor = getDisplayMajor(s);
-            matchesMajor = displayMajor === selectedMajor;
-        }
+        const matchesMajor = selectedMajor === 'all' || 
+          (s.preferences && Object.values(s.preferences).includes(selectedMajor));
         
-        return matchesSearch && matchesYear && matchesMajor;
+        const matchesYear = selectedYear === 'all' || s.academic_year === selectedYear;
+        
+        return matchesSearch && matchesMajor && matchesYear;
       });
+      
       const { key, dir } = state.sort;
       base.sort((a,b) => {
         const res = cmp(a,b,key);
@@ -984,26 +903,29 @@ $pdo = null;
     function renderStats() {
       const filteredStudents = getFilteredSorted();
       const total = filteredStudents.length;
-      const dormitory = filteredStudents.filter(s => s.dormitory_preference).length;
-      document.getElementById('statTotal').textContent = total;
-      document.getElementById('statDormitory').textContent = dormitory;
-      // Today's stat is now handled by fetchDashboardStats() and is not recalculated here
-    }
-
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str).replace(/[&<>"'`=\/]/g, function (s) {
-        return ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;',
-          '`': '&#x60;',
-          '=': '&#x3D;',
-          '/': '&#x2F;'
-        })[s];
+      
+      // Count by major
+      const majorCounts = {
+        'IST': 0,
+        'CE': 0,
+        'EcE': 0,
+        'PrE': 0,
+        'AME': 0
+      };
+      
+      filteredStudents.forEach(s => {
+        if (s.preferences) {
+          Object.values(s.preferences).forEach(major => {
+            if (majorCounts.hasOwnProperty(major)) {
+              majorCounts[major]++;
+            }
+          });
+        }
       });
+      
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statMajorIST').textContent = majorCounts.IST;
+      // Today's stat is handled by fetchDashboardStats()
     }
 
     function renderTable() {
@@ -1023,12 +945,12 @@ $pdo = null;
           const tr = document.createElement('tr');
           tr.dataset.studentId = s.student_id;
           tr.innerHTML = `
-            <td><input type="checkbox" data-id="${escapeHtml(s.student_id)}" ${state.selected.has(s.student_id)?'checked':''} /></td>
-            <td>${escapeHtml(s.seat_no)}</td>
-            <td>${escapeHtml(s.student_name_en)}</td>
-            <td>${escapeHtml(s.student_email)}</td>
-            <td>${escapeHtml(s.student_phone)}</td>
-            <td>${escapeHtml(formatDate(s.date))}</td>
+            <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
+            <td>${s.seat_no || ''}</td>
+            <td>${s.student_name_en || ''}</td>
+            <td>${s.student_email || ''}</td>
+            <td>${s.student_phone || ''}</td>
+            <td>${formatDate(s.date)}</td>
             <td>
               <div style="display:flex; gap:6px;">
                 <button class="btn success icon-btn" data-approve="${s.student_id}" title="Approve"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
@@ -1054,27 +976,15 @@ $pdo = null;
     }
     
     function addEventListeners() {
-      document.getElementById('yearFilter').addEventListener('change', (e) => {
-          state.year = e.target.value;
-          state.page = 1;
-          
-          // Show/hide major filter based on year selection
-          const majorFilterContainer = document.getElementById('majorFilterContainer');
-          if (['Second Year', 'Third Year', 'Fourth Year', 'Fifth Year', 'Sixth Year'].includes(state.year)) {
-              majorFilterContainer.style.display = 'block';
-          } else {
-              majorFilterContainer.style.display = 'none';
-              // Reset major filter when hidden
-              state.major = 'all';
-              document.getElementById('majorFilter').value = 'all';
-          }
-          
-          render();
-      });
-
       // Add major filter event listener
       document.getElementById('majorFilter').addEventListener('change', (e) => {
-          state.major = e.target.value;
+        state.major = e.target.value;
+        state.page = 1;
+        render();
+      });
+
+      document.getElementById('yearFilter').addEventListener('change', (e) => {
+          state.year = e.target.value;
           state.page = 1;
           render();
       });
@@ -1248,9 +1158,9 @@ $pdo = null;
         const response = await apiRequest('get_dashboard_stats', {});
         if (response.status === 'success' && response.data) {
             document.getElementById('statTotal').textContent = response.data.pending_applications;
-            document.getElementById('statDormitory').textContent = response.data.dormitory_requests;
             document.getElementById('statToday').textContent = response.data.today_applications;
-        } 
+            // Note: You'll need to update your API to provide major-specific counts
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
