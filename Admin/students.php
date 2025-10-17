@@ -1639,3 +1639,58 @@ $pdo = null;
   </script>
 </body>
 </html>
+<?php
+// Include the database configuration file
+require_once '../Rform/db.php';
+require_once 'auth_check.php';
+
+// --- FETCH ALL APPROVED STUDENT DATA ---
+$students = [];
+
+//page system
+$limit = 8; 
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // current page, default 1
+$offset = ($page - 1) * $limit;
+
+// MODIFICATION: Added s.preferences AND s.selected_major to the SELECT statement
+$sql = "SELECT s.*, s.preferences, s.selected_major,
+               f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
+               m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
+        FROM students s
+        LEFT JOIN fathers f ON s.student_id = f.student_id
+        LEFT JOIN mothers m ON s.student_id = m.student_id
+        WHERE s.status = 'approved'
+        ORDER BY s.date DESC
+        LIMIT $limit OFFSET $offset";
+
+
+try {
+    $stmt = $pdo->query($sql);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($results as $row) {
+        // Ensure numeric and boolean types are correctly cast for JSON
+        $row['student_id'] = (int)$row['student_id'];
+        $row['dormitory_preference'] = (bool)$row['dormitory_preference'];
+        if($row['father_deceased_year']) $row['father_deceased_year'] = (int)$row['father_deceased_year'];
+        if($row['mother_deceased_year']) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
+
+        // MODIFICATION: Decode the JSON preferences string into an array
+        $row['preferences'] = $row['preferences'] ? json_decode($row['preferences'], true) : null;
+
+        $students[] = $row; 
+    }
+} catch (PDOException $e) {
+    // For a real application, you might want to log this error and show a friendly message.
+    die("Error fetching student data: " . $e->getMessage());
+}
+
+$count_sql = "SELECT COUNT(*) AS total_students FROM students WHERE status = 'approved'";
+$result =$pdo->query($count_sql);
+$row = $result->fetch(PDO::FETCH_ASSOC);
+$total_students = $row['total_students'];
+
+
+// Close the connection by setting the PDO object to null
+$pdo = null;
+?>
