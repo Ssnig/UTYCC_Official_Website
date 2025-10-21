@@ -12,11 +12,11 @@
     <link rel="shortcut icon" href="./Img/logo/utycc_logo_favicon/favicon.ico" type="image/x-icon" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="CSS/font.css" />
+
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9;
+            font-family: 'Padauk', 'Inter', sans-serif;
+
         }
 
         h1,
@@ -270,62 +270,36 @@
     <footer id="contact" class="bg-blue-900 text-white">
         <div class="container mx-auto px-6 py-12">
             <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4" loading="lazy" />
+                <div class="animate-on-scroll" style="--i:1;">
+                    <img src="./Img/logo/utycc_logo_favicon/favicon.ico" alt="UTYCC Logo" class="h-12 mb-4 icon-hover-effect" loading="lazy" />
                     <h3 class="text-lg font-bold">UTYCC</h3>
-                    <p class="text-blue-200 text-sm mt-4">
-                        <a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">
-                            Yatanarpon Cyber City,<br />Near Pyin Oo Lwin,<br />Mandalay Region, Myanmar
-                        </a>
-                    </p>
+                    <p class="text-blue-200 text-sm mt-4"><a href="https://maps.app.goo.gl/xEgFrM6hWEiYZdGYA" data-lang-key="footer_address" target="_blank">Yatanarpon Cyber City,Near Pyin Oo Lwin,<br />Mandalay Region, Myanmar</a></p>
                     <div class="mt-4 text-sm text-blue-200">
-                        <p>Email: info@utycc.edu.mm (example)</p>
-                        <p>Phone: +95 (XX) XXX XXX (example)</p>
+                        <a href="mailto:utyccstudentaffair2010@gmail.com">Email: info@utycc.site utyccstudentaffair2010@gmail.com</a>
+                        <br><a href="tel:+959445767834">Phone: +959445767834 </a>
                     </div>
                 </div>
-                <div>
+                <div class="animate-on-scroll" style="--i:2;">
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_faculties_title">Faculties</h3>
                     <ul class="space-y-2 text-sm text-blue-200">
-                        <li>
-                            <a href="../Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science Technology</a>
-                        </li>
-                        <li>
-                            <a href="../Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a>
-                        </li>
-                        <li>
-                            <a href="../Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a>
-                        </li>
-                        <li>
-                            <a data-lang-key="footer_faculty_pre" href="../Majors/pre.php">Precision Engineering</a>
-                        </li>
-                        <li>
-                            <a data-lang-key="footer_faculty_ame" href="../Majors/ame.php">
-                                Advanced Materials Engineering
-                            </a>
-                        </li>
+                        <li><a href="./Majors/ist.php" data-lang-key="footer_faculty_ist">Information Science Technology</a></li>
+                        <li><a href="./Majors/ce.php" data-lang-key="footer_faculty_ce">Computer Engineering</a></li>
+                        <li><a href="./Majors/ece.php" data-lang-key="footer_faculty_ece">Electronics Engineering</a></li>
+                        <li><a data-lang-key="footer_faculty_pre" href="./Majors/pre.php">Precision Engineering</a></li>
+                        <li><a data-lang-key="footer_faculty_ame" href="./Majors/ame.php">Advanced Materials Engineering</a></li>
                     </ul>
                 </div>
-                <div>
+                <div class="animate-on-scroll" style="--i:3;">
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_quick_links_title">Quick Links</h3>
                     <ul class="space-y-2 text-sm text-blue-200">
-                        <li>
-                            <a href="../terms.php" class="hover:text-white" data-lang-key="footer_link_terms">Terms & Policies</a>
-                        </li>
-                        <li>
-                            <a href="../FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a>
-                        </li>
-                        <li>
-                            <a href="../about.php" class="hover:text-white" data-lang-key="footer_link_about">About Us</a>
-                        </li>
-                        <li>
-                            <a href="../randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a>
-                        </li>
-                        <li>
-                            <a href="../data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a>
-                        </li>
+                        <li><a href="./terms.php" class="hover:text-white shine_text" data-lang-key="footer_link_terms">Terms & Policies</a></li>
+                        <li><a href="./FAQs.php" class="hover:text-white" data-lang-key="footer_link_faq">FAQs</a></li>
+                        <li><a href="./about.php" class="hover:text-white" data-lang-key="footer_link_about">About Us</a></li>
+                        <li><a href="./randr.php" class="hover:text-white" data-lang-key="footer_link_rules">Rules & Regulations</a></li>
+                        <li><a href="./data_protection.php" class="hover:text-white " data-lang-key="footer_link_dp">Data Protection</a></li>
                     </ul>
                 </div>
-                <div>
+                <div class="animate-on-scroll" style="--i:4;">
                     <h3 class="text-lg font-bold mb-4" data-lang-key="footer_follow_title">Follow Us</h3>
                     <div class="flex space-x-4">
                         <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
@@ -333,8 +307,7 @@
                         <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-youtube"></i></a>
                         <a href="#" class="text-blue-200 hover:text-white"><i class="fa-brands fa-tiktok"></i></a>
                     </div>
-                    <br />
-                    <br />
+                    <br /><br />
                     <div>
                         <div class="newtons-cradle">
                             <div class="newtons-cradle__dot"></div>
@@ -346,7 +319,7 @@
                 </div>
             </div>
             <div class="mt-10 border-t border-blue-800 pt-6 text-center text-sm text-blue-300" data-lang-key="footer_copyright">
-                &copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.
+                © 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.
             </div>
         </div>
     </footer>
@@ -357,6 +330,13 @@
 
         const translations = {
             my: {
+                utycc_full_name: "နည်းပညာတက္ကသိုလ် (ရတနာပုံဆိုက်ဘာစီးတီး)",
+                nav_about: "ကျွန်ုပ်တို့အကြောင်း",
+                nav_activity: "လှုပ်ရှားမှုများ",
+                nav_examresult: "အောင်စာရင်း",
+                nav_about_mobile: "ကျွန်ုပ်တို့အကြောင်း",
+                nav_activity_mobile: "လှုပ်ရှားမှုများ",
+                nav_examresult_mobile: "အောင်စာရင်း",
                 payment_guide_title: "ငွေပေးချေမှုလမ်းညွှန်",
                 payment_step_1: "အဆင့် ၁",
                 payment_step_2: "အဆင့် ၂",
@@ -366,8 +346,35 @@
                 payment_text_2: "အမျိုးအစားများ တွင် ပညာရေး ကိုရွေးချယ်ပါ။",
                 payment_text_3: "စာရင်းထဲမှ University of Technology (YCC) ကိုရှာပါ။",
                 payment_text_4: "လိုအပ်သောအချက်အလက်များကိုဖြည့်ပြီး တင်သွင်းပါ။",
+                footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+                footer_faculties_title: "မဟာဌာနများ",
+                footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+                footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+                footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+                footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+                footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+                footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+                footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+                footer_link_faq: "အမေးများသော မေးခွန်းများ",
+                footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
+                footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+                admission_closed_title: "ကျောင်းအပ်လက်ခံခြင်း ယာယီပိတ်ထားပါသည်",
+                admission_closed_text: "တက္ကသိုလ်မှ ကျောင်းသား/သူအသစ်များ လက်ခံခြင်းကို လက်ရှိတွင် ရပ်ဆိုင်းထားပါသည်။",
+                footer_link_dp: "ဒေတာကာကွယ်ရေး",
+                view:"စာမေးပွဲရလဒ်ကြည့်ရန်",
+                view1:"သင်၏ပညာရေးဆောင်ရွက်မှုကိုကြည့်ရှုပြီး နှစ်နှင့် semestersအားလုံးမှ နောက်ဆုံးစာမေးပွဲရလဒ်များကို စစ်ဆေးနိုင်ပါသည်။",
+                view2:"ရလဒ်များကြည့်ရန်",
             },
             en: {
+                utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
+                nav_about: "About Us",
+                nav_activity: "Activities",
+                nav_examresult: "Exam Results",
+                nav_about_mobile: "About Us",
+                nav_activity_mobile: "Activities",
+                nav_examresult_mobile: "Exam Results",
                 payment_guide_title: "Payment Guide",
                 payment_step_1: "Step 1",
                 payment_step_2: "Step 2",
@@ -377,6 +384,26 @@
                 payment_text_2: "Select Education in Categories.",
                 payment_text_3: "Search for University of Technology (YCC) in the list.",
                 payment_text_4: "Fill in the required information and Submit.",
+                footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+                footer_faculties_title: "Faculties",
+                footer_faculty_ist: "Information Science Technology",
+                footer_faculty_ce: "Computer Engineering",
+                footer_faculty_ece: "Electronics Engineering",
+                footer_faculty_ame: "Advanced Materials Engineering",
+                footer_faculty_pre: "Precision Engineering",
+                footer_quick_links_title: "Quick Links",
+                footer_link_terms: "Terms & Policies",
+                footer_link_faq: "FAQs",
+                footer_link_about: "About Us",
+                footer_link_rules: "Rules & Regulations",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+                admission_closed_title: "ADMISSIONS ARE CURRENTLY CLOSED",
+                admission_closed_text: "Our university is not accepting new student applications at this time.",
+                footer_link_dp: "Data Protection",
+                view:"View Your Exam Results",
+                view1:"Access your academic performance and check your latest exam results from all years and semesters.",
+                view2:"Check Results",
             },
         };
 
