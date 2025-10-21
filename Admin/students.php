@@ -229,8 +229,8 @@ $pdo = null;
       gap: 12px;
       padding: 14px 18px;
       border-radius: 10px;
-      color: hsl(var(--fg));
-      background: hsl(var(--bg));
+      color: hsl(var(--primary-foreground));
+      background: hsl(var(--fg));
       box-shadow: var(--shadow-card);
       border-left: 4px solid hsl(var(--primary));
       animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards;
@@ -620,7 +620,7 @@ $pdo = null;
             
             <!-- MODIFICATION: Dynamic Major Section -->
             <div id="majorSection" style="grid-column: 1 / -1;">
-                <!-- This will be populated dynamically based on student year -->
+                <!-- This will be populated dynamically based on academic year -->
             </div>
 
             <h3 class="detail-section-header">Father's Information</h3>
@@ -849,22 +849,6 @@ $pdo = null;
         toastWrap.appendChild(toast);
         setTimeout(removeToast, duration);
     }
-
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str).replace(/[&<>"'`=\/]/g, function (s) {
-        return ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;',
-          '`': '&#x60;',
-          '=': '&#x3D;',
-          '/': '&#x2F;'
-        })[s];
-      });
-    }
     
     const formElements = {};
     document.querySelectorAll('#studentForm [name]').forEach(el => {
@@ -894,42 +878,45 @@ $pdo = null;
       });
     }
 
-    // MODIFICATION: Function to update major section for add and edit modes
+    // MODIFICATION: Function to update major section based on academic year
     function updateMajorSection(mode, student = null) {
         const majorSection = document.getElementById('majorSection');
         majorSection.innerHTML = ''; // Clear previous content
 
-        if (mode === 'add_new') {
-            let preferencesHTML = '';
-            for (let i = 1; i <= 5; i++) {
-                preferencesHTML += `
+        // Get the current academic year from the form
+        const academicYear = formElements.academic_year ? formElements.academic_year.value : '';
+        
+        // For First Year students only - show major assignment
+        if (academicYear === 'First Year') {
+            if (mode === 'add_new') {
+                let preferencesHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    preferencesHTML += `
+                        <div class="field">
+                            <label for="preference${i}">ဦးစားပေး ${i}</label>
+                            <select id="preference${i}" name="preferences[${i}]">
+                                <option value="">-- ဦးစားပေးရွေးချယ်ပါ --</option>
+                                ${Object.entries(availableMajors).map(([code, name]) => `<option value="${code}">${name}</option>`).join('')}
+                            </select>
+                        </div>`;
+                }
+                majorSection.innerHTML = `
+                    <h3 class="detail-section-header">Major Preferences (First Year Only)</h3>
+                    <div class="form-grid">${preferencesHTML}</div>`;
+            } else if (mode === 'add_transfer') {
+                majorSection.innerHTML = `
+                    <h3 class="detail-section-header">Major Assignment (First Year Only)</h3>
                     <div class="field">
-                        <label for="preference${i}">ဦးစားပေး ${i}</label>
-                        <select id="preference${i}" name="preferences[${i}]">
-                            <option value="">-- ဦးစားပေးရွေးချယ်ပါ --</option>
+                        <label for="selected_major">Assigned Major</label>
+                        <select id="selected_major" name="selected_major" required>
+                            <option value="">-- Select Major --</option>
                             ${Object.entries(availableMajors).map(([code, name]) => `<option value="${code}">${name}</option>`).join('')}
                         </select>
                     </div>`;
-            }
-            majorSection.innerHTML = `
-                <h3 class="detail-section-header">Major Preferences</h3>
-                <div class="form-grid">${preferencesHTML}</div>`;
-        } else if (mode === 'add_transfer') {
-            majorSection.innerHTML = `
-                <h3 class="detail-section-header">Major Assignment</h3>
-                <div class="field">
-                    <label for="selected_major">Assigned Major</label>
-                    <select id="selected_major" name="selected_major" required>
-                        <option value="">-- Select Major --</option>
-                        ${Object.entries(availableMajors).map(([code, name]) => `<option value="${code}">${name}</option>`).join('')}
-                    </select>
-                </div>`;
-        } else if (mode === 'edit' && student) {
-            const studentYear = student.year;
-            if (studentYear === 'First Year') {
+            } else if (mode === 'edit' && student) {
                 const selectedMajor = student.selected_major || '';
                 majorSection.innerHTML = `
-                    <h3 class="detail-section-header">Major Assignment (First Year)</h3>
+                    <h3 class="detail-section-header">Major Assignment (First Year Only)</h3>
                     <div class="field">
                         <label for="selected_major">Assigned Major</label>
                         <select id="selected_major" name="selected_major">
@@ -939,13 +926,16 @@ $pdo = null;
                             ).join('')}
                         </select>
                     </div>`;
-            } else {
+            }
+        } else {
+            // For non-First Year students - show read-only major information
+            if (mode === 'edit' && student) {
                 const hasSelectedMajor = student.selected_major && student.selected_major.trim() !== '';
                 const hasPreferences = student.preferences && typeof student.preferences === 'object' && Object.keys(student.preferences).length > 0;
 
                 if (hasSelectedMajor) {
                     majorSection.innerHTML = `
-                        <h3 class="detail-section-header">Major Information</h3>
+                        <h3 class="detail-section-header">Major Information (Read Only)</h3>
                         <div class="field">
                             <label>Selected Major</label>
                             <input type="text" value="${availableMajors[student.selected_major] || student.selected_major}" disabled />
@@ -962,7 +952,7 @@ $pdo = null;
                                 </div>`;
                         }
                     }
-                    majorSection.innerHTML = `<h3 class="detail-section-header">Major Preferences</h3>${preferencesHTML}`;
+                    majorSection.innerHTML = `<h3 class="detail-section-header">Major Preferences (Read Only)</h3>${preferencesHTML}`;
                 } else {
                     majorSection.innerHTML = `
                         <h3 class="detail-section-header">Major Information</h3>
@@ -971,6 +961,14 @@ $pdo = null;
                             <input type="text" value="No major data available" disabled />
                         </div>`;
                 }
+            } else if (mode === 'add_new' || mode === 'add_transfer') {
+                // For add modes with non-First Year, don't show major section
+                majorSection.innerHTML = `
+                    <h3 class="detail-section-header">Major Information</h3>
+                    <div class="field">
+                        <label>Note</label>
+                        <input type="text" value="Major assignment is only available for First Year students" disabled />
+                    </div>`;
             }
         }
     }
@@ -1012,6 +1010,14 @@ $pdo = null;
       if (mode === 'add_new' || mode === 'add_transfer') {
         document.getElementById('modalTitle').textContent = mode === 'add_new' ? 'Add New Student (Preferences)' : 'Add Transfer Student (Major Assigned)';
         saveButton.textContent = 'Add Student';
+        
+        // Set up academic year change listener for add modes
+        if (formElements.academic_year) {
+            formElements.academic_year.addEventListener('change', function() {
+                updateMajorSection(mode, null);
+            });
+        }
+        
         updateMajorSection(mode, null);
         documentsHeader.style.display = 'none';
         documentsGrid.style.display = 'none';
@@ -1030,6 +1036,13 @@ $pdo = null;
           }
           
           document.getElementById('photo_preview').src = student.photo_url ? getSafeUrl(student.photo_url) : PHOTO_PLACEHOLDER;
+          
+          // Set up academic year change listener for edit mode
+          if (formElements.academic_year) {
+              formElements.academic_year.addEventListener('change', function() {
+                  updateMajorSection('edit', student);
+              });
+          }
           
           updateMajorSection('edit', student);
           
@@ -1088,13 +1101,13 @@ $pdo = null;
 
         let majorHtml = '';
         if (hasSelectedMajor) {
-            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid"><dt>Major</dt><dd>${escapeHtml(availableMajors[s.selected_major]) || escapeHtml(s.selected_major)}</dd></dl>`;
+            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid"><dt>Major</dt><dd>${availableMajors[s.selected_major] || s.selected_major}</dd></dl>`;
         } else if (hasPreferences) {
             majorHtml = `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
             for (let i = 1; i <= 5; i++) {
                 const prefCode = s.preferences[i];
                 if (prefCode) {
-                    majorHtml += `<dt>Preference ${i}</dt><dd>${escapeHtml(availableMajors[prefCode]) || escapeHtml(prefCode)}</dd>`;
+                    majorHtml += `<dt>Preference ${i}</dt><dd>${availableMajors[prefCode] || prefCode}</dd>`;
                 }
             }
             majorHtml += `</dl>`;
@@ -1132,39 +1145,39 @@ $pdo = null;
             </div>
             <h3 class="detail-section-header">Student Information</h3>
             <dl class="details-grid">
-                <dt>Seat No.</dt><dd>${escapeHtml(s.seat_no) || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${escapeHtml(s.student_name_en) || 'N/A'}</dd>
-                <dt>Name (MM)</dt><dd>${escapeHtml(s.student_name_mm) || 'N/A'}</dd> <dt>Email</dt><dd>${escapeHtml(s.student_email) || 'N/A'}</dd>
-                <dt>Phone</dt><dd>${escapeHtml(s.student_phone) || 'N/A'}</dd> <dt>NRC</dt><dd>${escapeHtml(s.student_nrc) || 'N/A'}</dd>
-                <dt>Date of Birth</dt><dd>${escapeHtml(formatDate(s.student_dob))}</dd> <dt>Birthplace</dt><dd>${escapeHtml(s.student_birthplace) || 'N/A'}</dd>
-                <dt>Race</dt><dd>${escapeHtml(s.student_race) || 'N/A'}</dd> <dt>Religion</dt><dd>${escapeHtml(s.student_religion) || 'N/A'}</dd>
-                <dt>Address</dt><dd>${escapeHtml(s.student_address) || 'N/A'}</dd> <dt>Township</dt><dd>${escapeHtml(s.township) || 'N/A'}</dd>
-                <dt>State/Region</dt><dd>${escapeHtml(s.state_region) || 'N/A'}</dd> <dt>Dormitory</dt><dd>${escapeHtml(s.dormitory_preference) ? 'Yes' : 'No'}</dd>
-                <dt>Academic Year</dt><dd>${escapeHtml(s.academic_year) || 'N/A'}</dd> <dt>Year</dt><dd>${escapeHtml(s.year) || 'N/A'}</dd> <dt>Registered On</dt><dd>${escapeHtml(formatDate(s.date))}</dd>
+                <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${s.student_name_en || 'N/A'}</dd>
+                <dt>Name (MM)</dt><dd>${s.student_name_mm || 'N/A'}</dd> <dt>Email</dt><dd>${s.student_email || 'N/A'}</dd>
+                <dt>Phone</dt><dd>${s.student_phone || 'N/A'}</dd> <dt>NRC</dt><dd>${s.student_nrc || 'N/A'}</dd>
+                <dt>Date of Birth</dt><dd>${formatDate(s.student_dob)}</dd> <dt>Birthplace</dt><dd>${s.student_birthplace || 'N/A'}</dd>
+                <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd> <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
+                <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd> <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
+                <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd> <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
+                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd> <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
-                <dt>Entry Year</dt><dd>${escapeHtml(s.entry_year) || 'N/A'}</dd>
+                <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
             </dl>
             ${majorHtml}
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${escapeHtml(s.father_deceased_year) ? `Deceased (${escapeHtml(s.father_deceased_year)})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${escapeHtml(s.father_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.father_name_mm) || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${escapeHtml(s.father_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.father_race) || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${escapeHtml(s.father_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.father_info) || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${escapeHtml(s.father_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.father_phone) || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${s.father_deceased_year ? `Deceased (${s.father_deceased_year})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
                 </dl>
             </div>
             <div class="detail-parent-section">
                 <h4>Mother's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${escapeHtml(s.mother_deceased_year) ? `Deceased (${escapeHtml(s.mother_deceased_year)})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${escapeHtml(s.mother_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.mother_name_mm) || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${escapeHtml(s.mother_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.mother_race) || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${escapeHtml(s.mother_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.mother_info) || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${escapeHtml(s.mother_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.mother_phone) || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${s.mother_deceased_year ? `Deceased (${s.mother_deceased_year})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
                 </dl>
             </div>
             ${documentsHtml}`;
@@ -1245,12 +1258,12 @@ $pdo = null;
             
             tr.innerHTML = `
             <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
-            <td>${escapeHtml(s.seat_no) || ''}</td>
-            <td>${escapeHtml(s.student_name_en) || ''}</td>
-            <td>${escapeHtml(s.student_email) || ''}</td>
-            <td>${escapeHtml(s.student_phone) || ''}</td>
-            <td>${escapeHtml(s.academic_year) || ''}</td>
-            <td>${escapeHtml(formatDate(s.date))}</td>
+            <td>${s.seat_no || ''}</td>
+            <td>${s.student_name_en || ''}</td>
+            <td>${s.student_email || ''}</td>
+            <td>${s.student_phone || ''}</td>
+            <td>${s.academic_year || ''}</td>
+            <td>${formatDate(s.date)}</td>
             <td>
                 <div style="display:flex; gap:6px;">
                 <button class="btn ghost" data-details="${s.student_id}">Details</button>
@@ -1428,22 +1441,22 @@ $pdo = null;
             errors.push('Student Photo');
         }
         
-        // Explicitly check for major requirement based on the mode the form was opened in
-        if (mode === 'add_transfer') {
+        // Get current academic year from form
+        const academicYear = formElements.academic_year ? formElements.academic_year.value : '';
+        
+        // MODIFICATION: Only require major assignment for First Year students
+        if (mode === 'add_transfer' && academicYear === 'First Year') {
             const selectedMajorEl = document.getElementById('selected_major');
-            if (!selectedMajorEl || !selectedMajorEl.value) { // Check for empty value
+            if (!selectedMajorEl || !selectedMajorEl.value) {
                 errors.push('Assigned Major');
             }
         }
 
-        // Also handle the case where a first-year student is being edited and needs a major assigned
-        if (mode === 'edit') {
-            const yearValue = document.getElementById('year').value;
-            if (yearValue === 'First Year') {
-                const selectedMajorEl = document.getElementById('selected_major');
-                if (selectedMajorEl && !selectedMajorEl.value) { // Check for empty value
-                    errors.push('Assigned Major');
-                }
+        // MODIFICATION: For edit mode, only require major assignment for First Year students
+        if (mode === 'edit' && academicYear === 'First Year') {
+            const selectedMajorEl = document.getElementById('selected_major');
+            if (selectedMajorEl && !selectedMajorEl.value) {
+                errors.push('Assigned Major');
             }
         }
 

@@ -5,7 +5,7 @@ $host = "localhost";            // Database host
 $port = 3307;                   // Database port (default is 3306, change if necessary)
 $dbname = "registration_db";   // Database name
 $user = "root";                // MySQL username
-$pass = "";                // MySQL password
+$pass = "root";                // MySQL password
 
 try {
     // Create PDO instance

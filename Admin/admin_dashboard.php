@@ -63,9 +63,24 @@ try {
 }
 
 //last update fetch
-$stmt = $pdo->query("SELECT MAX(updated_at) AS last_update FROM students WHERE status='pending'");
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-$lastUpdate = $row['last_update'];
+$lastUpdate = null;
+if (is_object($pdo)) {
+    try {
+        $stmt = $pdo->query("SELECT MAX(updated_at) AS last_update FROM students WHERE status='pending'");
+        if ($stmt) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $lastUpdate = $row['last_update'] ?? null;
+        } else {
+            $lastUpdate = null;
+        }
+    } catch (PDOException $e) {
+        error_log("Database Error (last update): " . $e->getMessage());
+        $lastUpdate = null;
+    }
+} else {
+    error_log('PDO connection not available when fetching last update.');
+    $lastUpdate = null;
+}
 
 $pdo = null;
 ?>
