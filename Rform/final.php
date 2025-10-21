@@ -2,12 +2,31 @@
 session_start();
 date_default_timezone_set('Asia/Yangon');
 
+// Handle payment choice selection
+if (isset($_GET['payment_choice'])) {
+    $choice = $_GET['payment_choice'];
+    if ($choice === 'later') {
+        $_SESSION['payment_choice'] = 'later';
+        // Unset receipt path if they switch back to pay later
+        unset($_SESSION['payment_receipt_path']); 
+    } elseif ($choice === 'reset') {
+        // Allow resetting any choice to re-select
+        unset($_SESSION['payment_choice']);
+        unset($_SESSION['payment_receipt_path']);
+    }
+    header('Location: final.php'); // Redirect to clean the URL
+    exit();
+}
+
+
 require_once "db.php";
 
 $modal_data = null; 
 
 // This variable will be used to disable the submit button if documents are missing.
 $all_documents_uploaded = isset($_SESSION['document_files']) && count($_SESSION['document_files']) === 11;
+// This variable checks if the user has selected a payment option.
+$payment_choice_made = isset($_SESSION['payment_choice']) && in_array($_SESSION['payment_choice'], ['later', 'paid']);
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -27,6 +46,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'message' => 'Please upload all 11 required documents before submitting.',
             'buttonText' => 'Go Back to Upload',
             'redirectUrl' => 'documents.php'
+        ];
+    } elseif (!$payment_choice_made) {
+        $modal_data = [
+            'type' => 'error',
+            'title' => 'Payment Option Required',
+            'message' => 'Please select a payment option in Step 5 before submitting.',
+            'buttonText' => 'OK',
+            'redirectUrl' => 'javascript:void(0)'
         ];
     } else {
         try {
@@ -49,6 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         seat_no = :seat_no,
                         status = 'pending',
                         date = :submission_date,
+                        payment_status = :payment_status,
+                        payment_receipt_path = :payment_receipt_path,
                         doc_recommendation = :doc_recommendation,
                         doc_medical = :doc_medical,
                         doc_certificate = :doc_certificate,
@@ -67,6 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':academic_year' => $form1['academic_year'] ?? null,
                     ':seat_no' => $form1['seat_no'] ?? null,
                     ':submission_date' => date('Y-m-d H:i:s'),
+                    ':payment_status' => $_SESSION['payment_choice'] ?? 'pending',
+                    ':payment_receipt_path' => $_SESSION['payment_receipt_path'] ?? null,
                     ':student_id' => $student_id,
                     ':doc_recommendation' => $documents['doc_recommendation'] ?? null,
                     ':doc_medical' => $documents['doc_medical'] ?? null,
@@ -94,7 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } catch (Exception $e) { /* Keep current datetime */ }
                 }
 
-                // Check for duplicate NRC only if it's not empty and not 'လျှောက်ထားဆဲ'
                 if (isset($form1['student_nrc']) && !empty(trim($form1['student_nrc'])) && $form1['student_nrc'] !== 'လျှောက်ထားဆဲ') {
                     $stmt_check_nrc = $pdo->prepare("SELECT COUNT(*) FROM students WHERE student_nrc = ?");
                     $stmt_check_nrc->execute([$form1['student_nrc']]);
@@ -109,7 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     throw new PDOException("This Seat Number has already been registered.", 23000);
                 }
 
-                // Prepare NRC values: convert 'လျှောက်ထားဆဲ' or empty strings to NULL for DB insertion
                 $student_nrc_db = (isset($form1['student_nrc']) && ($form1['student_nrc'] === 'လျှောက်ထားဆဲ' || trim($form1['student_nrc']) === '')) ? null : ($form1['student_nrc'] ?? null);
                 $father_nrc_db = (isset($form1['father_nrc']) && ($form1['father_nrc'] === 'လျှောက်ထားဆဲ' || trim($form1['father_nrc']) === '')) ? null : ($form1['father_nrc'] ?? null);
                 $mother_nrc_db = (isset($form1['mother_nrc']) && ($form1['mother_nrc'] === 'လျှောက်ထားဆဲ' || trim($form1['mother_nrc']) === '')) ? null : ($form1['mother_nrc'] ?? null);
@@ -120,11 +149,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     (year, academic_year, seat_no, entry_year, student_email, dormitory_preference, preferences,
                      student_name_mm, student_name_en, student_race, student_religion, student_nrc,
                      student_dob, student_birthplace, state_region, township, student_phone, student_address,
-                     date, photo_url, status,
+                     date, photo_url, status, payment_status, payment_receipt_path,
                      doc_recommendation, doc_medical, doc_certificate, doc_grades, doc_household,
                      doc_student_nrc_front, doc_student_nrc_back, doc_father_nrc_front, doc_father_nrc_back,
                      doc_mother_nrc_front, doc_mother_nrc_back)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ");
                 $stmt_student->execute([
                     $form1['year'] ?? null, $form1['academic_year'] ?? null, $form1['seat_no'] ?? null,
@@ -134,6 +163,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $form1['student_dob'] ?? null, $form1['student_birthplace'] ?? null, $form1['state_region'] ?? null,
                     $form1['township'] ?? null, $form1['student_phone'] ?? null, $form1['student_address'] ?? null,
                     $submission_date, $form1['photo_url'] ?? null,
+                    $_SESSION['payment_choice'] ?? 'pending',
+                    $_SESSION['payment_receipt_path'] ?? null,
                     $documents['doc_recommendation'] ?? null,
                     $documents['doc_medical'] ?? null,
                     $documents['doc_certificate'] ?? null,
@@ -233,31 +264,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="p-4 bg-gray-50 flex flex-col items-center justify-center min-h-screen">
 
 <?php
-$check_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-green-100 text-green-600"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>';
-$cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-red-100 text-red-600"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div>';
+$check_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-green-100 text-green-600"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>';
+$cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center rounded-full bg-red-100 text-red-600"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></div>';
 ?>
 
-<div class="w-full max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl py-12 px-8 md:px-12 space-y-8">
+<div class="w-full max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl py-12 px-8 md:px-12 space-y-8">
     <div class="text-center space-y-2 mb-6">
         <img src="../Img/logo/utycc_logo.png" alt="UTYCC Logo" class="mx-auto w-20 h-20"/>
         <h2 class="text-4xl font-extrabold text-gray-800">Final Submission</h2>
         <p class="text-gray-500">Please review your details carefully.</p>
     </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
         <a href="<?php echo isset($_SESSION['student_id']) ? 'cur_form.php' : 'form1.php'; ?>" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
             <?php echo isset($_SESSION['form1_data']) ? $check_icon : $cross_icon; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 1</p>
             <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">Personal Information</p>
         </a>
         
-        <?php if (!isset($_SESSION['student_id'])): // Only show for new students ?>
+        <?php if (!isset($_SESSION['student_id'])): ?>
         <a href="form2.php" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
             <?php echo isset($_SESSION['form2_data']) ? $check_icon : $cross_icon; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 2</p>
             <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">Major Preferences</p>
         </a>
-        <?php else: // Placeholder for old students to maintain grid structure ?>
+        <?php else: ?>
         <div class="bg-gray-100 p-6 rounded-xl flex flex-col items-center justify-center shadow-inner border border-gray-200">
             <?php echo $check_icon; ?>
             <p class="text-xs font-medium text-gray-400 mb-1">Step 2</p>
@@ -284,9 +315,33 @@ $cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center round
                 <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">Required Documents</p>
             </a>
         <?php endif; ?>
+        
+       <div id="paymentStep" class="bg-gray-50 p-6 rounded-xl flex flex-col items-center justify-center shadow-md border border-gray-200 min-h-[180px] cursor-pointer hover:border-indigo-400 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg">
+            <div id="paymentInfo" class="text-center flex-grow flex flex-col items-center justify-center">
+                <?php echo $payment_choice_made ? $check_icon : $cross_icon; ?>
+                <p class="text-xs font-medium text-gray-400 mb-1">Step 5</p>
+                <p class="font-semibold text-lg text-gray-700 text-center h-14 flex items-center justify-center">
+                    <?php 
+                        if (isset($_SESSION['payment_choice'])) {
+                            if ($_SESSION['payment_choice'] === 'paid') echo 'Payment Complete';
+                            else if ($_SESSION['payment_choice'] === 'later') echo 'Pay on Arrival';
+                        } else {
+                            echo 'Payment';
+                        }
+                    ?>
+                </p>
+                <a href="final.php?payment_choice=reset" class="text-xs text-indigo-600 hover:underline">Change selection</a>
+            </div>
+            
+            <div id="paymentOptions" class="hidden w-full text-center">
+                 <p class="font-semibold text-lg text-gray-700 mb-4">Choose Payment</p>
+                <a href="../paymentGuide.php" class="block w-full px-4 py-3 text-base font-medium text-indigo-600 bg-indigo-100 rounded-lg hover:bg-indigo-200 transition-colors">Pay Now</a>
+                <div class="my-2 text-xs text-gray-500">OR</div>
+                <a href="final.php?payment_choice=later" class="block w-full px-4 py-3 text-base font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">Pay on Arrival</a>
+            </div>
+        </div>
     </div>
 
-    <!-- Review Details Section -->
     <div class="border-t border-gray-200 pt-8 mt-8 space-y-6">
         <h3 class="text-2xl font-bold text-gray-800 text-center">Your Details</h3>
         
@@ -303,7 +358,7 @@ $cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center round
             </div>
         </div>
 
-        <div class="grid grid-cols-1 <?php if (!isset($_SESSION['student_id'])): ?>md:grid-cols-2<?php endif; ?> gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <?php if (!isset($_SESSION['student_id'])): ?>
             <div class="bg-gray-50 p-4 sm:p-6 rounded-xl border">
                 <div class="flex justify-between items-center mb-4">
@@ -322,7 +377,7 @@ $cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center round
             </div>
             <?php endif; ?>
 
-            <div class="bg-gray-50 p-4 sm:p-6 rounded-xl border <?php if (isset($_SESSION['student_id'])): ?>md:col-span-2<?php endif; ?>">
+            <div class="bg-gray-50 p-4 sm:p-6 rounded-xl border">
                 <div class="flex justify-between items-center mb-4">
                     <h4 class="font-semibold text-lg text-gray-700">Accommodation</h4>
                     <a href="option.php" class="text-sm font-semibold text-indigo-600 hover:underline">Edit</a>
@@ -339,14 +394,47 @@ $cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center round
                     ?>
                 </p>
             </div>
+
+            <div class="bg-gray-50 p-4 sm:p-6 rounded-xl border <?php if (isset($_SESSION['student_id'])): ?>md:col-start-1 md:col-span-2<?php else: ?>md:col-span-2<?php endif; ?>">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-semibold text-lg text-gray-700">Payment Status</h4>
+                    <a href="final.php?payment_choice=reset" class="text-sm font-semibold text-indigo-600 hover:underline">Edit</a>
+                </div>
+                <p class="text-gray-600">
+                    <?php 
+                    if (isset($_SESSION['payment_choice'])) {
+                        if ($_SESSION['payment_choice'] === 'paid') {
+                            echo 'Payment has been completed.';
+                            if(isset($_SESSION['payment_receipt_path'])) {
+                                $receipt_path = htmlspecialchars($_SESSION['payment_receipt_path']);
+                                $link_path = '../' . $receipt_path;
+                                echo ' <a href="' . $link_path . '" target="_blank" class="text-sm font-semibold text-indigo-600 hover:underline ml-2">View Receipt</a>';
+                            }
+                        } elseif ($_SESSION['payment_choice'] === 'later') {
+                            echo 'You have chosen to pay on arrival.';
+                        }
+                    } else {
+                        echo 'No payment option selected.';
+                    }
+                    ?>
+                </p>
+            </div>
         </div>
     </div>
 
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
         <a href="documents.php" class="w-full sm:w-auto px-6 py-3 rounded-full border border-gray-300 font-medium text-gray-700 hover:bg-gray-50 transition-colors text-center shadow-sm hover:shadow-md">Back</a>
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="w-full sm:w-auto">
-            <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105 shadow-md <?php if (!$all_documents_uploaded) echo 'disabled-button'; ?>">
-                <?php echo $all_documents_uploaded ? 'Submit' : 'Documents Incomplete'; ?>
+            <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-transform transform hover:scale-105 shadow-md <?php if (!$all_documents_uploaded || !$payment_choice_made) echo 'disabled-button'; ?>">
+                 <?php 
+                    if (!$all_documents_uploaded) {
+                        echo 'Documents Incomplete';
+                    } elseif (!$payment_choice_made) {
+                        echo 'Select Payment';
+                    } else {
+                        echo 'Submit';
+                    }
+                ?>
             </button>
         </form>
     </div>
@@ -382,13 +470,19 @@ $cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center round
         }
         modalTitle.textContent = title;
         modalMessage.textContent = message;
+        
+        if (redirectUrl === 'javascript:void(0)') {
+            modalButton.onclick = () => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modalContent.classList.add('scale-95');
+            };
+        } else {
+            modalButton.onclick = () => { window.location.href = redirectUrl; };
+        }
         modalButton.textContent = buttonText;
+
         modal.classList.remove('opacity-0', 'pointer-events-none');
         modalContent.classList.remove('scale-95');
-        modalButton.onclick = () => {
-            if (redirectUrl.startsWith('javascript:')) { eval(redirectUrl.substring(11)); } 
-            else { window.location.href = redirectUrl; }
-        };
     }
 
     <?php if ($modal_data): ?>
@@ -403,33 +497,58 @@ $cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center round
 
     document.addEventListener('DOMContentLoaded', function() {
         const allDocumentsUploaded = <?php echo $all_documents_uploaded ? 'true' : 'false'; ?>;
+        const paymentChoiceMade = <?php echo $payment_choice_made ? 'true' : 'false'; ?>;
+        const paymentStatus = '<?php echo $_SESSION['payment_choice'] ?? 'none'; ?>';
         const submitBtn = document.getElementById('submitBtn');
 
-        if (!allDocumentsUploaded) {
-            submitBtn.title = 'Please upload all 11 required documents.';
+        if (!allDocumentsUploaded || !paymentChoiceMade) {
+            submitBtn.title = 'Please complete all steps before submitting.';
         }
         
         const finalForm = document.querySelector('form[action*="final.php"]');
         if (finalForm) {
             finalForm.addEventListener('submit', function(e) {
-                // Prevent submission and show modal if documents are incomplete
                 if (!allDocumentsUploaded) {
                    e.preventDefault(); 
-                   showModal(
-                       'error', 
-                       'Missing Documents', 
-                       'Please upload all 11 required documents before submitting.', 
-                       'Go to Uploads', 
-                       'documents.php'
-                   );
+                   showModal('error', 'Missing Documents', 'Please upload all 11 required documents before submitting.', 'Go to Uploads', 'documents.php');
+                   return;
+                }
+                if (!paymentChoiceMade) {
+                   e.preventDefault(); 
+                   showModal('error', 'Payment Option Required', 'Please select a payment option in Step 5 before submitting.', 'OK', 'javascript:void(0)');
                    return;
                 }
 
-                // If documents are complete, show submitting state
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = 'Submitting...';
             });
         }
+
+        const paymentStep = document.getElementById('paymentStep');
+        const paymentInfo = document.getElementById('paymentInfo');
+        const paymentOptions = document.getElementById('paymentOptions');
+        
+        paymentInfo.classList.remove('hidden');
+        paymentOptions.classList.add('hidden');
+
+        if (paymentStep) {
+            paymentStep.addEventListener('click', function(event) {
+                if (event.target.closest('a')) {
+                    return;
+                }
+                event.stopPropagation();
+                
+                paymentInfo.classList.toggle('hidden');
+                paymentOptions.classList.toggle('hidden');
+            });
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!paymentOptions.classList.contains('hidden') && !paymentStep.contains(event.target)) {
+                paymentInfo.classList.remove('hidden');
+                paymentOptions.classList.add('hidden');
+            }
+        });
     });
 </script>
 
