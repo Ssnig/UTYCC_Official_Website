@@ -4,8 +4,7 @@
     // Set the default timezone to Myanmar time
     date_default_timezone_set('Asia/Yangon');
 
-
-if (!isset($_SESSION['pre_approved_data'])) {
+    if (!isset($_SESSION['pre_approved_data'])) {
         // Redirect them back to the verification page.
         header('Location: Verify_new.php');
         exit; // Important to stop further script execution.
@@ -366,6 +365,11 @@ if (!isset($_SESSION['pre_approved_data'])) {
         border-color: #ef4444 !important;
         box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
     }
+    /* Language restriction styles */
+    .language-error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+    }
 </style>
     <br>
 
@@ -437,13 +441,15 @@ if (!isset($_SESSION['pre_approved_data'])) {
                         <!-- Name MM -->
                         <div class="relative pb-5">
                             <label for="student_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
-                            <input type="text" id="student_name_mm" name="student_name_mm" class="mt-1" value="<?php echo getValue('student_name_mm'); ?>" required>
+                            <input type="text" id="student_name_mm" name="student_name_mm" class="mt-1 myanmar-field" value="<?php echo getValue('student_name_mm'); ?>" required>
+                            <p class="error-message mt-1" id="student_name_mm_error" style="display: none;">မြန်မာစာသာရိုက်ထည့်ပါ။</p>
                             <?php if (isset($errors['student_name_mm'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_name_mm']; ?></p><?php endif; ?>
                         </div>
                         <!-- Name EN -->
                         <div class="relative pb-5">
                             <label for="student_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
-                            <input type="text" id="student_name_en" name="student_name_en" class="mt-1" value="<?php echo getValue('student_name_en'); ?>" required>
+                            <input type="text" id="student_name_en" name="student_name_en" class="mt-1 english-field" value="<?php echo getValue('student_name_en'); ?>" required>
+                            <p class="error-message mt-1" id="student_name_en_error" style="display: none;">အင်္ဂလိပ်စာသာရိုက်ထည့်ပါ။</p>
                             <?php if (isset($errors['student_name_en'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_name_en']; ?></p><?php endif; ?>
                         </div>
                         <!-- Race -->
@@ -535,13 +541,15 @@ if (!isset($_SESSION['pre_approved_data'])) {
                             <!-- Father Name MM -->
                             <div class="relative pb-5">
                                 <label for="father_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
-                                <input type="text" id="father_name_mm" name="father_name_mm" class="mt-1 father-field" value="<?php echo getValue('father_name_mm'); ?>" required>
+                                <input type="text" id="father_name_mm" name="father_name_mm" class="mt-1 father-field myanmar-field" value="<?php echo getValue('father_name_mm'); ?>" required>
+                                <p class="error-message mt-1" id="father_name_mm_error" style="display: none;">မြန်မာစာသာရိုက်ထည့်ပါ။</p>
                                 <?php if (isset($errors['father_name_mm'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['father_name_mm']; ?></p><?php endif; ?>
                             </div>
                             <!-- Father Name EN -->
                             <div class="relative pb-5">
                                 <label for="father_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
-                                <input type="text" id="father_name_en" name="father_name_en" class="mt-1 father-field" value="<?php echo getValue('father_name_en'); ?>" required>
+                                <input type="text" id="father_name_en" name="father_name_en" class="mt-1 father-field english-field" value="<?php echo getValue('father_name_en'); ?>" required>
+                                <p class="error-message mt-1" id="father_name_en_error" style="display: none;">အင်္ဂလိပ်စာသာရိုက်ထည့်ပါ။</p>
                                 <?php if (isset($errors['father_name_en'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['father_name_en']; ?></p><?php endif; ?>
                             </div>
                             <!-- Father Race -->
@@ -596,13 +604,15 @@ if (!isset($_SESSION['pre_approved_data'])) {
                             <!-- Mother Name MM -->
                             <div class="relative pb-5">
                                 <label for="mother_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
-                                <input type="text" id="mother_name_mm" name="mother_name_mm" class="mt-1 mother-field" value="<?php echo getValue('mother_name_mm'); ?>" required>
+                                <input type="text" id="mother_name_mm" name="mother_name_mm" class="mt-1 mother-field myanmar-field" value="<?php echo getValue('mother_name_mm'); ?>" required>
+                                <p class="error-message mt-1" id="mother_name_mm_error" style="display: none;">မြန်မာစာသာရိုက်ထည့်ပါ။</p>
                                 <?php if (isset($errors['mother_name_mm'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['mother_name_mm']; ?></p><?php endif; ?>
                             </div>
                             <!-- Mother Name EN -->
                             <div class="relative pb-5">
                                 <label for="mother_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
-                                <input type="text" id="mother_name_en" name="mother_name_en" class="mt-1 mother-field" value="<?php echo getValue('mother_name_en'); ?>" required>
+                                <input type="text" id="mother_name_en" name="mother_name_en" class="mt-1 mother-field english-field" value="<?php echo getValue('mother_name_en'); ?>" required>
+                                <p class="error-message mt-1" id="mother_name_en_error" style="display: none;">အင်္ဂလိပ်စာသာရိုက်ထည့်ပါ။</p>
                                 <?php if (isset($errors['mother_name_en'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['mother_name_en']; ?></p><?php endif; ?>
                             </div>
                             <!-- Mother Race -->
@@ -747,6 +757,82 @@ if (!isset($_SESSION['pre_approved_data'])) {
         return /^\d{6}$/.test(englishNumber);
     }
 
+    // --- Input Language Restrictions ---
+    function setupLanguageRestriction(inputId, allowedLanguage) {
+        const inputElement = document.getElementById(inputId);
+        if (!inputElement) return;
+
+        // Define language patterns
+        const patterns = {
+            myanmar: /[\u1000-\u109F\uAA60-\uAA7F\uA9E0-\uA9FF]/g, // Myanmar Unicode ranges
+            english: /[a-zA-Z]/g
+        };
+
+        // Define error messages
+        const messages = {
+            myanmar: "မြန်မာစာသာရိုက်ထည့်ပါ။",
+            english: "အင်္ဂလိပ်စာသာရိုက်ထည့်ပါ။"
+        };
+
+        // Create error message element
+        const errorElement = document.getElementById(inputId + '_error');
+        
+        inputElement.addEventListener('input', function(e) {
+            const value = e.target.value;
+            let isValid = true;
+
+            if (allowedLanguage === 'myanmar') {
+                // For Myanmar fields: allow only Myanmar characters and spaces
+                const nonMyanmarChars = value.replace(patterns.myanmar, '').replace(/\s/g, '');
+                if (nonMyanmarChars.length > 0) {
+                    isValid = false;
+                    // Remove non-Myanmar characters
+                    e.target.value = value.replace(/[^\u1000-\u109F\uAA60-\uAA7F\uA9E0-\uA9FF\s]/g, '');
+                }
+            } else if (allowedLanguage === 'english') {
+                // For English fields: allow only English letters and spaces
+                const nonEnglishChars = value.replace(patterns.english, '').replace(/\s/g, '');
+                if (nonEnglishChars.length > 0) {
+                    isValid = false;
+                    // Remove non-English characters
+                    e.target.value = value.replace(/[^a-zA-Z\s]/g, '');
+                }
+            }
+
+            // Show/hide error message
+            if (!isValid && value.length > 0) {
+                errorElement.textContent = messages[allowedLanguage];
+                errorElement.style.display = 'block';
+                inputElement.classList.add('language-error');
+            } else {
+                errorElement.style.display = 'none';
+                inputElement.classList.remove('language-error');
+            }
+        });
+
+        // Also validate on blur
+        inputElement.addEventListener('blur', function(e) {
+            const value = e.target.value;
+            if (value.length > 0) {
+                let isValid = true;
+                
+                if (allowedLanguage === 'myanmar') {
+                    const nonMyanmarChars = value.replace(patterns.myanmar, '').replace(/\s/g, '');
+                    isValid = nonMyanmarChars.length === 0;
+                } else if (allowedLanguage === 'english') {
+                    const nonEnglishChars = value.replace(patterns.english, '').replace(/\s/g, '');
+                    isValid = nonEnglishChars.length === 0;
+                }
+
+                if (!isValid) {
+                    errorElement.textContent = messages[allowedLanguage];
+                    errorElement.style.display = 'block';
+                    inputElement.classList.add('language-error');
+                }
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // --- Academic Year from Settings (ADDED) ---
         const savedAcademicYear = localStorage.getItem('academicYear');
@@ -755,6 +841,17 @@ if (!isset($_SESSION['pre_approved_data'])) {
         if (savedAcademicYear && yearInput) {
             yearInput.value = savedAcademicYear;
         }
+        
+        // Apply language restrictions
+        // Myanmar name fields
+        setupLanguageRestriction('student_name_mm', 'myanmar');
+        setupLanguageRestriction('father_name_mm', 'myanmar');
+        setupLanguageRestriction('mother_name_mm', 'myanmar');
+        
+        // English name fields
+        setupLanguageRestriction('student_name_en', 'english');
+        setupLanguageRestriction('father_name_en', 'english');
+        setupLanguageRestriction('mother_name_en', 'english');
         
         // --- Photo Upload & Preview Logic ---
         const photoUploadInput = document.getElementById('photo_upload');
@@ -962,12 +1059,12 @@ if (!isset($_SESSION['pre_approved_data'])) {
         // --- NRC Input Group Logic ---
         const nrcTownships = {
             1: ["အဂယ", "အတန", "ဗကန", "ဗမန", "ဒဖယ", "ဟပန", "ဆဒန", "ဆပဘ", "ကမန", "ကမတ", "ကပတ", "ခဘဒ", "ခလဖ", "ခဖန", "လဂန", "မဂဒ", "မကန","မကတ", "မကသ", "မခဘ", "မလန", "မမန", "မညန", "မစန","မတန","နမန","ပမန","ပနဒ","ပတအ","ပဝန","ဖကန","ရဗယ", "ဆဘန", "ဆဘတ", "စကန", "ဆလန", "စပဘ", "တနန","ဝမန","သဝတ","ဝမန","ရကန"],
-            2: ["ဘလခ", "ဒမဆ", "ဖဆန", "ထတပ","ခစန", "လကန", "မစန", "ဖလဆ", "ဖရဆ", "ရသန","စစန","ရတန"],
+            2: ["ဘလခ", "ဒမဆ", "ဖဆန", "ထတပ","ခစန", "လကန", "မစန", "ဖလဆ", "ဖရဆ", "ရသန","စစန","တန"],
             3: ["ဘအန", "ဘဂလ", "ဘသဆ", "ကဒန", "ကကရ", "ကမမ","ကဆက", "ကတခ", "လဘန", "လသန","မဆလ", "မဝတ", "ပကန", "ဖအန", "ဖပန", "စကလ","သတက","သတန","ဝလမ","ရရသ"],
             4: ["ဟခန", "ဖလန", "ဆမန", "ထတလ", "ကခန", "ကပလ","မတန", "မတပ", "ပလဝ", "ရခဒ","ရဇန", "တတန", "တဇန"],
             5: ["အထန", "အမဇ", "အတန", "အရတ", "ဗမန", "ဘတလ", "ဒဟန", "ဓကန", "ဒပယ", "ဟမလ", "ထခန", "ထပခ", "ကဘလ", "ကလထ","ကလန", "ကလတ", "ကလသ", "ကလဝ", "ကနန", "ကဆလ", "ကသန", "ခဥန", "ခပန", "ခတန", "ခဥတ","လဟန", "လရန", "မကန", "မလန", "မမန", "မမတ","မပလ", "မသန", "မရန", "နယန", "ငစန", "ငဇန", "ပလဘ", "ပလန", "ပဆန", "ဖပန","စကန", "ဆလက", "ဆမရ", "တဥန", "တမန", "တဆန","ဝလန", "ဝသန", "ရဥန", "ရဘန", "ယမပ"],
             6: ["အမရ", "ဘပန", "ဟသတ", "ထဝန", "ကလအ", "ကပန", "ကစန", "ကသမ", "ကသန", "ကရရ", "ခမက","လလန", "မအန", "မအရ", "မမလ", "မမန","မတန", "ပကမ", "ပလန", "ပလတ", "တသရ", "သရခ", "ရဖန"],
-            7: ["အဖန", "အတန", "ဘသရ", "ဒဥန", "ထတပ", "ကကန", "ကပက", "ကတခ","ကဝန", "လပတ", "မလန", "မညန", "မဝတ", "နတလ", "ညလပ", "ပခန","ပခတ", "ပမန", "ပစတ", "ပတန", "ပတတ", "ဖမန", "တငန", "သကန","သနပ","သဝတ","ဝမန","ရကန","ရတန","ရတရ","ဇကန"],
+            7: ["အဖန", "အတန", "ဘသရ", "ဒဥန", "ထတပ", "ကကန", "ကပက", "ကတခ","ကဝန", "လပတ", "မလန", "မညန", "မဝတ", "နတလ", "ညလပ", "ပခန","ပခတ", "ပမန", "ပစတ", "ပတန", "ပတတ", "ဖမန", "တငန", "သကန","သနပ","သဝတ","ဝမန","ကန","တန","ရတရ","ဇကန"],
             8: ["အလန", "ဘကလ", "ဂဂန", "ဆမန", "ထလန", "ကထန", "ကမန", "ခမန","မဘန", "မဂဒ", "မထလ", "မထန", "မကန", "မလန", "မမန", "မတန", "မသန", "မရဆ", "နမန", "ငဖန", "ပခက", "ပမန" , "ပဖန", "စလန","ဆပဝ","ဆဖန", "စတရ", "တတက", "သရန", "ရနခ", "ရစက"],
             9: ["အခန", "အမဘ", "အမရ", "အမဇ", "အစန", "အရတ", "ဥတသ", "ဒခသ", "ကမန", "ကပတ", "ကဆန", "ခအဇ", "ခမခ","ခမမ", "ခမန", "ခမစ", "ခမသ", "ခမဇ", "လကန", "လဝန", "မဟမ", "မထလ", "မကခ", "မကန","မခန", "မလန", "မမန", "မနမ", "မနတ", "မစန","မတလ", "မတန", "မတရ", "မသန", "မရမ", "မရတ", "နထက", "နမန", "နနမ", "နတက", "ငသရ","ငဇန", "ညဉန", "ပဥလ", "ပဘန", "ပဗသ", "ပကခ","ပခက", "ပခမ", "ပမန", "ပသက", "စကန", "စကတ", "တကတ" , "တတဥ", "တသန", "သပက", "သစန", "သတရ", "သဝန", "ဝတန", "ရဥန","ရမသ","ဇဗသ","ဇယသ"],
             10: ["ဘအန", "ဘလန", "ထထန", "ကထန", "ကမလ", "ကမရ", "ခဆန", "ခဇန", "လမန", "မဒန", "မလမ","မစန", "ပမန", "ဖပန", "သထန", "သဖရ", "ရမန"],
@@ -1254,36 +1351,6 @@ if (!isset($_SESSION['pre_approved_data'])) {
             // Initial check on page load
             toggleParentFields('mother', motherDeceasedInput.value.trim() !== '');
         }
-
-        // --- Name Input Validation ---
-        function setupNameValidation(inputId, isMyanmar) {
-            const inputElement = document.getElementById(inputId);
-            if (!inputElement) return;
-
-            const regex = isMyanmar ? /^[\u1000-\u109F\s]*$/ : /^[a-zA-Z\s]*$/;
-            const message = isMyanmar ? "မြန်မာအက္ခရာများသာ ထည့်သွင်းပါ။" : "English letters only.";
-            
-            inputElement.addEventListener('input', function(e) {
-                if (!regex.test(e.target.value)) {
-                    // Find the last character that is invalid and remove it
-                    e.target.value = e.target.value.slice(0, -1);
-                }
-            });
-             // Add pattern for form submission validation
-            inputElement.setAttribute('pattern', regex.source.slice(1,-1));
-            inputElement.setAttribute('title', message);
-        }
-
-        // Student
-        setupNameValidation('student_name_mm', true);
-        setupNameValidation('student_name_en', false);
-        // Father
-        setupNameValidation('father_name_mm', true);
-        setupNameValidation('father_name_en', false);
-        // Mother
-        setupNameValidation('mother_name_mm', true);
-        setupNameValidation('mother_name_en', false);
-
 
         // --- Auto-scroll to first error on page load ---
         if (firstErrorKeyFromServer) {
