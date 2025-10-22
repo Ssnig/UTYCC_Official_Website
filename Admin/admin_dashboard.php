@@ -626,7 +626,7 @@ $pdo = null;
     };
 
     const state = {
-      students: <?php echo $students_json; ?>,
+      students: <?php echo json_encode($students, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>,
       q: '',
       major: 'all',
       year: 'all',
@@ -1094,7 +1094,7 @@ $pdo = null;
           if (targetButton.dataset.edit !== undefined) openModal('edit', student);
           
           if (targetButton.dataset.approve !== undefined) {
-              const confirmed = await showConfirm('Approve Student', `Are you sure you want to approve "${student.student_name_en}"?`, 'success');
+              const confirmed = await showConfirm('Approve Student', `Are you sure you want to approve "${escapeHtml(student.student_name_en)}"?`, 'success');
               if (!confirmed) return;
               
               const response = await apiRequest('approve_students', { ids: [id] });
@@ -1107,7 +1107,7 @@ $pdo = null;
           }
 
           if (targetButton.dataset.del !== undefined) {
-              const confirmed = await showConfirm('Reject Student', `Are you sure you want to reject and delete the application for "${student.student_name_en}"?`);
+              const confirmed = await showConfirm('Reject Student', `Are you sure you want to reject and delete the application for "${escapeHtml(student.student_name_en)}"?`);
               if (!confirmed) return;
               
               const response = await apiRequest('delete', { ids: [id] });
@@ -1115,7 +1115,7 @@ $pdo = null;
                   state.students = state.students.filter(s => s.student_id !== id);
                   state.selected.delete(id);
                   render();
-                  showToast(`Application for "${student.student_name_en}" deleted.`, 'success');
+                  showToast(`Application for "${escapeHtml(student.student_name_en)}" deleted.`, 'success');
               }
           }
       });
@@ -1178,7 +1178,7 @@ $pdo = null;
                 }
                 render();
                 closeModalSafe();
-                showToast(`Student "${result.student.student_name_en}" updated.`, 'success');
+                showToast(`Student "${escapeHtml(result.student.student_name_en)}" updated.`, 'success');
             } else {
                 // The response was valid JSON with status 200, but the action failed logically.
                 throw new Error(result.message || 'Failed to save student data.');
@@ -1222,16 +1222,23 @@ $pdo = null;
                     if (index >= 0) {
                         state.students[index] = updatedStudent;
                     } else {
-                        state.students.unshift(updatedStudent); // newest first
+                        state.students.unshift(updatedStudent);
                     }
                 });
 
-                renderTable(); // re-render table with updated state
+                if (data.deleted && data.deleted.length) {
+                    state.students = state.students.filter(
+                        s => !data.deleted.includes(s.student_id)
+                    );
+                }
+
+                state.students = state.students.filter(s => s.status == 'pending');
+                renderStats();
+                renderTable();
             })
             .catch(console.error);
     }
 
-    // Poll every 3 seconds
     setInterval(pollChanges, 3000);
 
   </script>
