@@ -20,11 +20,31 @@ $repopulate_nrc = [
 
 function parseNrc($nrc_string, &$repopulate_array)
 {
-    if (!empty($nrc_string) && preg_match('/^(\d+)\/([^\(]+)(\(\S+\))(\d{6})$/', $nrc_string, $matches)) {
-        $repopulate_array['state']    = $matches[1];
-        $repopulate_array['township'] = $matches[2];
-        $repopulate_array['type']     = $matches[3];
-        $repopulate_array['number']   = $matches[4];
+    // Myanmar to English digit mapping for parsing
+    $myanmar_to_english = [
+        '၀' => '0', '၁' => '1', '၂' => '2', '၃' => '3', '၄' => '4',
+        '၅' => '5', '၆' => '6', '၇' => '7', '၈' => '8', '၉' => '9'
+    ];
+
+    if (!empty($nrc_string)) {
+        // Check if the NRC string contains Myanmar digits in state part
+        if (preg_match('/^([၀-၉]+)\/([^\(]+)(\(\S+\))([၀-၉]+)$/', $nrc_string, $matches)) {
+            // Convert Myanmar state to English for internal processing
+            $state_myanmar = $matches[1];
+            $state_english = strtr($state_myanmar, $myanmar_to_english);
+            
+            $repopulate_array['state']    = $state_english;
+            $repopulate_array['township'] = $matches[2];
+            $repopulate_array['type']     = $matches[3];
+            $repopulate_array['number']   = strtr($matches[4], $myanmar_to_english);
+        }
+        // Fallback for English digit format
+        elseif (preg_match('/^(\d+)\/([^\(]+)(\(\S+\))(\d+)$/', $nrc_string, $matches)) {
+            $repopulate_array['state']    = $matches[1];
+            $repopulate_array['township'] = $matches[2];
+            $repopulate_array['type']     = $matches[3];
+            $repopulate_array['number']   = $matches[4];
+        }
     }
 }
 
@@ -113,6 +133,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #D32F2F;
             font-size: 0.875rem;
         }
+        .nrc-number.border-red-500 {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
@@ -193,6 +217,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     const repopulateNrcData = <?php echo json_encode(['student' => $repopulate_nrc['student']]); ?>;
 
     document.addEventListener('DOMContentLoaded', function() {
+        // English to Myanmar digit mapping
+        const digitMap = {
+            '0': '၀',
+            '1': '၁',
+            '2': '၂',
+            '3': '၃',
+            '4': '၄',
+            '5': '၅',
+            '6': '၆',
+            '7': '၇',
+            '8': '၈',
+            '9': '၉'
+        };
+
+        // Myanmar to English digit mapping (for validation)
+        const myanmarDigitMap = {
+            '၀': '0',
+            '၁': '1',
+            '၂': '2',
+            '၃': '3',
+            '၄': '4',
+            '၅': '5',
+            '၆': '6',
+            '၇': '7',
+            '၈': '8',
+            '၉': '9'
+        };
+
+        // Function to convert English digits to Myanmar digits
+        function convertToMyanmarDigits(input) {
+            return input.replace(/[0-9]/g, function(match) {
+                return digitMap[match];
+            });
+        }
+
+        // Function to convert Myanmar digits to English digits (for validation)
+        function convertToEnglishDigits(input) {
+            return input.replace(/[၀၁၂၃၄၅၆၇၈၉]/g, function(match) {
+                return myanmarDigitMap[match];
+            });
+        }
+
+        // Function to validate NRC number (accepts both English and Myanmar digits)
+        function isValidNrcNumber(number) {
+            // Convert to English digits for validation
+            const englishNumber = convertToEnglishDigits(number);
+            return /^\d{6}$/.test(englishNumber);
+        }
+
+        const myanmarDigits = {
+            1: '၁', 2: '၂', 3: '၃', 4: '၄', 5: '၅', 
+            6: '၆', 7: '၇', 8: '၈', 9: '၉', 10: '၁၀',
+            11: '၁၁', 12: '၁၂', 13: '၁၃', 14: '၁၄'
+        };
+
         const nrcTownships = {
             1: ["အဂယ", "အတန", "ဗကန", "ဗမန", "ဒဖယ", "ဟပန", "ဆဒန", "ဆပဘ", "ကမန", "ကမတ", "ကပတ", "ခဘဒ", "ခလဖ", "ခဖန", "လဂန", "မဂဒ", "မကန","မကတ", "မကသ", "မခဘ", "မလန", "မမန", "မညန", "မစန","မတန","နမန","ပမန","ပနဒ","ပတအ","ပဝန","ဖကန","ရဗယ", "ဆဘန", "ဆဘတ", "စကန", "ဆလန", "စပဘ", "တနန","ဝမန","သဝတ","ဝမန","ရကန"],
             2: ["ဘလခ", "ဒမဆ", "ဖဆန", "ထတပ","ခစန", "လကန", "မစန", "ဖလဆ", "ဖရဆ", "ရသန","စစန","ရတန"],
@@ -205,11 +284,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             9: ["အခန", "အမဘ", "အမရ", "အမဇ", "အစန", "အရတ", "ဥတသ", "ဒခသ", "ကမန", "ကပတ", "ကဆန", "ခအဇ", "ခမခ","ခမမ", "ခမန", "ခမစ", "ခမသ", "ခမဇ", "လကန", "လဝန", "မဟမ", "မထလ", "မကခ", "မကန","မခန", "မလန", "မမန", "မနမ", "မနတ", "မစန","မတလ", "မတန", "မတရ", "မသန", "မရမ", "မရတ", "နထက", "နမန", "နနမ", "နတက", "ငသရ","ငဇန", "ညဉန", "ပဥလ", "ပဘန", "ပဗသ", "ပကခ","ပခက", "ပခမ", "ပမန", "ပသက", "စကန", "စကတ", "တကတ" , "တတဥ", "တသန", "သပက", "သစန", "သတရ", "သဝန", "ဝတန", "ရဥန","ရမသ","ဇဗသ","ဇယသ"],
             10: ["ဘအန", "ဘလန", "ထထန", "ကထန", "ကမလ", "ကမရ", "ခဆန", "ခဇန", "လမန", "မဒန", "မလမ","မစန", "ပမန", "ဖပန", "သထန", "သဖရ", "ရမန"],
             11: ["အမန", "ဘသတ", "ဂမန", "ကဖန", "ကတလ", "ကတန", "လမတ", "မအတ","မအန", "မဥန", "မမန", "မပန", "မပတ", "မတန", "ပဏက", "ပတန", "စတန", "တကန", "တပဝ", "သတန", "ရဗန", "ရတန" , "ရတသ", "ရသတ"],
-            12: ["အလန", "အစန", "ဥကမ", "ဥကတ", "ဗဟန", "ဗတထ", "ဒဂမ", "ဒဂန", "ဒဂဆ", "ဒဂရ", "ဒလန", "ဒပန", "ထတပ", "ကကက", "ကခက", "ကမန", "ကမတ", "ကမရ", "ကတန", "ကတတ", "ခရန", "လကန" , "လမန", "လမတ", "လသန", "လသယ", "လယန", "လယရ", "မဥက", "မဘန","မဂဒ", "မဂတ", "မရက", "ပဘတ", "ပဇတ", "ဆကခ", "စခန", "တဥက", "တကန", "တမန", "တတန", "တတတ", "သဃက", "သကတ", "သခန", "သလန","ရကန","ရပသ"],
+            12: ["အလန", "အစန", "ဥကမ", "ဥကတ", "ဗဟန", "ဗတထ", "ဒဂမ", "ဒဂန", "ဒဂဆ", "ဒဂရ", "ဒလန", "ဒပန", "ထတပ", "ကကက", "ကခက", "ကမန", "က�မတ", "ကမရ", "ကတန", "ကတတ", "ခရန", "လကန" , "လမန", "လမတ", "လသန", "လသယ", "လယန", "လယရ", "မဥက", "မဘန","မဂဒ", "မဂတ", "မရက", "ပဘတ", "ပဇတ", "ဆကခ", "စခန", "တဥက", "တကန", "တမန", "တတန", "တတတ", "သဃက", "သကတ", "သခန", "သလန","ရကန","ရပသ"],
             13: ["အပန", "အသရ", "အတန", "ဟမန", "ဟပန", "ဟပတ", "ကဟန", "ကကန", "ကခန", "ကလဒ", "ကလထ", "ကလန", "ကလတ", "ကမန", "ကတလ", "ကတန", "ကတတ", "ကသန", "ခလန", "ခရဟ", "လကန", "လခန", "လခတ", "လလန" ,"လရန", "မဘန", "မဟရ", "မထထ", "မကထ", "မကန", "မကတ", "မခန", "မခတ", "မလန", "မလတ", "မမထ", "မမန", "မနန", "မနတ", "မငန", "မပထ", "မပန", "မပတ", "မဖန", "မဖတ", "မရန", "မရတ", "မဆန", "မဆတ", "မတန", "မတတ", "မယထ", "မယန", "မယတ", "နခန", "နခတ" ,"နမတ", "နဖန", "နစန", "နတန", "နတရ", "ညရန" , "ပဆတ", "ပလထ", "ပလန", "ပလတ", "ပပက", "ပဆန", "ပဝန", "ပယန", "ဖခန", "ဆဆန", "တကန" ,"တခလ", "တလန", "တမည", "တတန", "တယန", "သနန",  "သပန", "ဝကန","ရငန","ရညန" ,"ရစန"],
             14: ["အမတ", "အဂပ", "အမန", "အပန", "အစန", "ဘကလ", "ဒဒရ", "ဓနဖ", "ဟကက", "ဟသတ", "ကကထ", "ကကန", "ကခန", "ကလန" , "ကမန", "ကမသ", "ကပန", "လမန", "လပတ", "မအန", "မအပ", "မမက", "မမန", "မရက", "ငပတ", "ငဆန", "ငသခ" , "ငရက", "ညတန", "ပကခ", "မပလ", "ပတန", "ပသန", "ပသရ", "ဖပန", "တမန", "သပန" ,"ဝခမ", "ရကန", "ရသယ", "ဇလန"]
         };
         const nrcTypes = ["နိုင်", "ဧည့်", "ပြု", "သာ", "ယာယီ"];
+
+        // Myanmar numerals mapping for NRC states
+        const myanmarNumerals = {
+            1: '၁',
+            2: '၂', 
+            3: '၃',
+            4: '၄',
+            5: '၅',
+            6: '၆',
+            7: '၇',
+            8: '၈',
+            9: '၉',
+            10: '၁၀',
+            11: '၁၁',
+            12: '၁၂',
+            13: '၁၃',
+            14: '၁၄'
+        };
 
         function createNrcInputGroup(containerId, namePrefix, defaults) {
             const container = document.getElementById(containerId);
@@ -227,10 +324,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             const stateSelect = document.createElement('select');
             stateSelect.name = `${namePrefix}_state`;
             stateSelect.className = commonClasses;
+            
+            // Add default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'တိုင်းဒေသကြီး/ပြည်နယ်';
+            defaultOption.disabled = true;
+            stateSelect.appendChild(defaultOption);
+            
+            // Add state options with Myanmar digits
             for (let i = 1; i <= 14; i++) {
                 const option = document.createElement('option');
-                option.value = i;
-                option.textContent = i;
+                option.value = myanmarNumerals[i]; // Store Myanmar digit as value
+                option.textContent = myanmarNumerals[i];
                 stateSelect.appendChild(option);
             }
 
@@ -241,6 +347,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             const typeSelect = document.createElement('select');
             typeSelect.name = `${namePrefix}_type`;
             typeSelect.className = commonClasses;
+            
+            // Add default option for type
+            const typeDefaultOption = document.createElement('option');
+            typeDefaultOption.value = '';
+            typeDefaultOption.textContent = 'အမျိုးအစား';
+            typeDefaultOption.disabled = true;
+            typeSelect.appendChild(typeDefaultOption);
+            
             nrcTypes.forEach(type => {
                 const option = document.createElement('option');
                 option.value = `(${type})`;
@@ -253,10 +367,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             const numberInput = document.createElement('input');
             numberInput.type = 'text';
             numberInput.name = `${namePrefix}_number`;
-            numberInput.className = commonClasses;
-            numberInput.placeholder = '123456';
+            numberInput.className = commonClasses + ' nrc-number';
+            numberInput.placeholder = '၁၂၃၄၅၆';
             numberInput.maxLength = 6;
-            numberInput.pattern = '\\d{6}';
+
+            // Add event listener for automatic digit conversion
+            numberInput.addEventListener('input', function(e) {
+                // Convert any English digits to Myanmar digits
+                const convertedValue = convertToMyanmarDigits(e.target.value);
+                
+                // Only update if conversion actually happened
+                if (convertedValue !== e.target.value) {
+                    e.target.value = convertedValue;
+                }
+                
+                // Validate the number (after conversion)
+                const currentValue = e.target.value;
+                const isValid = isValidNrcNumber(currentValue);
+                
+                // Visual feedback
+                if (currentValue && !isValid) {
+                    numberInput.classList.add('border-red-500');
+                } else {
+                    numberInput.classList.remove('border-red-500');
+                }
+                
+                updateHiddenNrcInput();
+            });
+
+            // Also validate on blur
+            numberInput.addEventListener('blur', function(e) {
+                const currentValue = e.target.value;
+                const isValid = isValidNrcNumber(currentValue);
+                
+                if (currentValue && !isValid) {
+                    numberInput.classList.add('border-red-500');
+                } else {
+                    numberInput.classList.remove('border-red-500');
+                }
+            });
 
             wrapper.append(dropdownContainer, numberInput);
             container.append(wrapper);
@@ -264,11 +413,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             const updateHiddenNrcInput = () => {
                 const hiddenInput = document.getElementById(`${namePrefix}_hidden`);
                 if (hiddenInput) {
-                    const state = stateSelect.value;
+                    const state = stateSelect.value; // This is now Myanmar digit
                     const township = townshipSelect.value;
                     const type = typeSelect.value;
                     const number = numberInput.value;
-                    if (state && township && type && number.match(/^\d{6}$/)) {
+                    
+                    // Validate number before setting hidden value
+                    if (state && township && type && isValidNrcNumber(number)) {
+                        // Store in Myanmar digits format - state is already Myanmar digit
                         hiddenInput.value = `${state}/${township}${type}${number}`;
                     } else {
                         hiddenInput.value = '';
@@ -278,7 +430,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             const updateNrcTownships = () => {
                 const selectedState = stateSelect.value;
-                const townships = nrcTownships[selectedState] || [];
+                
+                // Convert Myanmar state back to English for township lookup
+                const englishState = convertToEnglishDigits(selectedState);
+                const townships = nrcTownships[englishState] || [];
+                
                 townshipSelect.innerHTML = '<option value="" disabled selected>မြို့နယ်</option>';
                 townships.forEach(township => {
                     const option = document.createElement('option');
@@ -286,21 +442,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     option.textContent = township;
                     townshipSelect.appendChild(option);
                 });
-                if (defaults.township && stateSelect.value == defaults.state) {
-                    townshipSelect.value = defaults.township;
+
+                // Repopulate township if default value exists
+                if (defaults.township) {
+                    // Convert default state to Myanmar for comparison
+                    const defaultStateMyanmar = convertToMyanmarDigits(defaults.state);
+                    if (stateSelect.value == defaultStateMyanmar) {
+                        townshipSelect.value = defaults.township;
+                    }
                 }
+
                 updateHiddenNrcInput();
             };
 
-            if(defaults.state) stateSelect.value = defaults.state;
+            // Set default values - ensure both state and number are in Myanmar digits
+            if(defaults.state) {
+                stateSelect.value = convertToMyanmarDigits(defaults.state);
+            }
             if(defaults.type) typeSelect.value = defaults.type;
-            if(defaults.number) numberInput.value = defaults.number;
+            if(defaults.number) {
+                // Convert default number to Myanmar digits if it's in English
+                numberInput.value = convertToMyanmarDigits(defaults.number);
+            }
 
             stateSelect.addEventListener('change', updateNrcTownships);
             townshipSelect.addEventListener('change', updateHiddenNrcInput);
             typeSelect.addEventListener('change', updateHiddenNrcInput);
-            numberInput.addEventListener('input', updateHiddenNrcInput);
 
+            // Initial population of townships
             updateNrcTownships();
         }
 
@@ -310,4 +479,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
-

@@ -81,11 +81,31 @@ if (!isset($_SESSION['pre_approved_data'])) {
 
     function parseNrc($nrc_string, &$repopulate_array)
     {
-        if (! empty($nrc_string) && preg_match('/^(\d+)\/([^\(]+)(\(\S+\))(\d{6})$/', $nrc_string, $matches)) {
-            $repopulate_array['state']    = $matches[1];
-            $repopulate_array['township'] = $matches[2];
-            $repopulate_array['type']     = $matches[3];
-            $repopulate_array['number']   = $matches[4];
+        // Myanmar to English digit mapping for parsing
+        $myanmar_to_english = [
+            '၀' => '0', '၁' => '1', '၂' => '2', '၃' => '3', '၄' => '4',
+            '၅' => '5', '၆' => '6', '၇' => '7', '၈' => '8', '၉' => '9'
+        ];
+
+        if (! empty($nrc_string)) {
+            // Check if the NRC string contains Myanmar digits in state part
+            if (preg_match('/^([၀-၉]+)\/([^\(]+)(\(\S+\))([၀-၉]+)$/', $nrc_string, $matches)) {
+                // Convert Myanmar state to English for internal processing
+                $state_myanmar = $matches[1];
+                $state_english = strtr($state_myanmar, $myanmar_to_english);
+                
+                $repopulate_array['state']    = $state_english;
+                $repopulate_array['township'] = $matches[2];
+                $repopulate_array['type']     = $matches[3];
+                $repopulate_array['number']   = $matches[4];
+            }
+            // Fallback for English digit format
+            elseif (preg_match('/^(\d+)\/([^\(]+)(\(\S+\))(\d+)$/', $nrc_string, $matches)) {
+                $repopulate_array['state']    = $matches[1];
+                $repopulate_array['township'] = $matches[2];
+                $repopulate_array['type']     = $matches[3];
+                $repopulate_array['number']   = $matches[4];
+            }
         }
     }
 
@@ -340,6 +360,11 @@ if (!isset($_SESSION['pre_approved_data'])) {
         transition: background-color 0.5s ease-out;
         border-radius: 0.5rem;
         box-shadow: 0 0 0 2px #fcd34d;
+    }
+    /* NRC number validation styles */
+    .nrc-number.border-red-500 {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
     }
 </style>
     <br>
@@ -673,14 +698,60 @@ if (!isset($_SESSION['pre_approved_data'])) {
     const photoUrlFromServer = '<?php echo $photo_url_for_js; ?>';
     const firstErrorKeyFromServer = '<?php echo $first_error_key; ?>';
 
+    // English to Myanmar digit mapping
+    const digitMap = {
+        '0': '၀',
+        '1': '၁',
+        '2': '၂',
+        '3': '၃',
+        '4': '၄',
+        '5': '၅',
+        '6': '၆',
+        '7': '၇',
+        '8': '၈',
+        '9': '၉'
+    };
+
+    // Myanmar to English digit mapping (for validation)
+    const myanmarDigitMap = {
+        '၀': '0',
+        '၁': '1',
+        '၂': '2',
+        '၃': '3',
+        '၄': '4',
+        '၅': '5',
+        '၆': '6',
+        '၇': '7',
+        '၈': '8',
+        '၉': '9'
+    };
+
+    // Function to convert English digits to Myanmar digits
+    function convertToMyanmarDigits(input) {
+        return input.replace(/[0-9]/g, function(match) {
+            return digitMap[match];
+        });
+    }
+
+    // Function to convert Myanmar digits to English digits (for validation)
+    function convertToEnglishDigits(input) {
+        return input.replace(/[၀၁၂၃၄၅၆၇၈၉]/g, function(match) {
+            return myanmarDigitMap[match];
+        });
+    }
+
+    // Function to validate NRC number (accepts both English and Myanmar digits)
+    function isValidNrcNumber(number) {
+        // Convert to English digits for validation
+        const englishNumber = convertToEnglishDigits(number);
+        return /^\d{6}$/.test(englishNumber);
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
         // --- Academic Year from Settings (ADDED) ---
-        // settings.php မှာ သတ်မှတ်ထားတဲ့ academic year ကို localStorage ကနေရယူပါ။
         const savedAcademicYear = localStorage.getItem('academicYear');
         const yearInput = document.getElementById('year');
 
-        // အကယ်၍ localStorage မှာ တန်ဖိုးရှိနေခဲ့ရင်၊ form ထဲက ခုနှစ်ကို အဲ့ဒီတန်ဖိုးနဲ့ အစားထိုးပါ။
         if (savedAcademicYear && yearInput) {
             yearInput.value = savedAcademicYear;
         }
@@ -691,7 +762,6 @@ if (!isset($_SESSION['pre_approved_data'])) {
         const previewContainer = document.getElementById('photo-preview-container');
         const placeholder = document.getElementById('photo-placeholder');
         const removeBtn = document.getElementById('remove-photo-btn');
-        // We no longer need photo_url_hidden because the session handles it
         const removePhotoFlag = document.getElementById('remove_photo_flag');
 
         // Create a dedicated container for client-side photo validation messages
@@ -785,7 +855,6 @@ if (!isset($_SESSION['pre_approved_data'])) {
             clientErrorContainer.textContent = '';
             const dobValue = dobInput.value;
             if (!dobValue) {
-                // The server will handle required validation, so we don't need a client-side message for it.
                 return true;
             }
             const birthDate = new Date(dobValue);
@@ -813,8 +882,6 @@ if (!isset($_SESSION['pre_approved_data'])) {
             return true;
         };
 
-        // The 'submit' event listener that prevented server-side validation has been removed.
-        // The form will now submit, and the PHP code will return all validation errors as intended.
         if (dobInput) {
             dobInput.addEventListener('input', validateDateOfBirth);
         }
@@ -893,22 +960,6 @@ if (!isset($_SESSION['pre_approved_data'])) {
 
 
         // --- NRC Input Group Logic ---
-        // const nrcTownships = {
-        //     1: ["ကစန", "ခဘဒ", "ဂမန", "ဟပန", "အလန", "မကန", "မခဘ", "မဂန", "မညန", "မစန", "မမန", "ပတအ", "ရကန", "ဆပဘ", "ဆလန", "တနန", "ဝမန"],
-        //     2: ["ဒမဆ", "ဖရဆ", "လကန", "မစန"],
-        //     3: ["ဘအန", "ဖပန", "ကကရ", "လဘန", "မဝတ", "သတန"],
-        //     4: ["ဟခန", "ဖလန", "မတပ", "ပလဝ", "တတန", "ထတလ"],
-        //     5: ["စကန", "ဘမန", "ကနလ", "ကလဝ", "ကလဟ", "ကသ", "ခဥန", "လရန", "မလန", "မငန", "စလင", "ရမဘ", "တဇန", "ဝန်းသို"],
-        //     6: ["တငန", "ဘလန", "ကပက", "ကတခ", "လရန", "မဘန", "မမန", "မတရ", "နလန", "ပဖန", "သပက"],
-        //     7: ["ပခက", "ဂဂန", "မကန", "ငဖန", "ပတန", "စလန", "သရန", "တငန"],
-        //     8: ["မကန", "အလန", "မငလ", "မနန", "ပကခ", "စတရ", "တငန", "သရက"],
-        //     9: ["မလမ", "ကမရ", "ဥကမ", "ဒဂမ", "ဒလန", "ကခက", "လမန", "မဂတ", "ပဘတ", "စခန", "သကတ", "တမန", "ရကန"],
-        //     10: ["မအန", "ဘကလ", "ဒနဘ", "ဟသတ", "ဟငသ", "လပတ", "မအန", "မမက", "ပသန", "ဖပန", "ဝခမ"],
-        //     11: ["စတန", "ကမန", "ကပန", "လယန", "မခန", "မညန", "ပလန", "သစန"],
-        //     12: ["ဥတသ", "ဒခသ", "ပဗသ", "ဇယသ", "လဝန", "ပမန", "တကန", "ဇမသ"],
-        //     13: ["ကလန", "ညဥန", "ပပဏ", "ရစက", "တသန", "ဝတလ", "မထလ", "မကင"],
-        //     14: ["တကန", "ကတန", "ကမန", "ကမတ", "ဒဂန", "ဒပန", "လသန", "မဘန", "မရန", "ပစတ", "ဖနန", "ရပန", "သလန", "သဃက"]
-        // };
         const nrcTownships = {
             1: ["အဂယ", "အတန", "ဗကန", "ဗမန", "ဒဖယ", "ဟပန", "ဆဒန", "ဆပဘ", "ကမန", "ကမတ", "ကပတ", "ခဘဒ", "ခလဖ", "ခဖန", "လဂန", "မဂဒ", "မကန","မကတ", "မကသ", "မခဘ", "မလန", "မမန", "မညန", "မစန","မတန","နမန","ပမန","ပနဒ","ပတအ","ပဝန","ဖကန","ရဗယ", "ဆဘန", "ဆဘတ", "စကန", "ဆလန", "စပဘ", "တနန","ဝမန","သဝတ","ဝမန","ရကန"],
             2: ["ဘလခ", "ဒမဆ", "ဖဆန", "ထတပ","ခစန", "လကန", "မစန", "ဖလဆ", "ဖရဆ", "ရသန","စစန","ရတန"],
@@ -927,6 +978,25 @@ if (!isset($_SESSION['pre_approved_data'])) {
         };
         const nrcTypes = ["နိုင်", "ဧည့်", "ပြု", "သာ", "ယာယီ"];
 
+        // Myanmar numerals mapping for NRC states - Updated to use Myanmar digits
+        const myanmarNumerals = {
+            1: '၁',
+            2: '၂', 
+            3: '၃',
+            4: '၄',
+            5: '၅',
+            6: '၆',
+            7: '၇',
+            8: '၈',
+            9: '၉',
+            10: '၁၀',
+            11: '၁၁',
+            12: '၁၂',
+            13: '၁၃',
+            14: '၁၄'
+        };
+
+        // Function to create NRC input group with enhanced validation
         function createNrcInputGroup(containerId, namePrefix, defaults) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -942,10 +1012,12 @@ if (!isset($_SESSION['pre_approved_data'])) {
             const stateSelect = document.createElement('select');
             stateSelect.name = `${namePrefix}_state`;
             stateSelect.className = 'nrc-select border rounded p-1';
+            
+            // Populate state dropdown with Myanmar numerals
             for (let i = 1; i <= 14; i++) {
                 const option = document.createElement('option');
-                option.value = i;
-                option.textContent = i;
+                option.value = myanmarNumerals[i]; // Store Myanmar digit as value
+                option.textContent = myanmarNumerals[i];
                 stateSelect.appendChild(option);
             }
 
@@ -969,22 +1041,61 @@ if (!isset($_SESSION['pre_approved_data'])) {
             numberInput.type = 'text';
             numberInput.name = `${namePrefix}_number`;
             numberInput.className = 'nrc-number w-full border rounded p-1 mt-1';
-            numberInput.placeholder = '123456';
+            numberInput.placeholder = '၁၂၃၄၅၆';
             numberInput.maxLength = 6;
-            numberInput.pattern = '\\d{6}';
+
+            // Add event listener for automatic digit conversion
+            numberInput.addEventListener('input', function(e) {
+                // Convert any English digits to Myanmar digits
+                const convertedValue = convertToMyanmarDigits(e.target.value);
+                
+                // Only update if conversion actually happened
+                if (convertedValue !== e.target.value) {
+                    e.target.value = convertedValue;
+                }
+                
+                // Validate the number (after conversion)
+                const currentValue = e.target.value;
+                const isValid = isValidNrcNumber(currentValue);
+                
+                // Visual feedback
+                if (currentValue && !isValid) {
+                    numberInput.classList.add('border-red-500');
+                } else {
+                    numberInput.classList.remove('border-red-500');
+                }
+                
+                updateHiddenNrcInput();
+            });
+
+            // Also validate on blur
+            numberInput.addEventListener('blur', function(e) {
+                const currentValue = e.target.value;
+                const isValid = isValidNrcNumber(currentValue);
+                
+                if (currentValue && !isValid) {
+                    numberInput.classList.add('border-red-500');
+                    showNrcNumberError(containerId, 'NRC number must be exactly 6 digits');
+                } else {
+                    numberInput.classList.remove('border-red-500');
+                    clearNrcNumberError(containerId);
+                }
+            });
 
             wrapper.append(dropdownContainer, numberInput);
             container.append(wrapper);
 
-
             const updateHiddenNrcInput = () => {
                 const hiddenInput = document.getElementById(`${namePrefix}_hidden`);
                 if (hiddenInput) {
-                    const state = stateSelect.value;
+                    const state = stateSelect.value; // This is now Myanmar digit
                     const township = townshipSelect.value;
                     const type = typeSelect.value;
                     const number = numberInput.value;
-                    if (state && township && type && number.match(/^\d{6}$/)) {
+                    
+                    // Validate number before setting hidden value
+                    if (state && township && type && isValidNrcNumber(number)) {
+                        // Store in Myanmar digits format - state is already Myanmar digit
                         hiddenInput.value = `${state}/${township}${type}${number}`;
                     } else {
                         hiddenInput.value = '';
@@ -994,7 +1105,11 @@ if (!isset($_SESSION['pre_approved_data'])) {
 
             const updateNrcTownships = () => {
                 const selectedState = stateSelect.value;
-                const townships = nrcTownships[selectedState] || [];
+                
+                // Convert Myanmar state back to English for township lookup
+                const englishState = convertToEnglishDigits(selectedState);
+                const townships = nrcTownships[englishState] || [];
+                
                 townshipSelect.innerHTML = '';
                 townships.forEach(township => {
                     const option = document.createElement('option');
@@ -1004,25 +1119,52 @@ if (!isset($_SESSION['pre_approved_data'])) {
                 });
 
                 // Repopulate township if default value exists
-                if (defaults.township && stateSelect.value == defaults.state) {
-                    townshipSelect.value = defaults.township;
+                if (defaults.township) {
+                    // Convert default state to Myanmar for comparison
+                    const defaultStateMyanmar = convertToMyanmarDigits(defaults.state);
+                    if (stateSelect.value == defaultStateMyanmar) {
+                        townshipSelect.value = defaults.township;
+                    }
                 }
 
                 updateHiddenNrcInput();
             };
 
-            // Set default values
-            if(defaults.state) stateSelect.value = defaults.state;
+            // Set default values - ensure both state and number are in Myanmar digits
+            if(defaults.state) {
+                stateSelect.value = convertToMyanmarDigits(defaults.state);
+            }
             if(defaults.type) typeSelect.value = defaults.type;
-            if(defaults.number) numberInput.value = defaults.number;
+            if(defaults.number) {
+                // Convert default number to Myanmar digits if it's in English
+                numberInput.value = convertToMyanmarDigits(defaults.number);
+            }
 
             stateSelect.addEventListener('change', updateNrcTownships);
             townshipSelect.addEventListener('change', updateHiddenNrcInput);
             typeSelect.addEventListener('change', updateHiddenNrcInput);
-            numberInput.addEventListener('input', updateHiddenNrcInput);
 
             // Initial population of townships
             updateNrcTownships();
+        }
+
+        // Helper functions for showing/hiding NRC number errors
+        function showNrcNumberError(containerId, message) {
+            let errorElement = document.getElementById(`${containerId}_error`);
+            if (!errorElement) {
+                errorElement = document.createElement('p');
+                errorElement.id = `${containerId}_error`;
+                errorElement.className = 'error-message mt-1';
+                document.getElementById(containerId).appendChild(errorElement);
+            }
+            errorElement.textContent = message;
+        }
+
+        function clearNrcNumberError(containerId) {
+            const errorElement = document.getElementById(`${containerId}_error`);
+            if (errorElement) {
+                errorElement.remove();
+            }
         }
 
         createNrcInputGroup('student_nrc_group', 'student_nrc', repopulateNrcData.student);
@@ -1191,8 +1333,5 @@ if (!isset($_SESSION['pre_approved_data'])) {
 
     });
 </script>
-
 </body>
 </html>
-
-
