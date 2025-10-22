@@ -1,3 +1,79 @@
+<?php
+session_start();
+date_default_timezone_set('Asia/Yangon');
+
+$upload_message = null;
+$upload_type = 'error';
+$show_js_redirect = false;
+// Check for essential session data instead of just the seat number.
+$form_data_exists = isset($_SESSION['form1_data']['student_name_en']);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['receipt'])) {
+    
+    if (!$form_data_exists) {
+        $upload_message = "Error: Your session has expired or is missing information. Please start the application process again.";
+    } else {
+        $target_dir = "Rform/payment_receipt/";
+        if (!is_dir($target_dir)) {
+            if (!mkdir($target_dir, 0777, true)) {
+                $upload_message = 'Error: Failed to create payment_receipt folder on the server.';
+            }
+        }
+
+        if ($upload_message === null) {
+            // Use student's name for the filename to make it identifiable.
+            $student_name = preg_replace("/[^a-zA-Z0-9_-]/", "", $_SESSION['form1_data']['student_name_en'] ?? 'student');
+            $original_filename = basename($_FILES["receipt"]["name"]);
+            $file_extension = strtolower(pathinfo($original_filename, PATHINFO_EXTENSION));
+            $timestamp = time();
+            $safe_filename = $student_name . "_" . $timestamp . "." . $file_extension;
+            $target_file = $target_dir . $safe_filename;
+            
+            $uploadOk = 1;
+            $allowed_types = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+
+            if ($_FILES['receipt']['error'] !== UPLOAD_ERR_OK) {
+                $upload_message = "An error occurred during file upload. Error code: " . $_FILES['receipt']['error'];
+                $uploadOk = 0;
+            }
+            
+            if ($uploadOk && $file_extension !== 'pdf') {
+                $check = getimagesize($_FILES["receipt"]["tmp_name"]);
+                if($check === false) {
+                    $upload_message = "File is not a valid image.";
+                    $uploadOk = 0;
+                }
+            }
+
+            if ($uploadOk && $_FILES["receipt"]["size"] > 5000000) {
+                $upload_message = "Sorry, your file is too large. Maximum size is 5MB.";
+                $uploadOk = 0;
+            }
+
+            if($uploadOk && !in_array($file_extension, $allowed_types)) {
+                $upload_message = "Sorry, only JPG, JPEG, PNG, GIF & PDF files are allowed.";
+                $uploadOk = 0;
+            }
+
+            if ($uploadOk == 1 && move_uploaded_file($_FILES["receipt"]["tmp_name"], $target_file)) {
+                $_SESSION['payment_choice'] = 'paid';
+                $_SESSION['payment_receipt_path'] = $target_file;
+                $upload_message = "Receipt uploaded successfully! You will be redirected back to the final step.";
+                $upload_type = 'success';
+                $show_js_redirect = true;
+            } else {
+                 if ($uploadOk == 1) { // move_uploaded_file failed
+                    $upload_message = "Sorry, there was a server error uploading your file. Please try again.";
+                 }
+            }
+        }
+    }
+} elseif (!$form_data_exists) {
+    $upload_message = "Your session is missing required information. Please fill out your personal details first before uploading a payment receipt.";
+    $upload_type = 'error';
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -77,6 +153,8 @@
             height: auto;
             max-height: 400px;
         }
+        
+        .file-drop-area { transition: background-color 0.2s ease-in-out; }
 
         @media (min-width: 768px) {
             .content-card {
@@ -210,6 +288,13 @@
     <!-- Main Content Container -->
     <main class="py-12">
         <h1 class="text-4xl font-bold text-center text-blue-900 mb-8" data-lang-key="payment_guide_title">Payment Guide</h1>
+        
+        <?php if ($upload_message): ?>
+            <div class="max-w-4xl mx-auto mb-6 p-4 rounded-lg text-center <?php echo $upload_type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
+                <?php echo htmlspecialchars($upload_message); ?>
+            </div>
+        <?php endif; ?>
+
         <section class="content-card space-y-16">
 
             <!-- Step 1 -->
@@ -262,6 +347,36 @@
                 <div class="step-image">
                     <img src="./Img/payment-guide/step4.jpeg" alt="Step 4 Screenshot" class="payment-guide-screenshot" loading="lazy">
                 </div>
+            </div>
+
+             <!-- Upload Section -->
+            <div class="border-t-2 border-dashed border-gray-300 my-16"></div>
+            
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-blue-900 mb-4" data-lang-key="upload_title">Upload Payment Receipt</h2>
+                <p class="text-gray-600 mb-8 max-w-2xl mx-auto" data-lang-key="upload_instruction">
+                    After making the payment, please upload a screenshot of your successful transaction here.
+                </p>
+                
+                <?php if ($form_data_exists && !$show_js_redirect): ?>
+                <form id="uploadForm" action="paymentGuide.php" method="post" enctype="multipart/form-data" class="max-w-xl mx-auto bg-slate-50 p-8 rounded-2xl shadow-inner border border-gray-200">
+                    <div id="file-drop-area" class="file-drop-area mb-6 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer bg-white hover:bg-gray-50">
+                        <input type="file" name="receipt" id="receipt" required class="hidden" accept="image/png, image/jpeg, image/gif, application/pdf">
+                        <div id="file-drop-prompt">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600 font-medium">Drag & drop your file here or</p>
+                            <p class="text-blue-600 font-semibold">Click to select a file</p>
+                            <p class="text-xs text-gray-500 mt-2">PNG, JPG, GIF, or PDF (Max 5MB)</p>
+                        </div>
+                        <div id="file-preview-wrapper" class="hidden">
+                             <img id="file-preview" src="#" alt="Receipt Preview" class="max-w-full max-h-48 mx-auto rounded">
+                             <p id="file-name" class="text-sm text-gray-700 mt-2 font-medium"></p>
+                        </div>
+                    </div>
+
+                    <button type="submit" name="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105" data-lang-key="upload_button">Upload and Complete</button>
+                </form>
+                <?php endif; ?>
             </div>
         </section>
     </main>
@@ -323,6 +438,11 @@
             </div>
         </div>
     </footer>
+    <?php if ($show_js_redirect): ?>
+    <script>
+        setTimeout(() => window.location.href = "Rform/final.php", 2500);
+    </script>
+    <?php endif; ?>
     <script>
         document.getElementById("mobile-menu-button").addEventListener("click", () => {
             document.getElementById("mobile-menu").classList.toggle("hidden");
@@ -346,26 +466,10 @@
                 payment_text_2: "အမျိုးအစားများ တွင် ပညာရေး ကိုရွေးချယ်ပါ။",
                 payment_text_3: "စာရင်းထဲမှ University of Technology (YCC) ကိုရှာပါ။",
                 payment_text_4: "လိုအပ်သောအချက်အလက်များကိုဖြည့်ပြီး တင်သွင်းပါ။",
-                footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
-                footer_faculties_title: "မဟာဌာနများ",
-                footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
-                footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
-                footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
-                footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
-                footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
-                footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
-                footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
-                footer_link_faq: "အမေးများသော မေးခွန်းများ",
-                footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
-                footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
-                footer_follow_title: "Follow Us",
-                footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
-                admission_closed_title: "ကျောင်းအပ်လက်ခံခြင်း ယာယီပိတ်ထားပါသည်",
-                admission_closed_text: "တက္ကသိုလ်မှ ကျောင်းသား/သူအသစ်များ လက်ခံခြင်းကို လက်ရှိတွင် ရပ်ဆိုင်းထားပါသည်။",
-                footer_link_dp: "ဒေတာကာကွယ်ရေး",
-                view:"စာမေးပွဲရလဒ်ကြည့်ရန်",
-                view1:"သင်၏ပညာရေးဆောင်ရွက်မှုကိုကြည့်ရှုပြီး နှစ်နှင့် semestersအားလုံးမှ နောက်ဆုံးစာမေးပွဲရလဒ်များကို စစ်ဆေးနိုင်ပါသည်။",
-                view2:"ရလဒ်များကြည့်ရန်",
+                upload_title: "ငွေပေးချေမှုပြေစာတင်ပါ။",
+                upload_instruction: "KBZPay ဖြင့် ငွေပေးချေပြီးနောက်၊ သင်၏ငွေပေးချေမှုအောင်မြင်ကြောင်းပြေစာ၏စခရင်ရှော့ကို ဤနေရာတွင် တင်ပေးပါ။",
+                receipt_label: "ငွေပေးချေမှု စခရင်ရှော့",
+                upload_button: "တင်ပြီး အပြီးသတ်ပါ။",
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -384,26 +488,10 @@
                 payment_text_2: "Select Education in Categories.",
                 payment_text_3: "Search for University of Technology (YCC) in the list.",
                 payment_text_4: "Fill in the required information and Submit.",
-                footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
-                footer_faculties_title: "Faculties",
-                footer_faculty_ist: "Information Science Technology",
-                footer_faculty_ce: "Computer Engineering",
-                footer_faculty_ece: "Electronics Engineering",
-                footer_faculty_ame: "Advanced Materials Engineering",
-                footer_faculty_pre: "Precision Engineering",
-                footer_quick_links_title: "Quick Links",
-                footer_link_terms: "Terms & Policies",
-                footer_link_faq: "FAQs",
-                footer_link_about: "About Us",
-                footer_link_rules: "Rules & Regulations",
-                footer_follow_title: "Follow Us",
-                footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
-                admission_closed_title: "ADMISSIONS ARE CURRENTLY CLOSED",
-                admission_closed_text: "Our university is not accepting new student applications at this time.",
-                footer_link_dp: "Data Protection",
-                view:"View Your Exam Results",
-                view1:"Access your academic performance and check your latest exam results from all years and semesters.",
-                view2:"Check Results",
+                upload_title: "Upload Payment Receipt",
+                upload_instruction: "After making the payment, please upload a screenshot of your successful transaction here.",
+                receipt_label: "Payment Screenshot",
+                upload_button: "Upload and Complete",
             },
         };
 
@@ -461,8 +549,56 @@
             setLanguage(savedLang);
             setupLangSwitcher('desktop');
             setupLangSwitcher('mobile');
+            
+            const dropArea = document.getElementById('file-drop-area');
+            const fileInput = document.getElementById('receipt');
+            const prompt = document.getElementById('file-drop-prompt');
+            const previewWrapper = document.getElementById('file-preview-wrapper');
+            const previewImage = document.getElementById('file-preview');
+            const fileNameDisplay = document.getElementById('file-name');
+
+            if(dropArea) {
+                dropArea.addEventListener('click', () => fileInput.click());
+                dropArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropArea.classList.add('border-blue-500', 'bg-blue-50');
+                });
+                dropArea.addEventListener('dragleave', () => {
+                    dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+                });
+                dropArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+                    if (e.dataTransfer.files.length) {
+                        fileInput.files = e.dataTransfer.files;
+                        handleFileChange({ target: fileInput });
+                    }
+                });
+                fileInput.addEventListener('change', handleFileChange);
+            }
+
+            function handleFileChange(event) {
+                const [file] = event.target.files;
+                if (file) {
+                    prompt.classList.add('hidden');
+                    previewWrapper.classList.remove('hidden');
+                    fileNameDisplay.textContent = file.name;
+
+                    if (file.type.startsWith('image/')) {
+                        previewImage.style.display = 'block';
+                        previewImage.src = URL.createObjectURL(file);
+                        previewImage.onload = () => URL.revokeObjectURL(previewImage.src);
+                    } else {
+                        previewImage.style.display = 'none';
+                    }
+                } else {
+                    prompt.classList.remove('hidden');
+                    previewWrapper.classList.add('hidden');
+                }
+            }
         });
     </script>
 </body>
 
 </html>
+
