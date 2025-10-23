@@ -5,6 +5,12 @@ require_once 'auth_check.php';
 
 // --- FETCH ALL APPROVED STUDENT DATA ---
 $students = [];
+
+//page system
+$limit = 8; 
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // current page, default 1
+$offset = ($page - 1) * $limit;
+
 // MODIFICATION: Added s.preferences AND s.selected_major to the SELECT statement
 $sql = "SELECT s.*, s.preferences, s.selected_major,
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
@@ -13,7 +19,9 @@ $sql = "SELECT s.*, s.preferences, s.selected_major,
         LEFT JOIN fathers f ON s.student_id = f.student_id
         LEFT JOIN mothers m ON s.student_id = m.student_id
         WHERE s.status = 'approved'
-        ORDER BY s.date DESC";
+        ORDER BY s.date DESC
+        LIMIT $limit OFFSET $offset";
+
 
 try {
     $stmt = $pdo->query($sql);
@@ -35,6 +43,12 @@ try {
     // For a real application, you might want to log this error and show a friendly message.
     die("Error fetching student data: " . $e->getMessage());
 }
+
+$count_sql = "SELECT COUNT(*) AS total_students FROM students WHERE status = 'approved'";
+$result =$pdo->query($count_sql);
+$row = $result->fetch(PDO::FETCH_ASSOC);
+$total_students = $row['total_students'];
+
 
 // Close the connection by setting the PDO object to null
 $pdo = null;
@@ -229,8 +243,8 @@ $pdo = null;
       gap: 12px;
       padding: 14px 18px;
       border-radius: 10px;
-      color: hsl(var(--primary-foreground));
-      background: hsl(var(--fg));
+      color: hsl(var(--fg));
+      background: hsl(var(--bg));
       box-shadow: var(--shadow-card);
       border-left: 4px solid hsl(var(--primary));
       animation: toastIn 0.3s ease forwards, toastOut 0.3s ease 4.2s forwards;
@@ -772,6 +786,8 @@ $pdo = null;
         'PrE': 'တိကျပစ္စည်းထုတ်လုပ်မှု အင်ဂျင်နီယာ ဘာသာရပ်(PrE)',
         'AME': 'အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ ဘာသာရပ်(AME)',
     };
+    const total = <?php echo $total_students; ?>;
+
 
     const state = {
       students: <?php echo json_encode($students); ?>,
@@ -779,7 +795,7 @@ $pdo = null;
       academicYear: 'all',
       dormitory: 'all',
       major: 'all', // NEW: Add major for filtering
-      page: 1,
+      page: <?php echo $page ?>,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
     };
@@ -875,6 +891,23 @@ $pdo = null;
         confirmBtn.addEventListener('click', handleConfirm, { once: true });
         document.getElementById('confirmCancel').addEventListener('click', handleCancel, { once: true });
         confirmModal.showModal();
+      });
+    }
+
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[&<>"'`=\/]/g, function (s) {
+        return ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '`': '&#x60;',
+          '=': '&#x3D;',
+          '/': '&#x2F;'
+        })[s];
       });
     }
 
@@ -1101,13 +1134,13 @@ $pdo = null;
 
         let majorHtml = '';
         if (hasSelectedMajor) {
-            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid"><dt>Major</dt><dd>${availableMajors[s.selected_major] || s.selected_major}</dd></dl>`;
+            majorHtml = `<h3 class="detail-section-header">Assigned Major</h3><dl class="details-grid"><dt>Major</dt><dd>${escapeHtml(availableMajors[s.selected_major]) || escapeHtml(s.selected_major)}</dd></dl>`;
         } else if (hasPreferences) {
             majorHtml = `<h3 class="detail-section-header">Major Preferences</h3><dl class="details-grid">`;
             for (let i = 1; i <= 5; i++) {
                 const prefCode = s.preferences[i];
                 if (prefCode) {
-                    majorHtml += `<dt>Preference ${i}</dt><dd>${availableMajors[prefCode] || prefCode}</dd>`;
+                    majorHtml += `<dt>Preference ${i}</dt><dd>${escapeHtml(availableMajors[prefCode]) || escapeHtml(prefCode)}</dd>`;
                 }
             }
             majorHtml += `</dl>`;
@@ -1145,39 +1178,39 @@ $pdo = null;
             </div>
             <h3 class="detail-section-header">Student Information</h3>
             <dl class="details-grid">
-                <dt>Seat No.</dt><dd>${s.seat_no || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${s.student_name_en || 'N/A'}</dd>
-                <dt>Name (MM)</dt><dd>${s.student_name_mm || 'N/A'}</dd> <dt>Email</dt><dd>${s.student_email || 'N/A'}</dd>
-                <dt>Phone</dt><dd>${s.student_phone || 'N/A'}</dd> <dt>NRC</dt><dd>${s.student_nrc || 'N/A'}</dd>
-                <dt>Date of Birth</dt><dd>${formatDate(s.student_dob)}</dd> <dt>Birthplace</dt><dd>${s.student_birthplace || 'N/A'}</dd>
-                <dt>Race</dt><dd>${s.student_race || 'N/A'}</dd> <dt>Religion</dt><dd>${s.student_religion || 'N/A'}</dd>
-                <dt>Address</dt><dd>${s.student_address || 'N/A'}</dd> <dt>Township</dt><dd>${s.township || 'N/A'}</dd>
-                <dt>State/Region</dt><dd>${s.state_region || 'N/A'}</dd> <dt>Dormitory</dt><dd>${s.dormitory_preference ? 'Yes' : 'No'}</dd>
-                <dt>Academic Year</dt><dd>${s.academic_year || 'N/A'}</dd> <dt>Year</dt><dd>${s.year || 'N/A'}</dd> <dt>Registered On</dt><dd>${formatDate(s.date)}</dd>
+                <dt>Seat No.</dt><dd>${escapeHtml(s.seat_no) || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${escapeHtml(s.student_name_en) || 'N/A'}</dd>                <dt>Seat No.</dt><dd>${escapeHtml(s.seat_no) || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${escapeHtml(s.student_name_en) || 'N/A'}</dd>
+                <dt>Name (MM)</dt><dd>${escapeHtml(s.student_name_mm) || 'N/A'}</dd> <dt>Email</dt><dd>${escapeHtml(s.student_email) || 'N/A'}</dd>                <dt>Name (MM)</dt><dd>${escapeHtml(s.student_name_mm) || 'N/A'}</dd> <dt>Email</dt><dd>${escapeHtml(s.student_email) || 'N/A'}</dd>
+                <dt>Phone</dt><dd>${escapeHtml(s.student_phone) || 'N/A'}</dd> <dt>NRC</dt><dd>${escapeHtml(s.student_nrc) || 'N/A'}</dd>                <dt>Phone</dt><dd>${escapeHtml(s.student_phone) || 'N/A'}</dd> <dt>NRC</dt><dd>${escapeHtml(s.student_nrc) || 'N/A'}</dd>
+                <dt>Date of Birth</dt><dd>${escapeHtml(formatDate(s.student_dob))}</dd> <dt>Birthplace</dt><dd>${escapeHtml(s.student_birthplace) || 'N/A'}</dd>                <dt>Date of Birth</dt><dd>${escapeHtml(formatDate(s.student_dob))}</dd> <dt>Birthplace</dt><dd>${escapeHtml(s.student_birthplace) || 'N/A'}</dd>
+                <dt>Race</dt><dd>${escapeHtml(s.student_race) || 'N/A'}</dd> <dt>Religion</dt><dd>${escapeHtml(s.student_religion) || 'N/A'}</dd>                <dt>Race</dt><dd>${escapeHtml(s.student_race) || 'N/A'}</dd> <dt>Religion</dt><dd>${escapeHtml(s.student_religion) || 'N/A'}</dd>
+                <dt>Address</dt><dd>${escapeHtml(s.student_address) || 'N/A'}</dd> <dt>Township</dt><dd>${escapeHtml(s.township) || 'N/A'}</dd>                <dt>Address</dt><dd>${escapeHtml(s.student_address) || 'N/A'}</dd> <dt>Township</dt><dd>${escapeHtml(s.township) || 'N/A'}</dd>
+                <dt>State/Region</dt><dd>${escapeHtml(s.state_region) || 'N/A'}</dd> <dt>Dormitory</dt><dd>${escapeHtml(s.dormitory_preference) ? 'Yes' : 'No'}</dd>                <dt>State/Region</dt><dd>${escapeHtml(s.state_region) || 'N/A'}</dd> <dt>Dormitory</dt><dd>${escapeHtml(s.dormitory_preference) ? 'Yes' : 'No'}</dd>
+                <dt>Academic Year</dt><dd>${escapeHtml(s.academic_year) || 'N/A'}</dd> <dt>Year</dt><dd>${escapeHtml(s.year) || 'N/A'}</dd> <dt>Registered On</dt><dd>${escapeHtml(formatDate(s.date))}</dd>                <dt>Academic Year</dt><dd>${escapeHtml(s.academic_year) || 'N/A'}</dd> <dt>Year</dt><dd>${escapeHtml(s.year) || 'N/A'}</dd> <dt>Registered On</dt><dd>${escapeHtml(formatDate(s.date))}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
-                <dt>Entry Year</dt><dd>${s.entry_year || 'N/A'}</dd>
+                <dt>Entry Year</dt><dd>${escapeHtml(s.entry_year) || 'N/A'}</dd>
             </dl>
             ${majorHtml}
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${s.father_deceased_year ? `Deceased (${s.father_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${s.father_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.father_name_mm || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${s.father_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.father_race || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${s.father_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.father_info || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${s.father_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.father_phone || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${escapeHtml(s.father_deceased_year) ? `Deceased (${escapeHtml(s.father_deceased_year)})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${escapeHtml(s.father_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.father_name_mm) || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${escapeHtml(s.father_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.father_race) || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${escapeHtml(s.father_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.father_info) || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${escapeHtml(s.father_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.father_phone) || 'N/A'}</dd>
                 </dl>
             </div>
             <div class="detail-parent-section">
                 <h4>Mother's Details</h4>
                 <dl class="details-grid">
-                    <dt>Status</dt><dd>${s.mother_deceased_year ? `Deceased (${s.mother_deceased_year})` : 'Alive'}</dd>
-                    <dt>Name (EN)</dt><dd>${s.mother_name_en || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${s.mother_name_mm || 'N/A'}</dd>
-                    <dt>NRC</dt><dd>${s.mother_nrc || 'N/A'}</dd> <dt>Race</dt><dd>${s.mother_race || 'N/A'}</dd>
-                    <dt>Religion</dt><dd>${s.mother_religion || 'N/A'}</dd> <dt>Occupation</dt><dd>${s.mother_info || 'N/A'}</dd>
-                    <dt>Address</dt><dd>${s.mother_address || 'N/A'}</dd> <dt>Phone</dt><dd>${s.mother_phone || 'N/A'}</dd>
+                    <dt>Status</dt><dd>${escapeHtml(s.mother_deceased_year) ? `Deceased (${escapeHtml(s.mother_deceased_year)})` : 'Alive'}</dd>
+                    <dt>Name (EN)</dt><dd>${escapeHtml(s.mother_name_en) || 'N/A'}</dd> <dt>Name (MM)</dt><dd>${escapeHtml(s.mother_name_mm) || 'N/A'}</dd>
+                    <dt>NRC</dt><dd>${escapeHtml(s.mother_nrc) || 'N/A'}</dd> <dt>Race</dt><dd>${escapeHtml(s.mother_race) || 'N/A'}</dd>
+                    <dt>Religion</dt><dd>${escapeHtml(s.mother_religion) || 'N/A'}</dd> <dt>Occupation</dt><dd>${escapeHtml(s.mother_info) || 'N/A'}</dd>
+                    <dt>Address</dt><dd>${escapeHtml(s.mother_address) || 'N/A'}</dd> <dt>Phone</dt><dd>${escapeHtml(s.mother_phone) || 'N/A'}</dd>
                 </dl>
             </div>
             ${documentsHtml}`;
@@ -1242,11 +1275,9 @@ $pdo = null;
 
     function renderTable() {
       const rows = getFilteredSorted();
-      const total = rows.length;
       const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-      state.page = Math.min(state.page, totalPages);
-      const start = (state.page - 1) * PAGE_SIZE;
-      const pageRows = rows.slice(start, start + PAGE_SIZE);
+      const start = (state.page - 1) * PAGE_SIZE; //set to zero because we fetech from server from now on
+      const pageRows = rows.slice(0, PAGE_SIZE);
       const tbody = document.getElementById('tbody');
 
       tbody.innerHTML = '';
@@ -1258,12 +1289,12 @@ $pdo = null;
             
             tr.innerHTML = `
             <td><input type="checkbox" data-id="${s.student_id}" ${state.selected.has(s.student_id)?'checked':''} /></td>
-            <td>${s.seat_no || ''}</td>
-            <td>${s.student_name_en || ''}</td>
-            <td>${s.student_email || ''}</td>
-            <td>${s.student_phone || ''}</td>
-            <td>${s.academic_year || ''}</td>
-            <td>${formatDate(s.date)}</td>
+            <td>${escapeHtml(s.seat_no) || ''}</td>
+            <td>${escapeHtml(s.student_name_en) || ''}</td>
+            <td>${escapeHtml(s.student_email) || ''}</td>
+            <td>${escapeHtml(s.student_phone) || ''}</td>
+            <td>${escapeHtml(s.academic_year) || ''}</td>
+            <td>${escapeHtml(formatDate(s.date))}</td>
             <td>
                 <div style="display:flex; gap:6px;">
                 <button class="btn ghost" data-details="${s.student_id}">Details</button>
@@ -1276,14 +1307,13 @@ $pdo = null;
       }
 
       document.getElementById('pageInfo').textContent = total ? `${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}` : '0–0 of 0';
-      document.getElementById('prevPage').disabled = state.page <= 1;
-      document.getElementById('nextPage').disabled = state.page >= totalPages;
+      // document.getElementById('prevPage').disabled = state.page <= 1;
+      // document.getElementById('nextPage').disabled = state.page >= totalPages;
       document.getElementById('bulkDeleteBtn').disabled = state.selected.size === 0;
     }
 
     function render() {
-      const filteredCount = getFilteredSorted().length;
-      document.getElementById('studentCountDisplay').textContent = `Total Students: ${filteredCount}`;
+      document.getElementById('studentCountDisplay').textContent = `Total Students: ${total}`;
       
       renderTable();
     }
@@ -1318,12 +1348,25 @@ $pdo = null;
         state.page = 1; render(); showToast('Filters cleared', 'success');
       });
 
-      document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
-      document.getElementById('nextPage').addEventListener('click', () => { 
-          const rows = getFilteredSorted();
-          const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
-          if (state.page < totalPages) { state.page++; render(); }
+      document.getElementById('prevPage').addEventListener('click', () => {
+        if (state.page > 1) {
+          const prevPage = state.page - 1;
+          const url = new URL(window.location.href);
+          url.searchParams.set('page', prevPage);
+          window.location.replace (url.toString());
+        }
       });
+
+      document.getElementById('nextPage').addEventListener('click', () => {
+        const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (state.page < totalPages) {
+          const nextPage = state.page + 1;
+          const url = new URL(window.location.href);
+          url.searchParams.set('page', nextPage);
+          window.location.replace (url.toString());
+        }
+      });
+
       
       // MODIFICATION: Show add type modal instead of student form directly
       document.getElementById('addBtn').addEventListener('click', () => document.getElementById('addStudentTypeModal').showModal());
@@ -1400,7 +1443,7 @@ $pdo = null;
           if (targetButton.dataset.details !== undefined) openDetailsModal(student);
           if (targetButton.dataset.edit !== undefined) openModal('edit', student);
           if (targetButton.dataset.del !== undefined) {
-              const confirmed = await showConfirm('Delete Student', `Are you sure you want to delete "${student.student_name_en}"? This action cannot be undone.`);
+              const confirmed = await showConfirm('Delete Student', `Are you sure you want to delete "${escapeHtml(student.student_name_en)}"? This action cannot be undone.`);
               if (!confirmed) return;
               
               const response = await apiRequest('delete', { ids: [id] });
@@ -1408,7 +1451,7 @@ $pdo = null;
                   state.students = state.students.filter(s => s.student_id !== id);
                   state.selected.delete(id);
                   render();
-                  showToast(`Student "${student.student_name_en}" deleted.`, 'success');
+                  showToast(`Student "${escapeHtml(student.student_name_en)}" deleted.`, 'success');
               }
           }
       });
@@ -1563,7 +1606,7 @@ $pdo = null;
                 }
                 render();
                 closeModalSafe('studentModal');
-                showToast(`Student "${result.student.student_name_en}" saved.`, 'success');
+                showToast(`Student "${escapeHtml(result.student.student_name_en)}" saved.`, 'success');
             } else {
                  showToast(result.message || 'Failed to save student.', 'error');
             }

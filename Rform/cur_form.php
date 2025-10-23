@@ -22,8 +22,6 @@
     }
 
     // --- FETCH DATA FROM DATABASE ---
-    // This block runs only once when the page is first loaded after verification.
-    // Subsequent POSTS to this page will use the session data populated here.
     if (!isset($_SESSION['form1_data'])) {
         try {
             $student_id = $_SESSION['student_id'];
@@ -67,7 +65,6 @@
             die("Database error: Could not fetch student data. " . $e->getMessage());
         }
     }
-
 
     // Processing form data when the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -138,17 +135,69 @@
 
     function parseNrc($nrc_string, &$repopulate_array)
     {
-        if (! empty($nrc_string) && preg_match('/^(\d+)\/([^\(]+)(\(\S+\))(\d{6})$/', $nrc_string, $matches)) {
-            $repopulate_array['state']    = $matches[1];
-            $repopulate_array['township'] = $matches[2];
-            $repopulate_array['type']     = $matches[3];
-            $repopulate_array['number']   = $matches[4];
+        if (!empty($nrc_string)) {
+            // Try multiple NRC formats
+            // Format 1: 12/ABC(N)123456
+            if (preg_match('/^(\d+)\/([^\(]+)\(([^\)]+)\)(\d+)$/', $nrc_string, $matches)) {
+                $repopulate_array['state']    = $matches[1];
+                $repopulate_array['township'] = trim($matches[2]);
+                $repopulate_array['type']     = '(' . $matches[3] . ')';
+                $repopulate_array['number']   = $matches[4];
+            }
+            // Format 2: 12/ABC(N)123456 with spaces
+            elseif (preg_match('/^(\d+)\s*\/\s*([^\(]+)\s*\(\s*([^\)]+)\s*\)\s*(\d+)$/', $nrc_string, $matches)) {
+                $repopulate_array['state']    = $matches[1];
+                $repopulate_array['township'] = trim($matches[2]);
+                $repopulate_array['type']     = '(' . trim($matches[3]) . ')';
+                $repopulate_array['number']   = $matches[4];
+            }
+            // Format 3: Simple format without parentheses
+            elseif (preg_match('/^(\d+)\/([a-zA-Zက-ှ]+)([နိုင်|ဧည့်|ပြု|သာ|ယာယီ]+)(\d+)$/u', $nrc_string, $matches)) {
+                $repopulate_array['state']    = $matches[1];
+                $repopulate_array['township'] = trim($matches[2]);
+                $repopulate_array['type']     = '(' . trim($matches[3]) . ')';
+                $repopulate_array['number']   = $matches[4];
+            }
+            // If no pattern matches, try to extract parts manually
+            else {
+                $parts = explode('/', $nrc_string);
+                if (count($parts) >= 2) {
+                    $repopulate_array['state'] = $parts[0];
+                    $rest = $parts[1];
+                    
+                    // Try to find type in parentheses
+                    if (preg_match('/(.*)\(([^\)]+)\)(.*)/', $rest, $type_matches)) {
+                        $repopulate_array['township'] = trim($type_matches[1]);
+                        $repopulate_array['type'] = '(' . trim($type_matches[2]) . ')';
+                        $repopulate_array['number'] = trim($type_matches[3]);
+                    } else {
+                        // If no parentheses, try to extract last 6 digits as number
+                        if (preg_match('/(.*?)(\d{6})$/', $rest, $digit_matches)) {
+                            $repopulate_array['township'] = trim($digit_matches[1]);
+                            $repopulate_array['type'] = '(နိုင်)'; // Default type
+                            $repopulate_array['number'] = $digit_matches[2];
+                        } else {
+                            // Last resort: use the whole string as township
+                            $repopulate_array['township'] = trim($rest);
+                            $repopulate_array['type'] = '(နိုင်)';
+                            $repopulate_array['number'] = '';
+                        }
+                    }
+                }
+            }
         }
     }
 
+    // Parse NRCs with improved function
     parseNrc(getValue('student_nrc'), $repopulate_nrc['student']);
     parseNrc(getValue('father_nrc'), $repopulate_nrc['father']);
     parseNrc(getValue('mother_nrc'), $repopulate_nrc['mother']);
+
+    // Debug: Check if NRC data is being parsed correctly
+    error_log("Student NRC Data: " . print_r($repopulate_nrc['student'], true));
+    error_log("Father NRC Data: " . print_r($repopulate_nrc['father'], true));
+    error_log("Mother NRC Data: " . print_r($repopulate_nrc['mother'], true));
+
     include 'formPartial/header.php';
 ?>
 
@@ -220,6 +269,15 @@
     #photo-upload-area {
         border-color: #93c5fd;
         background-color: #eff6ff;
+    }
+    .nrc-group {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1.5fr 1fr;
+        gap: 0.5rem;
+        align-items: end;
+    }
+    .nrc-group select, .nrc-group input {
+        width: 100%;
     }
 </style>
 <br>
@@ -296,7 +354,36 @@
                 </div>
                 <div class="relative pb-5 md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
-                    <div id="student_nrc_group" class="mt-1"></div>
+                    <div class="nrc-group mt-1">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">ပြည်နယ်/တိုင်း</label>
+                            <select name="student_nrc_state" disabled class="w-full">
+                                <?php for ($i = 1; $i <= 14; $i++): ?>
+                                    <option value="<?php echo $i; ?>" <?php echo ($repopulate_nrc['student']['state'] == $i) ? 'selected' : ''; ?>>
+                                        <?php echo $i; ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">မြို့နယ်</label>
+                            <input type="text" name="student_nrc_township" value="<?php echo htmlspecialchars($repopulate_nrc['student']['township']); ?>" readonly class="w-full">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">အမျိုးအစား</label>
+                            <select name="student_nrc_type" disabled class="w-full">
+                                <option value="(နိုင်)" <?php echo ($repopulate_nrc['student']['type'] == '(နိုင်)') ? 'selected' : ''; ?>>(နိုင်)</option>
+                                <option value="(ဧည့်)" <?php echo ($repopulate_nrc['student']['type'] == '(ဧည့်)') ? 'selected' : ''; ?>>(ဧည့်)</option>
+                                <option value="(ပြု)" <?php echo ($repopulate_nrc['student']['type'] == '(ပြု)') ? 'selected' : ''; ?>>(ပြု)</option>
+                                <option value="(သာ)" <?php echo ($repopulate_nrc['student']['type'] == '(သာ)') ? 'selected' : ''; ?>>(သာ)</option>
+                                <option value="(ယာယီ)" <?php echo ($repopulate_nrc['student']['type'] == '(ယာယီ)') ? 'selected' : ''; ?>>(ယာယီ)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">နံပါတ်</label>
+                            <input type="text" name="student_nrc_number" value="<?php echo htmlspecialchars($repopulate_nrc['student']['number']); ?>" readonly class="w-full" maxlength="6">
+                        </div>
+                    </div>
                     <input type="hidden" name="student_nrc" id="student_nrc_hidden" value="<?php echo getValue('student_nrc'); ?>">
                 </div>
                 <div class="relative pb-5">
@@ -350,7 +437,36 @@
                     </div>
                     <div class="relative pb-5">
                         <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
-                        <div id="father_nrc_group" class="mt-1 father-field-group"></div>
+                        <div class="nrc-group mt-1">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">ပြည်နယ်/တိုင်း</label>
+                                <select name="father_nrc_state" disabled class="w-full">
+                                    <?php for ($i = 1; $i <= 14; $i++): ?>
+                                        <option value="<?php echo $i; ?>" <?php echo ($repopulate_nrc['father']['state'] == $i) ? 'selected' : ''; ?>>
+                                            <?php echo $i; ?>
+                                        </option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">မြို့နယ်</label>
+                                <input type="text" name="father_nrc_township" value="<?php echo htmlspecialchars($repopulate_nrc['father']['township']); ?>" readonly class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">အမျိုးအစား</label>
+                                <select name="father_nrc_type" disabled class="w-full">
+                                    <option value="(နိုင်)" <?php echo ($repopulate_nrc['father']['type'] == '(နိုင်)') ? 'selected' : ''; ?>>(နိုင်)</option>
+                                    <option value="(ဧည့်)" <?php echo ($repopulate_nrc['father']['type'] == '(ဧည့်)') ? 'selected' : ''; ?>>(ဧည့်)</option>
+                                    <option value="(ပြု)" <?php echo ($repopulate_nrc['father']['type'] == '(ပြု)') ? 'selected' : ''; ?>>(ပြု)</option>
+                                    <option value="(သာ)" <?php echo ($repopulate_nrc['father']['type'] == '(သာ)') ? 'selected' : ''; ?>>(သာ)</option>
+                                    <option value="(ယာယီ)" <?php echo ($repopulate_nrc['father']['type'] == '(ယာယီ)') ? 'selected' : ''; ?>>(ယာယီ)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">နံပါတ်</label>
+                                <input type="text" name="father_nrc_number" value="<?php echo htmlspecialchars($repopulate_nrc['father']['number']); ?>" readonly class="w-full" maxlength="6">
+                            </div>
+                        </div>
                         <input type="hidden" name="father_nrc" id="father_nrc_hidden" value="<?php echo getValue('father_nrc'); ?>">
                     </div>
                     <div class="relative pb-5">
@@ -391,7 +507,36 @@
                     </div>
                     <div class="relative pb-5">
                         <label class="block text-sm font-medium text-gray-700">နိုင်ငံသားစိစစ်ရေးကတ်အမှတ်</label>
-                        <div id="mother_nrc_group" class="mt-1 mother-field-group"></div>
+                        <div class="nrc-group mt-1">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">ပြည်နယ်/တိုင်း</label>
+                                <select name="mother_nrc_state" disabled class="w-full">
+                                    <?php for ($i = 1; $i <= 14; $i++): ?>
+                                        <option value="<?php echo $i; ?>" <?php echo ($repopulate_nrc['mother']['state'] == $i) ? 'selected' : ''; ?>>
+                                            <?php echo $i; ?>
+                                        </option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">မြို့နယ်</label>
+                                <input type="text" name="mother_nrc_township" value="<?php echo htmlspecialchars($repopulate_nrc['mother']['township']); ?>" readonly class="w-full">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">အမျိုးအစား</label>
+                                <select name="mother_nrc_type" disabled class="w-full">
+                                    <option value="(နိုင်)" <?php echo ($repopulate_nrc['mother']['type'] == '(နိုင်)') ? 'selected' : ''; ?>>(နိုင်)</option>
+                                    <option value="(ဧည့်)" <?php echo ($repopulate_nrc['mother']['type'] == '(ဧည့်)') ? 'selected' : ''; ?>>(ဧည့်)</option>
+                                    <option value="(ပြု)" <?php echo ($repopulate_nrc['mother']['type'] == '(ပြု)') ? 'selected' : ''; ?>>(ပြု)</option>
+                                    <option value="(သာ)" <?php echo ($repopulate_nrc['mother']['type'] == '(သာ)') ? 'selected' : ''; ?>>(သာ)</option>
+                                    <option value="(ယာယီ)" <?php echo ($repopulate_nrc['mother']['type'] == '(ယာယီ)') ? 'selected' : ''; ?>>(ယာယီ)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">နံပါတ်</label>
+                                <input type="text" name="mother_nrc_number" value="<?php echo htmlspecialchars($repopulate_nrc['mother']['number']); ?>" readonly class="w-full" maxlength="6">
+                            </div>
+                        </div>
                         <input type="hidden" name="mother_nrc" id="mother_nrc_hidden" value="<?php echo getValue('mother_nrc'); ?>">
                     </div>
                     <div class="relative pb-5">
@@ -430,7 +575,6 @@
     include 'formPartial/footer.php';
 ?>
 <script>
-    const repopulateNrcData = <?php echo json_encode($repopulate_nrc); ?>;
     const photoUrlFromServer = '<?php echo getValue('photo_url', ''); ?>';
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -441,12 +585,14 @@
         const placeholder = document.getElementById('photo-placeholder');
         const removeBtn = document.getElementById('remove-photo-btn');
         const removePhotoFlag = document.getElementById('remove_photo_flag');
+        
         function showPhotoPreview(url) {
             if (!url) return;
             photoPreview.src = url;
             placeholder.style.display = 'none';
             previewContainer.style.display = 'block';
         }
+        
         function hidePhotoPreview() {
             photoPreview.src = '#';
             placeholder.style.display = 'block';
@@ -454,9 +600,11 @@
             photoUploadInput.value = '';
             removePhotoFlag.value = '1';
         }
+        
         if (photoUrlFromServer) {
             showPhotoPreview(photoUrlFromServer);
         }
+        
         photoUploadInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 removePhotoFlag.value = '0';
@@ -467,106 +615,33 @@
                 reader.readAsDataURL(this.files[0]);
             }
         });
+        
         removeBtn.addEventListener('click', function() {
             hidePhotoPreview();
         });
-        // --- NRC Input Group Logic ---
-        const nrcTownships = {
-            1: ["အဂယ", "အတန", "ဗကန", "ဗမန", "ဒဖယ", "ဟပန", "ဆဒန", "ဆပဘ", "ကမန", "ကမတ", "ကပတ", "ခဘဒ", "ခလဖ", "ခဖန", "လဂန", "မဂဒ", "မကန","မကတ", "မကသ", "မခဘ", "မလန", "မမန", "မညန", "မစန","မတန","နမန","ပမန","ပနဒ","ပတအ","ပဝန","ဖကန","ရဗယ", "ဆဘန", "ဆဘတ", "စကန", "ဆလန", "စပဘ", "တနန","ဝမန","သဝတ","ဝမန","ရကန"],
-            2: ["ဘလခ", "ဒမဆ", "ဖဆန", "ထတပ","ခစန", "လကန", "မစန", "ဖလဆ", "ဖရဆ", "ရသန","စစန","ရတန"],
-            3: ["ဘအန", "ဘဂလ", "ဘသဆ", "ကဒန", "ကကရ", "ကမမ","ကဆက", "ကတခ", "လဘန", "လသန","မဆလ", "မဝတ", "ပကန", "ဖအန", "ဖပန", "စကလ","သတက","သတန","ဝလမ","ရရသ"],
-            4: ["ဟခန", "ဖလန", "ဆမန", "ထတလ", "ကခန", "ကပလ","မတန", "မတပ", "ပလဝ", "ရခဒ","ရဇန", "တတန", "တဇန"],
-            5: ["အထန", "အမဇ", "အတန", "အရတ", "ဗမန", "ဘတလ", "ဒဟန", "ဓကန", "ဒပယ", "ဟမလ", "ထခန", "ထပခ", "ကဘလ", "ကလထ","ကလန", "ကလတ", "ကလသ", "ကလဝ", "ကနန", "ကဆလ", "ကသန", "ခဥန", "ခပန", "ခတန", "ခဥတ","လဟန", "လရန", "မကန", "မလန", "မမန", "မမတ","မပလ", "မသန", "မရန", "နယန", "ငစန", "ငဇန", "ပလဘ", "ပလန", "ပဆန", "ဖပန","စကန", "ဆလက", "ဆမရ", "တဥန", "တမန", "တဆန","ဝလန", "ဝသန", "ရဥန", "ရဘန", "ယမပ"],
-            6: ["အမရ", "ဘပန", "ဟသတ", "ထဝန", "ကလအ", "ကပန", "ကစန", "ကသမ", "ကသန", "ကရရ", "ခမက","လလန", "မအန", "မအရ", "မမလ", "မမန","မတန", "ပကမ", "ပလန", "ပလတ", "တသရ", "သရခ", "ရဖန"],
-            7: ["အဖန", "အတန", "ဘသရ", "ဒဥန", "ထတပ", "ကကန", "ကပက", "ကတခ","ကဝန", "လပတ", "မလန", "မညန", "မဝတ", "နတလ", "ညလပ", "ပခန","ပခတ", "ပမန", "ပစတ", "ပတန", "ပတတ", "ဖမန", "တငန", "သကန","သနပ","သဝတ","ဝမန","ရကန","ရတန","ရတရ","ဇကန"],
-            8: ["အလန", "ဘကလ", "ဂဂန", "ဆမန", "ထလန", "ကထန", "ကမန", "ခမန","မဘန", "မဂဒ", "မထလ", "မထန", "မကန", "မလန", "မမန", "မတန", "မသန", "မရဆ", "နမန", "ငဖန", "ပခက", "ပမန" , "ပဖန", "စလန","ဆပဝ","ဆဖန", "စတရ", "တတက", "သရန", "ရနခ", "ရစက"],
-            9: ["အခန", "အမဘ", "အမရ", "အမဇ", "အစန", "အရတ", "ဥတသ", "ဒခသ", "ကမန", "ကပတ", "ကဆန", "ခအဇ", "ခမခ","ခမမ", "ခမန", "ခမစ", "ခမသ", "ခမဇ", "လကန", "လဝန", "မဟမ", "မထလ", "မကခ", "မကန","မခန", "မလန", "မမန", "မနမ", "မနတ", "မစန","မတလ", "မတန", "မတရ", "မသန", "မရမ", "မရတ", "နထက", "နမန", "နနမ", "နတက", "ငသရ","ငဇန", "ညဉန", "ပဥလ", "ပဘန", "ပဗသ", "ပကခ","ပခက", "ပခမ", "ပမန", "ပသက", "စကန", "စကတ", "တကတ" , "တတဥ", "တသန", "သပက", "သစန", "သတရ", "သဝန", "ဝတန", "ရဥန","ရမသ","ဇဗသ","ဇယသ"],
-            10: ["ဘအန", "ဘလန", "ထထန", "ကထန", "ကမလ", "ကမရ", "ခဆန", "ခဇန", "လမန", "မဒန", "မလမ","မစန", "ပမန", "ဖပန", "သထန", "သဖရ", "ရမန"],
-            11: ["အမန", "ဘသတ", "ဂမန", "ကဖန", "ကတလ", "ကတန", "လမတ", "မအတ","မအန", "မဥန", "မမန", "မပန", "မပတ", "မတန", "ပဏက", "ပတန", "စတန", "တကန", "တပဝ", "သတန", "ရဗန", "ရတန" , "ရတသ", "ရသတ"],
-            12: ["အလန", "အစန", "ဥကမ", "ဥကတ", "ဗဟန", "ဗတထ", "ဒဂမ", "ဒဂန", "ဒဂဆ", "ဒဂရ", "ဒလန", "ဒပန", "ထတပ", "ကကက", "ကခက", "ကမန", "ကမတ", "ကမရ", "ကတန", "ကတတ", "ခရန", "လကန" , "လမန", "လမတ", "လသန", "လသယ", "လယန", "လယရ", "မဥက", "မဘန","မဂဒ", "မဂတ", "မရက", "ပဘတ", "ပဇတ", "ဆကခ", "စခန", "တဥက", "တကန", "တမန", "တတန", "တတတ", "သဃက", "သကတ", "သခန", "သလန","ရကန","ရပသ"],
-            13: ["အပန", "အသရ", "အတန", "ဟမန", "ဟပန", "ဟပတ", "ကဟန", "ကကန", "ကခန", "ကလဒ", "ကလထ", "ကလန", "ကလတ", "ကမန", "ကတလ", "ကတန", "ကတတ", "ကသန", "ခလန", "ခရဟ", "လကန", "လခန", "လခတ", "လလန" ,"လရန", "မဘန", "မဟရ", "မထထ", "မကထ", "မကန", "မကတ", "မခန", "မခတ", "မလန", "မလတ", "မမထ", "မမန", "မနန", "မနတ", "မငန", "မပထ", "မပန", "မပတ", "မဖန", "မဖတ", "မရန", "မရတ", "မဆန", "မဆတ", "မတန", "မတတ", "မယထ", "မယန", "မယတ", "နခန", "နခတ" ,"နမတ", "နဖန", "နစန", "နတန", "နတရ", "ညရန" , "ပဆတ", "ပလထ", "ပလန", "ပလတ", "ပပက", "ပဆန", "ပဝန", "ပယန", "ဖခန", "ဆဆန", "တကန" ,"တခလ", "တလန", "တမည", "တတန", "တယန", "သနန",  "သပန", "ဝကန","ရငန","ရညန" ,"ရစန"],
-            14: ["အမတ", "အဂပ", "အမန", "အပန", "အစန", "ဘကလ", "ဒဒရ", "ဓနဖ", "ဟကက", "ဟသတ", "ကကထ", "ကကန", "ကခန", "ကလန" , "ကမန", "ကမသ", "ကပန", "လမန", "လပတ", "မအန", "မအပ", "မမက", "မမန", "မရက", "ငပတ", "ငဆန", "ငသခ" , "ငရက", "ညတန", "ပကခ", "မပလ", "ပတန", "ပသန", "ပသရ", "ဖပန", "တမန", "သပန" ,"ဝခမ", "ရကန", "ရသယ", "ဇလန"]
-        };
-        const nrcTypes = ["နိုင်", "ဧည့်", "ပြု", "သာ", "ယာယီ"];
 
-        function createNrcInputGroup(containerId, namePrefix, defaults) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            container.innerHTML = '';
-            const wrapper = document.createElement('div');
-            wrapper.className = 'flex flex-col';
-            const dropdownContainer = document.createElement('div');
-            dropdownContainer.className = 'grid grid-cols-3 gap-2';
-            const stateSelect = document.createElement('select');
-            stateSelect.name = `${namePrefix}_state`;
-            stateSelect.disabled = true;
-            for (let i = 1; i <= 14; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = i;
-                stateSelect.appendChild(option);
+        // Debug: Log NRC data to console
+        console.log('NRC Data loaded:', {
+            student: {
+                state: '<?php echo $repopulate_nrc['student']['state']; ?>',
+                township: '<?php echo $repopulate_nrc['student']['township']; ?>',
+                type: '<?php echo $repopulate_nrc['student']['type']; ?>',
+                number: '<?php echo $repopulate_nrc['student']['number']; ?>'
+            },
+            father: {
+                state: '<?php echo $repopulate_nrc['father']['state']; ?>',
+                township: '<?php echo $repopulate_nrc['father']['township']; ?>',
+                type: '<?php echo $repopulate_nrc['father']['type']; ?>',
+                number: '<?php echo $repopulate_nrc['father']['number']; ?>'
+            },
+            mother: {
+                state: '<?php echo $repopulate_nrc['mother']['state']; ?>',
+                township: '<?php echo $repopulate_nrc['mother']['township']; ?>',
+                type: '<?php echo $repopulate_nrc['mother']['type']; ?>',
+                number: '<?php echo $repopulate_nrc['mother']['number']; ?>'
             }
-            const townshipSelect = document.createElement('select');
-            townshipSelect.name = `${namePrefix}_township`;
-            townshipSelect.disabled = true;
-            const typeSelect = document.createElement('select');
-            typeSelect.name = `${namePrefix}_type`;
-            typeSelect.disabled = true;
-            nrcTypes.forEach(type => {
-                const option = document.createElement('option');
-                option.value = `(${type})`;
-                option.textContent = `(${type})`;
-                typeSelect.appendChild(option);
-            });
-            dropdownContainer.append(stateSelect, townshipSelect, typeSelect);
-            const numberInput = document.createElement('input');
-            numberInput.type = 'text';
-            numberInput.name = `${namePrefix}_number`;
-            numberInput.className = 'mt-1';
-            numberInput.placeholder = '123456';
-            numberInput.maxLength = 6;
-            numberInput.pattern = '\\d{6}';
-            numberInput.readOnly = true;
-            wrapper.append(dropdownContainer, numberInput);
-            container.append(wrapper);
-            
-            const updateNrcTownships = () => {
-                const selectedState = stateSelect.value;
-                const townships = nrcTownships[selectedState] || [];
-                townshipSelect.innerHTML = '';
-                townships.forEach(township => {
-                    const option = document.createElement('option');
-                    option.value = township;
-                    option.textContent = township;
-                    townshipSelect.appendChild(option);
-                });
-                if (defaults.township && stateSelect.value == defaults.state) {
-                    townshipSelect.value = defaults.township;
-                }
-            };
-
-            if(defaults.state) stateSelect.value = defaults.state;
-            if(defaults.type) typeSelect.value = defaults.type;
-            if(defaults.number) numberInput.value = defaults.number;
-            
-            updateNrcTownships();
-        }
-        createNrcInputGroup('student_nrc_group', 'student_nrc', repopulateNrcData.student);
-        createNrcInputGroup('father_nrc_group', 'father_nrc', repopulateNrcData.father);
-        createNrcInputGroup('mother_nrc_group', 'mother_nrc', repopulateNrcData.mother);
-        
-        function toggleParentFields(prefix, isDeceased) {
-            const fields = document.querySelectorAll(`.${prefix}-field`);
-             fields.forEach(field => {
-                field.readOnly = true; // Make all parent fields readonly
-             });
-        }
-
-        toggleParentFields('father', document.getElementById('father_deceased_year').value.trim() !== '');
-        toggleParentFields('mother', document.getElementById('mother_deceased_year').value.trim() !== '');
-
+        });
     });
 </script>
 </body>
 </html>
-

@@ -67,7 +67,7 @@
                     $date_obj = new DateTime($_SESSION['form1_data']['date']);
                     return htmlspecialchars(trim($date_obj->format('d-m-Y')));
                 } catch (Exception $e) {
-                     return htmlspecialchars(trim($_SESSION['form1_data'][$fieldName]));
+                    return htmlspecialchars(trim($_SESSION['form1_data'][$fieldName]));
                 }
             }
             return htmlspecialchars(trim($_SESSION['form1_data'][$fieldName]));
@@ -84,11 +84,31 @@
 
     function parseNrc($nrc_string, &$repopulate_array)
     {
-        if (! empty($nrc_string) && preg_match('/^(\d+)\/([^\(]+)(\(\S+\))(\d{6})$/', $nrc_string, $matches)) {
-            $repopulate_array['state']    = $matches[1];
-            $repopulate_array['township'] = $matches[2];
-            $repopulate_array['type']     = $matches[3];
-            $repopulate_array['number']   = $matches[4];
+        // Myanmar to English digit mapping for parsing
+        $myanmar_to_english = [
+            '၀' => '0', '၁' => '1', '၂' => '2', '၃' => '3', '၄' => '4',
+            '၅' => '5', '၆' => '6', '၇' => '7', '၈' => '8', '၉' => '9'
+        ];
+
+        if (! empty($nrc_string)) {
+            // Check if the NRC string contains Myanmar digits in state part
+            if (preg_match('/^([၀-၉]+)\/([^\(]+)(\(\S+\))([၀-၉]+)$/', $nrc_string, $matches)) {
+                // Convert Myanmar state to English for internal processing
+                $state_myanmar = $matches[1];
+                $state_english = strtr($state_myanmar, $myanmar_to_english);
+                
+                $repopulate_array['state']    = $state_english;
+                $repopulate_array['township'] = $matches[2];
+                $repopulate_array['type']     = $matches[3];
+                $repopulate_array['number']   = $matches[4];
+            }
+            // Fallback for English digit format
+            elseif (preg_match('/^(\d+)\/([^\(]+)(\(\S+\))(\d+)$/', $nrc_string, $matches)) {
+                $repopulate_array['state']    = $matches[1];
+                $repopulate_array['township'] = $matches[2];
+                $repopulate_array['type']     = $matches[3];
+                $repopulate_array['number']   = $matches[4];
+            }
         }
     }
 
@@ -208,7 +228,13 @@
             if (empty($_POST['father_nrc'])) $validation_errors['father_nrc'] = "အဘ(အရင်း)၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
             if (empty($_POST['father_address'])) $validation_errors['father_address'] = "အဘ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
             if (empty($_POST['father_phone'])) $validation_errors['father_phone'] = "အဘ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        } else {
+            // If father is deceased, clear any errors for father fields since they're not required
+            unset($validation_errors['father_name_mm'], $validation_errors['father_name_en'], $validation_errors['father_religion'], 
+                $validation_errors['father_race'], $validation_errors['father_info'], $validation_errors['father_nrc'], 
+                $validation_errors['father_address'], $validation_errors['father_phone']);
         }
+        
         if (empty($_POST['mother_deceased_year'])) {
             if (empty($_POST['mother_name_mm'])) $validation_errors['mother_name_mm'] = "အမိ(အရင်း)၏ အမည် (မြန်မာ) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
             if (empty($_POST['mother_name_en'])) $validation_errors['mother_name_en'] = "အမိ(အရင်း)၏ အမည် (အင်္ဂလိပ်) ထည့်သွင်းရန်လိုအပ်ပါသည်။";
@@ -218,6 +244,11 @@
             if (empty($_POST['mother_nrc'])) $validation_errors['mother_nrc'] = "အမိ(အရင်း)၏ နိုင်ငံသားစိစစ်ရေးကတ်အမှတ် အပြည့်အစုံထည့်သွင်းရန်လိုအပ်ပါသည်။";
             if (empty($_POST['mother_address'])) $validation_errors['mother_address'] = "အမိ(အရင်း)၏ ဆက်သွယ်ရန်လိပ်စာထည့်သွင်းရန်လိုအပ်ပါသည်။";
             if (empty($_POST['mother_phone'])) $validation_errors['mother_phone'] = "အမိ(အရင်း)၏ ဖုန်းနံပါတ်ထည့်သွင်းရန်လိုအပ်ပါသည်။";
+        } else {
+            // If mother is deceased, clear any errors for mother fields since they're not required
+            unset($validation_errors['mother_name_mm'], $validation_errors['mother_name_en'], $validation_errors['mother_religion'], 
+                $validation_errors['mother_race'], $validation_errors['mother_info'], $validation_errors['mother_nrc'], 
+                $validation_errors['mother_address'], $validation_errors['mother_phone']);
         }
 
 
@@ -230,7 +261,7 @@
                 $mysql_datetime = $date_obj->format('Y-m-d') . ' ' . date('H:i:s');
                 $_SESSION['form1_data']['date'] = $mysql_datetime;
             } else {
-                 $_SESSION['form1_data']['date'] = date('Y-m-d H:i:s');
+                $_SESSION['form1_data']['date'] = date('Y-m-d H:i:s');
             }
 
             // No errors, proceed to form2.php
@@ -334,6 +365,16 @@
         border-radius: 0.5rem;
         box-shadow: 0 0 0 2px #fcd34d;
     }
+    /* NRC number validation styles */
+    .nrc-number.border-red-500 {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+    }
+    /* Language restriction styles */
+    .language-error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+    }
 </style>
     <br>
 
@@ -356,10 +397,9 @@
             </div>
 
             <!-- Top Information Grid -->
-                <!-- Top Information Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div class="relative pb-5">
+                <div class="relative pb-5">
                     <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
                     <select id="academic_year" name="academic_year" class="mt-1" required>
                         <option value="">-- Select Academic Year --</option>
@@ -377,7 +417,7 @@
                         <input type="text" placeholder="Roll No" id="seat_no" name="seat_no" class="mt-1" value="<?php echo getValue('seat_no'); ?>">
                         <?php if (isset($errors['seat_no'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['seat_no']; ?></p><?php endif; ?>
                     </div>
-                  
+                
                     <!-- Major Selection Field (Added from data_add2.php) -->
                     <div class="sm:col-span-2 relative pb-5">
                         <label for="selected_major" class="block text-sm font-medium text-gray-700">ဘာသာရပ်ရွေးချယ်ရန်</label>
@@ -391,7 +431,7 @@
                         </select>
                         <?php if (isset($errors['selected_major'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['selected_major']; ?></p><?php endif; ?>
                     </div>
-                  
+                
                     <div class="sm:col-span-2">
                         <label for="entry_year" class="block text-sm font-medium text-gray-700">တက္ကသိုလ်ဝင်ရောက်သည့်နှစ်</label>
                         <input type="text" id="entry_year" value="2025" name="entry_year" class="mt-1" value="<?php echo getValue('entry_year'); ?>" readonly>
@@ -425,13 +465,15 @@
                         <!-- Name MM -->
                         <div class="relative pb-5">
                             <label for="student_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
-                            <input type="text" id="student_name_mm" name="student_name_mm" class="mt-1" value="<?php echo getValue('student_name_mm'); ?>" required>
+                            <input type="text" id="student_name_mm" name="student_name_mm" class="mt-1 myanmar-field" value="<?php echo getValue('student_name_mm'); ?>" required>
+                            <p class="error-message mt-1" id="student_name_mm_error" style="display: none;">မြန်မာစာသာရိုက်ထည့်ပါ။</p>
                             <?php if (isset($errors['student_name_mm'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_name_mm']; ?></p><?php endif; ?>
                         </div>
                         <!-- Name EN -->
                         <div class="relative pb-5">
                             <label for="student_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
-                            <input type="text" id="student_name_en" name="student_name_en" class="mt-1" value="<?php echo getValue('student_name_en'); ?>" required>
+                            <input type="text" id="student_name_en" name="student_name_en" class="mt-1 english-field" value="<?php echo getValue('student_name_en'); ?>" required>
+                            <p class="error-message mt-1" id="student_name_en_error" style="display: none;">အင်္ဂလိပ်စာသာရိုက်ထည့်ပါ။</p>
                             <?php if (isset($errors['student_name_en'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_name_en']; ?></p><?php endif; ?>
                         </div>
                         <!-- Race -->
@@ -444,7 +486,7 @@
                         <div class="relative pb-5">
                             <label for="student_religion" class="block text-sm font-medium text-gray-700">ကိုးကွယ်သည့်ဘာသာ</label>
                             <input type="text" id="student_religion" name="student_religion" class="mt-1" value="<?php echo getValue('student_religion'); ?>" required>
-                             <?php if (isset($errors['student_religion'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_religion']; ?></p><?php endif; ?>
+                            <?php if (isset($errors['student_religion'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_religion']; ?></p><?php endif; ?>
                         </div>
                         <!-- NRC -->
                         <div class="relative pb-5 md:col-span-2">
@@ -459,7 +501,7 @@
                             <input type="hidden" name="student_nrc" id="student_nrc_hidden" value="<?php echo getValue('student_nrc'); ?>">
                             <?php if (isset($errors['student_nrc'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_nrc']; ?></p><?php endif; ?>
                         </div>
-                          <!-- DOB -->
+                        <!-- DOB -->
                         <div class="relative pb-5">
                             <label for="student_dob" class="block text-sm font-medium text-gray-700">မွေးသက္ကရာဇ်</label>
                             <input type="date" id="student_dob" name="student_dob" class="mt-1" value="<?php echo getValue('student_dob'); ?>" required>
@@ -468,21 +510,21 @@
                         </div>
                         <!-- Birthplace -->
                         <div class="relative pb-5">
-                             <label for="student_birthplace" class="block text-sm font-medium text-gray-700">မွေးဖွားရာဇာတိ</label>
-                             <div class="grid grid-cols-2 gap-2 mt-1">
-                                 <div>
-                                     <select id="state_region" name="state_region" required>
-                                         <option value="" disabled selected>တိုင်း/ပြည်နယ်</option>
-                                     </select>
-                                 </div>
-                                 <div>
-                                     <select id="township" name="township" required>
-                                         <option value="" disabled selected>မြို့နယ်</option>
-                                     </select>
-                                 </div>
-                             </div>
-                             <input type="hidden" id="student_birthplace" name="student_birthplace" value="<?php echo getValue('student_birthplace'); ?>">
-                             <?php if (isset($errors['student_birthplace'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_birthplace']; ?></p><?php endif; ?>
+                            <label for="student_birthplace" class="block text-sm font-medium text-gray-700">မွေးဖွားရာဇာတိ</label>
+                            <div class="grid grid-cols-2 gap-2 mt-1">
+                                <div>
+                                    <select id="state_region" name="state_region" required>
+                                        <option value="" disabled selected>တိုင်း/ပြည်နယ်</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select id="township" name="township" required>
+                                        <option value="" disabled selected>မြို့နယ်</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" id="student_birthplace" name="student_birthplace" value="<?php echo getValue('student_birthplace'); ?>">
+                            <?php if (isset($errors['student_birthplace'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_birthplace']; ?></p><?php endif; ?>
                         </div>
                         <!-- Phone -->
                         <div class="relative pb-5">
@@ -498,9 +540,9 @@
                         </div>
                         <!-- Address -->
                         <div class="relative pb-5 md:col-span-2">
-                              <label for="student_address" class="block text-sm font-medium text-gray-700">အမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ အပြည့်အစုံ</label>
-                              <textarea id="student_address" name="student_address" rows="3" class="mt-1"><?php echo getValue('student_address'); ?></textarea>
-                              <?php if (isset($errors['student_address'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_address']; ?></p><?php endif; ?>
+                            <label for="student_address" class="block text-sm font-medium text-gray-700">အမြဲတမ်း ဆက်သွယ်ရန်လိပ်စာ အပြည့်အစုံ</label>
+                            <textarea id="student_address" name="student_address" rows="3" class="mt-1"><?php echo getValue('student_address'); ?></textarea>
+                            <?php if (isset($errors['student_address'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['student_address']; ?></p><?php endif; ?>
                         </div>
                     </div>
                 </section>
@@ -523,13 +565,15 @@
                             <!-- Father Name MM -->
                             <div class="relative pb-5">
                                 <label for="father_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
-                                <input type="text" id="father_name_mm" name="father_name_mm" class="mt-1 father-field" value="<?php echo getValue('father_name_mm'); ?>" required>
+                                <input type="text" id="father_name_mm" name="father_name_mm" class="mt-1 father-field myanmar-field" value="<?php echo getValue('father_name_mm'); ?>" required>
+                                <p class="error-message mt-1" id="father_name_mm_error" style="display: none;">မြန်မာစာသာရိုက်ထည့်ပါ။</p>
                                 <?php if (isset($errors['father_name_mm'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['father_name_mm']; ?></p><?php endif; ?>
                             </div>
                             <!-- Father Name EN -->
                             <div class="relative pb-5">
                                 <label for="father_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
-                                <input type="text" id="father_name_en" name="father_name_en" class="mt-1 father-field" value="<?php echo getValue('father_name_en'); ?>" required>
+                                <input type="text" id="father_name_en" name="father_name_en" class="mt-1 father-field english-field" value="<?php echo getValue('father_name_en'); ?>" required>
+                                <p class="error-message mt-1" id="father_name_en_error" style="display: none;">အင်္ဂလိပ်စာသာရိုက်ထည့်ပါ။</p>
                                 <?php if (isset($errors['father_name_en'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['father_name_en']; ?></p><?php endif; ?>
                             </div>
                             <!-- Father Race -->
@@ -553,19 +597,19 @@
                                 <input type="hidden" name="father_nrc" id="father_nrc_hidden" value="<?php echo getValue('father_nrc'); ?>">
                                 <?php if (isset($errors['father_nrc'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['father_nrc']; ?></p><?php endif; ?>
                             </div>
-                             <!-- Father Occupation -->
+                            <!-- Father Occupation -->
                             <div class="relative pb-5">
                                 <label for="father_info" class="block text-sm font-medium text-gray-700">အလုပ်အကိုင်</label>
                                 <textarea id="father_info" name="father_info" rows="2" class="mt-1 father-field disable-on-deceased"><?php echo getValue('father_info'); ?></textarea>
                                 <?php if (isset($errors['father_info'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['father_info']; ?></p><?php endif; ?>
                             </div>
-                             <!-- Father Address -->
+                            <!-- Father Address -->
                             <div class="relative pb-5">
                                 <label for="father_address" class="block text-sm font-medium text-gray-700">နေရပ်လိပ်စာ</label>
                                 <textarea id="father_address" name="father_address" rows="2" class="mt-1 father-field disable-on-deceased"><?php echo getValue('father_address'); ?></textarea>
                                 <?php if (isset($errors['father_address'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['father_address']; ?></p><?php endif; ?>
                             </div>
-                             <!-- Father Phone -->
+                            <!-- Father Phone -->
                             <div class="relative pb-5">
                                 <label for="father_phone" class="block text-sm font-medium text-gray-700">ဖုန်းနံပါတ်</label>
                                 <input type="tel" id="father_phone" name="father_phone" class="mt-1 father-field disable-on-deceased" value="<?php echo getValue('father_phone'); ?>">
@@ -576,7 +620,7 @@
                         <!-- Mother's Column -->
                         <div class="space-y-2">
                             <h4 class="font-semibold text-gray-700 mt-2">အမိ (အရင်း)</h4>
-                             <!-- Mother Deceased -->
+                            <!-- Mother Deceased -->
                             <div class="relative pb-5">
                                 <label for="mother_deceased_year" class="block text-sm font-medium text-gray-700">ကွယ်လွန်သည့်ခုနှစ် (ကွယ်လွန်ပါက)</label>
                                 <input type="text" id="mother_deceased_year" name="mother_deceased_year" class="mt-1" placeholder="ဥပမာ - 2010" value="<?php echo getValue('mother_deceased_year'); ?>">
@@ -584,13 +628,15 @@
                             <!-- Mother Name MM -->
                             <div class="relative pb-5">
                                 <label for="mother_name_mm" class="block text-sm font-medium text-gray-700">အမည် (မြန်မာစာဖြင့်)</label>
-                                <input type="text" id="mother_name_mm" name="mother_name_mm" class="mt-1 mother-field" value="<?php echo getValue('mother_name_mm'); ?>" required>
+                                <input type="text" id="mother_name_mm" name="mother_name_mm" class="mt-1 mother-field myanmar-field" value="<?php echo getValue('mother_name_mm'); ?>" required>
+                                <p class="error-message mt-1" id="mother_name_mm_error" style="display: none;">မြန်မာစာသာရိုက်ထည့်ပါ။</p>
                                 <?php if (isset($errors['mother_name_mm'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['mother_name_mm']; ?></p><?php endif; ?>
                             </div>
                             <!-- Mother Name EN -->
                             <div class="relative pb-5">
                                 <label for="mother_name_en" class="block text-sm font-medium text-gray-700">အမည် (အင်္ဂလိပ်စာဖြင့်)</label>
-                                <input type="text" id="mother_name_en" name="mother_name_en" class="mt-1 mother-field" value="<?php echo getValue('mother_name_en'); ?>" required>
+                                <input type="text" id="mother_name_en" name="mother_name_en" class="mt-1 mother-field english-field" value="<?php echo getValue('mother_name_en'); ?>" required>
+                                <p class="error-message mt-1" id="mother_name_en_error" style="display: none;">အင်္ဂလိပ်စာသာရိုက်ထည့်ပါ။</p>
                                 <?php if (isset($errors['mother_name_en'])): ?><p class="error-message absolute bottom-0 left-0"><?php echo $errors['mother_name_en']; ?></p><?php endif; ?>
                             </div>
                             <!-- Mother Race -->
@@ -614,19 +660,19 @@
                                 <input type="hidden" name="mother_nrc" id="mother_nrc_hidden" value="<?php echo getValue('mother_nrc'); ?>">
                                 <?php if (isset($errors['mother_nrc'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['mother_nrc']; ?></p><?php endif; ?>
                             </div>
-                             <!-- Mother Occupation -->
+                            <!-- Mother Occupation -->
                             <div class="relative pb-5">
                                 <label for="mother_info" class="block text-sm font-medium text-gray-700">အလုပ်အကိုင်</label>
                                 <textarea id="mother_info" name="mother_info" rows="2" class="mt-1 mother-field disable-on-deceased"><?php echo getValue('mother_info'); ?></textarea>
                                 <?php if (isset($errors['mother_info'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['mother_info']; ?></p><?php endif; ?>
                             </div>
-                             <!-- Mother Address -->
+                            <!-- Mother Address -->
                             <div class="relative pb-5">
                                 <label for="mother_address" class="block text-sm font-medium text-gray-700">နေရပ်လိပ်စာ</label>
                                 <textarea id="mother_address" name="mother_address" rows="2" class="mt-1 mother-field disable-on-deceased"><?php echo getValue('mother_address'); ?></textarea>
                                 <?php if (isset($errors['mother_address'])): ?><p class="error-message bottom-0 left-0"><?php echo $errors['mother_address']; ?></p><?php endif; ?>
                             </div>
-                             <!-- Mother Phone -->
+                            <!-- Mother Phone -->
                             <div class="relative pb-5">
                                 <label for="mother_phone" class="block text-sm font-medium text-gray-700">ဖုန်းနံပါတ်</label>
                                 <input type="tel" id="mother_phone" name="mother_phone" class="mt-1 mother-field disable-on-deceased" value="<?php echo getValue('mother_phone'); ?>">
@@ -652,7 +698,7 @@
 
             <!-- Navigation Buttons -->
             <div class="nav-buttons mt-8 flex justify-between items-center">
-                <a href="form1.php?new=1" class="nav-button-back text-gray-600 hover:text-gray-900 font-medium">Start Over</a>
+                <a href="data_add.php?new=1" class="nav-button-back text-gray-600 hover:text-gray-900 font-medium">Start Over</a>
                 <button type="submit" class="nav-button-next">Next Step</button>
             </div>
 
@@ -668,6 +714,13 @@
         $repopulate_state    = getValue('state_region');
         $repopulate_township = getValue('township');
         $first_error_key = !empty($errors) ? array_key_first($errors) : '';
+        
+        // Prepare the photo URL for JS preview.
+        $photo_url_for_js = '';
+        $stored_photo_url = getValue('photo_url');
+        if ($stored_photo_url) {
+            $photo_url_for_js = 'uploads/' . basename($stored_photo_url);
+        }
     ?>
 
 <script>
@@ -675,20 +728,153 @@
     const previouslySelectedState = '<?php echo $repopulate_state; ?>';
     const previouslySelectedTownship = '<?php echo $repopulate_township; ?>';
     const repopulateNrcData = <?php echo json_encode($repopulate_nrc); ?>;
-    const photoUrlFromServer = '<?php echo getValue('photo_url', ''); ?>';
+    const photoUrlFromServer = '<?php echo $photo_url_for_js; ?>';
     const firstErrorKeyFromServer = '<?php echo $first_error_key; ?>';
 
+    // English to Myanmar digit mapping
+    const digitMap = {
+        '0': '၀',
+        '1': '၁',
+        '2': '၂',
+        '3': '၃',
+        '4': '၄',
+        '5': '၅',
+        '6': '၆',
+        '7': '၇',
+        '8': '၈',
+        '9': '၉'
+    };
+
+    // Myanmar to English digit mapping (for validation)
+    const myanmarDigitMap = {
+        '၀': '0',
+        '၁': '1',
+        '၂': '2',
+        '၃': '3',
+        '၄': '4',
+        '၅': '5',
+        '၆': '6',
+        '၇': '7',
+        '၈': '8',
+        '၉': '9'
+    };
+
+    // Function to convert English digits to Myanmar digits
+    function convertToMyanmarDigits(input) {
+        return input.replace(/[0-9]/g, function(match) {
+            return digitMap[match];
+        });
+    }
+
+    // Function to convert Myanmar digits to English digits (for validation)
+    function convertToEnglishDigits(input) {
+        return input.replace(/[၀၁၂၃၄၅၆၇၈၉]/g, function(match) {
+            return myanmarDigitMap[match];
+        });
+    }
+
+    // Function to validate NRC number (accepts both English and Myanmar digits)
+    function isValidNrcNumber(number) {
+        // Convert to English digits for validation
+        const englishNumber = convertToEnglishDigits(number);
+        return /^\d{6}$/.test(englishNumber);
+    }
+
+    // --- Input Language Restrictions ---
+    function setupLanguageRestriction(inputId, allowedLanguage) {
+        const inputElement = document.getElementById(inputId);
+        if (!inputElement) return;
+
+        // Define language patterns
+        const patterns = {
+            myanmar: /[\u1000-\u109F\uAA60-\uAA7F\uA9E0-\uA9FF]/g, // Myanmar Unicode ranges
+            english: /[a-zA-Z]/g
+        };
+
+        // Define error messages
+        const messages = {
+            myanmar: "မြန်မာစာသာရိုက်ထည့်ပါ။",
+            english: "အင်္ဂလိပ်စာသာရိုက်ထည့်ပါ။"
+        };
+
+        // Create error message element
+        const errorElement = document.getElementById(inputId + '_error');
+        
+        inputElement.addEventListener('input', function(e) {
+            const value = e.target.value;
+            let isValid = true;
+
+            if (allowedLanguage === 'myanmar') {
+                // For Myanmar fields: allow only Myanmar characters and spaces
+                const nonMyanmarChars = value.replace(patterns.myanmar, '').replace(/\s/g, '');
+                if (nonMyanmarChars.length > 0) {
+                    isValid = false;
+                    // Remove non-Myanmar characters
+                    e.target.value = value.replace(/[^\u1000-\u109F\uAA60-\uAA7F\uA9E0-\uA9FF\s]/g, '');
+                }
+            } else if (allowedLanguage === 'english') {
+                // For English fields: allow only English letters and spaces
+                const nonEnglishChars = value.replace(patterns.english, '').replace(/\s/g, '');
+                if (nonEnglishChars.length > 0) {
+                    isValid = false;
+                    // Remove non-English characters
+                    e.target.value = value.replace(/[^a-zA-Z\s]/g, '');
+                }
+            }
+
+            // Show/hide error message
+            if (!isValid && value.length > 0) {
+                errorElement.textContent = messages[allowedLanguage];
+                errorElement.style.display = 'block';
+                inputElement.classList.add('language-error');
+            } else {
+                errorElement.style.display = 'none';
+                inputElement.classList.remove('language-error');
+            }
+        });
+
+        // Also validate on blur
+        inputElement.addEventListener('blur', function(e) {
+            const value = e.target.value;
+            if (value.length > 0) {
+                let isValid = true;
+                
+                if (allowedLanguage === 'myanmar') {
+                    const nonMyanmarChars = value.replace(patterns.myanmar, '').replace(/\s/g, '');
+                    isValid = nonMyanmarChars.length === 0;
+                } else if (allowedLanguage === 'english') {
+                    const nonEnglishChars = value.replace(patterns.english, '').replace(/\s/g, '');
+                    isValid = nonEnglishChars.length === 0;
+                }
+
+                if (!isValid) {
+                    errorElement.textContent = messages[allowedLanguage];
+                    errorElement.style.display = 'block';
+                    inputElement.classList.add('language-error');
+                }
+            }
+        });
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
         // --- Academic Year from Settings (ADDED) ---
-        // settings.php မှာ သတ်မှတ်ထားတဲ့ academic year ကို localStorage ကနေရယူပါ။
         const savedAcademicYear = localStorage.getItem('academicYear');
         const yearInput = document.getElementById('year');
 
-        // အကယ်၍ localStorage မှာ တန်ဖိုးရှိနေခဲ့ရင်၊ form ထဲက ခုနှစ်ကို အဲ့ဒီတန်ဖိုးနဲ့ အစားထိုးပါ။
         if (savedAcademicYear && yearInput) {
             yearInput.value = savedAcademicYear;
         }
+        
+        // Apply language restrictions
+        // Myanmar name fields
+        setupLanguageRestriction('student_name_mm', 'myanmar');
+        setupLanguageRestriction('father_name_mm', 'myanmar');
+        setupLanguageRestriction('mother_name_mm', 'myanmar');
+        
+        // English name fields
+        setupLanguageRestriction('student_name_en', 'english');
+        setupLanguageRestriction('father_name_en', 'english');
+        setupLanguageRestriction('mother_name_en', 'english');
         
         // --- Photo Upload & Preview Logic ---
         const photoUploadInput = document.getElementById('photo_upload');
@@ -696,7 +882,6 @@
         const previewContainer = document.getElementById('photo-preview-container');
         const placeholder = document.getElementById('photo-placeholder');
         const removeBtn = document.getElementById('remove-photo-btn');
-        // We no longer need photo_url_hidden because the session handles it
         const removePhotoFlag = document.getElementById('remove_photo_flag');
 
         // Create a dedicated container for client-side photo validation messages
@@ -790,7 +975,6 @@
             clientErrorContainer.textContent = '';
             const dobValue = dobInput.value;
             if (!dobValue) {
-                // The server will handle required validation, so we don't need a client-side message for it.
                 return true;
             }
             const birthDate = new Date(dobValue);
@@ -818,8 +1002,6 @@
             return true;
         };
 
-        // The 'submit' event listener that prevented server-side validation has been removed.
-        // The form will now submit, and the PHP code will return all validation errors as intended.
         if (dobInput) {
             dobInput.addEventListener('input', validateDateOfBirth);
         }
@@ -835,11 +1017,11 @@
             "ပဲခူးတိုင်းဒေသကြီး": ["ပဲခူး", "ဒိုက်ဦး", "ကျောက်တံခါး", "ကဝ", "ညောင်လေးပင်", "ရွှေကျင်", "သနပ်ပင်", "ဝေါ", "ပြည်", "ပန်းတောင်း", "သဲကုန်း", "ပေါက်ခေါင်း", "ပေါင်းတည်", "ရွှေတောင်", "သာယာဝတီ", "မိုးညို", "အုတ်ဖို", "လက်ပံတန်း", "မင်းလှ", "နတ်တလင်း", "ဇီးကုန်း", "ကြို့ပင်ကောက်", "တောင်ငူ", "ထန်းတပင်", "ဖြူး", "အုတ်တွင်း", "ရေတာရှည်", "ကျောက်ကြီး"],
             "မကွေးတိုင်းဒေသကြီး": ["မကွေး", "နတ်မောက်", "မြို့သစ်", "တောင်တွင်းကြီး", "ရေနံချောင်း", "ချောက်", "မင်းဘူး(စကု)", "ပွင့်ဖြူ", "ငဖဲ", "စလင်း", "စေတုတ္တရာ", "ဂန့်ဂေါ", "ထီးလင်း", "ဆော", "သရက်", "ဆင်ပေါင်ဝဲ", "မင်းတုန်း", "အောင်လံ", "မင်းလှ", "ကံမ", "ပခုက္ကူ", "ဆိပ်ဖြူ", "ပေါက်", "မြိုင်", "ရေစကြို"],
             "မန္တလေးတိုင်းဒေသကြီး": ["အောင်မြေသာဇံ", "ချမ်းအေးသာဇံ", "ချမ်းမြသာစည်", "မဟာအောင်မြေ", "ပြည်ကြီးတံခွန်", "ပုသိမ်ကြီး", "အမရပူရ", "ကျောက်ဆည်", "မြစ်သား", "စဉ့်ကိုင်", "တံတားဦး", "မိတ္ထီလာ", "မလှိုင်", "သာစည်", "ဝမ်းတွင်း", "မြင်းခြံ", "နွားထိုးကြီး", "ငါန်းဇွန်", "တောင်သာ", "ညောင်ဦး", "ကျောက်ပန်းတောင်း", "ပြင်ဦးလွင်", "မိုးကုတ်", "စဉ့်ကူး", "သပိတ်ကျင်း", "မတ္တရာ", "ရမည်းသင်း", "ပျော်ဘွယ်"],
-            "မွန်ပြည်နယ်": ["မော်�လမြိုင်", "ရေး", "ချောင်းဆုံ", "ကျိုက်မရော", "မုဒုံ", "သံဖြူဇရပ်", "သထုံ", "ဘီးလင်း", "ကျိုက်ထို", "ပေါင်"],
+            "မွန်ပြည်နယ်": ["မော်လမြိုင်", "ရေး", "ချောင်းဆုံ", "ကျိုက်မရော", "မုဒုံ", "သံဖြူဇရပ်", "သထုံ", "ဘီးလင်း", "ကျိုက်ထို", "ပေါင်"],
             "ရခိုင်ပြည်နယ်": ["စစ်တွေ", "ပေါက်တော", "ပုဏ္ဏားကျွန်း", "ရသေ့တောင်", "ကျောက်ဖြူ", "ရမ်းဗြဲ", "အမ်း", "မာန်အောင်", "မြောက်ဦး", "မြေပုံ", "မင်းပြား", "ကျောက်တော်", "သံတွဲ", "တောင်ကုတ်", "ဂွ", "မောင်တော", "ဘူးသီးတောင်"],
-            "ရန်ကုန်တိုင်းဒေသကြီး": ["တာမွေ", "တောင်ဥက္ကလာပ", "ဒဂုံမြို့သစ်(ဆိပ်ကမ်း)", "ဒဂုံမြို့သစ်(တောင်ပိုင်း)", "ဒဂုံမြို့သစ်(မြောက်ပိုင်း)", "ဒဂုံမြို့သစ်(အရှေ့ပိုင်း)", "ဒေါပုံ", "ပုဇွန်တောင်", "ဗိုလ်တထောင်", "မြောက်ဥက္ကလာပ", "ရန်ကင်း", "သင်္ဃန်းကျွန်း", "သာကေတ", "မင်္ဂလာတောင်ညွန့်", "တိုက်ကြီး", "ထန်းတပင်", "မင်္ဂလာဒုံ", "မှော်ဘီ", "ရွှေပြည်သာ", "လှည်းကူး", "လှိုင်သာယာ", "အင်းစိန်", "ကျောက်တန်း", "ကွမ်းခြံကုန်း", "ကိုကိုးကျွန်း", "ကော့မှူး", "ခရမ်း", "ဆိပ်ကြီးခနောင်တို", "တွံတေး", "ဒလ", "သန်လျင်", "သုံးခွ", "ကမာရွတ်", "ကျောက်တံတား", "ကြည့်မြင်တိုင်", "စမ်းချောင်း", "ဆိပ်ကမ်း", "ဒဂုံ", "ဗဟန်း", "မရမ်း�ကုန်း", "လမ်းမတော်", "လသာ", "လှိုင်", "အလုံ", "ပန်းဘဲတန်း"],
-            "ရှမ်းပြည်နယ်": ["တောင်ကြီး", "ဆီဆိုင်", "ကလော", "ရပ်စောက်", "ညောင်ရွှေ", "ပင်းတယ", "ပင်လောင်း", "ရွာငံ", "ဖယ်ခုံ", "ဟိုပုံး", "ကျိုင်းတုံ", "မိုင်းခတ်", "မိုင်းယန်း", "မိုင်းပျဉ်း", "တာချီလိတ်", "မိုင်းဖြတ်", "မိုင်းယောင်း", "မက်မန်း", "မိုးမိတ်", "မဘိမ်း", "မိုင်းဆတ်", "မိုင်းတုံ", "မူဆယ်", "ကွတ်ခိုင်", "နမ့်ခမ်း", "လင်းခေး", "မိုးနဲ", "မိုင်းပန်", "မောက်မယ်", "လွိုင်လင်", "ကွန်ဟိန်း", "လဲချား", "မိုင်းကိုင်", "မိုင်းရှူး", "�ျေးသီး", "နမ့်စန", "လားရှိုး", "သိန္နီ", "ကွမ်းလုံ", "မိုင်းရယ်", "တန့်ယန်း", "ကျောက်မဲ", "သီပေါ", "မန်တုံ", "နမ့်ဆန်", "နမ္မတူ", "နောင်ချို", "လောက်ကိုင်", "ကုန်းကြမ်း", "ဟိုပန်"],
-            "ဧရာဝတီတိုင်းဒေသကြီး": ["ပုသိမ်", "ကန်ကြီးထောင့်", "ကျုံပျော်", "ငပုတော", "သာပေါင်း", "ကျောင်းကုန်း", "ရေကြည်", "မအူပင်", "ဓနုဖြူ", "ပန်းတနော်", "ညောင်တုန်း", "ဟင်္သာတ", "ဇလွန်", "ကြံခင်း", "မြန်အောင်", "အင်္ဂပူ", "လေးမျက်နှာ", "မြောင်းမြ", "ဝါးခယ်မ", "အိမ်မဲ", "ဖျာပုံ", "ဘိုကလေး", "ဒေးဒရဲ", "ကျိုက်လတ်", "လပွတ္တာ", "မော်�လမြိုင်ကျွန်း"],
+            "ရန်ကုန်တိုင်းဒေသကြီး": ["တာမွေ", "တောင်ဥက္ကလာပ", "ဒဂုံမြို့သစ်(ဆိပ်ကမ်း)", "ဒဂုံမြို့သစ်(တောင်ပိုင်း)", "ဒဂုံမြို့သစ်(မြောက်ပိုင်း)", "ဒဂုံမြို့သစ်(အရှေ့ပိုင်း)", "ဒေါပုံ", "ပုဇွန်တောင်", "ဗိုလ်တထောင်", "မြောက်ဥက္ကလာပ", "ရန်ကင်း", "သင်္ဃန်းကျွန်း", "သာကေတ", "မင်္ဂလာတောင်ညွန့်", "တိုက်ကြီး", "ထန်းတပင်", "မင်္ဂလာဒုံ", "မှော်ဘီ", "ရွှေပြည်သာ", "လှည်းကူး", "လှိုင်သာယာ", "အင်းစိန်", "ကျောက်တန်း", "ကွမ်းခြံကုန်း", "ကိုကိုးကျွန်း", "ကော့မှူး", "ခရမ်း", "ဆိပ်ကြီးခနောင်တို", "တွံတေး", "ဒလ", "သန်လျင်", "သုံးခွ", "ကမာရွတ်", "ကျောက်တံတား", "ကြည့်မြင်တိုင်", "စမ်းချောင်း", "ဆိပ်ကမ်း", "ဒဂုံ", "ဗဟန်း", "မရမ်းကုန်း", "လမ်းမတော်", "လသာ", "လှိုင်", "အလုံ", "ပန်းဘဲတန်း"],
+            "ရှမ်းပြည်နယ်": ["တောင်ကြီး", "ဆီဆိုင်", "ကလော", "ရပ်စောက်", "ညောင်ရွှေ", "ပင်းတယ", "ပင်လောင်း", "ရွာငံ", "ဖယ်ခုံ", "ဟိုပုံး", "ကျိုင်းတုံ", "မိုင်းခတ်", "မိုင်းယန်း", "မိုင်းပျဉ်း", "တာချီလိတ်", "မိုင်းဖြတ်", "မိုင်းယောင်း", "မက်မန်း", "မိုးမိတ်", "မဘိမ်း", "မိုင်းဆတ်", "မိုင်းတုံ", "မူဆယ်", "ကွတ်ခိုင်", "နမ့်ခမ်း", "လင်းခေး", "မိုးနဲ", "မိုင်းပန်", "မောက်မယ်", "လွိုင်လင်", "ကွန်ဟိန်း", "လဲချား", "မိုင်းကိုင်", "မိုင်းရှူး", "ကျေးသီး", "နမ့်စန", "လားရှိုး", "သိန္နီ", "ကွမ်းလုံ", "မိုင်းရယ်", "တန့်ယန်း", "ကျောက်မဲ", "သီပေါ", "မန်တုံ", "နမ့်ဆန", "နမ္မတူ", "နောင်ချို", "လောက်ကိုင်", "ကုန်းကြမ်း", "ဟိုပန်"],
+            "ဧရာဝတီတိုင်းဒေသကြီး": ["ပုသိမ်", "ကန်ကြီးထောင့်", "ကျုံပျော်", "ငပုတော", "သာပေါင်း", "ကျောင်းကုန်း", "ရေကြည်", "မအူပင်", "ဓနုဖြူ", "ပန်းတနော်", "ညောင်တုန်း", "ဟင်္သာတ", "ဇလွန်", "ကြံခင်း", "မြန်အောင်", "အင်္ဂပူ", "လေးမျက်နှာ", "မြောင်းမြ", "ဝါးခယ်မ", "အိမ်မဲ", "ဖျာပုံ", "ဘိုကလေး", "ဒေးဒရဲ", "ကျိုက်လတ်", "လပွတ္တာ", "မော်လမြိုင်ကျွန်း"],
             "နေပြည်တော် ပြည်ထောင်စုနယ်မြေ": ["ဒက္ခိဏသီရိ", "လယ်ဝေး", "ပျဉ်းမနား", "ဇမ္ဗူသီရိ", "ဥတ္တရသီရိ", "ပုဗ္ဗသီရိ", "တပ်ကုန်း", "ဇေယျာသီရိ"]
         };
         const stateRegionSelect = document.getElementById('state_region');
@@ -898,22 +1080,6 @@
 
 
         // --- NRC Input Group Logic ---
-        // const nrcTownships = {
-        //     1: ["ကစန", "ခဘဒ", "ဂမန", "ဟပန", "အလန", "မကန", "မခဘ", "မဂန", "မညန", "မစန", "မမန", "ပတအ", "ရကန", "ဆပဘ", "ဆလန", "တနန", "ဝမန"],
-        //     2: ["ဒမဆ", "ဖရဆ", "လကန", "မစန"],
-        //     3: ["ဘအန", "ဖပန", "ကကရ", "လဘန", "မဝတ", "သတန"],
-        //     4: ["ဟခန", "ဖလန", "မတပ", "ပလဝ", "တတန", "ထတလ"],
-        //     5: ["စကန", "ဘမန", "ကနလ", "ကလဝ", "ကလဟ", "ကသ", "ခဥန", "လရန", "မလန", "မငန", "စလင", "ရမဘ", "တဇန", "ဝန်းသို"],
-        //     6: ["တငန", "ဘလန", "ကပက", "ကတခ", "လရန", "မဘန", "မမန", "မတရ", "နလန", "ပဖန", "သပက"],
-        //     7: ["ပခက", "ဂဂန", "မကန", "ငဖန", "ပတန", "စလန", "သရန", "တငန"],
-        //     8: ["မကန", "အလန", "မငလ", "မနန", "ပကခ", "စတရ", "တငန", "သရက"],
-        //     9: ["မလမ", "ကမရ", "ဥကမ", "ဒဂမ", "ဒလန", "ကခက", "လမန", "မဂတ", "ပဘတ", "စခန", "သကတ", "တမန", "ရကန"],
-        //     10: ["မအန", "ဘကလ", "ဒနဘ", "ဟသတ", "ဟငသ", "လပတ", "မအန", "မမက", "ပသန", "ဖပန", "ဝခမ"],
-        //     11: ["စတန", "ကမန", "ကပန", "လယန", "မခန", "မညန", "ပလန", "သစန"],
-        //     12: ["ဥတသ", "ဒခသ", "ပဗသ", "ဇယသ", "လဝန", "ပမန", "တကန", "ဇမသ"],
-        //     13: ["ကလန", "ညဥန", "ပပဏ", "ရစက", "တသန", "ဝတလ", "မထလ", "မကင"],
-        //     14: ["တကန", "ကတန", "ကမန", "ကမတ", "ဒဂန", "ဒပန", "လသန", "မဘန", "မရန", "ပစတ", "ဖနန", "ရပန", "သလန", "သဃက"]
-        // };
         const nrcTownships = {
             1: ["အဂယ", "အတန", "ဗကန", "ဗမန", "ဒဖယ", "ဟပန", "ဆဒန", "ဆပဘ", "ကမန", "ကမတ", "ကပတ", "ခဘဒ", "ခလဖ", "ခဖန", "လဂန", "မဂဒ", "မကန","မကတ", "မကသ", "မခဘ", "မလန", "မမန", "မညန", "မစန","မတန","နမန","ပမန","ပနဒ","ပတအ","ပဝန","ဖကန","ရဗယ", "ဆဘန", "ဆဘတ", "စကန", "ဆလန", "စပဘ", "တနန","ဝမန","သဝတ","ဝမန","ရကန"],
             2: ["ဘလခ", "ဒမဆ", "ဖဆန", "ထတပ","ခစန", "လကန", "မစန", "ဖလဆ", "ဖရဆ", "ရသန","စစန","ရတန"],
@@ -927,11 +1093,30 @@
             10: ["ဘအန", "ဘလန", "ထထန", "ကထန", "ကမလ", "ကမရ", "ခဆန", "ခဇန", "လမန", "မဒန", "မလမ","မစန", "ပမန", "ဖပန", "သထန", "သဖရ", "ရမန"],
             11: ["အမန", "ဘသတ", "ဂမန", "ကဖန", "ကတလ", "ကတန", "လမတ", "မအတ","မအန", "မဥန", "မမန", "မပန", "မပတ", "မတန", "ပဏက", "ပတန", "စတန", "တကန", "တပဝ", "သတန", "ရဗန", "ရတန" , "ရတသ", "ရသတ"],
             12: ["အလန", "အစန", "ဥကမ", "ဥကတ", "ဗဟန", "ဗတထ", "ဒဂမ", "ဒဂန", "ဒဂဆ", "ဒဂရ", "ဒလန", "ဒပန", "ထတပ", "ကကက", "ကခက", "ကမန", "ကမတ", "ကမရ", "ကတန", "ကတတ", "ခရန", "လကန" , "လမန", "လမတ", "လသန", "လသယ", "လယန", "လယရ", "မဥက", "မဘန","မဂဒ", "မဂတ", "မရက", "ပဘတ", "ပဇတ", "ဆကခ", "စခန", "တဥက", "တကန", "တမန", "တတန", "တတတ", "သဃက", "သကတ", "သခန", "သလန","ရကန","ရပသ"],
-            13: ["အပန", "အသရ", "အတန", "ဟမန", "ဟပန", "ဟပတ", "ကဟန", "ကကန", "ကခန", "ကလဒ", "ကလထ", "ကလန", "ကလတ", "ကမန", "ကတလ", "ကတန", "ကတတ", "ကသန", "ခလန", "ခရဟ", "လကန", "လခန", "လခတ", "လလန" ,"လရန", "မဘန", "မဟရ", "မထထ", "မကထ", "မကန", "မကတ", "မခန", "မခတ", "မလန", "မလတ", "မမထ", "မမန", "မနန", "မနတ", "မငန", "မပထ", "မပန", "မပတ", "မဖန", "မဖတ", "မရန", "မရတ", "မဆန", "မဆတ", "မတန", "မတတ", "မယထ", "မယန", "မယတ", "နခန", "နခတ" ,"နမတ", "နဖန", "နစန", "နတန", "နတရ", "ညရန" , "ပဆတ", "ပလထ", "ပလန", "ပလတ", "ပပက", "ပဆန", "ပဝန", "ပ�ယန", "ဖခန", "ဆဆန", "တကန" ,"တခလ", "တလန", "တမည", "တတန", "တယန", "သနန",  "သပန", "ဝကန","ရငန","ရညန" ,"ရစန"],
+            13: ["အပန", "အသရ", "အတန", "ဟမန", "ဟပန", "ဟပတ", "ကဟန", "ကကန", "ကခန", "ကလဒ", "ကလထ", "ကလန", "ကလတ", "ကမန", "ကတလ", "ကတန", "ကတတ", "ကသန", "ခလန", "ခရဟ", "လကန", "လခန", "လခတ", "လလန" ,"လရန", "မဘန", "မဟရ", "မထထ", "မကထ", "မကန", "မကတ", "မခန", "မခတ", "မလန", "မလတ", "မမထ", "မမန", "မနန", "မနတ", "မငန", "မပထ", "မပန", "မပတ", "မဖန", "မဖတ", "မရန", "မရတ", "မဆန", "မဆတ", "မတန", "မတတ", "မယထ", "မယန", "မယတ", "နခန", "နခတ" ,"နမတ", "နဖန", "နစန", "နတန", "နတရ", "ညရန" , "ပဆတ", "ပလထ", "ပလန", "ပလတ", "ပပက", "ပဆန", "ပဝန", "ပယန", "ဖခန", "ဆဆန", "တကန" ,"တခလ", "တလန", "တမည", "တတန", "တယန", "သနန",  "သပန", "ဝကန","ရငန","ရညန" ,"ရစန"],
             14: ["အမတ", "အဂပ", "အမန", "အပန", "အစန", "ဘကလ", "ဒဒရ", "ဓနဖ", "ဟကက", "ဟသတ", "ကကထ", "ကကန", "ကခန", "ကလန" , "ကမန", "ကမသ", "ကပန", "လမန", "လပတ", "မအန", "မအပ", "မမက", "မမန", "မရက", "ငပတ", "ငဆန", "ငသခ" , "ငရက", "ညတန", "ပကခ", "မပလ", "ပတန", "ပသန", "ပသရ", "ဖပန", "တမန", "သပန" ,"ဝခမ", "ရကန", "ရသယ", "ဇလန"]
         };
         const nrcTypes = ["နိုင်", "ဧည့်", "ပြု", "သာ", "ယာယီ"];
 
+        // Myanmar numerals mapping for NRC states - Updated to use Myanmar digits
+        const myanmarNumerals = {
+            1: '၁',
+            2: '၂', 
+            3: '၃',
+            4: '၄',
+            5: '၅',
+            6: '၆',
+            7: '၇',
+            8: '၈',
+            9: '၉',
+            10: '၁၀',
+            11: '၁၁',
+            12: '၁၂',
+            13: '၁၃',
+            14: '၁၄'
+        };
+
+        // Function to create NRC input group with enhanced validation
         function createNrcInputGroup(containerId, namePrefix, defaults) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -947,10 +1132,12 @@
             const stateSelect = document.createElement('select');
             stateSelect.name = `${namePrefix}_state`;
             stateSelect.className = 'nrc-select border rounded p-1';
+            
+            // Populate state dropdown with Myanmar numerals
             for (let i = 1; i <= 14; i++) {
                 const option = document.createElement('option');
-                option.value = i;
-                option.textContent = i;
+                option.value = myanmarNumerals[i]; // Store Myanmar digit as value
+                option.textContent = myanmarNumerals[i];
                 stateSelect.appendChild(option);
             }
 
@@ -974,22 +1161,61 @@
             numberInput.type = 'text';
             numberInput.name = `${namePrefix}_number`;
             numberInput.className = 'nrc-number w-full border rounded p-1 mt-1';
-            numberInput.placeholder = '123456';
+            numberInput.placeholder = '၁၂၃၄၅၆';
             numberInput.maxLength = 6;
-            numberInput.pattern = '\\d{6}';
+
+            // Add event listener for automatic digit conversion
+            numberInput.addEventListener('input', function(e) {
+                // Convert any English digits to Myanmar digits
+                const convertedValue = convertToMyanmarDigits(e.target.value);
+                
+                // Only update if conversion actually happened
+                if (convertedValue !== e.target.value) {
+                    e.target.value = convertedValue;
+                }
+                
+                // Validate the number (after conversion)
+                const currentValue = e.target.value;
+                const isValid = isValidNrcNumber(currentValue);
+                
+                // Visual feedback
+                if (currentValue && !isValid) {
+                    numberInput.classList.add('border-red-500');
+                } else {
+                    numberInput.classList.remove('border-red-500');
+                }
+                
+                updateHiddenNrcInput();
+            });
+
+            // Also validate on blur
+            numberInput.addEventListener('blur', function(e) {
+                const currentValue = e.target.value;
+                const isValid = isValidNrcNumber(currentValue);
+                
+                if (currentValue && !isValid) {
+                    numberInput.classList.add('border-red-500');
+                    showNrcNumberError(containerId, 'NRC number must be exactly 6 digits');
+                } else {
+                    numberInput.classList.remove('border-red-500');
+                    clearNrcNumberError(containerId);
+                }
+            });
 
             wrapper.append(dropdownContainer, numberInput);
             container.append(wrapper);
 
-
             const updateHiddenNrcInput = () => {
                 const hiddenInput = document.getElementById(`${namePrefix}_hidden`);
                 if (hiddenInput) {
-                    const state = stateSelect.value;
+                    const state = stateSelect.value; // This is now Myanmar digit
                     const township = townshipSelect.value;
                     const type = typeSelect.value;
                     const number = numberInput.value;
-                    if (state && township && type && number.match(/^\d{6}$/)) {
+                    
+                    // Validate number before setting hidden value
+                    if (state && township && type && isValidNrcNumber(number)) {
+                        // Store in Myanmar digits format - state is already Myanmar digit
                         hiddenInput.value = `${state}/${township}${type}${number}`;
                     } else {
                         hiddenInput.value = '';
@@ -999,7 +1225,11 @@
 
             const updateNrcTownships = () => {
                 const selectedState = stateSelect.value;
-                const townships = nrcTownships[selectedState] || [];
+                
+                // Convert Myanmar state back to English for township lookup
+                const englishState = convertToEnglishDigits(selectedState);
+                const townships = nrcTownships[englishState] || [];
+                
                 townshipSelect.innerHTML = '';
                 townships.forEach(township => {
                     const option = document.createElement('option');
@@ -1009,25 +1239,52 @@
                 });
 
                 // Repopulate township if default value exists
-                if (defaults.township && stateSelect.value == defaults.state) {
-                    townshipSelect.value = defaults.township;
+                if (defaults.township) {
+                    // Convert default state to Myanmar for comparison
+                    const defaultStateMyanmar = convertToMyanmarDigits(defaults.state);
+                    if (stateSelect.value == defaultStateMyanmar) {
+                        townshipSelect.value = defaults.township;
+                    }
                 }
 
                 updateHiddenNrcInput();
             };
 
-            // Set default values
-            if(defaults.state) stateSelect.value = defaults.state;
+            // Set default values - ensure both state and number are in Myanmar digits
+            if(defaults.state) {
+                stateSelect.value = convertToMyanmarDigits(defaults.state);
+            }
             if(defaults.type) typeSelect.value = defaults.type;
-            if(defaults.number) numberInput.value = defaults.number;
+            if(defaults.number) {
+                // Convert default number to Myanmar digits if it's in English
+                numberInput.value = convertToMyanmarDigits(defaults.number);
+            }
 
             stateSelect.addEventListener('change', updateNrcTownships);
             townshipSelect.addEventListener('change', updateHiddenNrcInput);
             typeSelect.addEventListener('change', updateHiddenNrcInput);
-            numberInput.addEventListener('input', updateHiddenNrcInput);
 
             // Initial population of townships
             updateNrcTownships();
+        }
+
+        // Helper functions for showing/hiding NRC number errors
+        function showNrcNumberError(containerId, message) {
+            let errorElement = document.getElementById(`${containerId}_error`);
+            if (!errorElement) {
+                errorElement = document.createElement('p');
+                errorElement.id = `${containerId}_error`;
+                errorElement.className = 'error-message mt-1';
+                document.getElementById(containerId).appendChild(errorElement);
+            }
+            errorElement.textContent = message;
+        }
+
+        function clearNrcNumberError(containerId) {
+            const errorElement = document.getElementById(`${containerId}_error`);
+            if (errorElement) {
+                errorElement.remove();
+            }
         }
 
         createNrcInputGroup('student_nrc_group', 'student_nrc', repopulateNrcData.student);
@@ -1118,36 +1375,6 @@
             toggleParentFields('mother', motherDeceasedInput.value.trim() !== '');
         }
 
-        // --- Name Input Validation ---
-        function setupNameValidation(inputId, isMyanmar) {
-            const inputElement = document.getElementById(inputId);
-            if (!inputElement) return;
-
-            const regex = isMyanmar ? /^[\u1000-\u109F\s]*$/ : /^[a-zA-Z\s]*$/;
-            const message = isMyanmar ? "မြန်မာအက္ခရာများသာ ထည့်သွင်းပါ။" : "English letters only.";
-            
-            inputElement.addEventListener('input', function(e) {
-                if (!regex.test(e.target.value)) {
-                    // Find the last character that is invalid and remove it
-                    e.target.value = e.target.value.slice(0, -1);
-                }
-            });
-             // Add pattern for form submission validation
-            inputElement.setAttribute('pattern', regex.source.slice(1,-1));
-            inputElement.setAttribute('title', message);
-        }
-
-        // Student
-        setupNameValidation('student_name_mm', true);
-        setupNameValidation('student_name_en', false);
-        // Father
-        setupNameValidation('father_name_mm', true);
-        setupNameValidation('father_name_en', false);
-        // Mother
-        setupNameValidation('mother_name_mm', true);
-        setupNameValidation('mother_name_en', false);
-
-
         // --- Auto-scroll to first error on page load ---
         if (firstErrorKeyFromServer) {
             let errorElement;
@@ -1200,6 +1427,5 @@
 
     });
 </script>
-
 </body>
 </html>
