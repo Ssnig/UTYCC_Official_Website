@@ -330,12 +330,12 @@ $cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center round
                         }
                     ?>
                 </p>
-                <a href="final.php?payment_choice=reset" class="text-xs text-indigo-600 hover:underline">Change selection</a>
+                <!-- <a href="final.php?payment_choice=reset" class="text-xs text-indigo-600 hover:underline">Change selection</a> -->
             </div>
             
             <div id="paymentOptions" class="hidden w-full text-center">
                  <p class="font-semibold text-lg text-gray-700 mb-4">Choose Payment</p>
-                <a href="../paymentGuide.php" class="block w-full px-4 py-3 text-base font-medium text-indigo-600 bg-indigo-100 rounded-lg hover:bg-indigo-200 transition-colors">Pay Now</a>
+                <a href="../paymentGuide.php?return_to=final" class="block w-full px-4 py-3 text-base font-medium text-indigo-600 bg-indigo-100 rounded-lg hover:bg-indigo-200 transition-colors">Pay Now</a>
                 <div class="my-2 text-xs text-gray-500">OR</div>
                 <a href="final.php?payment_choice=later" class="block w-full px-4 py-3 text-base font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">Pay on Arrival</a>
             </div>
@@ -554,4 +554,6 @@ $cross_icon = '<div class="w-12 h-12 mb-3 flex items-center justify-center round
 
 </body>
 </html>
+
+
 
