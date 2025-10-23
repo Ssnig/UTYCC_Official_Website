@@ -1370,5 +1370,4 @@ $pdo = null;
   </script>
 </body>
 </html>
-" selected in the Canvas "Admin Dashboard" document above.
 
