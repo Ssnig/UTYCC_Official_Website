@@ -10,18 +10,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     
     <style>
-        /* Use Inter as the base font, but 'Press Start 2P' for game text */
+        /* Base layout for the page */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #0f172a;
             color: #333;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden; 
         }
 
         .game-font {
             font-family: 'Press Start 2P', cursive;
         }
 
+        /* Fullscreen wrapper that centers the game UI */
         #game-world {
             display: flex;
             align-items: center;
@@ -30,10 +31,11 @@
             width: 100vw;
             overflow: hidden;
 
-            /* --- Background ကို canvas သို့ ရွှေ့လိုက်ပါပြီ --- */
-            background-color: #AAB8C2; /* Fallback color */
+            
+            background-color: #030712; 
         }
 
+        /* Card container for selector and game screens */
         .game-container {
             width: 90%;
             max-width: 800px;
@@ -45,18 +47,18 @@
             position: relative;
         }
 
-        /* Character Selection Screen */
+        /* Character selection screen layout */
         #character-select-screen {
             padding: 2rem;
         }
 
-        /* NEW: Styles for the central switcher UI */
+        /* Preview area for current character and skin */
         #char-display-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 300px; /* Give it some space */
+            min-height: 300px; 
         }
         
         #char-sprite-wrapper {
@@ -71,18 +73,18 @@
         #char-display-sprite {
             width: 100px;
             height: 100px;
-            /* MODIFIED: Remove background/border, use background-image */
+            
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
 
-            /* ADDED: Background image properties */
-            background-image: url(''); /* Will be set by JS */
+            
+            background-image: url(''); 
             background-repeat: no-repeat;
-            /* MODIFIED: Let JS handle position/size */
+            
         }
 
-        /* REMOVED: #char-display-img styles */
+        
         
         #char-display-name {
             font-size: 1.25rem;
@@ -91,7 +93,7 @@
             margin-top: 1rem;
         }
 
-        /* Re-position nav buttons */
+        /* Navigation buttons for carousel */
         #prev-btn, #next-btn {
             position: absolute;
             top: 50%;
@@ -106,23 +108,23 @@
         #prev-btn { left: 2rem; }
         #next-btn { right: 2rem; }
 
-        /* --- NEW: Skin Switcher Styles --- */
+        /* Skin selector controls */
         #skin-switcher {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1rem; /* space-x-4 */
-            margin-top: 1rem; /* mt-4 */
+            gap: 1rem; 
+            margin-top: 1rem; 
         }
 
         #prev-skin-btn, #next-skin-btn {
-            background-color: #e5e7eb; /* bg-gray-200 */
-            border-radius: 9999px; /* rounded-full */
-            padding: 0.5rem; /* p-2 */
+            background-color: #e5e7eb; 
+            border-radius: 9999px; 
+            padding: 0.5rem; 
             transition: background-color 0.2s;
         }
         #prev-skin-btn:hover, #next-skin-btn:hover {
-            background-color: #d1d5db; /* hover:bg-gray-300 */
+            background-color: #d1d5db; 
         }
         #prev-skin-btn:disabled, #next-skin-btn:disabled {
             opacity: 0.5;
@@ -130,22 +132,22 @@
         }
 
         #skin-display-name {
-            width: 160px; /* w-40 (approx) */
+            width: 160px; 
             text-align: center;
-            font-size: 0.875rem; /* text-sm */
-            color: #374151; /* text-gray-700 */
+            font-size: 0.875rem; 
+            color: #374151; 
         }
         
         #skin-locked-message {
-            font-size: 0.75rem; /* text-xs */
-            color: #ef4444; /* text-red-500 */
-            margin-top: 0.5rem; /* mt-2 */
-            height: 1rem; /* Ensure space is reserved */
+            font-size: 0.75rem; 
+            color: #ef4444; 
+            margin-top: 0.5rem; 
+            height: 1rem; 
         }
-        /* --- END: Skin Switcher Styles --- */
+        
 
 
-        /* New Select Button */
+        
         #select-btn {
             font-family: 'Press Start 2P', cursive;
             font-size: 1rem;
@@ -156,17 +158,17 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            margin-top: 1rem; /* MODIFIED: was 1.5rem */
+            margin-top: 1rem; 
         }
         #select-btn:hover {
             background-color: #4338ca;
         }
         #select-btn:disabled {
-            background-color: #9ca3af; /* bg-gray-400 */
+            background-color: #9ca3af; 
             cursor: not-allowed;
         }
 
-        /* New Change Char Button */
+        
         #change-char-btn {
             font-size: 0.8rem;
             color: #fff;
@@ -182,15 +184,15 @@
             background-color: #4338ca;
         }
 
-        /* Game Screen */
+        
         #game-screen {
             position: relative;
             width: 100%;
-            /* Aspect ratio 2:1 */
+            
             aspect-ratio: 2 / 1; 
-            max-height: 400px; /* Max height to match 800px max-width */
-            /* background-color: #fafafa; */ /* Canvas ကဆွဲမှာမို့လို့ ဖယ်လိုက်ပါပြီ */
-            /* border-bottom: 2px solid #e0e0e0; */ /* Ground function က ဆွဲမှာမို့လို့ ဖယ်လိုက်ပါပြီ */
+            max-height: 400px; 
+             
+             
             overflow: hidden;
         }
 
@@ -204,9 +206,9 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            font-size: 1.5rem;
-            color: #555;
-            /* MODIFIED: Changed from 'pre' to 'normal' and added text-align */
+            font-size: 0.95rem;
+            color: #000;
+            
             white-space: normal;
             text-align: right;
         }
@@ -217,8 +219,8 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            color: #444;
-            font-size: 1.25rem;
+            color: #000;
+            font-size: 1rem;
         }
 
         #message-container p {
@@ -229,13 +231,13 @@
             display: none;
         }
 
-        /* --- NEW: Unlock Notification --- */
+        
         #unlock-notification {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #22c55e; /* bg-green-500 */
+            background-color: #22c55e; 
             color: white;
             padding: 1rem 2rem;
             border-radius: 8px;
@@ -244,10 +246,10 @@
             text-align: center;
             font-size: 1rem;
         }
-        /* --- END: Unlock Notification --- */
+        
 
 
-        /* Responsive */
+        
         @media (max-width: 640px) {
             .game-container {
                 width: 100%;
@@ -265,7 +267,7 @@
                 width: 80px;
                 height: 80px;
             }
-            /* REMOVED: #char-display-img responsive styles */
+            
             #prev-btn { left: 0.5rem; }
             #next-btn { right: 0.5rem; }
 
@@ -277,7 +279,7 @@
             }
 
             #score-container {
-                font-size: 1rem; /* Smaller font on mobile */
+                font-size: 1rem; 
                 top: 10px;
                 right: 10px;
             }
@@ -299,14 +301,14 @@
     <div id="game-world">
         <div class="game-container">
 
-            <!-- Character Selection Screen -->
+            
             <div id="character-select-screen">
                 <h1 class="text-3xl font-bold text-center text-gray-800">Choose Your Runner!</h1>
                 <p class="text-center text-gray-600 mt-2">Select a team member to start the game.</p>
                 
-                <!-- NEW: Switcher Structure -->
+                
                 <div id="char-display-container" class="mt-8">
-                    <!-- Sprite display with nav buttons -->
+                    
                     <div id="char-sprite-wrapper">
                         <button id="prev-btn" class="disabled:opacity-50 disabled:cursor-not-allowed">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -314,7 +316,7 @@
                             </svg>
                         </button>
 
-                        <!-- MODIFIED: Changed <img> to <div> -->
+                        
                         <div id="char-display-sprite" aria-label="Character Sprite"></div>
                         
                         <button id="next-btn" class="disabled:opacity-50 disabled:cursor-not-allowed">
@@ -324,10 +326,10 @@
                         </button>
                     </div>
 
-                    <!-- REMOVED: <img id="char-display-img"> -->
+                    
                     <p id="char-display-name" class="game-font"></p>
                     
-                    <!-- NEW: Skin Switcher -->
+                    
                     <div id="skin-switcher">
                         <button id="prev-skin-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -342,19 +344,19 @@
                         </button>
                     </div>
                     <p id="skin-locked-message" class="game-font hidden">LOCKED</p>
-                    <!-- END: Skin Switcher -->
                     
-                    <!-- Select Button -->
+                    
+                    
                     <button id="select-btn">Select Runner</button>
                 </div>
-                <!-- END: Switcher Structure -->
+                
 
             </div>
 
-            <!-- Game Screen -->
+            
             <div id="game-screen" class="hidden">
                 <canvas id="game-canvas"></canvas>
-                <!-- MODIFIED: Added High Score span and <br> for layout -->
+                
                 <div id="score-container" class="game-font">
                     HI: <span id="high-score">00000</span><br>SCORE: <span id="score">00000</span>
                 </div>
@@ -363,7 +365,7 @@
                     <div id="game-over-message" class="hidden">
                         <p>GAME OVER!</p>
                         <p>Tap or Press Space to Restart</p>
-                        <!-- NEW: Change Character Button -->
+                        
                         <button id="change-char-btn">Change Runner</button>
                     </div>
                 </div>
@@ -372,27 +374,27 @@
         </div>
     </div>
 
-    <!-- MODIFIED: Background Music Player (no loop, no source) -->
+    
     <audio id="background-music">
-        <!-- Source will be set by JavaScript -->
+        
         Your browser does not support the audio element.
     </audio>
     
-    <!-- NEW: Sound Effects Audio Elements -->
+    
     <audio id="jump-sound">
-        <!-- ▼▼▼ ဒီနေရာမှာ ခုန်သံ (jump.wav) file path (သို့) URL ကို ထည့်ပါ ▼▼▼ -->
+        
         <source src="./Img/dev/jump.mp3" type="audio/mpeg">
     </audio>
     <audio id="crash-sound">
-        <!-- ▼▼▼ ဒီနေရာမှာ တိုက်မိသံ (crash.wav) file path (သို့) URL ကို ထည့်ပါ ▼▼▼ -->
+        
         <source src="./Img/dev/crash.wav" type="audio/mpeg">
     </audio>
     <audio id="unlock-sound">
-        <!-- ▼▼▼ ဒီနေရာမှာ skin unlock (unlock.wav) file path (သို့) URL ကို ထည့်ပါ ▼▼▼ -->
+        
         <source src="./Img/dev/achievement.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- NEW: Unlock Notification -->
+    
     <div id="unlock-notification" class="game-font hidden">
         <p>NEW SKIN UNLOCKED!</p>
         <p id="unlock-message" class="text-sm mt-1"></p>
@@ -400,172 +402,189 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- TEAM DATA ---
-            // MODIFIED: Removed imgSrc from team data
+
+
+            // Character roster and available skins
             const team = [
                 { 
                     name: "Kyaw San Htun", 
-                    // imgSrc: "./Img/dev/ksh.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/ksh_frame.png", frames: 6, displaySrc: "./Img/dev/ksh_idle.png", unlocked: true, unlockScore: 0 },
-                        { name: "JoJo Skin", spriteSrc: "./Img/dev/ksh_jojo_sprite.png", frames: 6, displaySrc: "./Img/dev/ksh_jojo_idle.png", unlocked: false, unlockScore: 1000 } // Example
+                        { name: "JoJo Skin", spriteSrc: "./Img/dev/ksh_jojo_sprite.png", frames: 6, displaySrc: "./Img/dev/ksh_jojo_idle.png", unlocked: false, unlockScore: 1000 } 
                     ]
                 },
                 { 
                     name: "Htet Oo Wai", 
-                    // imgSrc: "./Img/dev/HOW.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/HOW.jpg", frames: 1, displaySrc: "./Img/dev/HOW.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Zin Min Htike", 
-                    // imgSrc: "./Img/dev/ZMH.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/zmh_frame.png", frames: 7, displaySrc: "./Img/dev/zmh_idle.png", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Linn Latt Htut Aung", 
-                    // imgSrc: "./Img/dev/llha.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/llha_frame.png", frames: 7, displaySrc: "./Img/dev/llha_idle.png", unlocked: true, unlockScore: 0 },
-                        { name: "Gamer Skin", spriteSrc: "./Img/dev/llha_gamer_sprite.png", frames: 7, displaySrc: "./Img/dev/llha_gamer_idle.png", unlocked: false, unlockScore: 2000 } // Example
+                        { name: "Gamer Skin", spriteSrc: "./Img/dev/llha_gamer_sprite.png", frames: 7, displaySrc: "./Img/dev/llha_gamer_idle.png", unlocked: false, unlockScore: 2000 } 
                     ]
                 },
                 { 
                     name: "Aung Myat Htun", 
-                    // imgSrc: "./Img/dev/amh.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/amt_frame.png", frames: 7, displaySrc: "./Img/dev/amt_idle.png", unlocked: true, unlockScore: 0 },
-                        { name: "Rainbow Gay Skin", spriteSrc: "./Img/dev/amt_skin_frame.png", frames: 7, displaySrc: "./Img/dev/amt_skin.png", unlocked: false, unlockScore: 100 } // Example
+                        { name: "Rainbow Gay Skin", spriteSrc: "./Img/dev/amt_skin_frame.png", frames: 7, displaySrc: "./Img/dev/amt_skin.png", unlocked: false, unlockScore: 100 } 
                     ]
                 },
                 { 
                     name: "Myat Min Htet", 
-                    // imgSrc: "./Img/dev/mmh.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/myatgyi_frame.png", frames: 7, displaySrc: "./Img/dev/myatgyi_idle.png", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Naing Linn Htun", 
-                    // imgSrc: "./Img/dev/nlh2.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/nlh2.jpg", frames: 1, displaySrc: "./Img/dev/nlh2.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Ya Min Shwe Sin", 
-                    // imgSrc: "./Img/dev/YMSC.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/YMSC.jpg", frames: 1, displaySrc: "./Img/dev/YMSC.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Soe Sandar Win", 
-                    // imgSrc: "./Img/dev/SSW.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/SSW.jpg", frames: 1, displaySrc: "./Img/dev/SSW.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Eaindray Htet Htet", 
-                    // imgSrc: "./Img/dev/EHH.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/EHH.jpg", frames: 1, displaySrc: "./Img/dev/EHH.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "La Wun Thu", 
-                    // imgSrc: "./Img/dev/LWT.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/LWT.jpg", frames: 1, displaySrc: "./Img/dev/LWT.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Khin Pyae Sone Thant", 
-                    // imgSrc: "./Img/dev/KPST.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./ImgGuess/dev/KPST.jpg", frames: 1, displaySrc: "./ImgGuess/dev/KPST.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Bhone Htet Aung", 
-                    // imgSrc: "./Img/dev/bha.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/bha.jpg", frames: 1, displaySrc: "./Img/dev/bha.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Bo Bo Min Han", 
-                    // imgSrc: "./Img/dev/bbmh.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/bbmh.jpg", frames: 1, displaySrc: "./Img/dev/bbmh.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "May Pwint Thu", 
-                    // imgSrc: "./Img/dev/mpt.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/mpt.jpg", frames: 1, displaySrc: "./Img/dev/mpt.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 },
                 { 
                     name: "Kyaw Zin Hein", 
-                    // imgSrc: "./Img/dev/kzh.jpg", // REMOVED
+
                     skins: [
                         { name: "Default", spriteSrc: "./Img/dev/kzh.jpg", frames: 1, displaySrc: "./Img/dev/kzh.jpg", unlocked: true, unlockScore: 0 }
                     ]
                 }
             ];
 
-            // --- LOAD BACKGROUND IMAGE ---
-            // ▼▼▼ ဒီနေရာမှာ ကျောင်းပုံ (သို့) panorama ပုံရဲ့ URL တွေကို array အနေနဲ့ အစဉ်လိုက်ထည့်ပါ ▼▼▼
-            // FIX: Replaced broken relative paths with working placeholders to resolve 404 errors.
-            const SCHOOL_BACKGROUND_URLS = [
-                './Img/dev/Gemini_Generated_Image_npxy2wnpxy2wnpxy.png',
-                './Img/dev/Gemini_Generated_Image_npxy2wnpxy2wnpxy.png',
-                './Img/dev/Gemini_Generated_Image_npxy2wnpxy2wnpxy.png'
-                // ဥပမာ: './images/part1.png', './images/part2.png', ...
-            ];
-            
-            let backgroundImages = [];
-            let isBackgroundLoaded = false;
-            let backgroundsLoadedCount = 0;
-            let backgroundDrawWidths = []; // Store calculated width of each image
-            let totalBackgroundSequenceWidth = 0; // Store total width of all images combined
 
-            if (SCHOOL_BACKGROUND_URLS.length > 0) {
-                backgroundImages = new Array(SCHOOL_BACKGROUND_URLS.length);
-                SCHOOL_BACKGROUND_URLS.forEach((url, index) => {
+
+            // Layered parallax backgrounds (back-to-front)
+            const PARALLAX_LAYER_CONFIG = [
+                { src: './Img/dev/0.png', speedModifier: 0.08 },
+                { src: './Img/dev/1.png', speedModifier: 0.15 },
+                { src: './Img/dev/2.png', speedModifier: 0.25 },
+                { src: './Img/dev/3.png', speedModifier: 0.35 },
+                { src: './Img/dev/4.png', speedModifier: 0.45 },
+                { src: './Img/dev/5.png', speedModifier: 0.6 },
+                { src: './Img/dev/6.png', speedModifier: 0.75 }
+            ];
+
+            let parallaxLayers = [];
+            let isParallaxLoaded = false;
+            let parallaxLoadedCount = 0;
+
+            if (PARALLAX_LAYER_CONFIG.length > 0) {
+                parallaxLayers = PARALLAX_LAYER_CONFIG.map(config => ({
+                    ...config,
+                    img: null,
+                    naturalWidth: 0,
+                    naturalHeight: 0,
+                    drawWidth: 0,
+                    offset: 0
+                }));
+
+                parallaxLayers.forEach((layer) => {
                     const img = new Image();
                     img.onload = () => {
-                        backgroundsLoadedCount++;
-                        if (backgroundsLoadedCount === SCHOOL_BACKGROUND_URLS.length) {
-                            isBackgroundLoaded = true;
-                            // Width calculation is moved to setupGame, as canvasHeight is needed
+                        layer.img = img;
+                        layer.naturalWidth = img.width;
+                        layer.naturalHeight = img.height;
+                        parallaxLoadedCount++;
+                        if (parallaxLoadedCount === parallaxLayers.length) {
+                            isParallaxLoaded = true;
+                            if (canvasHeight) {
+                                updateParallaxLayerDimensions();
+                            }
+                        } else if (canvasHeight) {
+                            updateParallaxLayerDimensions();
                         }
                     };
                     img.onerror = () => {
-                        console.error(`Background image failed to load: ${url}`);
-                        backgroundsLoadedCount++; // Count error as "loaded" to not block the process
-                        if (backgroundsLoadedCount === SCHOOL_BACKGROUND_URLS.length) {
-                            isBackgroundLoaded = true;
+                        console.error(`Parallax image failed to load: ${layer.src}`);
+                        parallaxLoadedCount++;
+                        if (parallaxLoadedCount === parallaxLayers.length) {
+                            isParallaxLoaded = true;
                         }
                     };
-                    img.src = url;
-                    backgroundImages[index] = img; // Store in order
+                    img.src = layer.src;
                 });
+            } else {
+                isParallaxLoaded = true;
             }
 
-            // --- NEW: LOAD OBSTACLE IMAGES ---
-            // ▼▼▼ ဒီနေရာမှာ သင့် obstacle ပုံတွေရဲ့ URL တွေကို ထည့်ပါ ▼▼▼
+
+            // Ground obstacle sprite list
             const OBSTACLE_IMAGE_URLS = [
                 './Img/dev/poop.png',
                 './Img/dev/iggy.png'
-                // ဥပမာ: './images/bug.png', './images/error.png', ...
+
             ];
 
             let obstacleImages = [];
@@ -593,15 +612,15 @@
                     obstacleImages[index] = img;
                 });
             } else {
-                isObstaclesLoaded = true; // No images to load, so we are "ready"
+                isObstaclesLoaded = true; 
             }
 
-            // --- NEW: LOAD FLYING OBSTACLE IMAGES ---
-            // ▼▼▼ ဒီနေရာမှာ သင့် ပျံသန်းတဲ့ obstacle ပုံတွေရဲ့ URL တွေကို ထည့်ပါ ▼▼▼
+
+            // Flying obstacle sprite list
             const FLYING_OBSTACLE_IMAGE_URLS = [
                 './Img/dev/bird.png',
                 './Img/dev/bird.png'
-                // ဥပမာ: './images/drone.png', './images/bird.png', ...
+
             ];
 
             let flyingObstacleImages = [];
@@ -629,28 +648,52 @@
                     flyingObstacleImages[index] = img;
                 });
             } else {
-                isFlyingObstaclesLoaded = true; // No images to load, so we are "ready"
+                isFlyingObstaclesLoaded = true; 
             }
 
-            // --- NEW: Background Music Playlist ---
-            // ▼▼▼ ဒီနေရာမှာ သင့် background music file တွေရဲ့ URL တွေကို ထည့်ပါ ▼▼▼
+            // Raccoon runner sprite sheet info
+            const RACCOON_SPRITE_URL = './Img/dev/rat.png';
+            const RACCOON_FRAME_COUNT = 5;
+            const RACCOON_ANIMATION_INTERVAL = 6; 
+            const RACCOON_DRAW_HEIGHT = 90;
+            const RACCOON_SPEED_BONUS = 1.5; 
+
+            let raccoonSprite = null;
+            let isRaccoonLoaded = false;
+            let raccoonFrameWidth = 0;
+            let raccoonFrameHeight = 0;
+
+            if (RACCOON_SPRITE_URL) {
+                const img = new Image();
+                img.onload = () => {
+                    raccoonSprite = img;
+                    raccoonFrameWidth = img.width / RACCOON_FRAME_COUNT;
+                    raccoonFrameHeight = img.height;
+                    isRaccoonLoaded = raccoonFrameWidth > 0 && raccoonFrameHeight > 0;
+                };
+                img.onerror = () => {
+                    console.error(`Raccoon sprite failed to load: ${RACCOON_SPRITE_URL}`);
+                    isRaccoonLoaded = false;
+                };
+                img.src = RACCOON_SPRITE_URL;
+            }
+
+
             const MUSIC_PLAYLIST = [
                 './Img/dev/background-music-1.mp3',
                 './Img/dev/background-music-2.mp3',
                 './Img/dev/background-music-3.mp3'
-                // ဥပမာ: './music/track1.mp3', './music/track2.mp3', ...
+
             ];
-            let currentTrackIndex = -1; // Avoid playing the same track twice
+            let currentTrackIndex = -1; 
 
-
-            // --- DOM ELEMENTS ---
             const charSelectScreen = document.getElementById('character-select-screen');
-            // MODIFIED: <div> instead of <img>
+
             const charDisplaySprite = document.getElementById('char-display-sprite');
-            // REMOVED: charDisplayImg
+
             const charDisplayName = document.getElementById('char-display-name');
             const selectBtn = document.getElementById('select-btn');
-            const changeCharBtn = document.getElementById('change-char-btn'); // Button on game over screen
+            const changeCharBtn = document.getElementById('change-char-btn'); 
             
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn'); 
@@ -659,76 +702,80 @@
             const ctx = canvas.getContext('2d');
 
             const scoreEl = document.getElementById('score');
-            const highScoreEl = document.getElementById('high-score'); // NEW
+            const highScoreEl = document.getElementById('high-score'); 
             const startMessage = document.getElementById('start-message');
             const gameOverMessage = document.getElementById('game-over-message');
-            const backgroundMusic = document.getElementById('background-music'); // NEW
+            const backgroundMusic = document.getElementById('background-music'); 
 
-            // --- NEW: Skin UI DOM Elements ---
             const prevSkinBtn = document.getElementById('prev-skin-btn');
             const nextSkinBtn = document.getElementById('next-skin-btn');
             const skinDisplayName = document.getElementById('skin-display-name');
             const skinLockedMessage = document.getElementById('skin-locked-message');
             const unlockNotification = document.getElementById('unlock-notification');
             const unlockMessage = document.getElementById('unlock-message');
-            
-            // --- NEW: Sound Effect DOM Elements ---
+
             const jumpSound = document.getElementById('jump-sound');
             const crashSound = document.getElementById('crash-sound');
             const unlockSound = document.getElementById('unlock-sound');
 
-
-            // --- GAME STATE ---
+            // Runtime state
             let selectedPlayer = { img: new Image(), frames: 1, spriteWidth: 100 };
             let player, gravity, obstacles, gameSpeed, score, isGameOver, gameLoopId;
-            let highScore = 0; // NEW
+            let highScore = 0; 
             let canvasWidth, canvasHeight, groundY;
             let gameFrame = 0; 
-            let currentCharacterIndex = 0; // Renamed from carousel
-            let currentSkinIndex = 0; // NEW
-            let totalCarouselItems = 0; // Renamed to totalCharacterItems
+            let currentCharacterIndex = 0; 
+            let currentSkinIndex = 0; 
+            let totalCarouselItems = 0; 
             let totalCharacterItems = 0; 
-            let bgX = 0; // Background X position
-            let groundDashOffset = 0; // NEW: For running track animation
+            let groundDashOffset = 0; 
 
-            // --- CONSTANTS ---
-            const HIGH_SCORE_KEY = 'devTeamRunnerHighScore'; // NEW
-            const SKINS_UNLOCK_KEY = 'devTeamRunnerSkins'; // NEW
-            // (Carousel constants removed)
-            const PLAYER_WIDTH = 100; // 80 မှ 100 သို့ ပြောင်းလိုက်ပါပြီ
-            const PLAYER_HEIGHT = 100; // 80 မှ 100 သို့ ပြောင်းလိုက်ပါပြီ
-            const JUMP_STRENGTH = 18; // 14 မှ 16 သို့ တိုးမြှင့်
-            const BASE_GRAVITY = 1.0; // 0.7 မှ 0.9 သို့ တိုးမြှင့် (ပိုသွက်အောင်)
-            const BASE_GAME_SPEED = 8; // 6 မှ 8 သို့ တိုးမြှင့် (ပိုမြန်အောင်)
-            // const OBSTACLE_WIDTH = 30; // Obsolete, will be dynamic
-            const OBSTACLE_MIN_HEIGHT = 40; // အနည်းဆုံး အမြင့်
-            const OBSTACLE_MAX_HEIGHT = 90; // အများဆုံး အမြင့်
-            const FLYING_OBSTACLE_HEIGHT = 60; // ပျံသန်းတဲ့ obstacle အမြင့်
+            // Local storage keys
+            const HIGH_SCORE_KEY = 'devTeamRunnerHighScore'; 
+            const SKINS_UNLOCK_KEY = 'devTeamRunnerSkins'; 
+
+            // Core gameplay tuning
+            const PLAYER_WIDTH = 100; 
+            const PLAYER_HEIGHT = 100; 
+            const JUMP_STRENGTH = 18; 
+            const BASE_GRAVITY = 1.0; 
+            const BASE_GAME_SPEED = 8; 
+
+            const OBSTACLE_MIN_HEIGHT = 40; 
+            const OBSTACLE_MAX_HEIGHT = 90; 
+            const FLYING_OBSTACLE_HEIGHT = 60; 
             const OBSTACLE_SPAWN_MIN = 100;
             const OBSTACLE_SPAWN_MAX = 200;
-            // --- SPEED ကို 0.5 မှ 0.2 သို့ လျှော့လိုက်ပါပြီ ---
-            const BACKGROUND_SPEED_MODIFIER = 0.2; // Background moves at 20% of the game speed
-            
-            let obstacleSpawnTimer = OBSTACLE_SPAWN_MAX;
+            const RACCOON_SPAWN_MAX_FRAMES = 60 * 10; 
 
-            // --- NEW: Score Formatting Function ---
+            
+            // Timers for obstacle pacing
+            let obstacleSpawnTimer = OBSTACLE_SPAWN_MAX;
+            let raccoonSpawnTimer = 0;
+
+            // Format the HUD score display
             function formatScore(score) {
                 return score.toString().padStart(5, '0');
             }
-            
-            // --- NEW: Sound Effect Helper ---
+
+            // Simple helper to replay short effects
             function playSound(sound) {
                 if (!sound) return;
-                sound.currentTime = 0; // Rewind to start
-                sound.play().catch(e => console.warn("Sound play failed:", e)); // Play and catch errors silently
+                sound.currentTime = 0; 
+                sound.play().catch(e => console.warn("Sound play failed:", e)); 
             }
 
-            // --- NEW: Function to play a random track ---
+            // Roll a new delay before the next raccoon arrival
+            function scheduleNextRaccoonSpawn() {
+                raccoonSpawnTimer = Math.max(30, Math.floor(Math.random() * (RACCOON_SPAWN_MAX_FRAMES + 1)));
+            }
+
+            // Pick a new music track and start playback
             function playRandomTrack() {
                 if (!backgroundMusic || MUSIC_PLAYLIST.length === 0) return;
 
                 let nextTrackIndex;
-                // Find a new track index that is different from the current one
+
                 do {
                     nextTrackIndex = Math.floor(Math.random() * MUSIC_PLAYLIST.length);
                 } while (MUSIC_PLAYLIST.length > 1 && nextTrackIndex === currentTrackIndex);
@@ -741,7 +788,6 @@
                 backgroundMusic.play().catch(e => console.error("Audio play failed:", e));
             }
 
-            // --- NEW: Skin Unlock Functions ---
             function saveUnlockedSkins() {
                 const unlockedSkinsMap = {};
                 team.forEach(member => {
@@ -757,7 +803,7 @@
 
             function loadUnlockedSkins() {
                 const savedSkins = localStorage.getItem(SKINS_UNLOCK_KEY);
-                if (!savedSkins) return; // No saved data
+                if (!savedSkins) return; 
 
                 try {
                     const unlockedSkinsMap = JSON.parse(savedSkins);
@@ -773,7 +819,7 @@
                     });
                 } catch (e) {
                     console.error("Failed to parse unlocked skins:", e);
-                    localStorage.removeItem(SKINS_UNLOCK_KEY); // Clear corrupted data
+                    localStorage.removeItem(SKINS_UNLOCK_KEY); 
                 }
             }
             
@@ -781,17 +827,15 @@
                 let newUnlock = false;
                 team.forEach(member => {
                     member.skins.forEach(skin => {
-                        // Check if skin is not unlocked, has a score requirement, and score is met
+
                         if (!skin.unlocked && skin.unlockScore > 0 && currentScore >= skin.unlockScore) {
                             skin.unlocked = true;
                             newUnlock = true;
-                            
-                            // Show notification
+
                             unlockMessage.textContent = `${skin.name} for ${member.name}!`;
                             unlockNotification.classList.remove('hidden');
-                            playSound(unlockSound); // NEW: Play unlock sound
-                            
-                            // Hide notification after a few seconds
+                            playSound(unlockSound); 
+
                             setTimeout(() => {
                                 unlockNotification.classList.add('hidden');
                             }, 4000);
@@ -803,29 +847,24 @@
                     saveUnlockedSkins();
                 }
             }
-            // --- END: Skin Unlock Functions ---
-
-
-            // --- PLAYER CLASS ---
-            // (No changes to this class)
+            // Animated runner controlled by the player
             class Player {
                 constructor(x, y, w, h, spriteData) {
                     this.x = x;
                     this.y = y;
-                    this.w = w; // Display width
-                    this.h = h; // Display height
+                    this.w = w; 
+                    this.h = h; 
                     this.img = spriteData.img;
-                    
-                    // Sprite sheet properties
-                    this.totalFrames = spriteData.frames; // Total frames in the animation
-                    this.spriteWidth = spriteData.spriteWidth; // Total width of the sprite sheet image
-                    this.spriteHeight = this.img.height; // Height of the sprite sheet image
-                    this.frameWidth = this.spriteWidth / this.totalFrames; // Width of a single frame
-                    
-                    this.currentFrame = 0; // Current animation frame (0-indexed)
-                    this.animationStagger = 5; // Animation သွက်အောင် 4 မှ 3 သို့ ပြောင်းလိုက်ပါပြီ
 
-                    this.dy = 0; // Vertical velocity
+                    this.totalFrames = spriteData.frames; 
+                    this.spriteWidth = spriteData.spriteWidth; 
+                    this.spriteHeight = this.img.height; 
+                    this.frameWidth = this.spriteWidth / this.totalFrames; 
+                    
+                    this.currentFrame = 0; 
+                    this.animationStagger = 5; 
+
+                    this.dy = 0; 
                     this.isJumping = false;
                 }
 
@@ -859,7 +898,7 @@
                     if (!this.isJumping) {
                         this.dy = -JUMP_STRENGTH;
                         this.isJumping = true;
-                        playSound(jumpSound); // NEW: Play jump sound
+                        playSound(jumpSound); 
                     }
                 }
 
@@ -877,36 +916,35 @@
                     this.draw();
                 }
             }
-            
-            // --- MODIFIED: OBSTACLE CLASS ---
-            // This class now handles both ground and air obstacles
+
+
+            // Generic helper for static obstacle sprites
             class Obstacle {
                 constructor(x, y, h, img) {
                     this.x = x;
-                    this.y = y; // This is the TOP y-coordinate
-                    this.h = h; // Desired height
-                    this.img = img; // The image object
-                    
-                    // Calculate width based on image's aspect ratio
+                    this.y = y; 
+                    this.h = h; 
+                    this.img = img; 
+
                     if (this.img && this.img.height > 0) {
                         const aspectRatio = this.img.width / this.img.height;
                         this.w = this.h * aspectRatio;
                     } else {
-                        this.w = 30; // Fallback width
+                        this.w = 30; 
                     }
                 }
 
                 draw() {
                     ctx.imageSmoothingEnabled = false; 
                     if (this.img && this.img.complete && this.img.height > 0) {
-                        // Draw the image
+
                         ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
                     } else {
-                        // Fallback: draw text if image failed
+
                         ctx.beginPath();
-                        ctx.fillStyle = "#e11d48"; // Red color
+                        ctx.fillStyle = "#e11d48"; 
                         ctx.font = `${this.h}px 'Press Start 2P'`;
-                        ctx.textAlign = "left"; // Align with x
+                        ctx.textAlign = "left"; 
                         ctx.textBaseline = "bottom";
                         ctx.fillText("</>", this.x, this.y + this.h);
                         ctx.closePath();
@@ -918,30 +956,84 @@
                     this.draw();
                 }
             }
-            
-            // --- MODIFIED: CHARACTER & SKIN SWITCHER LOGIC ---
-            
-            // NEW: This function updates only the skin-related UI
+
+            // Special animated ground runner that chases the player
+            class RaccoonObstacle {
+                constructor() {
+                    this.type = 'raccoon';
+                    this.sprite = raccoonSprite;
+                    this.frameCount = RACCOON_FRAME_COUNT;
+                    this.frameWidth = raccoonFrameWidth;
+                    this.frameHeight = raccoonFrameHeight;
+                    this.frameIndex = 0;
+                    this.frameTimer = 0;
+                    this.frameInterval = RACCOON_ANIMATION_INTERVAL;
+                    this.h = RACCOON_DRAW_HEIGHT;
+                    const aspectRatio = (this.frameWidth > 0 && this.frameHeight > 0)
+                        ? (this.frameWidth / this.frameHeight)
+                        : 1;
+                    this.w = this.h * aspectRatio;
+                    if (!isFinite(this.w) || this.w <= 0) {
+                        this.w = this.h;
+                    }
+                    this.x = canvasWidth + this.w;
+                    const playerBaseline = player ? (player.y + player.h - this.h) : (groundY - this.h);
+                    this.y = Math.max(playerBaseline, groundY - this.h);
+                }
+
+                update() {
+                    this.x -= gameSpeed + RACCOON_SPEED_BONUS;
+                    this.frameTimer++;
+                    if (this.frameTimer >= this.frameInterval) {
+                        this.frameTimer = 0;
+                        this.frameIndex = (this.frameIndex + 1) % this.frameCount;
+                    }
+                    this.draw();
+                }
+
+                draw() {
+                    if (this.sprite && this.frameWidth > 0 && this.frameHeight > 0) {
+                        ctx.save();
+                        ctx.imageSmoothingEnabled = false;
+                        ctx.translate(this.x + this.w, this.y);
+                        ctx.scale(-1, 1);
+                        ctx.drawImage(
+                            this.sprite,
+                            this.frameIndex * this.frameWidth,
+                            0,
+                            this.frameWidth,
+                            this.frameHeight,
+                            0,
+                            0,
+                            this.w,
+                            this.h
+                        );
+                        ctx.restore();
+                    } else {
+                        ctx.fillStyle = "#1f2937";
+                        ctx.fillRect(this.x, this.y, this.w, this.h);
+                    }
+                }
+            }
+
+
             function updateSkinDisplay() {
                 const member = team[currentCharacterIndex];
                 const skin = member.skins[currentSkinIndex];
 
-                // Update skin name
                 skinDisplayName.textContent = skin.name;
 
-                // Update sprite display (using the logic from the old updateCharacterDisplay)
                 if (skin.displaySrc) {
                     charDisplaySprite.style.backgroundImage = `url('${skin.displaySrc}')`;
-                    // 'contain' will fit the whole image inside the 100x100 box
+
                     charDisplaySprite.style.backgroundSize = 'contain'; 
                     charDisplaySprite.style.backgroundPosition = 'center';
                     charDisplaySprite.style.backgroundRepeat = 'no-repeat';
                 } else {
-                     // Fallback if displaySrc is missing (should not happen with new data)
+
                     charDisplaySprite.style.backgroundImage = 'none';
                 }
-                
-                // Update Locked/Unlocked state
+
                 if (skin.unlocked) {
                     skinLockedMessage.classList.add('hidden');
                     selectBtn.disabled = false;
@@ -952,25 +1044,20 @@
                     selectBtn.disabled = true;
                     selectBtn.textContent = "Locked";
                 }
-                
-                // Update skin nav button states
+
                 prevSkinBtn.disabled = currentSkinIndex === 0;
                 nextSkinBtn.disabled = currentSkinIndex === member.skins.length - 1;
             }
 
-            // MODIFIED: This function now updates the character and resets the skin
             function updateCharacterDisplay() {
                 const member = team[currentCharacterIndex];
-                
-                // Set name immediately
+
                 charDisplayName.textContent = member.name;
-                // REMOVED: charDisplayImg.src = member.imgSrc;
-                
-                // Reset skin index to 0 and update the skin display
+
+
                 currentSkinIndex = 0;
                 updateSkinDisplay();
-                
-                // Update character nav button states
+
                 prevBtn.disabled = currentCharacterIndex === 0;
                 nextBtn.disabled = currentCharacterIndex === totalCharacterItems - 1;
             }
@@ -982,33 +1069,28 @@
             }
 
 
-            // --- CHARACTER SELECTION ---
-            
-            // MODIFIED: selectCharacter (now checks for assets and passes the skin)
             function selectCharacter() {
                 const member = team[currentCharacterIndex];
                 const skin = member.skins[currentSkinIndex];
 
-                if (!skin.unlocked) return; // Button should be disabled, but extra check
+                if (!skin.unlocked) return; 
 
-                // Wait for all images (bg, ground obs, flying obs) to be loaded before starting
-                if (!isBackgroundLoaded || !isObstaclesLoaded || !isFlyingObstaclesLoaded) {
+                if (!isParallaxLoaded || !isObstaclesLoaded || !isFlyingObstaclesLoaded) {
                     selectBtn.textContent = "LOADING ASSETS...";
                     selectBtn.disabled = true;
                     
                     const checkLoad = setInterval(() => {
-                        if (isBackgroundLoaded && isObstaclesLoaded && isFlyingObstaclesLoaded) {
+                        if (isParallaxLoaded && isObstaclesLoaded && isFlyingObstaclesLoaded) {
                             clearInterval(checkLoad);
-                            updateSkinDisplay(); // Reset button text/state
-                            performCharacterSelection(skin); // Pass the selected skin
+                            updateSkinDisplay(); 
+                            performCharacterSelection(skin); 
                         }
                     }, 100);
                 } else {
-                    performCharacterSelection(skin); // Pass the selected skin
+                    performCharacterSelection(skin); 
                 }
             }
 
-            // MODIFIED: performCharacterSelection (now accepts a skin object)
             function performCharacterSelection(skin) {
                 selectedPlayer.img.src = skin.spriteSrc; 
                 selectedPlayer.frames = skin.frames || 1;
@@ -1035,8 +1117,7 @@
                     setupGame(); 
                 };
             }
-            
-            // --- GAME SETUP & SIZING ---
+
             function setupCanvas() {
                 const rect = canvas.parentElement.getBoundingClientRect();
                 canvas.width = rect.width;
@@ -1044,28 +1125,24 @@
 
                 canvasWidth = canvas.width;
                 canvasHeight = canvas.height;
-                groundY = canvasHeight - 20; 
+                groundY = canvasHeight -50; 
             }
-            
-            // --- MODIFIED: drawGround (Concrete Road) ---
+
             function drawGround() {
-                // 1. Draw the main concrete base
+
                 ctx.beginPath();
-                ctx.fillStyle = "#666666"; // Stone-400 (concrete color)
-                ctx.fillRect(0, groundY, canvasWidth, canvasHeight - groundY); // Draw from groundY to bottom
+                ctx.fillStyle = "#666666"; 
+                ctx.fillRect(0, groundY, canvasWidth, canvasHeight - groundY); 
                 ctx.closePath();
 
-                // 2. Draw the dashed lane line (like a road)
                 ctx.beginPath();
-                ctx.strokeStyle = "#ffffff"; // Stone-800 (darker for dash)
+                ctx.strokeStyle = "#ffffff"; 
                 ctx.lineWidth = 3;
-                ctx.setLineDash([40, 60]); // 40px line, 60px gap
+                ctx.setLineDash([40, 60]); 
 
-                // Animate the dash offset
-                // 'groundDashOffset' will be updated in the gameLoop
-                ctx.lineDashOffset = -groundDashOffset; // Negative offset moves dashes left (correct direction)
 
-                // Draw one line in the middle of the track
+                ctx.lineDashOffset = -groundDashOffset; 
+
                 const line1Y = groundY + 10;
                 
                 ctx.moveTo(0, line1Y);
@@ -1074,37 +1151,62 @@
                 ctx.stroke();
                 ctx.closePath();
 
-                // Reset line dash for other drawings
                 ctx.setLineDash([]);
             }
 
-            // --- NEW: Function to draw the static background sequence ---
-            function drawStaticBackgrounds() {
-                if (!isBackgroundLoaded) return;
-                let currentX = 0;
-                for (let i = 0; i < backgroundImages.length; i++) {
-                    const img = backgroundImages[i];
-                    const drawWidth = backgroundDrawWidths[i];
-                    if (!img || !drawWidth) continue; // Skip if image failed or width is 0
-                    if (currentX > canvasWidth) break; // Stop drawing if off-screen
-                    ctx.drawImage(img, currentX, 0, drawWidth, canvasHeight);
-                    currentX += drawWidth;
-                }
+            function updateParallaxLayerDimensions() {
+                if (!isParallaxLoaded || parallaxLayers.length === 0) return;
+                parallaxLayers.forEach(layer => {
+                    if (!layer.img || layer.img.height === 0) return;
+                    const scale = canvasHeight / layer.img.height;
+                    layer.drawWidth = layer.img.width * scale;
+                    if (!isFinite(layer.drawWidth) || layer.drawWidth <= 0) {
+                        layer.drawWidth = canvasWidth;
+                    }
+                    if (!isFinite(layer.offset)) {
+                        layer.offset = 0;
+                    }
+                });
             }
 
+            function renderParallaxBackgrounds(advance = false) {
+                ctx.fillStyle = '#030712';
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // --- MODIFIED: setupGame ---
+                if (!isParallaxLoaded || parallaxLayers.length === 0) return;
+
+                parallaxLayers.forEach(layer => {
+                    if (!layer.img || layer.drawWidth <= 0) return;
+
+                    if (advance) {
+                        const speed = (gameSpeed || BASE_GAME_SPEED) * layer.speedModifier;
+                        layer.offset -= speed;
+                        if (layer.offset <= -layer.drawWidth) {
+                            layer.offset += layer.drawWidth;
+                        }
+                    }
+
+                    let startX = layer.offset;
+                    while (startX > 0) {
+                        startX -= layer.drawWidth;
+                    }
+
+                    for (let x = startX; x < canvasWidth; x += layer.drawWidth) {
+                        ctx.drawImage(layer.img, x, 0, layer.drawWidth, canvasHeight);
+                    }
+                });
+            }
+
             function setupGame() {
                 setupCanvas();
                 startMessage.classList.remove('hidden');
-                gameOverMessage.classList.add('hidden'); // Make sure this is hidden on setup
-                scoreEl.textContent = formatScore(0); // MODIFIED
+                gameOverMessage.classList.add('hidden'); 
+                scoreEl.textContent = formatScore(0); 
 
-                // --- NEW: Load High Score ---
                 const savedHighScore = localStorage.getItem(HIGH_SCORE_KEY);
                 highScore = savedHighScore ? parseInt(savedHighScore) : 0;
                 highScoreEl.textContent = formatScore(highScore);
-                // --- END NEW ---
+
 
                 isGameOver = true; 
                 gameSpeed = BASE_GAME_SPEED;
@@ -1112,41 +1214,27 @@
                 score = 0;
                 obstacles = [];
                 gameFrame = 0;
-                bgX = 0; // Reset background position
-                groundDashOffset = 0; // NEW: Reset dash offset
-                
-                // --- NEW: Calculate background widths based on canvasHeight ---
-                if (isBackgroundLoaded && (backgroundDrawWidths.length !== backgroundImages.length)) {
-                    totalBackgroundSequenceWidth = 0;
-                    backgroundDrawWidths = backgroundImages.map(img => {
-                        if (!img || img.height === 0 || img.width === 0) return 0; // Handle failed load
-                        const imgAspectRatio = img.width / img.height;
-                        const drawWidth = canvasHeight * imgAspectRatio;
-                        totalBackgroundSequenceWidth += drawWidth;
-                        return drawWidth;
-                    });
-                }
+                groundDashOffset = 0; 
+                scheduleNextRaccoonSpawn();
 
-                // This check is important. Only create a new player if selectedPlayer.img has a src.
-                // On the very first run, selectedPlayer.img.src is ""
-                // After selectCharacter runs, it will have a src.
+                updateParallaxLayerDimensions();
+
+
+
                 if (selectedPlayer.img.src) {
                      player = new Player(PLAYER_WIDTH, groundY - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT, selectedPlayer);
                 }
-               
-                // Draw initial state
+
                 ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-                
-                // NEW: Draw static background sequence
-                drawStaticBackgrounds();
+
+                renderParallaxBackgrounds(false);
 
                 drawGround();
                 if (player) {
-                    player.draw(); // Only draw if player exists
+                    player.draw(); 
                 }
             }
-            
-            // --- MODIFIED: GAME LOGIC ---
+
             function startGame() {
                 if (isGameOver) {
                     isGameOver = false;
@@ -1157,33 +1245,32 @@
                     obstacles = [];
                     obstacleSpawnTimer = OBSTACLE_SPAWN_MAX;
                     gameFrame = 0;
-                    
-                    // --- MODIFIED: Play Music ---
-                    // Call the new function to start the random playlist
+                    scheduleNextRaccoonSpawn();
+
+
                     playRandomTrack();
-                    // --- END MODIFIED ---
-                    
-                    // Player should already be created by setupGame
+
+
                     if (!player) {
-                         // This ensures player is created with the currently selected skin
+
                          const currentSkin = team[currentCharacterIndex].skins[currentSkinIndex];
-                         performCharacterSelection(currentSkin); // This will call setupGame again, which is slightly inefficient but safe.
-                         // Let's optimize:
+                         performCharacterSelection(currentSkin); 
+
                          player = new Player(PLAYER_WIDTH, groundY - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT, selectedPlayer);
                     }
                     
                     if (!player) {
-                        // Failsafe if player still isn't created
+
                          const skin = team[currentCharacterIndex].skins[currentSkinIndex];
                          selectedPlayer.img.src = skin.spriteSrc; 
                          selectedPlayer.frames = skin.frames || 1;
-                         selectedPlayer.img.onload = () => { // Need to wait for load
+                         selectedPlayer.img.onload = () => { 
                              selectedPlayer.spriteWidth = selectedPlayer.img.width;
                              player = new Player(PLAYER_WIDTH, groundY - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT, selectedPlayer);
                              if (gameLoopId) cancelAnimationFrame(gameLoopId);
                              gameLoop();
                          }
-                         return; // Wait for image load
+                         return; 
                     }
                     
                     if (gameLoopId) cancelAnimationFrame(gameLoopId);
@@ -1191,30 +1278,39 @@
                 }
             }
 
-            // --- MODIFIED: spawnObstacle ---
+            // Handle all obstacle creation and pacing
             function spawnObstacle() {
+                if (raccoonSpawnTimer > 0) {
+                    raccoonSpawnTimer--;
+                }
+
+                if (raccoonSpawnTimer <= 0 && isRaccoonLoaded) {
+                    const hasActiveRaccoon = obstacles.some(o => o.type === 'raccoon');
+                    if (!hasActiveRaccoon) {
+                        obstacles.push(new RaccoonObstacle());
+                        scheduleNextRaccoonSpawn();
+                    }
+                }
+
                 obstacleSpawnTimer--;
-                // Check if all image types are loaded
+
                 if (obstacleSpawnTimer <= 0 && isObstaclesLoaded && isFlyingObstaclesLoaded) {
-                    
-                    // 25% chance to spawn a flying obstacle, if images are available
+
                     if (Math.random() < 0.25 && flyingObstacleImages.length > 0) {
-                        // --- SPAWN FLYING OBSTACLE ---
+
                         const imgIndex = Math.floor(Math.random() * flyingObstacleImages.length);
                         const obsImg = flyingObstacleImages[imgIndex];
 
                         if (obsImg && obsImg.height > 0) {
                             const h = FLYING_OBSTACLE_HEIGHT;
-                            
-                            // Randomly pick one of two "lanes"
-                            // Lane 1: High (player runs under). Top is 50px above player's head.
+
+
                             const yLane1 = groundY - PLAYER_HEIGHT - h - 50; 
-                            
-                            // Lane 2: Low (player must jump).
-                            // FIX: The original 'yLane2' (groundY - h - (PLAYER_HEIGHT / 2)) was too high to jump over.
-                            // We are lowering it significantly.
-                            // The obstacle's top will now be at groundY - 85px.
-                            // Its bottom will be at (groundY - 85) + 60px = groundY - 25px (knee-height).
+
+
+
+
+
                             const yLane2 = groundY - 85;
                             
                             const y = Math.random() < 0.5 ? yLane1 : yLane2;
@@ -1223,38 +1319,38 @@
                         }
 
                     } else if (obstacleImages.length > 0) {
-                        // --- SPAWN GROUND OBSTACLE (Original Logic) ---
+
                         const imgIndex = Math.floor(Math.random() * obstacleImages.length);
                         const obsImg = obstacleImages[imgIndex];
 
                         if (obsImg && obsImg.height > 0) {
                             const h = Math.random() * (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT) + OBSTACLE_MIN_HEIGHT;
-                            // y-coordinate is the top of the obstacle
+
                             const y = groundY - h; 
                             obstacles.push(new Obstacle(canvasWidth, y, h, obsImg));
                         }
                     }
-                    
-                    // Reset timer after attempting to spawn
+
                     obstacleSpawnTimer = Math.floor(Math.random() * (OBSTACLE_SPAWN_MAX - OBSTACLE_SPAWN_MIN + 1)) + OBSTACLE_SPAWN_MIN - (gameSpeed * 5);
                     if (obstacleSpawnTimer < 40) obstacleSpawnTimer = 40;
                 }
             }
             
+            // Slightly forgiving bounding-box intersection
             function checkCollision(p, o) {
-                // Add a small buffer to make collision feel more fair
-                const hitBoxBufferX = p.w * 0.15; // 15% buffer on each side
-                const hitBoxBufferY = p.h * 0.1; // 10% buffer on top/bottom
+
+                const hitBoxBufferX = p.w * 0.2; 
+                const hitBoxBufferY = p.h * 0.15; 
 
                 const pLeft = p.x + hitBoxBufferX;
                 const pRight = p.x + p.w - hitBoxBufferX;
                 const pTop = p.y + hitBoxBufferY;
-                const pBottom = p.y + p.h; // Bottom has no buffer
+                const pBottom = p.y + p.h; 
 
-                const oLeft = o.x;
-                const oRight = o.x + o.w;
-                const oTop = o.y;
-                const oBottom = o.y + o.h;
+                const oLeft = o.x + o.w * 0.15;
+                const oRight = o.x + o.w - o.w * 0.1;
+                const oTop = o.y + o.h * 0.2;
+                const oBottom = o.y + o.h - o.h * 0.05;
 
                 return pRight > oLeft &&
                        pLeft < oRight &&
@@ -1262,43 +1358,41 @@
                        pTop < oBottom;
             }
 
-            // --- MODIFIED: updateScore ---
+            // Bump score and accelerate as milestones are reached
             function updateScore() {
                 score++;
-                scoreEl.textContent = formatScore(Math.floor(score / 5)); // MODIFIED
+                scoreEl.textContent = formatScore(Math.floor(score / 5)); 
                 if (score % 200 === 0) {
-                    gameSpeed += 0.3; // Speed ပိုမြန်မြန်တက်အောင် 0.2 မှ 0.3 သို့ ပြောင်း
+                    gameSpeed += 0.3; 
                 }
             }
 
-            // --- MODIFIED: endGame ---
+            // Cleanup when the player hits an obstacle
             function endGame() {
-                playSound(crashSound); // NEW: Play crash sound
+                playSound(crashSound); 
                 isGameOver = true;
-                gameOverMessage.classList.remove('hidden'); // Show game over msg
+                gameOverMessage.classList.remove('hidden'); 
 
-                // --- NEW: Pause Music ---
                 if (backgroundMusic) {
                     backgroundMusic.pause();
                 }
-                // --- END NEW ---
 
-                // --- NEW: Check and Save High Score ---
+
                 const currentScore = Math.floor(score / 5);
                 if (currentScore > highScore) {
                     highScore = currentScore;
                     localStorage.setItem(HIGH_SCORE_KEY, highScore);
-                    // HI score display will be updated in setupGame() on restart
+
                 }
-                // --- END NEW ---
-                
-                // --- NEW: Check for Skin Unlocks ---
+
+
                 checkAndUnlockSkins(currentScore);
-                // --- END NEW ---
+
 
                 cancelAnimationFrame(gameLoopId);
             }
             
+            // Main animation frame handler
             function gameLoop() {
                 if (isGameOver) return;
                 
@@ -1306,40 +1400,9 @@
                 
                 ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-                // --- DRAW MOVING BACKGROUND (Multi-Image Sequence) ---
-                if (isBackgroundLoaded && totalBackgroundSequenceWidth > 0) {
-                    let bgSpeed = gameSpeed * BACKGROUND_SPEED_MODIFIER;
-                    bgX -= bgSpeed;
-                    
-                    // Reset bgX to loop the sequence
-                    if (bgX <= -totalBackgroundSequenceWidth) {
-                        bgX += totalBackgroundSequenceWidth;
-                    }
+                renderParallaxBackgrounds(true);
 
-                    let currentX = bgX;
-                    let i = 0;
-                    // Keep drawing images from the sequence until we are off-screen
-                    while (currentX < canvasWidth) {
-                        let imgIndex = i % backgroundImages.length;
-                        const img = backgroundImages[imgIndex];
-                        const drawWidth = backgroundDrawWidths[imgIndex];
-
-                        if (!img || !drawWidth) { // Safety break
-                             i++; // Avoid infinite loop if one image failed
-                             if(i > backgroundImages.length * 2) break; // Hard break
-                             continue;
-                        }
-
-                        ctx.drawImage(img, currentX, 0, drawWidth, canvasHeight);
-                        currentX += drawWidth;
-                        i++;
-                    }
-                }
-                // --- END BACKGROUND ---
-
-                // --- NEW: Update ground dash offset ---
-                // Move dashes at the same speed as the game
-                groundDashOffset = (groundDashOffset - gameSpeed) % 100; // MODIFIED: Negative offset for correct direction
+                groundDashOffset = (groundDashOffset - gameSpeed) % 100; 
                 
                 drawGround();
                 gameFrame++;
@@ -1363,36 +1426,36 @@
                 updateScore();
             }
 
-            // --- EVENT LISTENERS ---
+            // Unified keyboard/mouse/touch handler
             function handleInput(e) {
-                // Prevent spacebar from clicking buttons
+
                 if (e.code === 'Space') e.preventDefault();
                 if (e.code && e.code !== 'Space' && e.code !== 'ArrowUp') return;
                 
                 if (isGameOver && !startMessage.classList.contains('hidden')) {
-                    // First start (from game screen)
+
                     startGame();
-                    if (player) player.jump(); // Only jump if player exists
+                    if (player) player.jump(); 
                 } else if (isGameOver && !gameOverMessage.classList.contains('hidden')) {
-                    // Restart (from game over screen)
+
                     setupGame();
                     startGame();
                     if (player) player.jump();
                 } else if (!isGameOver && player) {
-                    // Jump during game
+
                     player.jump();
                 }
             }
 
+            // Hook up controls for gameplay and menus
             document.addEventListener('keydown', handleInput);
             gameScreen.addEventListener('click', handleInput);
-            // FIXED: Removed stray 'I' character
+
             gameScreen.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 handleInput(e);
             }, { passive: false });
 
-            // Character Switcher button listeners
             prevBtn.addEventListener('click', () => {
                 if (currentCharacterIndex > 0) {
                     currentCharacterIndex--;
@@ -1406,29 +1469,25 @@
                     updateCharacterDisplay();
                 }
             });
-            
-            // MODIFIED: Select button listener
+
             selectBtn.addEventListener('click', selectCharacter);
             
             changeCharBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Stop the gameScreen click handler
+                e.stopPropagation(); 
                 gameScreen.classList.add('hidden');
                 charSelectScreen.classList.remove('hidden');
-                
-                // --- NEW: Pause Music ---
+
                 if (backgroundMusic) {
                     backgroundMusic.pause();
                 }
-                // --- END NEW ---
+
+
+                player = null; 
+                setupGame(); 
                 
-                // Reset game state completely
-                player = null; // Clear the old player
-                setupGame(); // Set up canvas but without a player
-                
-                initializeCharacterSelect(); // Reset to first char
+                initializeCharacterSelect(); 
             });
 
-            // --- NEW: Skin Switcher Listeners ---
             prevSkinBtn.addEventListener('click', () => {
                 if (currentSkinIndex > 0) {
                     currentSkinIndex--;
@@ -1443,27 +1502,25 @@
                     updateSkinDisplay();
                 }
             });
-            // --- END: Skin Switcher Listeners ---
 
 
-            // MODIFIED: Handle window resize
+            // Keep canvas sizing responsive
             window.addEventListener('resize', () => {
                  if (!gameScreen.classList.contains('hidden')) {
-                    // If game is active, resize game
+
                     setupGame(); 
                 }
-                // No need to update carousel/switcher on resize
+
             });
-            
-            // --- NEW: Event listener for when a track finishes ---
+
+            // Loop the music playlist forever
             if (backgroundMusic) {
                 backgroundMusic.addEventListener('ended', playRandomTrack);
             }
-            // --- END NEW ---
 
-            // --- INITIALIZE ---
-            loadUnlockedSkins(); // NEW: Load unlocks before initializing
-            initializeCharacterSelect(); // Renamed function call
+            // Initial bootstrapping
+            loadUnlockedSkins(); 
+            initializeCharacterSelect(); 
         });
     </script>
 
