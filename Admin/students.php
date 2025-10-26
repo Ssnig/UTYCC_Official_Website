@@ -8,11 +8,11 @@ $students = [];
 
 //page system
 $limit = 8; 
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // current page, default 1
+$page = isset($_GET['page']) ? (int)$$_GET['page'] : 1; // current page, default 1
 $offset = ($page - 1) * $limit;
 
-// MODIFICATION: Added s.preferences AND s.selected_major to the SELECT statement
-$sql = "SELECT s.*, s.preferences, s.selected_major,
+// MODIFICATION: Added s.preferences, s.selected_major, s.payment_status, AND s.payment_receipt_path
+$sql = "SELECT s.*, s.preferences, s.selected_major, s.payment_status, s.payment_receipt_path,
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
         FROM students s
@@ -36,6 +36,13 @@ try {
 
         // MODIFICATION: Decode the JSON preferences string into an array
         $row['preferences'] = $row['preferences'] ? json_decode($row['preferences'], true) : null;
+        
+        // --- NEW: Process payment_receipt_path URL ---
+        if (isset($row['payment_receipt_path']) && !empty($row['payment_receipt_path'])) {
+             $row['payment_receipt_path_url'] = '../' . $row['payment_receipt_path'];
+        } else {
+             $row['payment_receipt_path_url'] = null;
+        }
 
         $students[] = $row; 
     }
@@ -360,6 +367,35 @@ $pdo = null;
       font-weight: 500;
     }
     /* END NEW Styles */
+    
+    /* --- NEW CSS for Payment Receipt --- */
+    .payment-receipt-section {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px dashed hsl(var(--border));
+    }
+    .payment-receipt-section img {
+        max-width: 100%;
+        max-height: 400px;
+        border-radius: 8px;
+        border: 1px solid hsl(var(--border));
+        margin-top: 8px;
+        cursor: pointer;
+    }
+    .payment-receipt-link {
+        display: inline-block;
+        padding: 8px 12px;
+        background-color: hsl(var(--primary));
+        color: hsl(var(--primary-foreground));
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+    .payment-receipt-link:hover {
+        opacity: 0.9;
+    }
+    /* --- END NEW CSS --- */
 
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
@@ -411,7 +447,7 @@ $pdo = null;
             Manage Stats
         </a>
         <a class="nav-link" href="activity.php">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2 2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
             Upload Activity
         </a>
         <a class="nav-link" href="support.php">
@@ -718,6 +754,12 @@ $pdo = null;
             <div id="edit-documents-grid" class="documents-grid" style="grid-column: 1 / -1;">
                 <!-- JS will populate this -->
             </div>
+            
+            <!-- NEW: Payment Receipt section in Edit Modal -->
+            <h3 class="detail-section-header" id="payment-header">Payment Information</h3>
+            <div id="edit-payment-section" style="grid-column: 1 / -1;">
+                 <!-- Payment status and receipt will be injected here -->
+            </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -802,23 +844,46 @@ $pdo = null;
     
     // FIXED: Improved getSafeUrl function to handle various path formats
     function getSafeUrl(path) {
-        if (!path || path.trim() === '' || path === 'null') {
-            return 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
-        }
+        if (!path) return `https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+File`;
         
         if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
             return path;
         }
-        
-        if (path.startsWith('/uploads/')) {
-            return `../Rform${path}`;
+
+        // Check if it's an Rform upload (students, documents) or payment_receipt
+        if (path.startsWith('uploads/') || path.includes('/payment_receipt/') || path.startsWith('/uploads/')) {
+             let relativePath = path;
+             
+             if(path.startsWith('../')) {
+                 // Already relative from root? Assume it's correct from PHP.
+             } else if (path.startsWith('Rform/')) {
+                 relativePath = `../${path}`; // Add ../ if it starts with Rform/
+             } else if (path.startsWith('uploads/')) {
+                 relativePath = `../Rform/${path}`; // Add ../Rform/ if it starts with uploads/
+             } else if (path.startsWith('/uploads/')) {
+                 relativePath = `../Rform${path}`; // Handle /uploads/
+             } else if (path.includes('uploads/')) {
+                 // Handle cases like '.../Rform/uploads/...'
+                 const cleanPath = path.replace(/^\.\.\/Rform\//, '').replace(/^\//, '');
+                 relativePath = `../Rform/${cleanPath}`;
+             } else if (path.includes('payment_receipt/')) {
+                 // Handle 'Rform/payment_receipt/...'
+                 if (!path.startsWith('../')) {
+                     relativePath = `../${path}`;
+                 }
+             }
+             
+             // Simple check to avoid double '../' if PHP already added it
+             if(relativePath.startsWith('../..')) relativePath = relativePath.substring(3);
+             return relativePath;
         }
         
+        // Fallback for other paths, assuming they are relative to Rform
         if (path.includes('uploads/')) {
             const cleanPath = path.replace(/^\.\.\/Rform\//, '').replace(/^\//, '');
             return `../Rform/${cleanPath}`;
         }
-        
+
         return `../Rform/${path}`;
     }
 
@@ -1034,6 +1099,8 @@ $pdo = null;
       
       const documentsHeader = document.getElementById('documents-header');
       const documentsGrid = document.getElementById('edit-documents-grid');
+      const paymentHeader = document.getElementById('payment-header');
+      const paymentSection = document.getElementById('edit-payment-section');
       const saveButton = document.getElementById('saveStudent');
       
       // Reset parent fields to enabled state
@@ -1054,6 +1121,12 @@ $pdo = null;
         updateMajorSection(mode, null);
         documentsHeader.style.display = 'none';
         documentsGrid.style.display = 'none';
+        
+        // --- NEW: Hide payment section on add ---
+        if (paymentSection && paymentHeader) {
+            paymentSection.style.display = 'none';
+            paymentHeader.style.display = 'none';
+        }
       } else if (mode === 'edit' && student) {
           document.getElementById('modalTitle').textContent = 'Edit Student';
           saveButton.textContent = 'Save Changes';
@@ -1117,6 +1190,32 @@ $pdo = null;
           } else {
               documentsGrid.innerHTML = documentsHtml;
           }
+          
+          // --- NEW: Populate Payment Receipt in Edit Modal ---
+          if (paymentSection && paymentHeader) {
+              paymentSection.innerHTML = ''; // Clear previous
+              const paymentStatus = student.payment_status || 'pending';
+              const receiptPathUrl = student.payment_receipt_path_url; // Use pre-processed URL
+    
+              let paymentHtml = `<dl class="details-grid"><dt>Status</dt><dd>${paymentStatus === 'paid' ? 'Paid' : (paymentStatus === 'later' ? 'Will Pay on Arrival' : 'Pending/Not Selected')}</dd>`;
+    
+              if (paymentStatus === 'paid' && receiptPathUrl) {
+                  const isImage = /\.(jpe?g|png|gif)$/i.test(receiptPathUrl);
+                  paymentHtml += `<dt>Receipt</dt>`;
+                  if (isImage) {
+                      paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank"><img src="${escapeHtml(receiptPathUrl)}" alt="Payment Receipt" loading="lazy"></a></div></dd>`;
+                  } else {
+                      paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank" class="payment-receipt-link">View Receipt File</a></div></dd>`;
+                  }
+              } else if (paymentStatus === 'paid') {
+                  paymentHtml += `<dt>Receipt</dt><dd>(Receipt not uploaded or path missing)</dd>`;
+              }
+              paymentHtml += `</dl>`;
+              paymentSection.innerHTML = paymentHtml;
+              paymentSection.style.display = 'block';
+              paymentHeader.style.display = 'block';
+          }
+          // --- END NEW Payment section ---
       }
       
       modal.showModal();
@@ -1172,6 +1271,29 @@ $pdo = null;
         });
         documentsHtml += '</div>';
 
+        // --- NEW: Payment Receipt Section (Details Modal) ---
+        let paymentHtml = '';
+        const paymentStatus = s.payment_status || 'pending'; // Assume pending if not set
+        const receiptPathUrl = s.payment_receipt_path_url; // Use the pre-processed URL from PHP
+
+        paymentHtml += `<h3 class="detail-section-header">Payment Information</h3>`;
+        paymentHtml += `<dl class="details-grid">`;
+        paymentHtml += `<dt>Status</dt><dd>${paymentStatus === 'paid' ? 'Paid' : (paymentStatus === 'later' ? 'Will Pay on Arrival' : 'Pending/Not Selected')}</dd>`;
+
+        if (paymentStatus === 'paid' && receiptPathUrl) {
+            const isImage = /\.(jpe?g|png|gif)$/i.test(receiptPathUrl);
+            paymentHtml += `<dt>Receipt</dt>`;
+            if (isImage) {
+                paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank"><img src="${escapeHtml(receiptPathUrl)}" alt="Payment Receipt" loading="lazy"></a></div></dd>`;
+            } else {
+                paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank" class="payment-receipt-link">View Receipt File</a></div></dd>`;
+            }
+        } else if (paymentStatus === 'paid') {
+            paymentHtml += `<dt>Receipt</dt><dd>(Receipt not uploaded or path missing)</dd>`;
+        }
+        paymentHtml += `</dl>`;
+        // --- END: Payment Receipt Section ---
+
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
                  <img src="${photoUrl}" alt="Student Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border));">
@@ -1192,6 +1314,7 @@ $pdo = null;
                 <dt>Entry Year</dt><dd>${escapeHtml(s.entry_year) || 'N/A'}</dd>
             </dl>
             ${majorHtml}
+            ${paymentHtml} <!-- Added Payment Section Here -->
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
