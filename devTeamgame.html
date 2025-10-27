@@ -616,39 +616,58 @@
             }
 
 
-            // Flying obstacle sprite list
-            const FLYING_OBSTACLE_IMAGE_URLS = [
-                './Img/dev/bird.png',
-                './Img/dev/bird.png'
-
+            // Animated bird obstacle sprite sheets
+            const BIRD_SPRITE_CONFIG = [
+                { color: 'yellow', url: './Img/dev/yellowbird.png' },
+                { color: 'red', url: './Img/dev/redbird.png' },
+                { color: 'blue', url: './Img/dev/bluebird.png' }
             ];
 
-            let flyingObstacleImages = [];
-            let isFlyingObstaclesLoaded = false;
-            let flyingObstaclesLoadedCount = 0;
+            const BIRD_FRAME_COUNT = 9;
+            const BIRD_ANIMATION_INTERVAL = 5;
+            const BIRD_DRAW_HEIGHT = 70;
+            const BIRD_SPEED_BONUS = 2.5;
 
-            if (FLYING_OBSTACLE_IMAGE_URLS.length > 0) {
-                flyingObstacleImages = new Array(FLYING_OBSTACLE_IMAGE_URLS.length);
-                FLYING_OBSTACLE_IMAGE_URLS.forEach((url, index) => {
+            let birdSprites = [];
+            let isBirdsLoaded = false;
+            let birdSpritesLoadedCount = 0;
+            let nextBirdIndex = 0;
+
+            if (BIRD_SPRITE_CONFIG.length > 0) {
+                birdSprites = BIRD_SPRITE_CONFIG.map(config => ({
+                    ...config,
+                    img: null,
+                    frameCount: BIRD_FRAME_COUNT,
+                    frameWidth: 0,
+                    frameHeight: 0,
+                    drawHeight: BIRD_DRAW_HEIGHT,
+                    loaded: false
+                }));
+
+                birdSprites.forEach(sprite => {
                     const img = new Image();
                     img.onload = () => {
-                        flyingObstaclesLoadedCount++;
-                        if (flyingObstaclesLoadedCount === FLYING_OBSTACLE_IMAGE_URLS.length) {
-                            isFlyingObstaclesLoaded = true;
+                        sprite.img = img;
+                        sprite.frameWidth = img.width / sprite.frameCount;
+                        sprite.frameHeight = img.height;
+                        sprite.loaded = sprite.frameWidth > 0 && sprite.frameHeight > 0;
+                        birdSpritesLoadedCount++;
+                        if (birdSpritesLoadedCount === birdSprites.length) {
+                            isBirdsLoaded = true;
                         }
                     };
                     img.onerror = () => {
-                        console.error(`Flying obstacle image failed to load: ${url}`);
-                        flyingObstaclesLoadedCount++;
-                        if (flyingObstaclesLoadedCount === FLYING_OBSTACLE_IMAGE_URLS.length) {
-                            isFlyingObstaclesLoaded = true;
+                        console.error(`Bird sprite failed to load: ${sprite.url}`);
+                        sprite.loaded = false;
+                        birdSpritesLoadedCount++;
+                        if (birdSpritesLoadedCount === birdSprites.length) {
+                            isBirdsLoaded = true;
                         }
                     };
-                    img.src = url;
-                    flyingObstacleImages[index] = img;
+                    img.src = sprite.url;
                 });
             } else {
-                isFlyingObstaclesLoaded = true; 
+                isBirdsLoaded = true;
             }
 
             // Raccoon runner sprite sheet info
@@ -737,13 +756,13 @@
             // Core gameplay tuning
             const PLAYER_WIDTH = 100; 
             const PLAYER_HEIGHT = 100; 
-            const JUMP_STRENGTH = 18; 
+            const JUMP_STRENGTH = 18;
+            const DOUBLE_JUMP_STRENGTH = 14;
             const BASE_GRAVITY = 1.0; 
             const BASE_GAME_SPEED = 8; 
 
             const OBSTACLE_MIN_HEIGHT = 40; 
             const OBSTACLE_MAX_HEIGHT = 90; 
-            const FLYING_OBSTACLE_HEIGHT = 60; 
             const OBSTACLE_SPAWN_MIN = 100;
             const OBSTACLE_SPAWN_MAX = 200;
             const RACCOON_SPAWN_MAX_FRAMES = 60 * 10; 
@@ -752,6 +771,7 @@
             // Timers for obstacle pacing
             let obstacleSpawnTimer = OBSTACLE_SPAWN_MAX;
             let raccoonSpawnTimer = 0;
+            let birdSpawnTimer = 0;
 
             // Format the HUD score display
             function formatScore(score) {
@@ -768,6 +788,10 @@
             // Roll a new delay before the next raccoon arrival
             function scheduleNextRaccoonSpawn() {
                 raccoonSpawnTimer = Math.max(30, Math.floor(Math.random() * (RACCOON_SPAWN_MAX_FRAMES + 1)));
+            }
+
+            function scheduleNextBirdSpawn() {
+                birdSpawnTimer = Math.max(30, Math.floor(Math.random() * (RACCOON_SPAWN_MAX_FRAMES + 1)));
             }
 
             // Pick a new music track and start playback
@@ -866,6 +890,7 @@
 
                     this.dy = 0; 
                     this.isJumping = false;
+                    this.hasDoubleJumped = false;
                 }
 
                 draw() {
@@ -894,11 +919,16 @@
                     }
                 }
 
-                jump() {
+                jump(allowDoubleJump = false) {
                     if (!this.isJumping) {
                         this.dy = -JUMP_STRENGTH;
                         this.isJumping = true;
-                        playSound(jumpSound); 
+                        this.hasDoubleJumped = false;
+                        playSound(jumpSound);
+                    } else if (allowDoubleJump && !this.hasDoubleJumped) {
+                        this.dy = -DOUBLE_JUMP_STRENGTH;
+                        this.hasDoubleJumped = true;
+                        playSound(jumpSound);
                     }
                 }
 
@@ -910,6 +940,7 @@
                         this.y = groundY - this.h;
                         this.dy = 0;
                         this.isJumping = false;
+                        this.hasDoubleJumped = false;
                     }
                     
                     this.updateAnimation();
@@ -1016,6 +1047,77 @@
                 }
             }
 
+            class BirdObstacle {
+                constructor(spriteData) {
+                    this.type = 'bird';
+                    this.color = spriteData.color;
+                    this.sprite = spriteData.img;
+                    this.frameCount = spriteData.frameCount;
+                    this.frameWidth = spriteData.frameWidth;
+                    this.frameHeight = spriteData.frameHeight;
+                    this.frameIndex = 0;
+                    this.frameTimer = 0;
+                    this.frameInterval = BIRD_ANIMATION_INTERVAL;
+                    this.h = spriteData.drawHeight;
+
+                    const aspectRatio = (this.frameWidth > 0 && this.frameHeight > 0)
+                        ? (this.frameWidth / this.frameHeight)
+                        : 1;
+                    this.w = this.h * aspectRatio;
+                    if (!isFinite(this.w) || this.w <= 0) {
+                        this.w = this.h;
+                    }
+
+                    this.x = canvasWidth + this.w;
+
+                    const highLane = groundY - PLAYER_HEIGHT - this.h - 50;
+                    const lowLane = groundY - 85;
+                    const chosenLane = Math.random() < 0.5 ? highLane : lowLane;
+                    const minY = 20;
+                    this.y = Math.max(minY, chosenLane);
+                }
+
+                update() {
+                    this.x -= gameSpeed + BIRD_SPEED_BONUS;
+                    this.frameTimer++;
+                    if (this.frameTimer >= this.frameInterval) {
+                        this.frameTimer = 0;
+                        this.frameIndex = (this.frameIndex + 1) % this.frameCount;
+                    }
+                    this.draw();
+                }
+
+                draw() {
+                    if (!this.sprite || this.frameWidth <= 0 || this.frameHeight <= 0) {
+                        const fallbackColors = {
+                            yellow: '#facc15',
+                            red: '#ef4444',
+                            blue: '#3b82f6'
+                        };
+                        ctx.fillStyle = fallbackColors[this.color] || '#facc15';
+                        ctx.fillRect(this.x, this.y, this.w, this.h);
+                        return;
+                    }
+
+                    ctx.save();
+                    ctx.imageSmoothingEnabled = false;
+                    ctx.translate(this.x + this.w, this.y);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(
+                        this.sprite,
+                        this.frameIndex * this.frameWidth,
+                        0,
+                        this.frameWidth,
+                        this.frameHeight,
+                        0,
+                        0,
+                        this.w,
+                        this.h
+                    );
+                    ctx.restore();
+                }
+            }
+
 
             function updateSkinDisplay() {
                 const member = team[currentCharacterIndex];
@@ -1075,12 +1177,12 @@
 
                 if (!skin.unlocked) return; 
 
-                if (!isParallaxLoaded || !isObstaclesLoaded || !isFlyingObstaclesLoaded) {
+                if (!isParallaxLoaded || !isObstaclesLoaded || !isBirdsLoaded) {
                     selectBtn.textContent = "LOADING ASSETS...";
                     selectBtn.disabled = true;
                     
                     const checkLoad = setInterval(() => {
-                        if (isParallaxLoaded && isObstaclesLoaded && isFlyingObstaclesLoaded) {
+                        if (isParallaxLoaded && isObstaclesLoaded && isBirdsLoaded) {
                             clearInterval(checkLoad);
                             updateSkinDisplay(); 
                             performCharacterSelection(skin); 
@@ -1216,6 +1318,8 @@
                 gameFrame = 0;
                 groundDashOffset = 0; 
                 scheduleNextRaccoonSpawn();
+                scheduleNextBirdSpawn();
+                nextBirdIndex = 0;
 
                 updateParallaxLayerDimensions();
 
@@ -1246,6 +1350,8 @@
                     obstacleSpawnTimer = OBSTACLE_SPAWN_MAX;
                     gameFrame = 0;
                     scheduleNextRaccoonSpawn();
+                    scheduleNextBirdSpawn();
+                    nextBirdIndex = 0;
 
 
                     playRandomTrack();
@@ -1284,49 +1390,39 @@
                     raccoonSpawnTimer--;
                 }
 
-                if (raccoonSpawnTimer <= 0 && isRaccoonLoaded) {
-                    const hasActiveRaccoon = obstacles.some(o => o.type === 'raccoon');
-                    if (!hasActiveRaccoon) {
-                        obstacles.push(new RaccoonObstacle());
-                        scheduleNextRaccoonSpawn();
+                if (birdSpawnTimer > 0) {
+                    birdSpawnTimer--;
+                }
+
+                const hasActiveRaccoon = obstacles.some(o => o.type === 'raccoon');
+                const hasActiveBird = obstacles.some(o => o.type === 'bird');
+
+                if (birdSpawnTimer <= 0 && isBirdsLoaded && birdSprites.length > 0 && !hasActiveBird && !hasActiveRaccoon) {
+                    const nextBird = birdSprites[nextBirdIndex];
+                    if (nextBird && nextBird.loaded) {
+                        obstacles.push(new BirdObstacle(nextBird));
                     }
+                    nextBirdIndex = (nextBirdIndex + 1) % birdSprites.length;
+                    scheduleNextBirdSpawn();
+                }
+
+                const birdNowActive = hasActiveBird || obstacles.some(o => o.type === 'bird');
+
+                if (raccoonSpawnTimer <= 0 && isRaccoonLoaded && !hasActiveRaccoon && !birdNowActive) {
+                    obstacles.push(new RaccoonObstacle());
+                    scheduleNextRaccoonSpawn();
                 }
 
                 obstacleSpawnTimer--;
 
-                if (obstacleSpawnTimer <= 0 && isObstaclesLoaded && isFlyingObstaclesLoaded) {
-
-                    if (Math.random() < 0.25 && flyingObstacleImages.length > 0) {
-
-                        const imgIndex = Math.floor(Math.random() * flyingObstacleImages.length);
-                        const obsImg = flyingObstacleImages[imgIndex];
-
-                        if (obsImg && obsImg.height > 0) {
-                            const h = FLYING_OBSTACLE_HEIGHT;
-
-
-                            const yLane1 = groundY - PLAYER_HEIGHT - h - 50; 
-
-
-
-
-
-                            const yLane2 = groundY - 85;
-                            
-                            const y = Math.random() < 0.5 ? yLane1 : yLane2;
-
-                            obstacles.push(new Obstacle(canvasWidth, y, h, obsImg));
-                        }
-
-                    } else if (obstacleImages.length > 0) {
-
+                if (obstacleSpawnTimer <= 0 && isObstaclesLoaded) {
+                    if (obstacleImages.length > 0) {
                         const imgIndex = Math.floor(Math.random() * obstacleImages.length);
                         const obsImg = obstacleImages[imgIndex];
 
                         if (obsImg && obsImg.height > 0) {
                             const h = Math.random() * (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT) + OBSTACLE_MIN_HEIGHT;
-
-                            const y = groundY - h; 
+                            const y = groundY - h;
                             obstacles.push(new Obstacle(canvasWidth, y, h, obsImg));
                         }
                     }
@@ -1442,8 +1538,8 @@
                     startGame();
                     if (player) player.jump();
                 } else if (!isGameOver && player) {
-
-                    player.jump();
+                    const allowDoubleJump = (e.code === 'Space' && !!e.shiftKey);
+                    player.jump(allowDoubleJump);
                 }
             }
 
