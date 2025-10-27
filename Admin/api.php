@@ -53,6 +53,14 @@ function processStudentRow($studentRow) {
         }
     }
     
+    // NEW: Process payment_receipt_path URL (already in students.php, adding here for consistency if needed)
+    if (isset($studentRow['payment_receipt_path']) && !empty($studentRow['payment_receipt_path'])) {
+         // Assuming path is like 'Rform/payment_receipt/filename.jpg'
+         $studentRow['payment_receipt_path_url'] = '../' . $studentRow['payment_receipt_path'];
+    } else {
+         $studentRow['payment_receipt_path_url'] = null;
+    }
+    
     return $studentRow;
 }
 
@@ -155,27 +163,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
                 if ($action === 'add') {
+                     // MODIFICATION: Added payment_status to INSERT
                      $sqlStudent = "INSERT INTO students (
                         year, academic_year, seat_no, entry_year, student_email, 
                         dormitory_preference, student_name_mm, student_name_en, 
                         student_race, student_religion, student_nrc, student_dob, 
                         student_birthplace, state_region, township, student_phone, 
-                        student_address, photo_url, date, status, preferences, selected_major
+                        student_address, photo_url, date, status, preferences, selected_major,
+                        payment_status
                     ) VALUES (
                         :year, :academic_year, :seat_no, :entry_year, :student_email, 
                         :dormitory_preference, :student_name_mm, :student_name_en, 
                         :student_race, :student_religion, :student_nrc, :student_dob, 
                         :student_birthplace, :state_region, :township, :student_phone, 
-                        :student_address, :photo_url, CURDATE(), 'approved', :preferences, :selected_major
+                        :student_address, :photo_url, CURDATE(), 'approved', :preferences, :selected_major,
+                        :payment_status
                     )";
                     $stmtStudent = $pdo->prepare($sqlStudent);
                 } else { // update
+                    // MODIFICATION: Added payment_status to UPDATE
                     $sqlStudent = "UPDATE students SET 
                         year = :year, academic_year = :academic_year, seat_no = :seat_no, entry_year = :entry_year, student_email = :student_email, 
                         dormitory_preference = :dormitory_preference, student_name_mm = :student_name_mm, student_name_en = :student_name_en, 
                         student_race = :student_race, student_religion = :student_religion, student_nrc = :student_nrc, student_dob = :student_dob, 
                         student_birthplace = :student_birthplace, state_region = :state_region, township = :township, student_phone = :student_phone, 
-                        student_address = :student_address, photo_url = :photo_url, selected_major = :selected_major"
+                        student_address = :student_address, photo_url = :photo_url, selected_major = :selected_major,
+                        payment_status = :payment_status"
                         .($updatePreferences ? ", preferences = :preferences" : "") .
                         " WHERE student_id = :student_id";
 
@@ -202,6 +215,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtStudent->bindValue(':student_address', $student['student_address'] ?? null);
                 $stmtStudent->bindValue(':photo_url', $photoUrl);
                 
+                // MODIFICATION: Bind payment_status for both add and update
+                $stmtStudent->bindValue(':payment_status', $student['payment_status'] ?? 'pending');
+
                 if ($action === 'add') {
                     $stmtStudent->bindValue(':preferences', $preferencesJson);
                     $stmtStudent->bindValue(':selected_major', $selectedMajor);
@@ -236,7 +252,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $pdo->commit();
                 
+                // MODIFICATION: Fetch payment_status and payment_receipt_path in the final select
                 $fullRecordSql = "SELECT s.*,
+                                       s.payment_status, s.payment_receipt_path,
                                        f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                                        m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
                                 FROM students s
@@ -305,10 +323,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmtFetch->execute($sanitized_ids);
                     $students_to_email_rejection = $stmtFetch->fetchAll(PDO::FETCH_ASSOC);
 
+                    // MODIFICATION: Select payment_receipt_path for deletion
                     $stmtSelect = $pdo->prepare("SELECT photo_url, 
                                 doc_recommendation, doc_medical, doc_certificate, doc_grades, doc_household,
                                 doc_student_nrc_front, doc_student_nrc_back, doc_father_nrc_front, doc_father_nrc_back,
-                                doc_mother_nrc_front, doc_mother_nrc_back
+                                doc_mother_nrc_front, doc_mother_nrc_back, payment_receipt_path
                                 FROM students WHERE student_id IN ($placeholders)");
                     $stmtSelect->execute($sanitized_ids);
                     $filesData = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
@@ -318,12 +337,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute($sanitized_ids);
                     $deleted_count = $stmt->rowCount();
                     
+                    // MODIFICATION: Delete payment receipt along with other files
                     foreach ($filesData as $fileData) {
                         $filesToDelete = array_filter(array_values($fileData));
                         foreach ($filesToDelete as $url) {
                             if (!empty($url)) {
-                               $fileName = basename($url);
-                               $fileSystemPath = $fileSystemUploadDir . $fileName;
+                               // Handle both /uploads/ and Rform/payment_receipt/ paths
+                               if (strpos($url, 'payment_receipt/') !== false) {
+                                   // Path is like 'Rform/payment_receipt/...'
+                                   $fileSystemPath = __DIR__ . '/../' . $url;
+                               } else {
+                                   // Path is like '/uploads/...'
+                                   $fileName = basename($url);
+                                   $fileSystemPath = $fileSystemUploadDir . $fileName;
+                               }
                                if (file_exists($fileSystemPath)) unlink($fileSystemPath);
                             }
                         }
@@ -385,13 +412,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmtFindStudent->execute([$s['seat_no']]);
                         $existingStudentId = $stmtFindStudent->fetchColumn();
 
+                        // MODIFICATION: Added payment_status to import data
                         $studentData = [
                             'year' => $s['year'] ?? null, 'academic_year' => $s['academic_year'] ?? null, 'seat_no' => $s['seat_no'], 'entry_year' => $s['entry_year'] ?? null, 'student_email' => $s['student_email'] ?? null,
                             'dormitory_preference' => (isset($s['dormitory_preference']) && $s['dormitory_preference'] == '1') ? 1 : 0,
                             'student_name_mm' => $s['student_name_mm'] ?? null, 'student_name_en' => $s['student_name_en'] ?? null, 'student_race' => $s['student_race'] ?? null, 'student_religion' => $s['student_religion'] ?? null, 'student_nrc' => $s['student_nrc'] ?? null, 'student_dob' => empty($s['student_dob']) ? null : $s['student_dob'],
                             'student_birthplace' => $s['student_birthplace'] ?? null, 'state_region' => $s['state_region'] ?? null, 'township' => $s['township'] ?? null, 'student_phone' => $s['student_phone'] ?? null, 'student_address' => $s['student_address'] ?? null, 'photo_url' => $s['photo_url'] ?? null,
                             'date' => empty($s['date']) ? date('Y-m-d') : $s['date'], 'status' => 'approved',
-                            'selected_major' => $s['selected_major'] ?? null
+                            'selected_major' => $s['selected_major'] ?? null,
+                            'payment_status' => $s['payment_status'] ?? 'pending' // Added payment_status
                         ];
                         
                         $prefs = [];
@@ -400,9 +429,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         if ($existingStudentId) {
                             $studentData['student_id'] = $existingStudentId;
-                            $sqlStudent = "UPDATE students SET year=:year, academic_year=:academic_year, entry_year=:entry_year, student_email=:student_email, dormitory_preference=:dormitory_preference, student_name_mm=:student_name_mm, student_name_en=:student_name_en, student_race=:student_race, student_religion=:student_religion, student_nrc=:student_nrc, student_dob=:student_dob, student_birthplace=:student_birthplace, state_region=:state_region, township=:township, student_phone=:student_phone, student_address=:student_address, photo_url=:photo_url, date=:date, status=:status, preferences=:preferences, selected_major=:selected_major WHERE student_id=:student_id";
+                            // MODIFICATION: Added payment_status to UPDATE
+                            $sqlStudent = "UPDATE students SET year=:year, academic_year=:academic_year, entry_year=:entry_year, student_email=:student_email, dormitory_preference=:dormitory_preference, student_name_mm=:student_name_mm, student_name_en=:student_name_en, student_race=:student_race, student_religion=:student_religion, student_nrc=:student_nrc, student_dob=:student_dob, student_birthplace=:student_birthplace, state_region=:state_region, township=:township, student_phone=:student_phone, student_address=:student_address, photo_url=:photo_url, date=:date, status=:status, preferences=:preferences, selected_major=:selected_major, payment_status=:payment_status WHERE student_id=:student_id";
                         } else {
-                            $sqlStudent = "INSERT INTO students (year, academic_year, seat_no, entry_year, student_email, dormitory_preference, student_name_mm, student_name_en, student_race, student_religion, student_nrc, student_dob, student_birthplace, state_region, township, student_phone, student_address, photo_url, date, status, preferences, selected_major) VALUES (:year, :academic_year, :seat_no, :entry_year, :student_email, :dormitory_preference, :student_name_mm, :student_name_en, :student_race, :student_religion, :student_nrc, :student_dob, :student_birthplace, :state_region, :township, :student_phone, :student_address, :photo_url, :date, :status, :preferences, :selected_major)";
+                            // MODIFICATION: Added payment_status to INSERT
+                            $sqlStudent = "INSERT INTO students (year, academic_year, seat_no, entry_year, student_email, dormitory_preference, student_name_mm, student_name_en, student_race, student_religion, student_nrc, student_dob, student_birthplace, state_region, township, student_phone, student_address, photo_url, date, status, preferences, selected_major, payment_status) VALUES (:year, :academic_year, :seat_no, :entry_year, :student_email, :dormitory_preference, :student_name_mm, :student_name_en, :student_race, :student_religion, :student_nrc, :student_dob, :student_birthplace, :state_region, :township, :student_phone, :student_address, :photo_url, :date, :status, :preferences, :selected_major, :payment_status)";
                         }
 
                         $stmtStudent = $pdo->prepare($sqlStudent);
@@ -423,8 +454,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $stmtParent = $pdo->prepare($sql);
                             $stmtParent->execute($params);
                         }
-
-                        $fullRecordSql = "SELECT s.*, f.*, m.* FROM students s LEFT JOIN fathers f ON s.student_id = f.student_id LEFT JOIN mothers m ON s.student_id = m.student_id WHERE s.student_id = ?";
+                        
+                        // MODIFICATION: Added payment_status and payment_receipt_path to final select
+                        $fullRecordSql = "SELECT s.*, f.*, m.*, s.payment_status, s.payment_receipt_path FROM students s LEFT JOIN fathers f ON s.student_id = f.student_id LEFT JOIN mothers m ON s.student_id = m.student_id WHERE s.student_id = ?";
                         $stmtFetch = $pdo->prepare($fullRecordSql);
                         $stmtFetch->execute([$student_id]);
                         $finalStudent = $stmtFetch->fetch(PDO::FETCH_ASSOC);
@@ -554,7 +586,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->exec('TRUNCATE TABLE students');
                 $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
                 $pdo->commit();
-                $response = ['status' => 'success', 'message' => 'All student data has been cleared.'];
+                
+                // MODIFICATION: Delete all files from uploads and payment_receipt directories
+                $uploadsDir = $fileSystemUploadDir; // '../Rform/uploads/'
+                $paymentsDir = __DIR__ . '/../Rform/payment_receipt/';
+
+                $files_uploads = glob($uploadsDir . '*');
+                foreach($files_uploads as $file){
+                  if(is_file($file) && basename($file) !== '.htaccess') {
+                    unlink($file);
+                  }
+                }
+                
+                if (is_dir($paymentsDir)) {
+                    $files_payments = glob($paymentsDir . '*');
+                    foreach($files_payments as $file){
+                      if(is_file($file) && basename($file) !== '.htaccess') {
+                        unlink($file);
+                      }
+                    }
+                }
+                
+                $response = ['status' => 'success', 'message' => 'All student data and uploaded files have been cleared.'];
                 break;
 
             case 'get_dashboard_stats':
@@ -614,4 +667,3 @@ ob_end_clean(); // Clean any stray output
 echo json_encode($response);
 $pdo = null; // Close connection
 ?>
-
