@@ -623,9 +623,9 @@
                 { color: 'blue', url: './Img/dev/bluebird.png' }
             ];
 
-            const BIRD_FRAME_COUNT = 9;
-            const BIRD_ANIMATION_INTERVAL = 5;
-            const BIRD_DRAW_HEIGHT = 70;
+            const BIRD_FRAME_COUNT = 3;
+            const BIRD_ANIMATION_INTERVAL = 20;
+            const BIRD_DRAW_HEIGHT = 55;
             const BIRD_SPEED_BONUS = 2.5;
 
             let birdSprites = [];
@@ -648,7 +648,7 @@
                     const img = new Image();
                     img.onload = () => {
                         sprite.img = img;
-                        sprite.frameWidth = img.width / sprite.frameCount;
+                        sprite.frameWidth = Math.floor(img.width / sprite.frameCount);
                         sprite.frameHeight = img.height;
                         sprite.loaded = sprite.frameWidth > 0 && sprite.frameHeight > 0;
                         birdSpritesLoadedCount++;
