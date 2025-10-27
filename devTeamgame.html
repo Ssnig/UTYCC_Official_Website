@@ -18,6 +18,16 @@
             overflow: hidden; 
         }
 
+        /* Hide IDM overlay buttons that hijack the canvas */
+        #IDM_Btn_Panel,
+        #IDM_Btn,
+        .IDM_Btn,
+        #IDM_DLP,
+        #IDManPopUp,
+        .IDMVideoPanel {
+            display: none !important;
+        }
+
         .game-font {
             font-family: 'Press Start 2P', cursive;
         }
@@ -403,6 +413,45 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
+            // Prevent external download helpers (e.g., IDM) from overlaying the canvas
+            const hideIDMPopups = () => {
+                const selectors = [
+                    '#IDM_Btn_Panel',
+                    '#IDM_Btn',
+                    '.IDM_Btn',
+                    '#IDM_DLP',
+                    '#IDManPopUp',
+                    '.IDMVideoPanel',
+                    '[id^="IDM"]',
+                    '[class*="IDM"]'
+                ];
+                selectors.forEach(selector => {
+                    document.querySelectorAll(selector).forEach(el => {
+                        if (el instanceof HTMLElement) {
+                            el.style.setProperty('display', 'none', 'important');
+                            el.style.setProperty('visibility', 'hidden', 'important');
+                            el.style.setProperty('opacity', '0', 'important');
+                        }
+                    });
+                });
+            };
+
+            hideIDMPopups();
+
+            if (window.MutationObserver) {
+                const idmObserver = new MutationObserver(() => hideIDMPopups());
+                if (document.body) {
+                    idmObserver.observe(document.body, { childList: true, subtree: true });
+                } else {
+                    window.addEventListener('load', () => {
+                        if (document.body) {
+                            idmObserver.observe(document.body, { childList: true, subtree: true });
+                            hideIDMPopups();
+                        }
+                    }, { once: true });
+                }
+            }
+
 
             // Character roster and available skins
             const team = [
@@ -582,7 +631,7 @@
 
             // Ground obstacle sprite list
             const OBSTACLE_IMAGE_URLS = [
-                './Img/dev/poop.png',
+                './Img/dev/firehydrant.png',
                 './Img/dev/iggy.png'
 
             ];
@@ -1524,22 +1573,52 @@
 
             // Unified keyboard/mouse/touch handler
             function handleInput(e) {
-
                 if (e.code === 'Space') e.preventDefault();
-                if (e.code && e.code !== 'Space' && e.code !== 'ArrowUp') return;
-                
-                if (isGameOver && !startMessage.classList.contains('hidden')) {
 
+                if (!e.code) {
+                    if (isGameOver && !startMessage.classList.contains('hidden')) {
+                        startGame();
+                        if (player) player.jump();
+                        return;
+                    }
+
+                    if (isGameOver && !gameOverMessage.classList.contains('hidden')) {
+                        setupGame();
+                        startGame();
+                        if (player) player.jump();
+                        return;
+                    }
+
+                    if (!isGameOver && player) {
+                        player.jump();
+                    }
+                    return;
+                }
+
+                const isJumpKey = e.code === 'Space' || e.code === 'ArrowUp';
+                const isShiftKey = e.code === 'ShiftLeft' || e.code === 'ShiftRight';
+                if (!isJumpKey && !isShiftKey) return;
+
+                if (isJumpKey && isGameOver && !startMessage.classList.contains('hidden')) {
                     startGame();
-                    if (player) player.jump(); 
-                } else if (isGameOver && !gameOverMessage.classList.contains('hidden')) {
+                    if (player) player.jump();
+                    return;
+                }
 
+                if (isJumpKey && isGameOver && !gameOverMessage.classList.contains('hidden')) {
                     setupGame();
                     startGame();
                     if (player) player.jump();
-                } else if (!isGameOver && player) {
-                    const allowDoubleJump = (e.code === 'Space' && !!e.shiftKey);
-                    player.jump(allowDoubleJump);
+                    return;
+                }
+
+                if (!isGameOver && player) {
+                    if (isJumpKey) {
+                        const allowDoubleJump = !!e.shiftKey;
+                        player.jump(allowDoubleJump);
+                    } else if (isShiftKey) {
+                        player.jump(true);
+                    }
                 }
             }
 
