@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Team Runner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Base layout for the page */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #333;
+            overflow: hidden; 
+        }
+
+        /* Hide IDM overlay buttons that hijack the canvas */
+        #IDM_Btn_Panel,
+        #IDM_Btn,
+        .IDM_Btn,
+        #IDM_DLP,
+        #IDManPopUp,
+        .IDMVideoPanel {
+            display: none !important;
+        }
+
+        .game-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        /* Fullscreen wrapper that centers the game UI */
+        #game-world {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+
+            
+            background-color: #030712; 
+        }
+
+        /* Card container for selector and game screens */
+        .game-container {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Character selection screen layout */
+        #character-select-screen {
+            padding: 2rem;
+        }
+
+        /* Preview area for current character and skin */
+        #char-display-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px; 
+        }
+        
+        #char-sprite-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        #char-display-sprite {
+            width: 100px;
+            height: 100px;
+            
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+
+            
+            background-image: url(''); 
+            background-repeat: no-repeat;
+            
+        }
+
+        
+        
+        #char-display-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin-top: 1rem;
+        }
+
+        /* Navigation buttons for carousel */
+        #prev-btn, #next-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffffff;
+            border-radius: 50%;
+            padding: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        
+        #prev-btn { left: 2rem; }
+        #next-btn { right: 2rem; }
+
+        /* Skin selector controls */
+        #skin-switcher {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem; 
+            margin-top: 1rem; 
+        }
+
+        #prev-skin-btn, #next-skin-btn {
+            background-color: #e5e7eb; 
+            border-radius: 9999px; 
+            padding: 0.5rem; 
+            transition: background-color 0.2s;
+        }
+        #prev-skin-btn:hover, #next-skin-btn:hover {
+            background-color: #d1d5db; 
+        }
+        #prev-skin-btn:disabled, #next-skin-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #skin-display-name {
+            width: 160px; 
+            text-align: center;
+            font-size: 0.875rem; 
+            color: #374151; 
+        }
+        
+        #skin-locked-message {
+            font-size: 0.75rem; 
+            color: #ef4444; 
+            margin-top: 0.5rem; 
+            height: 1rem; 
+        }
+        
+
+
+        
+        #select-btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #4f46e5;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem; 
+        }
+        #select-btn:hover {
+            background-color: #4338ca;
+        }
+        #select-btn:disabled {
+            background-color: #9ca3af; 
+            cursor: not-allowed;
+        }
+
+        
+        #change-char-btn {
+            font-size: 0.8rem;
+            color: #fff;
+            background-color: #4f46e5;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1.5rem;
+        }
+        #change-char-btn:hover {
+            background-color: #4338ca;
+        }
+
+        
+        #game-screen {
+            position: relative;
+            width: 100%;
+            
+            aspect-ratio: 2 / 1; 
+            max-height: 400px; 
+             
+             
+            overflow: hidden;
+        }
+
+        #game-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #score-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.95rem;
+            color: #000;
+            
+            white-space: normal;
+            text-align: right;
+        }
+
+        #message-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #000;
+            font-size: 1rem;
+        }
+
+        #message-container p {
+            margin-bottom: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        
+        #unlock-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #22c55e; 
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+
+
+        
+        @media (max-width: 640px) {
+            .game-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            #character-select-screen {
+                padding: 1rem;
+                height: 100%;
+                overflow-y: auto;
+            }
+
+            #char-display-sprite {
+                width: 80px;
+                height: 80px;
+            }
+            
+            #prev-btn { left: 0.5rem; }
+            #next-btn { right: 0.5rem; }
+
+
+            #game-screen {
+                height: 100%;
+                max-height: none;
+                aspect-ratio: unset;
+            }
+
+            #score-container {
+                font-size: 1rem; 
+                top: 10px;
+                right: 10px;
+            }
+
+            #message-container {
+                font-size: 1rem;
+            }
+
+            #unlock-notification {
+                font-size: 0.875rem;
+                padding: 0.75rem 1rem;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-world">
+        <div class="game-container">
+
+            
+            <div id="character-select-screen">
+                <h1 class="text-3xl font-bold text-center text-gray-800">Choose Your Runner!</h1>
+                <p class="text-center text-gray-600 mt-2">Select a team member to start the game.</p>
+                
+                
+                <div id="char-display-container" class="mt-8">
+                    
+                    <div id="char-sprite-wrapper">
+                        <button id="prev-btn" class="disabled:opacity-50 disabled:cursor-not-allowed">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+
+                        
+                        <div id="char-display-sprite" aria-label="Character Sprite"></div>
+                        
+                        <button id="next-btn" class="disabled:opacity-50 disabled:cursor-not-allowed">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    
+                    <p id="char-display-name" class="game-font"></p>
+                    
+                    
+                    <div id="skin-switcher">
+                        <button id="prev-skin-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <span id="skin-display-name" class="game-font">Default</span>
+                        <button id="next-skin-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p id="skin-locked-message" class="game-font hidden">LOCKED</p>
+                    
+                    
+                    
+                    <button id="select-btn">Select Runner</button>
+                </div>
+                
+
+            </div>
+
+            
+            <div id="game-screen" class="hidden">
+                <canvas id="game-canvas"></canvas>
+                
+                <div id="score-container" class="game-font">
+                    HI: <span id="high-score">00000</span><br>SCORE: <span id="score">00000</span>
+                </div>
+                <div id="message-container" class="game-font">
+                    <p id="start-message">Press Space or Tap to Start</p>
+                    <div id="game-over-message" class="hidden">
+                        <p>GAME OVER!</p>
+                        <p>Tap or Press Space to Restart</p>
+                        
+                        <button id="change-char-btn">Change Runner</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    
+    <audio id="background-music">
+        
+        Your browser does not support the audio element.
+    </audio>
+    
+    
+    <audio id="jump-sound">
+        
+        <source src="./Img/dev/jump.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="crash-sound">
+        
+        <source src="./Img/dev/crash.wav" type="audio/mpeg">
+    </audio>
+    <audio id="unlock-sound">
+        
+        <source src="./Img/dev/achievement.mp3" type="audio/mpeg">
+    </audio>
+
+    
+    <div id="unlock-notification" class="game-font hidden">
+        <p>NEW SKIN UNLOCKED!</p>
+        <p id="unlock-message" class="text-sm mt-1"></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Prevent external download helpers (e.g., IDM) from overlaying the canvas
+            const hideIDMPopups = () => {
+                const selectors = [
+                    '#IDM_Btn_Panel',
+                    '#IDM_Btn',
+                    '.IDM_Btn',
+                    '#IDM_DLP',
+                    '#IDManPopUp',
+                    '.IDMVideoPanel',
+                    '[id^="IDM"]',
+                    '[class*="IDM"]'
+                ];
+                selectors.forEach(selector => {
+                    document.querySelectorAll(selector).forEach(el => {
+                        if (el instanceof HTMLElement) {
+                            el.style.setProperty('display', 'none', 'important');
+                            el.style.setProperty('visibility', 'hidden', 'important');
+                            el.style.setProperty('opacity', '0', 'important');
+                        }
+                    });
+                });
+            };
+
+            hideIDMPopups();
+
+            if (window.MutationObserver) {
+                const idmObserver = new MutationObserver(() => hideIDMPopups());
+                if (document.body) {
+                    idmObserver.observe(document.body, { childList: true, subtree: true });
+                } else {
+                    window.addEventListener('load', () => {
+                        if (document.body) {
+                            idmObserver.observe(document.body, { childList: true, subtree: true });
+                            hideIDMPopups();
+                        }
+                    }, { once: true });
+                }
+            }
+
+
+            // Character roster and available skins
+            const team = [
+                { 
+                    name: "Kyaw San Htun", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/ksh_frame.png", frames: 6, displaySrc: "./Img/dev/ksh_idle.png", unlocked: true, unlockScore: 0 },
+                        { name: "JoJo Skin", spriteSrc: "./Img/dev/ksh_jojo_sprite.png", frames: 6, displaySrc: "./Img/dev/ksh_jojo_idle.png", unlocked: false, unlockScore: 1000 } 
+                    ]
+                },
+                { 
+                    name: "Htet Oo Wai", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/HOW.jpg", frames: 1, displaySrc: "./Img/dev/HOW.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Zin Min Htike", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/zmh_frame.png", frames: 7, displaySrc: "./Img/dev/zmh_idle.png", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Linn Latt Htut Aung", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/llha_frame.png", frames: 7, displaySrc: "./Img/dev/llha_idle.png", unlocked: true, unlockScore: 0 },
+                        { name: "Gamer Skin", spriteSrc: "./Img/dev/llha_gamer_sprite.png", frames: 7, displaySrc: "./Img/dev/llha_gamer_idle.png", unlocked: false, unlockScore: 2000 } 
+                    ]
+                },
+                { 
+                    name: "Aung Myat Htun", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/amt_frame.png", frames: 7, displaySrc: "./Img/dev/amt_idle.png", unlocked: true, unlockScore: 0 },
+                        { name: "Rainbow Gay Skin", spriteSrc: "./Img/dev/amt_skin_frame.png", frames: 7, displaySrc: "./Img/dev/amt_skin.png", unlocked: false, unlockScore: 100 } 
+                    ]
+                },
+                { 
+                    name: "Myat Min Htet", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/myatgyi_frame.png", frames: 7, displaySrc: "./Img/dev/myatgyi_idle.png", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Naing Linn Htun", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/nlh2.jpg", frames: 1, displaySrc: "./Img/dev/nlh2.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Ya Min Shwe Sin", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/YMSC.jpg", frames: 1, displaySrc: "./Img/dev/YMSC.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Soe Sandar Win", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/SSW.jpg", frames: 1, displaySrc: "./Img/dev/SSW.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Eaindray Htet Htet", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/EHH.jpg", frames: 1, displaySrc: "./Img/dev/EHH.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "La Wun Thu", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/LWT.jpg", frames: 1, displaySrc: "./Img/dev/LWT.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Khin Pyae Sone Thant", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./ImgGuess/dev/KPST.jpg", frames: 1, displaySrc: "./ImgGuess/dev/KPST.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Bhone Htet Aung", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/bha.jpg", frames: 1, displaySrc: "./Img/dev/bha.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Bo Bo Min Han", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/bbmh.jpg", frames: 1, displaySrc: "./Img/dev/bbmh.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "May Pwint Thu", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/mpt.jpg", frames: 1, displaySrc: "./Img/dev/mpt.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                },
+                { 
+                    name: "Kyaw Zin Hein", 
+
+                    skins: [
+                        { name: "Default", spriteSrc: "./Img/dev/kzh.jpg", frames: 1, displaySrc: "./Img/dev/kzh.jpg", unlocked: true, unlockScore: 0 }
+                    ]
+                }
+            ];
+
+
+
+            // Layered parallax backgrounds (back-to-front)
+            const PARALLAX_LAYER_CONFIG = [
+                { src: './Img/dev/0.png', speedModifier: 0.08 },
+                { src: './Img/dev/1.png', speedModifier: 0.15 },
+                { src: './Img/dev/2.png', speedModifier: 0.25 },
+                { src: './Img/dev/3.png', speedModifier: 0.35 },
+                { src: './Img/dev/4.png', speedModifier: 0.45 },
+                { src: './Img/dev/5.png', speedModifier: 0.6 },
+                { src: './Img/dev/6.png', speedModifier: 0.75 }
+            ];
+
+            let parallaxLayers = [];
+            let isParallaxLoaded = false;
+            let parallaxLoadedCount = 0;
+
+            if (PARALLAX_LAYER_CONFIG.length > 0) {
+                parallaxLayers = PARALLAX_LAYER_CONFIG.map(config => ({
+                    ...config,
+                    img: null,
+                    naturalWidth: 0,
+                    naturalHeight: 0,
+                    drawWidth: 0,
+                    offset: 0
+                }));
+
+                parallaxLayers.forEach((layer) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        layer.img = img;
+                        layer.naturalWidth = img.width;
+                        layer.naturalHeight = img.height;
+                        parallaxLoadedCount++;
+                        if (parallaxLoadedCount === parallaxLayers.length) {
+                            isParallaxLoaded = true;
+                            if (canvasHeight) {
+                                updateParallaxLayerDimensions();
+                            }
+                        } else if (canvasHeight) {
+                            updateParallaxLayerDimensions();
+                        }
+                    };
+                    img.onerror = () => {
+                        console.error(`Parallax image failed to load: ${layer.src}`);
+                        parallaxLoadedCount++;
+                        if (parallaxLoadedCount === parallaxLayers.length) {
+                            isParallaxLoaded = true;
+                        }
+                    };
+                    img.src = layer.src;
+                });
+            } else {
+                isParallaxLoaded = true;
+            }
+
+
+            // Ground obstacle sprite list
+            const OBSTACLE_IMAGE_URLS = [
+                './Img/dev/firehydrant.png',
+                './Img/dev/iggy.png'
+
+            ];
+
+            let obstacleImages = [];
+            let isObstaclesLoaded = false;
+            let obstaclesLoadedCount = 0;
+
+            if (OBSTACLE_IMAGE_URLS.length > 0) {
+                obstacleImages = new Array(OBSTACLE_IMAGE_URLS.length);
+                OBSTACLE_IMAGE_URLS.forEach((url, index) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        obstaclesLoadedCount++;
+                        if (obstaclesLoadedCount === OBSTACLE_IMAGE_URLS.length) {
+                            isObstaclesLoaded = true;
+                        }
+                    };
+                    img.onerror = () => {
+                        console.error(`Obstacle image failed to load: ${url}`);
+                        obstaclesLoadedCount++;
+                        if (obstaclesLoadedCount === OBSTACLE_IMAGE_URLS.length) {
+                            isObstaclesLoaded = true;
+                        }
+                    };
+                    img.src = url;
+                    obstacleImages[index] = img;
+                });
+            } else {
+                isObstaclesLoaded = true; 
+            }
+
+
+            // Animated bird obstacle sprite sheets
+            const BIRD_SPRITE_CONFIG = [
+                { color: 'yellow', url: './Img/dev/yellowbird.png' },
+                { color: 'red', url: './Img/dev/redbird.png' },
+                { color: 'blue', url: './Img/dev/bluebird.png' }
+            ];
+
+            const BIRD_FRAME_COUNT = 3;
+            const BIRD_ANIMATION_INTERVAL = 20;
+            const BIRD_DRAW_HEIGHT = 55;
+            const BIRD_SPEED_BONUS = 2.5;
+
+            let birdSprites = [];
+            let isBirdsLoaded = false;
+            let birdSpritesLoadedCount = 0;
+            let nextBirdIndex = 0;
+
+            if (BIRD_SPRITE_CONFIG.length > 0) {
+                birdSprites = BIRD_SPRITE_CONFIG.map(config => ({
+                    ...config,
+                    img: null,
+                    frameCount: BIRD_FRAME_COUNT,
+                    frameWidth: 0,
+                    frameHeight: 0,
+                    drawHeight: BIRD_DRAW_HEIGHT,
+                    loaded: false
+                }));
+
+                birdSprites.forEach(sprite => {
+                    const img = new Image();
+                    img.onload = () => {
+                        sprite.img = img;
+                        sprite.frameWidth = Math.floor(img.width / sprite.frameCount);
+                        sprite.frameHeight = img.height;
+                        sprite.loaded = sprite.frameWidth > 0 && sprite.frameHeight > 0;
+                        birdSpritesLoadedCount++;
+                        if (birdSpritesLoadedCount === birdSprites.length) {
+                            isBirdsLoaded = true;
+                        }
+                    };
+                    img.onerror = () => {
+                        console.error(`Bird sprite failed to load: ${sprite.url}`);
+                        sprite.loaded = false;
+                        birdSpritesLoadedCount++;
+                        if (birdSpritesLoadedCount === birdSprites.length) {
+                            isBirdsLoaded = true;
+                        }
+                    };
+                    img.src = sprite.url;
+                });
+            } else {
+                isBirdsLoaded = true;
+            }
+
+            // Raccoon runner sprite sheet info
+            const RACCOON_SPRITE_URL = './Img/dev/rat.png';
+            const RACCOON_FRAME_COUNT = 5;
+            const RACCOON_ANIMATION_INTERVAL = 6; 
+            const RACCOON_DRAW_HEIGHT = 90;
+            const RACCOON_SPEED_BONUS = 1.5; 
+
+            let raccoonSprite = null;
+            let isRaccoonLoaded = false;
+            let raccoonFrameWidth = 0;
+            let raccoonFrameHeight = 0;
+
+            if (RACCOON_SPRITE_URL) {
+                const img = new Image();
+                img.onload = () => {
+                    raccoonSprite = img;
+                    raccoonFrameWidth = img.width / RACCOON_FRAME_COUNT;
+                    raccoonFrameHeight = img.height;
+                    isRaccoonLoaded = raccoonFrameWidth > 0 && raccoonFrameHeight > 0;
+                };
+                img.onerror = () => {
+                    console.error(`Raccoon sprite failed to load: ${RACCOON_SPRITE_URL}`);
+                    isRaccoonLoaded = false;
+                };
+                img.src = RACCOON_SPRITE_URL;
+            }
+
+
+            const MUSIC_PLAYLIST = [
+                './Img/dev/background-music-1.mp3',
+                './Img/dev/background-music-2.mp3',
+                './Img/dev/background-music-3.mp3'
+
+            ];
+            let currentTrackIndex = -1; 
+
+            const charSelectScreen = document.getElementById('character-select-screen');
+
+            const charDisplaySprite = document.getElementById('char-display-sprite');
+
+            const charDisplayName = document.getElementById('char-display-name');
+            const selectBtn = document.getElementById('select-btn');
+            const changeCharBtn = document.getElementById('change-char-btn'); 
+            
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn'); 
+            const gameScreen = document.getElementById('game-screen');
+            const canvas = document.getElementById('game-canvas');
+            const ctx = canvas.getContext('2d');
+
+            const scoreEl = document.getElementById('score');
+            const highScoreEl = document.getElementById('high-score'); 
+            const startMessage = document.getElementById('start-message');
+            const gameOverMessage = document.getElementById('game-over-message');
+            const backgroundMusic = document.getElementById('background-music'); 
+
+            const prevSkinBtn = document.getElementById('prev-skin-btn');
+            const nextSkinBtn = document.getElementById('next-skin-btn');
+            const skinDisplayName = document.getElementById('skin-display-name');
+            const skinLockedMessage = document.getElementById('skin-locked-message');
+            const unlockNotification = document.getElementById('unlock-notification');
+            const unlockMessage = document.getElementById('unlock-message');
+
+            const jumpSound = document.getElementById('jump-sound');
+            const crashSound = document.getElementById('crash-sound');
+            const unlockSound = document.getElementById('unlock-sound');
+
+            // Runtime state
+            let selectedPlayer = { img: new Image(), frames: 1, spriteWidth: 100 };
+            let player, gravity, obstacles, gameSpeed, score, isGameOver, gameLoopId;
+            let highScore = 0; 
+            let canvasWidth, canvasHeight, groundY;
+            let gameFrame = 0; 
+            let currentCharacterIndex = 0; 
+            let currentSkinIndex = 0; 
+            let totalCarouselItems = 0; 
+            let totalCharacterItems = 0; 
+            let groundDashOffset = 0; 
+
+            // Local storage keys
+            const HIGH_SCORE_KEY = 'devTeamRunnerHighScore'; 
+            const SKINS_UNLOCK_KEY = 'devTeamRunnerSkins'; 
+
+            // Core gameplay tuning
+            const PLAYER_WIDTH = 100; 
+            const PLAYER_HEIGHT = 100; 
+            const JUMP_STRENGTH = 18;
+            const DOUBLE_JUMP_STRENGTH = 14;
+            const BASE_GRAVITY = 1.0; 
+            const BASE_GAME_SPEED = 8; 
+
+            const OBSTACLE_MIN_HEIGHT = 40; 
+            const OBSTACLE_MAX_HEIGHT = 90; 
+            const OBSTACLE_SPAWN_MIN = 100;
+            const OBSTACLE_SPAWN_MAX = 200;
+            const RACCOON_SPAWN_MAX_FRAMES = 60 * 10; 
+
+            
+            // Timers for obstacle pacing
+            let obstacleSpawnTimer = OBSTACLE_SPAWN_MAX;
+            let raccoonSpawnTimer = 0;
+            let birdSpawnTimer = 0;
+
+            // Format the HUD score display
+            function formatScore(score) {
+                return score.toString().padStart(5, '0');
+            }
+
+            // Simple helper to replay short effects
+            function playSound(sound) {
+                if (!sound) return;
+                sound.currentTime = 0; 
+                sound.play().catch(e => console.warn("Sound play failed:", e)); 
+            }
+
+            // Roll a new delay before the next raccoon arrival
+            function scheduleNextRaccoonSpawn() {
+                raccoonSpawnTimer = Math.max(30, Math.floor(Math.random() * (RACCOON_SPAWN_MAX_FRAMES + 1)));
+            }
+
+            function scheduleNextBirdSpawn() {
+                birdSpawnTimer = Math.max(30, Math.floor(Math.random() * (RACCOON_SPAWN_MAX_FRAMES + 1)));
+            }
+
+            // Pick a new music track and start playback
+            function playRandomTrack() {
+                if (!backgroundMusic || MUSIC_PLAYLIST.length === 0) return;
+
+                let nextTrackIndex;
+
+                do {
+                    nextTrackIndex = Math.floor(Math.random() * MUSIC_PLAYLIST.length);
+                } while (MUSIC_PLAYLIST.length > 1 && nextTrackIndex === currentTrackIndex);
+                
+                currentTrackIndex = nextTrackIndex;
+                const nextTrackSrc = MUSIC_PLAYLIST[currentTrackIndex];
+                
+                backgroundMusic.src = nextTrackSrc;
+                backgroundMusic.currentTime = 0;
+                backgroundMusic.play().catch(e => console.error("Audio play failed:", e));
+            }
+
+            function saveUnlockedSkins() {
+                const unlockedSkinsMap = {};
+                team.forEach(member => {
+                    const unlockedNames = member.skins
+                        .filter(skin => skin.unlocked)
+                        .map(skin => skin.name);
+                    if (unlockedNames.length > 0) {
+                        unlockedSkinsMap[member.name] = unlockedNames;
+                    }
+                });
+                localStorage.setItem(SKINS_UNLOCK_KEY, JSON.stringify(unlockedSkinsMap));
+            }
+
+            function loadUnlockedSkins() {
+                const savedSkins = localStorage.getItem(SKINS_UNLOCK_KEY);
+                if (!savedSkins) return; 
+
+                try {
+                    const unlockedSkinsMap = JSON.parse(savedSkins);
+                    team.forEach(member => {
+                        if (unlockedSkinsMap[member.name]) {
+                            const unlockedNames = unlockedSkinsMap[member.name];
+                            member.skins.forEach(skin => {
+                                if (unlockedNames.includes(skin.name)) {
+                                    skin.unlocked = true;
+                                }
+                            });
+                        }
+                    });
+                } catch (e) {
+                    console.error("Failed to parse unlocked skins:", e);
+                    localStorage.removeItem(SKINS_UNLOCK_KEY); 
+                }
+            }
+            
+            function checkAndUnlockSkins(currentScore) {
+                let newUnlock = false;
+                team.forEach(member => {
+                    member.skins.forEach(skin => {
+
+                        if (!skin.unlocked && skin.unlockScore > 0 && currentScore >= skin.unlockScore) {
+                            skin.unlocked = true;
+                            newUnlock = true;
+
+                            unlockMessage.textContent = `${skin.name} for ${member.name}!`;
+                            unlockNotification.classList.remove('hidden');
+                            playSound(unlockSound); 
+
+                            setTimeout(() => {
+                                unlockNotification.classList.add('hidden');
+                            }, 4000);
+                        }
+                    });
+                });
+
+                if (newUnlock) {
+                    saveUnlockedSkins();
+                }
+            }
+            // Animated runner controlled by the player
+            class Player {
+                constructor(x, y, w, h, spriteData) {
+                    this.x = x;
+                    this.y = y;
+                    this.w = w; 
+                    this.h = h; 
+                    this.img = spriteData.img;
+
+                    this.totalFrames = spriteData.frames; 
+                    this.spriteWidth = spriteData.spriteWidth; 
+                    this.spriteHeight = this.img.height; 
+                    this.frameWidth = this.spriteWidth / this.totalFrames; 
+                    
+                    this.currentFrame = 0; 
+                    this.animationStagger = 5; 
+
+                    this.dy = 0; 
+                    this.isJumping = false;
+                    this.hasDoubleJumped = false;
+                }
+
+                draw() {
+                    if (this.img.height === 0 || this.frameWidth === 0) {
+                        ctx.fillStyle = 'blue';
+                        ctx.fillRect(this.x, this.y, this.w, this.h);
+                        return;
+                    }
+                    
+                    ctx.imageSmoothingEnabled = false; 
+                    ctx.beginPath();
+                    
+                    ctx.drawImage(
+                        this.img,
+                        this.currentFrame * this.frameWidth, 0,
+                        this.frameWidth, this.spriteHeight,
+                        this.x, this.y,
+                        this.w, this.h
+                    );
+                    ctx.closePath();
+                }
+                
+                updateAnimation() {
+                    if (!this.isJumping && gameFrame % this.animationStagger === 0) {
+                        this.currentFrame = (this.currentFrame + 1) % this.totalFrames;
+                    }
+                }
+
+                jump(allowDoubleJump = false) {
+                    if (!this.isJumping) {
+                        this.dy = -JUMP_STRENGTH;
+                        this.isJumping = true;
+                        this.hasDoubleJumped = false;
+                        playSound(jumpSound);
+                    } else if (allowDoubleJump && !this.hasDoubleJumped) {
+                        this.dy = -DOUBLE_JUMP_STRENGTH;
+                        this.hasDoubleJumped = true;
+                        playSound(jumpSound);
+                    }
+                }
+
+                update() {
+                    this.dy += gravity;
+                    this.y += this.dy;
+
+                    if (this.y + this.h > groundY) {
+                        this.y = groundY - this.h;
+                        this.dy = 0;
+                        this.isJumping = false;
+                        this.hasDoubleJumped = false;
+                    }
+                    
+                    this.updateAnimation();
+                    this.draw();
+                }
+            }
+
+
+            // Generic helper for static obstacle sprites
+            class Obstacle {
+                constructor(x, y, h, img) {
+                    this.x = x;
+                    this.y = y; 
+                    this.h = h; 
+                    this.img = img; 
+
+                    if (this.img && this.img.height > 0) {
+                        const aspectRatio = this.img.width / this.img.height;
+                        this.w = this.h * aspectRatio;
+                    } else {
+                        this.w = 30; 
+                    }
+                }
+
+                draw() {
+                    ctx.imageSmoothingEnabled = false; 
+                    if (this.img && this.img.complete && this.img.height > 0) {
+
+                        ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
+                    } else {
+
+                        ctx.beginPath();
+                        ctx.fillStyle = "#e11d48"; 
+                        ctx.font = `${this.h}px 'Press Start 2P'`;
+                        ctx.textAlign = "left"; 
+                        ctx.textBaseline = "bottom";
+                        ctx.fillText("</>", this.x, this.y + this.h);
+                        ctx.closePath();
+                    }
+                }
+
+                update() {
+                    this.x -= gameSpeed;
+                    this.draw();
+                }
+            }
+
+            // Special animated ground runner that chases the player
+            class RaccoonObstacle {
+                constructor() {
+                    this.type = 'raccoon';
+                    this.sprite = raccoonSprite;
+                    this.frameCount = RACCOON_FRAME_COUNT;
+                    this.frameWidth = raccoonFrameWidth;
+                    this.frameHeight = raccoonFrameHeight;
+                    this.frameIndex = 0;
+                    this.frameTimer = 0;
+                    this.frameInterval = RACCOON_ANIMATION_INTERVAL;
+                    this.h = RACCOON_DRAW_HEIGHT;
+                    const aspectRatio = (this.frameWidth > 0 && this.frameHeight > 0)
+                        ? (this.frameWidth / this.frameHeight)
+                        : 1;
+                    this.w = this.h * aspectRatio;
+                    if (!isFinite(this.w) || this.w <= 0) {
+                        this.w = this.h;
+                    }
+                    this.x = canvasWidth + this.w;
+                    const playerBaseline = player ? (player.y + player.h - this.h) : (groundY - this.h);
+                    this.y = Math.max(playerBaseline, groundY - this.h);
+                }
+
+                update() {
+                    this.x -= gameSpeed + RACCOON_SPEED_BONUS;
+                    this.frameTimer++;
+                    if (this.frameTimer >= this.frameInterval) {
+                        this.frameTimer = 0;
+                        this.frameIndex = (this.frameIndex + 1) % this.frameCount;
+                    }
+                    this.draw();
+                }
+
+                draw() {
+                    if (this.sprite && this.frameWidth > 0 && this.frameHeight > 0) {
+                        ctx.save();
+                        ctx.imageSmoothingEnabled = false;
+                        ctx.translate(this.x + this.w, this.y);
+                        ctx.scale(-1, 1);
+                        ctx.drawImage(
+                            this.sprite,
+                            this.frameIndex * this.frameWidth,
+                            0,
+                            this.frameWidth,
+                            this.frameHeight,
+                            0,
+                            0,
+                            this.w,
+                            this.h
+                        );
+                        ctx.restore();
+                    } else {
+                        ctx.fillStyle = "#1f2937";
+                        ctx.fillRect(this.x, this.y, this.w, this.h);
+                    }
+                }
+            }
+
+            class BirdObstacle {
+                constructor(spriteData) {
+                    this.type = 'bird';
+                    this.color = spriteData.color;
+                    this.sprite = spriteData.img;
+                    this.frameCount = spriteData.frameCount;
+                    this.frameWidth = spriteData.frameWidth;
+                    this.frameHeight = spriteData.frameHeight;
+                    this.frameIndex = 0;
+                    this.frameTimer = 0;
+                    this.frameInterval = BIRD_ANIMATION_INTERVAL;
+                    this.h = spriteData.drawHeight;
+
+                    const aspectRatio = (this.frameWidth > 0 && this.frameHeight > 0)
+                        ? (this.frameWidth / this.frameHeight)
+                        : 1;
+                    this.w = this.h * aspectRatio;
+                    if (!isFinite(this.w) || this.w <= 0) {
+                        this.w = this.h;
+                    }
+
+                    this.x = canvasWidth + this.w;
+
+                    const highLane = groundY - PLAYER_HEIGHT - this.h - 50;
+                    const lowLane = groundY - 85;
+                    const chosenLane = Math.random() < 0.5 ? highLane : lowLane;
+                    const minY = 20;
+                    this.y = Math.max(minY, chosenLane);
+                }
+
+                update() {
+                    this.x -= gameSpeed + BIRD_SPEED_BONUS;
+                    this.frameTimer++;
+                    if (this.frameTimer >= this.frameInterval) {
+                        this.frameTimer = 0;
+                        this.frameIndex = (this.frameIndex + 1) % this.frameCount;
+                    }
+                    this.draw();
+                }
+
+                draw() {
+                    if (!this.sprite || this.frameWidth <= 0 || this.frameHeight <= 0) {
+                        const fallbackColors = {
+                            yellow: '#facc15',
+                            red: '#ef4444',
+                            blue: '#3b82f6'
+                        };
+                        ctx.fillStyle = fallbackColors[this.color] || '#facc15';
+                        ctx.fillRect(this.x, this.y, this.w, this.h);
+                        return;
+                    }
+
+                    ctx.save();
+                    ctx.imageSmoothingEnabled = false;
+                    ctx.translate(this.x + this.w, this.y);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(
+                        this.sprite,
+                        this.frameIndex * this.frameWidth,
+                        0,
+                        this.frameWidth,
+                        this.frameHeight,
+                        0,
+                        0,
+                        this.w,
+                        this.h
+                    );
+                    ctx.restore();
+                }
+            }
+
+
+            function updateSkinDisplay() {
+                const member = team[currentCharacterIndex];
+                const skin = member.skins[currentSkinIndex];
+
+                skinDisplayName.textContent = skin.name;
+
+                if (skin.displaySrc) {
+                    charDisplaySprite.style.backgroundImage = `url('${skin.displaySrc}')`;
+
+                    charDisplaySprite.style.backgroundSize = 'contain'; 
+                    charDisplaySprite.style.backgroundPosition = 'center';
+                    charDisplaySprite.style.backgroundRepeat = 'no-repeat';
+                } else {
+
+                    charDisplaySprite.style.backgroundImage = 'none';
+                }
+
+                if (skin.unlocked) {
+                    skinLockedMessage.classList.add('hidden');
+                    selectBtn.disabled = false;
+                    selectBtn.textContent = "Select Runner";
+                } else {
+                    skinLockedMessage.classList.remove('hidden');
+                    skinLockedMessage.textContent = `LOCKED (Score ${skin.unlockScore})`;
+                    selectBtn.disabled = true;
+                    selectBtn.textContent = "Locked";
+                }
+
+                prevSkinBtn.disabled = currentSkinIndex === 0;
+                nextSkinBtn.disabled = currentSkinIndex === member.skins.length - 1;
+            }
+
+            function updateCharacterDisplay() {
+                const member = team[currentCharacterIndex];
+
+                charDisplayName.textContent = member.name;
+
+
+                currentSkinIndex = 0;
+                updateSkinDisplay();
+
+                prevBtn.disabled = currentCharacterIndex === 0;
+                nextBtn.disabled = currentCharacterIndex === totalCharacterItems - 1;
+            }
+
+            function initializeCharacterSelect() {
+                currentCharacterIndex = 0;
+                totalCharacterItems = team.length;
+                updateCharacterDisplay();
+            }
+
+
+            function selectCharacter() {
+                const member = team[currentCharacterIndex];
+                const skin = member.skins[currentSkinIndex];
+
+                if (!skin.unlocked) return; 
+
+                if (!isParallaxLoaded || !isObstaclesLoaded || !isBirdsLoaded) {
+                    selectBtn.textContent = "LOADING ASSETS...";
+                    selectBtn.disabled = true;
+                    
+                    const checkLoad = setInterval(() => {
+                        if (isParallaxLoaded && isObstaclesLoaded && isBirdsLoaded) {
+                            clearInterval(checkLoad);
+                            updateSkinDisplay(); 
+                            performCharacterSelection(skin); 
+                        }
+                    }, 100);
+                } else {
+                    performCharacterSelection(skin); 
+                }
+            }
+
+            function performCharacterSelection(skin) {
+                selectedPlayer.img.src = skin.spriteSrc; 
+                selectedPlayer.frames = skin.frames || 1;
+                
+                selectedPlayer.img.onload = () => {
+                    selectedPlayer.spriteWidth = selectedPlayer.img.width;
+                    
+                    if (player) {
+                        player.spriteHeight = selectedPlayer.img.height;
+                        player.frameWidth = selectedPlayer.spriteWidth / selectedPlayer.frames;
+                    }
+                    
+                    charSelectScreen.classList.add('hidden');
+                    gameScreen.classList.remove('hidden');
+                    setupGame();
+                };
+                selectedPlayer.img.onerror = () => {
+                    console.error(`Image failed to load: ${skin.spriteSrc}. Starting game anyway.`);
+                    selectedPlayer.spriteWidth = PLAYER_WIDTH; 
+                    selectedPlayer.img.height = PLAYER_HEIGHT;
+                    
+                    charSelectScreen.classList.add('hidden');
+                    gameScreen.classList.remove('hidden');
+                    setupGame(); 
+                };
+            }
+
+            function setupCanvas() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+
+                canvasWidth = canvas.width;
+                canvasHeight = canvas.height;
+                groundY = canvasHeight -50; 
+            }
+
+            function drawGround() {
+
+                ctx.beginPath();
+                ctx.fillStyle = "#666666"; 
+                ctx.fillRect(0, groundY, canvasWidth, canvasHeight - groundY); 
+                ctx.closePath();
+
+                ctx.beginPath();
+                ctx.strokeStyle = "#ffffff"; 
+                ctx.lineWidth = 3;
+                ctx.setLineDash([40, 60]); 
+
+
+                ctx.lineDashOffset = -groundDashOffset; 
+
+                const line1Y = groundY + 10;
+                
+                ctx.moveTo(0, line1Y);
+                ctx.lineTo(canvasWidth, line1Y);
+                
+                ctx.stroke();
+                ctx.closePath();
+
+                ctx.setLineDash([]);
+            }
+
+            function updateParallaxLayerDimensions() {
+                if (!isParallaxLoaded || parallaxLayers.length === 0) return;
+                parallaxLayers.forEach(layer => {
+                    if (!layer.img || layer.img.height === 0) return;
+                    const scale = canvasHeight / layer.img.height;
+                    layer.drawWidth = layer.img.width * scale;
+                    if (!isFinite(layer.drawWidth) || layer.drawWidth <= 0) {
+                        layer.drawWidth = canvasWidth;
+                    }
+                    if (!isFinite(layer.offset)) {
+                        layer.offset = 0;
+                    }
+                });
+            }
+
+            function renderParallaxBackgrounds(advance = false) {
+                ctx.fillStyle = '#030712';
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+                if (!isParallaxLoaded || parallaxLayers.length === 0) return;
+
+                parallaxLayers.forEach(layer => {
+                    if (!layer.img || layer.drawWidth <= 0) return;
+
+                    if (advance) {
+                        const speed = (gameSpeed || BASE_GAME_SPEED) * layer.speedModifier;
+                        layer.offset -= speed;
+                        if (layer.offset <= -layer.drawWidth) {
+                            layer.offset += layer.drawWidth;
+                        }
+                    }
+
+                    let startX = layer.offset;
+                    while (startX > 0) {
+                        startX -= layer.drawWidth;
+                    }
+
+                    for (let x = startX; x < canvasWidth; x += layer.drawWidth) {
+                        ctx.drawImage(layer.img, x, 0, layer.drawWidth, canvasHeight);
+                    }
+                });
+            }
+
+            function setupGame() {
+                setupCanvas();
+                startMessage.classList.remove('hidden');
+                gameOverMessage.classList.add('hidden'); 
+                scoreEl.textContent = formatScore(0); 
+
+                const savedHighScore = localStorage.getItem(HIGH_SCORE_KEY);
+                highScore = savedHighScore ? parseInt(savedHighScore) : 0;
+                highScoreEl.textContent = formatScore(highScore);
+
+
+                isGameOver = true; 
+                gameSpeed = BASE_GAME_SPEED;
+                gravity = BASE_GRAVITY;
+                score = 0;
+                obstacles = [];
+                gameFrame = 0;
+                groundDashOffset = 0; 
+                scheduleNextRaccoonSpawn();
+                scheduleNextBirdSpawn();
+                nextBirdIndex = 0;
+
+                updateParallaxLayerDimensions();
+
+
+
+                if (selectedPlayer.img.src) {
+                     player = new Player(PLAYER_WIDTH, groundY - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT, selectedPlayer);
+                }
+
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+                renderParallaxBackgrounds(false);
+
+                drawGround();
+                if (player) {
+                    player.draw(); 
+                }
+            }
+
+            function startGame() {
+                if (isGameOver) {
+                    isGameOver = false;
+                    startMessage.classList.add('hidden');
+                    gameOverMessage.classList.add('hidden');
+                    score = 0;
+                    gameSpeed = BASE_GAME_SPEED;
+                    obstacles = [];
+                    obstacleSpawnTimer = OBSTACLE_SPAWN_MAX;
+                    gameFrame = 0;
+                    scheduleNextRaccoonSpawn();
+                    scheduleNextBirdSpawn();
+                    nextBirdIndex = 0;
+
+
+                    playRandomTrack();
+
+
+                    if (!player) {
+
+                         const currentSkin = team[currentCharacterIndex].skins[currentSkinIndex];
+                         performCharacterSelection(currentSkin); 
+
+                         player = new Player(PLAYER_WIDTH, groundY - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT, selectedPlayer);
+                    }
+                    
+                    if (!player) {
+
+                         const skin = team[currentCharacterIndex].skins[currentSkinIndex];
+                         selectedPlayer.img.src = skin.spriteSrc; 
+                         selectedPlayer.frames = skin.frames || 1;
+                         selectedPlayer.img.onload = () => { 
+                             selectedPlayer.spriteWidth = selectedPlayer.img.width;
+                             player = new Player(PLAYER_WIDTH, groundY - PLAYER_HEIGHT, PLAYER_WIDTH, PLAYER_HEIGHT, selectedPlayer);
+                             if (gameLoopId) cancelAnimationFrame(gameLoopId);
+                             gameLoop();
+                         }
+                         return; 
+                    }
+                    
+                    if (gameLoopId) cancelAnimationFrame(gameLoopId);
+                    gameLoop();
+                }
+            }
+
+            // Handle all obstacle creation and pacing
+            function spawnObstacle() {
+                if (raccoonSpawnTimer > 0) {
+                    raccoonSpawnTimer--;
+                }
+
+                if (birdSpawnTimer > 0) {
+                    birdSpawnTimer--;
+                }
+
+                const hasActiveRaccoon = obstacles.some(o => o.type === 'raccoon');
+                const hasActiveBird = obstacles.some(o => o.type === 'bird');
+
+                if (birdSpawnTimer <= 0 && isBirdsLoaded && birdSprites.length > 0 && !hasActiveBird && !hasActiveRaccoon) {
+                    const nextBird = birdSprites[nextBirdIndex];
+                    if (nextBird && nextBird.loaded) {
+                        obstacles.push(new BirdObstacle(nextBird));
+                    }
+                    nextBirdIndex = (nextBirdIndex + 1) % birdSprites.length;
+                    scheduleNextBirdSpawn();
+                }
+
+                const birdNowActive = hasActiveBird || obstacles.some(o => o.type === 'bird');
+
+                if (raccoonSpawnTimer <= 0 && isRaccoonLoaded && !hasActiveRaccoon && !birdNowActive) {
+                    obstacles.push(new RaccoonObstacle());
+                    scheduleNextRaccoonSpawn();
+                }
+
+                obstacleSpawnTimer--;
+
+                if (obstacleSpawnTimer <= 0 && isObstaclesLoaded) {
+                    if (obstacleImages.length > 0) {
+                        const imgIndex = Math.floor(Math.random() * obstacleImages.length);
+                        const obsImg = obstacleImages[imgIndex];
+
+                        if (obsImg && obsImg.height > 0) {
+                            const h = Math.random() * (OBSTACLE_MAX_HEIGHT - OBSTACLE_MIN_HEIGHT) + OBSTACLE_MIN_HEIGHT;
+                            const y = groundY - h;
+                            obstacles.push(new Obstacle(canvasWidth, y, h, obsImg));
+                        }
+                    }
+
+                    obstacleSpawnTimer = Math.floor(Math.random() * (OBSTACLE_SPAWN_MAX - OBSTACLE_SPAWN_MIN + 1)) + OBSTACLE_SPAWN_MIN - (gameSpeed * 5);
+                    if (obstacleSpawnTimer < 40) obstacleSpawnTimer = 40;
+                }
+            }
+            
+            // Slightly forgiving bounding-box intersection
+            function checkCollision(p, o) {
+
+                const hitBoxBufferX = p.w * 0.2; 
+                const hitBoxBufferY = p.h * 0.15; 
+
+                const pLeft = p.x + hitBoxBufferX;
+                const pRight = p.x + p.w - hitBoxBufferX;
+                const pTop = p.y + hitBoxBufferY;
+                const pBottom = p.y + p.h; 
+
+                const oLeft = o.x + o.w * 0.15;
+                const oRight = o.x + o.w - o.w * 0.1;
+                const oTop = o.y + o.h * 0.2;
+                const oBottom = o.y + o.h - o.h * 0.05;
+
+                return pRight > oLeft &&
+                       pLeft < oRight &&
+                       pBottom > oTop &&
+                       pTop < oBottom;
+            }
+
+            // Bump score and accelerate as milestones are reached
+            function updateScore() {
+                score++;
+                scoreEl.textContent = formatScore(Math.floor(score / 5)); 
+                if (score % 200 === 0) {
+                    gameSpeed += 0.3; 
+                }
+            }
+
+            // Cleanup when the player hits an obstacle
+            function endGame() {
+                playSound(crashSound); 
+                isGameOver = true;
+                gameOverMessage.classList.remove('hidden'); 
+
+                if (backgroundMusic) {
+                    backgroundMusic.pause();
+                }
+
+
+                const currentScore = Math.floor(score / 5);
+                if (currentScore > highScore) {
+                    highScore = currentScore;
+                    localStorage.setItem(HIGH_SCORE_KEY, highScore);
+
+                }
+
+
+                checkAndUnlockSkins(currentScore);
+
+
+                cancelAnimationFrame(gameLoopId);
+            }
+            
+            // Main animation frame handler
+            function gameLoop() {
+                if (isGameOver) return;
+                
+                gameLoopId = requestAnimationFrame(gameLoop);
+                
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+                renderParallaxBackgrounds(true);
+
+                groundDashOffset = (groundDashOffset - gameSpeed) % 100; 
+                
+                drawGround();
+                gameFrame++;
+                
+                spawnObstacle();
+                for (let i = obstacles.length - 1; i >= 0; i--) {
+                    let o = obstacles[i];
+                    o.update();
+
+                    if (checkCollision(player, o)) {
+                        endGame(); 
+                        return;
+                    }
+                    
+                    if (o.x + o.w < 0) {
+                        obstacles.splice(i, 1);
+                    }
+                }
+                
+                player.update();
+                updateScore();
+            }
+
+            // Unified keyboard/mouse/touch handler
+            function handleInput(e) {
+                if (e.code === 'Space') e.preventDefault();
+
+                if (!e.code) {
+                    if (isGameOver && !startMessage.classList.contains('hidden')) {
+                        startGame();
+                        if (player) player.jump();
+                        return;
+                    }
+
+                    if (isGameOver && !gameOverMessage.classList.contains('hidden')) {
+                        setupGame();
+                        startGame();
+                        if (player) player.jump();
+                        return;
+                    }
+
+                    if (!isGameOver && player) {
+                        player.jump();
+                    }
+                    return;
+                }
+
+                const isJumpKey = e.code === 'Space' || e.code === 'ArrowUp';
+                const isShiftKey = e.code === 'ShiftLeft' || e.code === 'ShiftRight';
+                if (!isJumpKey && !isShiftKey) return;
+
+                if (isJumpKey && isGameOver && !startMessage.classList.contains('hidden')) {
+                    startGame();
+                    if (player) player.jump();
+                    return;
+                }
+
+                if (isJumpKey && isGameOver && !gameOverMessage.classList.contains('hidden')) {
+                    setupGame();
+                    startGame();
+                    if (player) player.jump();
+                    return;
+                }
+
+                if (!isGameOver && player) {
+                    if (isJumpKey) {
+                        const allowDoubleJump = !!e.shiftKey;
+                        player.jump(allowDoubleJump);
+                    } else if (isShiftKey) {
+                        player.jump(true);
+                    }
+                }
+            }
+
+            // Hook up controls for gameplay and menus
+            document.addEventListener('keydown', handleInput);
+            gameScreen.addEventListener('click', handleInput);
+
+            gameScreen.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                handleInput(e);
+            }, { passive: false });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentCharacterIndex > 0) {
+                    currentCharacterIndex--;
+                    updateCharacterDisplay();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentCharacterIndex < totalCharacterItems - 1) {
+                    currentCharacterIndex++;
+                    updateCharacterDisplay();
+                }
+            });
+
+            selectBtn.addEventListener('click', selectCharacter);
+            
+            changeCharBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                gameScreen.classList.add('hidden');
+                charSelectScreen.classList.remove('hidden');
+
+                if (backgroundMusic) {
+                    backgroundMusic.pause();
+                }
+
+
+                player = null; 
+                setupGame(); 
+                
+                initializeCharacterSelect(); 
+            });
+
+            prevSkinBtn.addEventListener('click', () => {
+                if (currentSkinIndex > 0) {
+                    currentSkinIndex--;
+                    updateSkinDisplay();
+                }
+            });
+
+            nextSkinBtn.addEventListener('click', () => {
+                const member = team[currentCharacterIndex];
+                if (currentSkinIndex < member.skins.length - 1) {
+                    currentSkinIndex++;
+                    updateSkinDisplay();
+                }
+            });
+
+
+            // Keep canvas sizing responsive
+            window.addEventListener('resize', () => {
+                 if (!gameScreen.classList.contains('hidden')) {
+
+                    setupGame(); 
+                }
+
+            });
+
+            // Loop the music playlist forever
+            if (backgroundMusic) {
+                backgroundMusic.addEventListener('ended', playRandomTrack);
+            }
+
+            // Initial bootstrapping
+            loadUnlockedSkins(); 
+            initializeCharacterSelect(); 
+        });
+    </script>
+
+</body>
+</html>
+

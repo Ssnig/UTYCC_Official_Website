@@ -11,8 +11,8 @@ $limit = 8;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // current page, default 1
 $offset = ($page - 1) * $limit;
 
-// MODIFICATION: Added s.preferences AND s.selected_major to the SELECT statement
-$sql = "SELECT s.*, s.preferences, s.selected_major,
+// MODIFICATION: Added s.preferences, s.selected_major, s.payment_status, AND s.payment_receipt_path
+$sql = "SELECT s.*, s.preferences, s.selected_major, s.payment_status, s.payment_receipt_path,
                f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
         FROM students s
@@ -36,6 +36,13 @@ try {
 
         // MODIFICATION: Decode the JSON preferences string into an array
         $row['preferences'] = $row['preferences'] ? json_decode($row['preferences'], true) : null;
+        
+        // --- NEW: Process payment_receipt_path URL ---
+        if (isset($row['payment_receipt_path']) && !empty($row['payment_receipt_path'])) {
+             $row['payment_receipt_path_url'] = '../' . $row['payment_receipt_path'];
+        } else {
+             $row['payment_receipt_path_url'] = null;
+        }
 
         $students[] = $row; 
     }
@@ -360,6 +367,35 @@ $pdo = null;
       font-weight: 500;
     }
     /* END NEW Styles */
+    
+    /* --- NEW CSS for Payment Receipt --- */
+    .payment-receipt-section {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px dashed hsl(var(--border));
+    }
+    .payment-receipt-section img {
+        max-width: 100%;
+        max-height: 400px;
+        border-radius: 8px;
+        border: 1px solid hsl(var(--border));
+        margin-top: 8px;
+        cursor: pointer;
+    }
+    .payment-receipt-link {
+        display: inline-block;
+        padding: 8px 12px;
+        background-color: hsl(var(--primary));
+        color: hsl(var(--primary-foreground));
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+    .payment-receipt-link:hover {
+        opacity: 0.9;
+    }
+    /* --- END NEW CSS --- */
 
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
@@ -411,7 +447,7 @@ $pdo = null;
             Manage Stats
         </a>
         <a class="nav-link" href="activity.php">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2 2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
             Upload Activity
         </a>
         <a class="nav-link" href="support.php">
@@ -479,6 +515,14 @@ $pdo = null;
                     <option value="PrE">Precision Engineering (PrE)</option>
                     <option value="AME">Advanced Materials Engineering (AME)</option>
                     <option value="unknown">Unknown/No Major</option>
+                </select>
+             </div>
+             <!-- NEW: Payment Filter Dropdown -->
+             <div class="field" style="min-width: 200px;">
+                <select id="paymentFilter" aria-label="Filter by Payment Status">
+                    <option value="all">All Payments</option>
+                    <option value="paid">Paid</option>
+                    <option value="pending">Pending/On Arrival</option>
                 </select>
              </div>
              <button class="btn ghost" id="clearFiltersBtn" style="margin-left: 8px;">Clear Filters</button>
@@ -625,7 +669,7 @@ $pdo = null;
             </div>
             <div class="field">
                 <label for="year">Year</label>
-                <input id="year" name="year" readonly />
+                <input id="year" name="year" />
             </div>
             <div class="field">
                 <label for="entry_year">Entry Year</label>
@@ -718,6 +762,22 @@ $pdo = null;
             <div id="edit-documents-grid" class="documents-grid" style="grid-column: 1 / -1;">
                 <!-- JS will populate this -->
             </div>
+            
+            <!-- MODIFICATION: Payment section in Edit Modal with editable field -->
+            <h3 class="detail-section-header" id="payment-header">Payment Information</h3>
+            <div id="edit-payment-section" style="grid-column: 1 / -1;">
+                 <div class="field">
+                    <label for="payment_status">Payment Status</label>
+                    <select id="payment_status" name="payment_status">
+                        <option value="pending">Pending</option>
+                        <option value="paid">Paid</option>
+                        <option value="later">Will Pay on Arrival</option>
+                    </select>
+                </div>
+                <div id="payment-receipt-display" class="payment-receipt-section" style="display: none; margin-top: 1rem;">
+                    <!-- Receipt image/link will be injected here by JS -->
+                </div>
+            </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -794,7 +854,8 @@ $pdo = null;
       q: '',
       academicYear: 'all',
       dormitory: 'all',
-      major: 'all', // NEW: Add major for filtering
+      major: 'all', 
+      payment: 'all', // NEW: Add payment for filtering
       page: <?php echo $page ?>,
       sort: { key: 'date', dir: 'desc' },
       selected: new Set(),
@@ -802,23 +863,46 @@ $pdo = null;
     
     // FIXED: Improved getSafeUrl function to handle various path formats
     function getSafeUrl(path) {
-        if (!path || path.trim() === '' || path === 'null') {
-            return 'https://placehold.co/120x120/EFEFEF/AAAAAA?text=Photo';
-        }
+        if (!path) return `https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+File`;
         
         if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
             return path;
         }
-        
-        if (path.startsWith('/uploads/')) {
-            return `../Rform${path}`;
+
+        // Check if it's an Rform upload (students, documents) or payment_receipt
+        if (path.startsWith('uploads/') || path.includes('/payment_receipt/') || path.startsWith('/uploads/')) {
+             let relativePath = path;
+             
+             if(path.startsWith('../')) {
+                 // Already relative from root? Assume it's correct from PHP.
+             } else if (path.startsWith('Rform/')) {
+                 relativePath = `../${path}`; // Add ../ if it starts with Rform/
+             } else if (path.startsWith('uploads/')) {
+                 relativePath = `../Rform/${path}`; // Add ../Rform/ if it starts with uploads/
+             } else if (path.startsWith('/uploads/')) {
+                 relativePath = `../Rform${path}`; // Handle /uploads/
+             } else if (path.includes('uploads/')) {
+                 // Handle cases like '.../Rform/uploads/...'
+                 const cleanPath = path.replace(/^\.\.\/Rform\//, '').replace(/^\//, '');
+                 relativePath = `../Rform/${cleanPath}`;
+             } else if (path.includes('payment_receipt/')) {
+                 // Handle 'Rform/payment_receipt/...'
+                 if (!path.startsWith('../')) {
+                     relativePath = `../${path}`;
+                 }
+             }
+             
+             // Simple check to avoid double '../' if PHP already added it
+             if(relativePath.startsWith('../..')) relativePath = relativePath.substring(3);
+             return relativePath;
         }
         
+        // Fallback for other paths, assuming they are relative to Rform
         if (path.includes('uploads/')) {
             const cleanPath = path.replace(/^\.\.\/Rform\//, '').replace(/^\//, '');
             return `../Rform/${cleanPath}`;
         }
-        
+
         return `../Rform/${path}`;
     }
 
@@ -919,6 +1003,22 @@ $pdo = null;
         // Get the current academic year from the form
         const academicYear = formElements.academic_year ? formElements.academic_year.value : '';
         
+        // --- MODIFICATION: Handle 'add_transfer' mode first, regardless of year ---
+        // This is based on the user request: "Transfer/Existing" should always show Major Selection.
+        if (mode === 'add_transfer') {
+            majorSection.innerHTML = `
+                <h3 class="detail-section-header">Major Assignment</h3>
+                <div class="field">
+                    <label for="selected_major">Assigned Major</label>
+                    <select id="selected_major" name="selected_major" required>
+                        <option value="">-- Select Major --</option>
+                        ${Object.entries(availableMajors).map(([code, name]) => `<option value="${code}">${name}</option>`).join('')}
+                    </select>
+                </div>`;
+            return; // We are done, so exit the function
+        }
+        // --- END MODIFICATION ---
+        
         // For First Year students only - show major assignment
         if (academicYear === 'First Year') {
             if (mode === 'add_new') {
@@ -936,17 +1036,9 @@ $pdo = null;
                 majorSection.innerHTML = `
                     <h3 class="detail-section-header">Major Preferences (First Year Only)</h3>
                     <div class="form-grid">${preferencesHTML}</div>`;
-            } else if (mode === 'add_transfer') {
-                majorSection.innerHTML = `
-                    <h3 class="detail-section-header">Major Assignment (First Year Only)</h3>
-                    <div class="field">
-                        <label for="selected_major">Assigned Major</label>
-                        <select id="selected_major" name="selected_major" required>
-                            <option value="">-- Select Major --</option>
-                            ${Object.entries(availableMajors).map(([code, name]) => `<option value="${code}">${name}</option>`).join('')}
-                        </select>
-                    </div>`;
-            } else if (mode === 'edit' && student) {
+            } 
+            // 'add_transfer' case was removed from here and handled above
+            else if (mode === 'edit' && student) {
                 const selectedMajor = student.selected_major || '';
                 majorSection.innerHTML = `
                     <h3 class="detail-section-header">Major Assignment (First Year Only)</h3>
@@ -994,8 +1086,8 @@ $pdo = null;
                             <input type="text" value="No major data available" disabled />
                         </div>`;
                 }
-            } else if (mode === 'add_new' || mode === 'add_transfer') {
-                // For add modes with non-First Year, don't show major section
+            } else if (mode === 'add_new') { // MODIFIED: Removed '|| mode === 'add_transfer''
+                // For add_new modes with non-First Year, don't show major section
                 majorSection.innerHTML = `
                     <h3 class="detail-section-header">Major Information</h3>
                     <div class="field">
@@ -1034,6 +1126,8 @@ $pdo = null;
       
       const documentsHeader = document.getElementById('documents-header');
       const documentsGrid = document.getElementById('edit-documents-grid');
+      const paymentHeader = document.getElementById('payment-header');
+      const paymentSection = document.getElementById('edit-payment-section');
       const saveButton = document.getElementById('saveStudent');
       
       // Reset parent fields to enabled state
@@ -1054,6 +1148,24 @@ $pdo = null;
         updateMajorSection(mode, null);
         documentsHeader.style.display = 'none';
         documentsGrid.style.display = 'none';
+        
+        // --- NEW: Hide payment section on add ---
+        if (paymentSection && paymentHeader) {
+            paymentSection.style.display = 'none';
+            paymentHeader.style.display = 'none';
+            
+            // Reset payment dropdown
+            const paymentStatusSelect = document.getElementById('payment_status');
+            if (paymentStatusSelect) {
+                paymentStatusSelect.value = 'pending';
+            }
+            // Clear receipt display
+            const paymentReceiptDisplay = document.getElementById('payment-receipt-display');
+            if (paymentReceiptDisplay) {
+                paymentReceiptDisplay.innerHTML = '';
+                paymentReceiptDisplay.style.display = 'none';
+            }
+        }
       } else if (mode === 'edit' && student) {
           document.getElementById('modalTitle').textContent = 'Edit Student';
           saveButton.textContent = 'Save Changes';
@@ -1062,7 +1174,7 @@ $pdo = null;
               if (element) {
                   if (element.type === 'checkbox') {
                       element.checked = !!student[key];
-                  } else if (element.type !== 'file') {
+                  } else if (element.type !== 'file' && element.name !== 'payment_status') { // Don't auto-set payment_status here
                       element.value = student[key] || '';
                   }
               }
@@ -1117,6 +1229,42 @@ $pdo = null;
           } else {
               documentsGrid.innerHTML = documentsHtml;
           }
+          
+          // --- NEW: Populate Payment Information in Edit Modal ---
+          if (paymentSection && paymentHeader) {
+              const paymentStatus = student.payment_status || 'pending';
+              const receiptPathUrl = student.payment_receipt_path_url;
+              const paymentReceiptDisplay = document.getElementById('payment-receipt-display');
+              
+              // Set the dropdown value
+              const paymentStatusSelect = document.getElementById('payment_status');
+              if (paymentStatusSelect) {
+                  paymentStatusSelect.value = paymentStatus;
+              }
+
+              // Show/Hide receipt display
+              if (paymentStatus === 'paid' && receiptPathUrl) {
+                  const isImage = /\.(jpe?g|png|gif)$/i.test(receiptPathUrl);
+                  let receiptHtml = '';
+                  if (isImage) {
+                      receiptHtml = `<a href="${escapeHtml(receiptPathUrl)}" target="_blank"><img src="${escapeHtml(receiptPathUrl)}" alt="Payment Receipt" loading="lazy"></a>`;
+                  } else {
+                      receiptHtml = `<a href="${escapeHtml(receiptPathUrl)}" target="_blank" class="payment-receipt-link">View Receipt File</a>`;
+                  }
+                  paymentReceiptDisplay.innerHTML = receiptHtml;
+                  paymentReceiptDisplay.style.display = 'block';
+              } else if (paymentStatus === 'paid') {
+                   paymentReceiptDisplay.innerHTML = `<p style="color: hsl(var(--muted-foreground));">(Receipt not uploaded or path missing)</p>`;
+                   paymentReceiptDisplay.style.display = 'block';
+              } else {
+                  paymentReceiptDisplay.innerHTML = '';
+                  paymentReceiptDisplay.style.display = 'none';
+              }
+              
+              paymentSection.style.display = 'block';
+              paymentHeader.style.display = 'block';
+          }
+          // --- END NEW Payment section ---
       }
       
       modal.showModal();
@@ -1172,26 +1320,50 @@ $pdo = null;
         });
         documentsHtml += '</div>';
 
+        // --- NEW: Payment Receipt Section (Details Modal) ---
+        let paymentHtml = '';
+        const paymentStatus = s.payment_status || 'pending'; // Assume pending if not set
+        const receiptPathUrl = s.payment_receipt_path_url; // Use the pre-processed URL from PHP
+
+        paymentHtml += `<h3 class="detail-section-header">Payment Information</h3>`;
+        paymentHtml += `<dl class="details-grid">`;
+        paymentHtml += `<dt>Status</dt><dd>${paymentStatus === 'paid' ? 'Paid' : (paymentStatus === 'later' ? 'Will Pay on Arrival' : 'Pending/Not Selected')}</dd>`;
+
+        if (paymentStatus === 'paid' && receiptPathUrl) {
+            const isImage = /\.(jpe?g|png|gif)$/i.test(receiptPathUrl);
+            paymentHtml += `<dt>Receipt</dt>`;
+            if (isImage) {
+                paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank"><img src="${escapeHtml(receiptPathUrl)}" alt="Payment Receipt" loading="lazy"></a></div></dd>`;
+            } else {
+                paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank" class="payment-receipt-link">View Receipt File</a></div></dd>`;
+            }
+        } else if (paymentStatus === 'paid') {
+            paymentHtml += `<dt>Receipt</dt><dd>(Receipt not uploaded or path missing)</dd>`;
+        }
+        paymentHtml += `</dl>`;
+        // --- END: Payment Receipt Section ---
+
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
                  <img src="${photoUrl}" alt="Student Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid hsl(var(--border));">
             </div>
             <h3 class="detail-section-header">Student Information</h3>
-            <dl class="details-grid">
-                <dt>Seat No.</dt><dd>${escapeHtml(s.seat_no) || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${escapeHtml(s.student_name_en) || 'N/A'}</dd>                <dt>Seat No.</dt><dd>${escapeHtml(s.seat_no) || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${escapeHtml(s.student_name_en) || 'N/A'}</dd>
-                <dt>Name (MM)</dt><dd>${escapeHtml(s.student_name_mm) || 'N/A'}</dd> <dt>Email</dt><dd>${escapeHtml(s.student_email) || 'N/A'}</dd>                <dt>Name (MM)</dt><dd>${escapeHtml(s.student_name_mm) || 'N/A'}</dd> <dt>Email</dt><dd>${escapeHtml(s.student_email) || 'N/A'}</dd>
-                <dt>Phone</dt><dd>${escapeHtml(s.student_phone) || 'N/A'}</dd> <dt>NRC</dt><dd>${escapeHtml(s.student_nrc) || 'N/A'}</dd>                <dt>Phone</dt><dd>${escapeHtml(s.student_phone) || 'N/A'}</dd> <dt>NRC</dt><dd>${escapeHtml(s.student_nrc) || 'N/A'}</dd>
-                <dt>Date of Birth</dt><dd>${escapeHtml(formatDate(s.student_dob))}</dd> <dt>Birthplace</dt><dd>${escapeHtml(s.student_birthplace) || 'N/A'}</dd>                <dt>Date of Birth</dt><dd>${escapeHtml(formatDate(s.student_dob))}</dd> <dt>Birthplace</dt><dd>${escapeHtml(s.student_birthplace) || 'N/A'}</dd>
-                <dt>Race</dt><dd>${escapeHtml(s.student_race) || 'N/A'}</dd> <dt>Religion</dt><dd>${escapeHtml(s.student_religion) || 'N/A'}</dd>                <dt>Race</dt><dd>${escapeHtml(s.student_race) || 'N/A'}</dd> <dt>Religion</dt><dd>${escapeHtml(s.student_religion) || 'N/A'}</dd>
-                <dt>Address</dt><dd>${escapeHtml(s.student_address) || 'N/A'}</dd> <dt>Township</dt><dd>${escapeHtml(s.township) || 'N/A'}</dd>                <dt>Address</dt><dd>${escapeHtml(s.student_address) || 'N/A'}</dd> <dt>Township</dt><dd>${escapeHtml(s.township) || 'N/A'}</dd>
-                <dt>State/Region</dt><dd>${escapeHtml(s.state_region) || 'N/A'}</dd> <dt>Dormitory</dt><dd>${escapeHtml(s.dormitory_preference) ? 'Yes' : 'No'}</dd>                <dt>State/Region</dt><dd>${escapeHtml(s.state_region) || 'N/A'}</dd> <dt>Dormitory</dt><dd>${escapeHtml(s.dormitory_preference) ? 'Yes' : 'No'}</dd>
-                <dt>Academic Year</dt><dd>${escapeHtml(s.academic_year) || 'N/A'}</dd> <dt>Year</dt><dd>${escapeHtml(s.year) || 'N/A'}</dd> <dt>Registered On</dt><dd>${escapeHtml(formatDate(s.date))}</dd>                <dt>Academic Year</dt><dd>${escapeHtml(s.academic_year) || 'N/A'}</dd> <dt>Year</dt><dd>${escapeHtml(s.year) || 'N/A'}</dd> <dt>Registered On</dt><dd>${escapeHtml(formatDate(s.date))}</dd>
+             <dl class="details-grid">
+                <dt>Seat No.</dt><dd>${escapeHtml(s.seat_no) || 'N/A'}</dd> <dt>Name (EN)</dt><dd>${escapeHtml(s.student_name_en) || 'N/A'}</dd>
+                <dt>Name (MM)</dt><dd>${escapeHtml(s.student_name_mm) || 'N/A'}</dd> <dt>Email</dt><dd>${escapeHtml(s.student_email) || 'N/A'}</dd>
+                <dt>Phone</dt><dd>${escapeHtml(s.student_phone) || 'N/A'}</dd> <dt>NRC</dt><dd>${escapeHtml(s.student_nrc) || 'N/A'}</dd>
+                <dt>Date of Birth</dt><dd>${escapeHtml(formatDate(s.student_dob))}</dd> <dt>Birthplace</dt><dd>${escapeHtml(s.student_birthplace) || 'N/A'}</dd>
+                <dt>Race</dt><dd>${escapeHtml(s.student_race) || 'N/A'}</dd> <dt>Religion</dt><dd>${escapeHtml(s.student_religion) || 'N/A'}</dd>
+                <dt>Address</dt><dd>${escapeHtml(s.student_address) || 'N/A'}</dd> <dt>Township</dt><dd>${escapeHtml(s.township) || 'N/A'}</dd>
+                <dt>State/Region</dt><dd>${escapeHtml(s.state_region) || 'N/A'}</dd> <dt>Dormitory</dt><dd>${escapeHtml(s.dormitory_preference) ? 'Yes' : 'No'}</dd>
+                <dt>Academic Year</dt><dd>${escapeHtml(s.academic_year) || 'N/A'}</dd> <dt>Year</dt><dd>${escapeHtml(s.year) || 'N/A'}</dd> <dt>Registered On</dt><dd>${escapeHtml(formatDate(s.date))}</dd>
             </dl>
             <h3 class="detail-section-header">Academic Info</h3>
              <dl class="details-grid">
                 <dt>Entry Year</dt><dd>${escapeHtml(s.entry_year) || 'N/A'}</dd>
             </dl>
             ${majorHtml}
+            ${paymentHtml} <!-- Added Payment Section Here -->
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
@@ -1244,6 +1416,7 @@ $pdo = null;
       const selectedAcademicYear = state.academicYear;
       const selectedDormitory = state.dormitory;
       const selectedMajor = state.major;
+      const selectedPayment = state.payment; // NEW: Get payment filter
 
       const base = state.students.filter(s => {
           const matchesSearch = !q || 
@@ -1261,8 +1434,13 @@ $pdo = null;
           const matchesMajor = selectedMajor === 'all' || 
                               (selectedMajor === 'unknown' && !hasMajorData(s)) ||
                               (selectedMajor !== 'unknown' && hasSpecificMajor(s, selectedMajor));
+                              
+          // NEW: Payment filter logic
+          const matchesPayment = selectedPayment === 'all' ||
+                                 (selectedPayment === 'paid' && s.payment_status === 'paid') ||
+                                 (selectedPayment === 'pending' && (s.payment_status !== 'paid')); // Treats 'pending', 'later', null as pending
 
-          return matchesSearch && matchesAcademicYear && matchesDormitory && matchesMajor;
+          return matchesSearch && matchesAcademicYear && matchesDormitory && matchesMajor && matchesPayment;
       });
 
       const { key, dir } = state.sort;
@@ -1337,6 +1515,13 @@ $pdo = null;
         render();
       });
 
+      // NEW: Payment filter listener
+      document.getElementById('paymentFilter').addEventListener('change', (e) => {
+          state.payment = e.target.value;
+          state.page = 1;
+          render();
+      });
+
       document.getElementById('search').addEventListener('input', (e) => { state.q = e.target.value; state.page = 1; render(); });
       
       document.getElementById('clearFiltersBtn').addEventListener('click', () => {
@@ -1344,7 +1529,8 @@ $pdo = null;
         document.getElementById('academicYearFilter').value = 'all';
         document.getElementById('dormitoryFilter').value = 'all';
         document.getElementById('majorFilter').value = 'all';
-        state.q = ''; state.academicYear = 'all'; state.dormitory = 'all'; state.major = 'all';
+        document.getElementById('paymentFilter').value = 'all'; // NEW: Reset payment filter
+        state.q = ''; state.academicYear = 'all'; state.dormitory = 'all'; state.major = 'all'; state.payment = 'all'; // NEW: Reset payment state
         state.page = 1; render(); showToast('Filters cleared', 'success');
       });
 
@@ -1494,6 +1680,20 @@ $pdo = null;
                 errors.push('Assigned Major');
             }
         }
+        
+        // --- MODIFICATION for user request ---
+        // Require 'Assigned Major' for 'add_transfer' mode regardless of year
+        if (mode === 'add_transfer') {
+             const selectedMajorEl = document.getElementById('selected_major');
+             if (!selectedMajorEl || !selectedMajorEl.value) {
+                // Avoid duplicating the error message if it was already added
+                if (!errors.includes('Assigned Major')) {
+                    errors.push('Assigned Major');
+                }
+             }
+        }
+        // --- END MODIFICATION ---
+
 
         // MODIFICATION: For edit mode, only require major assignment for First Year students
         if (mode === 'edit' && academicYear === 'First Year') {

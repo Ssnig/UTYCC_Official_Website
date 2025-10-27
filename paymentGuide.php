@@ -2,9 +2,25 @@
 session_start();
 date_default_timezone_set('Asia/Yangon');
 
+// --- NEW: Store return URL from GET parameter into session ---
+if (isset($_GET['return_to']) && in_array($_GET['return_to'], ['final', 'final1'])) {
+    $_SESSION['payment_return_to'] = $_GET['return_to'];
+}
+// Set a default if not set, though it should always be set from final pages
+if (!isset($_SESSION['payment_return_to'])) {
+    // Default to new student form if somehow not set
+    // This logic assumes 'final.php' is new student.
+    // We check session just in case for a better default
+    $_SESSION['payment_return_to'] = isset($_SESSION['student_id']) ? 'final1' : 'final';
+}
+$return_to_page = $_SESSION['payment_return_to'];
+// --- END NEW ---
+
 $upload_message = null;
 $upload_type = 'error';
 $show_js_redirect = false;
+$redirect_url = null; // Store the correct redirect URL here
+
 // Check for essential session data instead of just the seat number.
 $form_data_exists = isset($_SESSION['form1_data']['student_name_en']);
 
@@ -60,6 +76,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['receipt'])) {
                 $_SESSION['payment_receipt_path'] = $target_file;
                 $upload_message = "Receipt uploaded successfully! You will be redirected back to the final step.";
                 $upload_type = 'success';
+                
+                // --- FIX: Determine redirect URL based on session variable ---
+                if ($_SESSION['payment_return_to'] === 'final1') {
+                    // Old student -> Go to final1.php
+                    $redirect_url = "Rform/final1.php";
+                } else {
+                    // New student -> Go to final.php
+                    $redirect_url = "Rform/final.php";
+                }
+                // --- END FIX ---
+
                 $show_js_redirect = true;
             } else {
                  if ($uploadOk == 1) { // move_uploaded_file failed
@@ -359,7 +386,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['receipt'])) {
                 </p>
                 
                 <?php if ($form_data_exists && !$show_js_redirect): ?>
-                <form id="uploadForm" action="paymentGuide.php" method="post" enctype="multipart/form-data" class="max-w-xl mx-auto bg-slate-50 p-8 rounded-2xl shadow-inner border border-gray-200">
+                <form id="uploadForm" action="paymentGuide.php?return_to=<?php echo htmlspecialchars($return_to_page); ?>" method="post" enctype="multipart/form-data" class="max-w-xl mx-auto bg-slate-50 p-8 rounded-2xl shadow-inner border border-gray-200">
                     <div id="file-drop-area" class="file-drop-area mb-6 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer bg-white hover:bg-gray-50">
                         <input type="file" name="receipt" id="receipt" required class="hidden" accept="image/png, image/jpeg, image/gif, application/pdf">
                         <div id="file-drop-prompt">
@@ -438,11 +465,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['receipt'])) {
             </div>
         </div>
     </footer>
-    <?php if ($show_js_redirect): ?>
+    
+    <?php if ($show_js_redirect && $redirect_url): // Check for both variables ?>
     <script>
-        setTimeout(() => window.location.href = "Rform/final.php", 2500);
+        // Redirect to the correct final page based on the PHP logic
+        setTimeout(() => window.location.href = "<?php echo $redirect_url; ?>", 2500);
     </script>
     <?php endif; ?>
+
     <script>
         document.getElementById("mobile-menu-button").addEventListener("click", () => {
             document.getElementById("mobile-menu").classList.toggle("hidden");
@@ -466,10 +496,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['receipt'])) {
                 payment_text_2: "အမျိုးအစားများ တွင် ပညာရေး ကိုရွေးချယ်ပါ။",
                 payment_text_3: "စာရင်းထဲမှ University of Technology (YCC) ကိုရှာပါ။",
                 payment_text_4: "လိုအပ်သောအချက်အလက်များကိုဖြည့်ပြီး တင်သွင်းပါ။",
-                upload_title: "ငွေပေးချေမှုပြေစာတင်ပါ။",
-                upload_instruction: "KBZPay ဖြင့် ငွေပေးချေပြီးနောက်၊ သင်၏ငွေပေးချေမှုအောင်မြင်ကြောင်းပြေစာ၏စခရင်ရှော့ကို ဤနေရာတွင် တင်ပေးပါ။",
-                receipt_label: "ငွေပေးချေမှု စခရင်ရှော့",
-                upload_button: "တင်ပြီး အပြီးသတ်ပါ။",
+                footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
+                footer_faculties_title: "မဟာဌာနများ",
+                footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
+                footer_faculty_ce: "ကွန်ပျူတာ အင်ဂျင်နီယာ",
+                footer_faculty_ece: "အီလက်ထရောနစ် အင်ဂျင်နီယာ",
+                footer_faculty_ame: "အဆင့်မြင့် ဒြပ်ပစ္စည်း အင်ဂျင်နီယာ",
+                footer_faculty_pre: "တိကျစက်မှု အင်ဂျင်နီယာ",
+                footer_quick_links_title: "အသုံးဝင်သောလင့်များ",
+                footer_link_terms: "စည်းမျဉ်းများနှင့် မူဝါဒများ",
+                footer_link_faq: "အမေးများသော မေးခွန်းများ",
+                footer_link_about: "ကျွန်ုပ်တို့အကြောင်း",
+                footer_link_rules: "စည်းကမ်းများနှင့် စည်းမျဉ်းများ",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; ၂၀၂၅ နည်းပညာတက္ကသိုလ် - ရတနာပုံဆိုက်ဘာစီးတီး။ မူပိုင်ခွင့်များရယူပြီး။",
+                admission_closed_title: "ကျောင်းအပ်လက်ခံခြင်း ယာယီပိတ်ထားပါသည်",
+                admission_closed_text: "တက္ကသိုလ်မှ ကျောင်းသား/သူအသစ်များ လက်ခံခြင်းကို လက်ရှိတွင် ရပ်ဆိုင်းထားပါသည်။",
+                footer_link_dp: "ဒေတာကာကွယ်ရေး",
+                view:"စာမေးပွဲရလဒ်ကြည့်ရန်",
+                view1:"သင်၏ပညာရေးဆောင်ရွက်မှုကိုကြည့်ရှုပြီး နှစ်နှင့် semestersအားလုံးမှ နောက်ဆုံးစာမေးပွဲရလဒ်များကို စစ်ဆေးနိုင်ပါသည်။",
+                view2:"ရလဒ်များကြည့်ရန်",
             },
             en: {
                 utycc_full_name: "University of Technology (Yatanarpon Cyber City)",
@@ -488,10 +534,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['receipt'])) {
                 payment_text_2: "Select Education in Categories.",
                 payment_text_3: "Search for University of Technology (YCC) in the list.",
                 payment_text_4: "Fill in the required information and Submit.",
-                upload_title: "Upload Payment Receipt",
-                upload_instruction: "After making the payment, please upload a screenshot of your successful transaction here.",
-                receipt_label: "Payment Screenshot",
-                upload_button: "Upload and Complete",
+                footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
+                footer_faculties_title: "Faculties",
+                footer_faculty_ist: "Information Science Technology",
+                footer_faculty_ce: "Computer Engineering",
+                footer_faculty_ece: "Electronics Engineering",
+                footer_faculty_ame: "Advanced Materials Engineering",
+                footer_faculty_pre: "Precision Engineering",
+                footer_quick_links_title: "Quick Links",
+                footer_link_terms: "Terms & Policies",
+                footer_link_faq: "FAQs",
+                footer_link_about: "About Us",
+                footer_link_rules: "Rules & Regulations",
+                footer_follow_title: "Follow Us",
+                footer_copyright: "&copy; 2025 University of Technology - Yatanarpon Cyber City. All Rights Reserved.",
+                admission_closed_title: "ADMISSIONS ARE CURRENTLY CLOSED",
+                admission_closed_text: "Our university is not accepting new student applications at this time.",
+                footer_link_dp: "Data Protection",
+                view:"View Your Exam Results",
+                view1:"Access your academic performance and check your latest exam results from all years and semesters.",
+                view2:"Check Results",
             },
         };
 

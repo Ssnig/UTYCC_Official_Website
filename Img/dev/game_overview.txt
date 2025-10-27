@@ -1,0 +1,31 @@
+﻿Dev Team Runner Game Overview
+============================
+
+Screens & UI
+- Character Select: Carousel and skin switcher showing each team member, stats, and unlock requirements.
+- Game Screen: Canvas runner with HUD for score, best score, start overlay, game-over panel, and change-character button.
+- Unlock Modal: Explains how to unlock skins when requirements are unmet.
+
+Player & Skins
+- Selected runner uses sprite sheets defined in `team` data and animates via the Player class.
+- Skins track unlock status in localStorage (`devTeamRunnerSkins`) and change the active sprite sheet.
+
+Obstacles
+- Ground obstacles use image assets from `Img/dev` and spawn based on dynamic intervals tied to game speed.
+- Flying obstacles choose one of two altitude lanes to force either dodging or jumping.
+- Raccoon runner pulls frames from `Img/dev/rat.png`, mirrors to face left, and appears randomly within 10s windows.
+
+Gameplay Systems
+- Game loop scrolls parallax backgrounds, animates the player, and updates obstacle positions each frame.
+- Jump physics rely on configurable gravity and jump strength constants with input from keyboard, mouse, or touch.
+- Collision detection compares buffered bounding boxes and triggers `endGame()` on contact.
+- Score increments every frame, displays via `formatScore`, and persists high score in localStorage (`devTeamRunnerHighScore`).
+
+Audio
+- Background music cycles through a playlist of MP3s with random track selection and continuous playback.
+- Sound effects cover jumps, crashes, unlock fanfare, power-ups, dash, and voice lines tied to each character.
+
+Data & Utilities
+- Asset preloaders load backgrounds, obstacles, and raccoon sprites before gameplay starts.
+- Helper functions manage skin selection, saved unlocks, and respawn timers for raccoon obstacles.
+- Responsive layout adjusts canvas sizing on window resize and redraws static backgrounds appropriately.

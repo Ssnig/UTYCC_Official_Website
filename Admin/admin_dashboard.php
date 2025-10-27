@@ -28,7 +28,8 @@ try {
     date_default_timezone_set('Asia/Yangon');
 
     $students = [];
-    $sql = "SELECT s.*, s.preferences,
+    // --- UPDATED SQL: Added s.payment_status, s.payment_receipt_path ---
+    $sql = "SELECT s.*, s.preferences, s.payment_status, s.payment_receipt_path,
                    f.father_id, f.father_name_mm, f.father_name_en, f.father_race, f.father_religion, f.father_nrc, f.father_phone, f.father_info, f.father_deceased_year, f.father_address,
                    m.mother_id, m.mother_name_mm, m.mother_name_en, m.mother_race, m.mother_religion, m.mother_nrc, m.mother_phone, m.mother_info, m.mother_deceased_year, m.mother_address
             FROM students s
@@ -45,8 +46,18 @@ try {
         $row['dormitory_preference'] = (bool)$row['dormitory_preference'];
         if (!empty($row['father_deceased_year'])) $row['father_deceased_year'] = (int)$row['father_deceased_year'];
         if (!empty($row['mother_deceased_year'])) $row['mother_deceased_year'] = (int)$row['mother_deceased_year'];
-        
+
         $row['preferences'] = !empty($row['preferences']) ? json_decode($row['preferences'], true) : null;
+
+        // --- ADDED: Process payment_receipt_path URL ---
+        if (isset($row['payment_receipt_path']) && !empty($row['payment_receipt_path'])) {
+             // Assuming path is stored like 'Rform/payment_receipt/filename.jpg' relative to the root
+             // Adjust the path to be relative from the 'Admin' folder
+             $row['payment_receipt_path_url'] = '../' . $row['payment_receipt_path'];
+        } else {
+             $row['payment_receipt_path_url'] = null;
+        }
+
 
         $students[] = $row;
     }
@@ -55,7 +66,7 @@ try {
 
 } catch (PDOException $e) {
     error_log("Database Error: " . $e->getMessage());
-    $students_json = '[]'; 
+    $students_json = '[]';
 
 } catch (Throwable $e) {
     error_log("General Error: " . $e->getMessage());
@@ -109,7 +120,7 @@ $pdo = null;
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  
+
 
   <style>
     :root {
@@ -149,7 +160,7 @@ $pdo = null;
     a { color: inherit; text-decoration: none; }
     button { font: inherit; }
     .app { display: grid; grid-template-columns: 280px 1fr; grid-template-rows: 72px 1fr; grid-template-areas: "sidebar header" "sidebar main"; min-height: 100dvh; }
-    .sidebar { grid-area: sidebar; border-right: 1px solid hsl(var(--border)); background: hsl(var(--secondary)); padding: 20px 16px; position: sticky; top: 0; height: 100dvh; }
+    .sidebar { grid-area: sidebar; border-right: 1px solid hsl(var(--border)); background: hsl(var(--secondary)); padding: 20px 16px; position: sticky; top: 0; height: 100dvh; overflow-y: auto; }
     .brand { display: flex; align-items: center; gap: 12px; padding: 8px 10px; }
     .brand img { width: 32px; height: 32px; }
     .brand h1 { font-size: 18px; margin: 0; font-weight: 700; color: hsl(var(--secondary-foreground)); }
@@ -170,10 +181,10 @@ $pdo = null;
 
     .btn {
       --bcol: var(--border);
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px; 
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
       padding: 10px 14px; border-radius: 12px; border: 1px solid hsl(var(--bcol));
       background: hsl(var(--card)); color: hsl(var(--fg)); box-shadow: var(--shadow-md);
-      transition: all var(--duration) var(--ease); cursor: pointer; font-weight: 600; 
+      transition: all var(--duration) var(--ease); cursor: pointer; font-weight: 600;
     }
     .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
     .btn:active { transform: translateY(-1px) scale(0.98); box-shadow: var(--shadow-md); }
@@ -238,6 +249,34 @@ $pdo = null;
     .doc-item a:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
     .doc-item img { width: 100%; height: 120px; object-fit: cover; background-color: hsl(var(--muted)); }
     .doc-item p { font-size: 13px; padding: 8px; text-align: center; font-weight: 500; }
+    /* --- NEW CSS for Payment Receipt --- */
+    .payment-receipt-section {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px dashed hsl(var(--border));
+    }
+    .payment-receipt-section img {
+        max-width: 100%;
+        max-height: 400px;
+        border-radius: 8px;
+        border: 1px solid hsl(var(--border));
+        margin-top: 8px;
+        cursor: pointer;
+    }
+    .payment-receipt-link {
+        display: inline-block;
+        padding: 8px 12px;
+        background-color: hsl(var(--primary));
+        color: hsl(var(--primary-foreground));
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+    .payment-receipt-link:hover {
+        opacity: 0.9;
+    }
+    /* --- END NEW CSS --- */
     .pagination { display: flex; align-items: center; gap: 8px; justify-content: flex-end; padding-top: 10px; }
     .pagination .info { color: hsl(var(--muted-foreground)); font-size: 13px; margin-right: auto; }
     @media (max-width: 1000px) { .cards { grid-template-columns: repeat(2, minmax(0,1fr)); } .form-grid { grid-template-columns: 1fr; } }
@@ -575,6 +614,12 @@ $pdo = null;
             <div id="edit-documents-grid" class="documents-grid" style="grid-column: 1 / -1;">
                 <!-- Document items will be injected here by JavaScript -->
             </div>
+            
+             <!-- NEW: Payment Receipt section in Edit Modal -->
+             <h3 class="detail-section-header">Payment Information</h3>
+             <div id="edit-payment-section" style="grid-column: 1 / -1;">
+                  <!-- Payment status and receipt will be injected here -->
+             </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -592,6 +637,7 @@ $pdo = null;
       </button>
     </div>
     <div class="modal-body" id="detailsModalBody">
+      <!-- Details will be loaded here -->
     </div>
     <div class="modal-footer">
       <button class="btn primary" type="button" id="okDetailsModal">OK</button>
@@ -626,7 +672,8 @@ $pdo = null;
     };
 
     const state = {
-      students: <?php echo json_encode($students, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>,
+      // --- UPDATED: Passing the processed JSON from PHP ---
+      students: <?php echo $students_json; ?>,
       q: '',
       major: 'all',
       year: 'all',
@@ -635,12 +682,30 @@ $pdo = null;
       selected: new Set(),
     };
     
+    // --- UPDATED: getSafeUrl to handle payment receipts too ---
     function getSafeUrl(path) {
-        if (!path) return `https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+Image`;
-        const uploadsIndex = path.indexOf('uploads/');
-        if (uploadsIndex !== -1) return `../Rform/${path}`;
+        if (!path) return `https://placehold.co/150x120/EFEFEF/AAAAAA?text=No+File`;
+        // Check if it's an Rform upload (students, documents) or payment_receipt
+        if (path.startsWith('uploads/') || path.includes('/payment_receipt/')) { // Make check more robust
+             // Paths like 'uploads/...' or 'Rform/payment_receipt/...'
+             // From Admin folder, go up one level to root, then access the path
+             // Need to ensure the path doesn't already have '../'
+             let relativePath = path;
+             if(path.startsWith('../')) {
+                 // Already relative from root? Assume it's correct from PHP.
+             } else if (path.startsWith('Rform/')) {
+                 relativePath = `../${path}`; // Add ../ if it starts with Rform/
+             } else if (path.startsWith('uploads/')) {
+                 relativePath = `../Rform/${path}`; // Add ../Rform/ if it starts with uploads/
+             }
+             // Simple check to avoid double '../' if PHP already added it
+             if(relativePath.startsWith('../..')) relativePath = relativePath.substring(3);
+             return relativePath;
+        }
+        // If it's already a full URL or different structure, return as is
         return path;
     }
+
 
     function escapeHtml(str) {
       if (str === null || str === undefined) return '';
@@ -755,7 +820,8 @@ $pdo = null;
                   else if (element.type !== 'file' && !element.name.startsWith('preference')) { element.value = student[key] || ''; }
               }
           }
-          document.getElementById('photo_preview').src = getSafeUrl(student.photo_url);
+          document.getElementById('photo_preview').src = getSafeUrl(student.photo_url) || PHOTO_PLACEHOLDER;
+
 
           for (let i = 1; i <= 5; i++) {
               const selectEl = document.getElementById(`preference${i}`);
@@ -772,7 +838,7 @@ $pdo = null;
               if (prefValue) { selectEl.value = prefValue; } else { selectEl.selectedIndex = 0; }
           }
 
-          // --- NEW: Populate document files in Edit Modal ---
+          // --- Populate document files in Edit Modal ---
           const documentsGrid = document.getElementById('edit-documents-grid');
           documentsGrid.innerHTML = ''; // Clear previous documents
 
@@ -796,11 +862,12 @@ $pdo = null;
               const docPath = student[doc.key];
               if (docPath) {
                   hasDocuments = true;
+                  const docUrl = getSafeUrl(docPath);
                   documentsHtml += `
                       <div class="doc-item">
-                          <a href="${getSafeUrl(docPath)}" target="_blank" title="View ${doc.label}">
-                              <img src="${getSafeUrl(docPath)}" alt="${doc.label}" loading="lazy">
-                              <p>${doc.label}</p>
+                          <a href="${docUrl}" target="_blank" title="View ${doc.label}">
+                              <img src="${docUrl}" alt="${doc.label}" loading="lazy" onerror="this.src='https://placehold.co/150x120/EFEFEF/AAAAAA?text=Invalid'">
+                              <p>${escapeHtml(doc.label)}</p>
                           </a>
                       </div>`;
               }
@@ -811,7 +878,30 @@ $pdo = null;
           } else {
               documentsGrid.innerHTML = documentsHtml;
           }
-          // --- END NEW SECTION ---
+          
+          // --- NEW: Populate Payment Receipt in Edit Modal ---
+          const paymentSection = document.getElementById('edit-payment-section');
+          paymentSection.innerHTML = ''; // Clear previous
+          const paymentStatus = student.payment_status || 'pending';
+          const receiptPathUrl = student.payment_receipt_path_url; // Use pre-processed URL
+
+          let paymentHtml = `<dl class="details-grid"><dt>Status</dt><dd>${paymentStatus === 'paid' ? 'Paid' : (paymentStatus === 'later' ? 'Will Pay on Arrival' : 'Pending/Not Selected')}</dd>`;
+
+          if (paymentStatus === 'paid' && receiptPathUrl) {
+              const isImage = /\.(jpe?g|png|gif)$/i.test(receiptPathUrl);
+              paymentHtml += `<dt>Receipt</dt>`;
+              if (isImage) {
+                  paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank"><img src="${escapeHtml(receiptPathUrl)}" alt="Payment Receipt" loading="lazy"></a></div></dd>`;
+              } else {
+                  paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank" class="payment-receipt-link">View Receipt File</a></div></dd>`;
+              }
+          } else if (paymentStatus === 'paid') {
+              paymentHtml += `<dt>Receipt</dt><dd>(Receipt not uploaded or path missing)</dd>`;
+          }
+          paymentHtml += `</dl>`;
+          paymentSection.innerHTML = paymentHtml;
+          // --- END NEW Payment section ---
+
       } 
       modal.showModal();
       formElements.student_name_en.focus();
@@ -822,7 +912,8 @@ $pdo = null;
     function openDetailsModal(s) {
         const detailsModal = document.getElementById('detailsModal');
         const detailsModalBody = document.getElementById('detailsModalBody');
-        const photoUrl = getSafeUrl(s.photo_url);
+        const photoUrl = getSafeUrl(s.photo_url) || PHOTO_PLACEHOLDER;
+
 
         let preferencesHtml = '';
         if (s.preferences && typeof s.preferences === 'object' && Object.keys(s.preferences).length > 0) {
@@ -851,17 +942,49 @@ $pdo = null;
         ];
 
         let documentsHtml = '<h3 class="detail-section-header">Required Documents</h3><div class="documents-grid">';
+        let hasDocuments = false;
         documents.forEach(doc => {
             const docPath = s[doc.key];
-            documentsHtml += `
-                <div class="doc-item">
-                    <a href="${getSafeUrl(docPath)}" target="_blank">
-                        <img src="${getSafeUrl(docPath)}" alt="${doc.label}" loading="lazy">
-                        <p>${doc.label}</p>
-                    </a>
-                </div>`;
+            if(docPath) {
+                hasDocuments = true;
+                const docUrl = getSafeUrl(docPath);
+                documentsHtml += `
+                    <div class="doc-item">
+                        <a href="${docUrl}" target="_blank">
+                            <img src="${docUrl}" alt="${doc.label}" loading="lazy" onerror="this.src='https://placehold.co/150x120/EFEFEF/AAAAAA?text=Invalid'">
+                            <p>${escapeHtml(doc.label)}</p>
+                        </a>
+                    </div>`;
+            }
         });
+         if (!hasDocuments) {
+            documentsHtml += '<p style="color: hsl(var(--muted-foreground)); grid-column: 1 / -1;">No documents were submitted.</p>';
+        }
         documentsHtml += '</div>';
+
+        // --- Payment Receipt Section (Details Modal) ---
+        let paymentHtml = '';
+        const paymentStatus = s.payment_status || 'pending'; // Assume pending if not set
+        const receiptPathUrl = s.payment_receipt_path_url; // Use the pre-processed URL from PHP
+
+        paymentHtml += `<h3 class="detail-section-header">Payment Information</h3>`;
+        paymentHtml += `<dl class="details-grid">`;
+        paymentHtml += `<dt>Status</dt><dd>${paymentStatus === 'paid' ? 'Paid' : (paymentStatus === 'later' ? 'Will Pay on Arrival' : 'Pending/Not Selected')}</dd>`;
+
+        if (paymentStatus === 'paid' && receiptPathUrl) {
+            const isImage = /\.(jpe?g|png|gif)$/i.test(receiptPathUrl);
+            paymentHtml += `<dt>Receipt</dt>`;
+            if (isImage) {
+                paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank"><img src="${escapeHtml(receiptPathUrl)}" alt="Payment Receipt" loading="lazy"></a></div></dd>`;
+            } else {
+                paymentHtml += `<dd><div class="payment-receipt-section"><a href="${escapeHtml(receiptPathUrl)}" target="_blank" class="payment-receipt-link">View Receipt File</a></div></dd>`;
+            }
+        } else if (paymentStatus === 'paid') {
+            paymentHtml += `<dt>Receipt</dt><dd>(Receipt not uploaded or path missing)</dd>`;
+        }
+        paymentHtml += `</dl>`;
+        // --- END: Payment Receipt Section ---
+
 
         detailsModalBody.innerHTML = `
             <div style="text-align: center; margin-bottom: 16px;">
@@ -884,6 +1007,7 @@ $pdo = null;
                 <dt>Entry Year</dt><dd>${escapeHtml(s.entry_year) || 'N/A'}</dd>
             </dl>
             ${preferencesHtml}
+            ${paymentHtml} <!-- Added Payment Section Here -->
             <h3 class="detail-section-header">Parent Information</h3>
             <div class="detail-parent-section">
                 <h4>Father's Details</h4>
@@ -913,21 +1037,22 @@ $pdo = null;
       const q = state.q.toLowerCase();
       const selectedMajor = state.major;
       const selectedYear = state.year;
-      
+
       const base = state.students.filter(s => {
-        const matchesSearch = !q || 
-          (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) || 
-          (s.student_email && s.student_email.toLowerCase().includes(q)) || 
+        const matchesSearch = !q ||
+          (s.student_name_en && s.student_name_en.toLowerCase().includes(q)) ||
+          (s.student_email && s.student_email.toLowerCase().includes(q)) ||
           (s.seat_no && s.seat_no.toLowerCase().includes(q));
-        
-        const matchesMajor = selectedMajor === 'all' || 
-          (s.preferences && Object.values(s.preferences).includes(selectedMajor));
-        
+
+        const matchesMajor = selectedMajor === 'all' ||
+          (s.preferences && Object.values(s.preferences).includes(selectedMajor)) ||
+          (s.selected_major === selectedMajor); // Also check selected_major for old students
+
         const matchesYear = selectedYear === 'all' || s.academic_year === selectedYear;
-        
+
         return matchesSearch && matchesMajor && matchesYear;
       });
-      
+
       const { key, dir } = state.sort;
       base.sort((a,b) => {
         const res = cmp(a,b,key);
@@ -939,30 +1064,31 @@ $pdo = null;
     function renderStats() {
       const filteredStudents = getFilteredSorted();
       const total = filteredStudents.length;
-      
-      // Count by major
-      const majorCounts = {
-        'IST': 0,
-        'CE': 0,
-        'EcE': 0,
-        'PrE': 0,
-        'AME': 0
-      };
-      
+
+      // Count by major (including selected_major)
+      const majorCounts = { 'IST': 0, 'CE': 0, 'EcE': 0, 'PrE': 0, 'AME': 0 };
+
       filteredStudents.forEach(s => {
-        if (s.preferences) {
-          Object.values(s.preferences).forEach(major => {
-            if (majorCounts.hasOwnProperty(major)) {
-              majorCounts[major]++;
-            }
-          });
-        }
+          let studentMajor = null;
+          if (s.selected_major) {
+              studentMajor = s.selected_major;
+          } else if (s.preferences && Object.values(s.preferences).length > 0) {
+              // For pending students, maybe count based on first preference?
+              // Or maybe don't count pending students in major stats here.
+              // Let's count based on the first preference if available
+              studentMajor = Object.values(s.preferences)[0];
+          }
+
+          if (studentMajor && majorCounts.hasOwnProperty(studentMajor)) {
+              majorCounts[studentMajor]++;
+          }
       });
-      
+
       document.getElementById('statTotal').textContent = total;
-      document.getElementById('statMajorIST').textContent = majorCounts.IST;
+      document.getElementById('statMajorIST').textContent = majorCounts.IST; // Example for IST
       // Today's stat is handled by fetchDashboardStats()
     }
+
 
     function renderTable() {
       const rows = getFilteredSorted();
@@ -975,7 +1101,7 @@ $pdo = null;
 
       tbody.innerHTML = '';
       if(pageRows.length === 0){
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No pending applications found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No pending applications found matching filters.</td></tr>';
       } else {
         for (const s of pageRows) {
           const tr = document.createElement('tr');
@@ -992,7 +1118,7 @@ $pdo = null;
                 <button class="btn success icon-btn" data-approve="${s.student_id}" title="Approve"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
                 <button class="btn ghost icon-btn" data-edit="${s.student_id}" title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
                 <button class="btn ghost icon-btn" data-details="${s.student_id}" title="View Details"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-                <button class="btn destructive icon-btn" data-del="${s.student_id}" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+                <button class="btn destructive icon-btn" data-del="${s.student_id}" title="Reject"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
               </div>
             </td>`;
           tbody.appendChild(tr);
@@ -1010,7 +1136,7 @@ $pdo = null;
       renderStats();
       renderTable();
     }
-    
+
     function addEventListeners() {
       // Add major filter event listener
       document.getElementById('majorFilter').addEventListener('change', (e) => {
@@ -1026,17 +1152,17 @@ $pdo = null;
       });
 
       document.getElementById('prevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; render(); } });
-      document.getElementById('nextPage').addEventListener('click', () => { 
+      document.getElementById('nextPage').addEventListener('click', () => {
         const rows = getFilteredSorted();
         const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
-        if (state.page < totalPages) { state.page++; render(); } 
+        if (state.page < totalPages) { state.page++; render(); }
       });
 
       document.getElementById('closeModal').addEventListener('click', closeModalSafe);
       document.getElementById('cancelModal').addEventListener('click', closeModalSafe);
       document.getElementById('closeDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
       document.getElementById('okDetailsModal').addEventListener('click', () => document.getElementById('detailsModal').close());
-      
+
       document.getElementById('photo_preview').addEventListener('click', () => {
           document.getElementById('student_photo').click();
       });
@@ -1081,7 +1207,7 @@ $pdo = null;
             render();
         }
       });
-      
+
       tbody.addEventListener('click', async e => {
           const targetButton = e.target.closest('button');
           if (!targetButton) return;
@@ -1092,11 +1218,11 @@ $pdo = null;
 
           if (targetButton.dataset.details !== undefined) openDetailsModal(student);
           if (targetButton.dataset.edit !== undefined) openModal('edit', student);
-          
+
           if (targetButton.dataset.approve !== undefined) {
               const confirmed = await showConfirm('Approve Student', `Are you sure you want to approve "${escapeHtml(student.student_name_en)}"?`, 'success');
               if (!confirmed) return;
-              
+
               const response = await apiRequest('approve_students', { ids: [id] });
               if (response.status === 'success') {
                   state.students = state.students.filter(s => s.student_id !== id);
@@ -1109,13 +1235,13 @@ $pdo = null;
           if (targetButton.dataset.del !== undefined) {
               const confirmed = await showConfirm('Reject Student', `Are you sure you want to reject and delete the application for "${escapeHtml(student.student_name_en)}"?`);
               if (!confirmed) return;
-              
+
               const response = await apiRequest('delete', { ids: [id] });
               if (response.status === 'success') {
                   state.students = state.students.filter(s => s.student_id !== id);
                   state.selected.delete(id);
                   render();
-                  showToast(`Application for "${escapeHtml(student.student_name_en)}" deleted.`, 'success');
+                  showToast(`Application for "${escapeHtml(student.student_name_en)}" rejected and deleted.`, 'success');
               }
           }
       });
@@ -1124,7 +1250,7 @@ $pdo = null;
         if (!state.selected.size) return;
         const confirmed = await showConfirm('Approve Selected', `Approve ${state.selected.size} student(s)?`, 'success');
         if (!confirmed) return;
-        
+
         const ids = Array.from(state.selected);
         const response = await apiRequest('approve_students', { ids });
         if (response.status === 'success') {
@@ -1134,18 +1260,18 @@ $pdo = null;
             showToast(response.message || 'Selected students approved.', 'success');
         }
       });
-      
+
       document.getElementById('saveStudent').addEventListener('click', async (e) => {
         e.preventDefault();
-        
+
         const form = document.getElementById('studentForm');
         const studentId = parseInt(formElements.student_id.value, 10) || null;
-        
+
         if (!formElements.student_name_en.value || !formElements.seat_no.value || !formElements.student_email.value) {
             showToast('Please fill all required fields: Name (EN), Seat No, Email.', 'warning');
             return;
         }
-        
+
         const formData = new FormData(form);
         formData.append('action', studentId ? 'update' : 'add');
 
@@ -1165,7 +1291,7 @@ $pdo = null;
                 console.error("Failed to parse JSON from server. Response text:", responseText);
                 throw new Error("The server sent an invalid response. This is likely a PHP error. Please check the browser's developer console for the full server output.");
             }
-            
+
             if (!response.ok) {
                  // The response was JSON, but the HTTP status indicates an error (e.g., 400, 500).
                  throw new Error(result.message || `The server returned an error (Status: ${response.status}).`);
@@ -1244,3 +1370,4 @@ $pdo = null;
   </script>
 </body>
 </html>
+
