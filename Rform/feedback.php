@@ -179,6 +179,34 @@ function generateMessage($text, $type) {
             history.replaceState(null, '', window.location.pathname);
         }
     </script>
+
+    <!-- NEW SCRIPT FOR MOBILE MENU -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Mobile Menu Toggle ---
+            // These IDs are assumptions. You may need to change them to match your feedPartials/header.php file.
+            const menuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerIcon = document.getElementById('icon-hamburger');
+            const closeIcon = document.getElementById('icon-close');
+
+            if (menuButton && mobileMenu) {
+                menuButton.addEventListener('click', () => {
+                    // Toggle the 'hidden' class on the menu
+                    mobileMenu.classList.toggle('hidden');
+
+                    // Toggle the icons if they exist
+                    if (hamburgerIcon && closeIcon) {
+                        hamburgerIcon.classList.toggle('hidden');
+                        closeIcon.classList.toggle('hidden');
+                    }
+                });
+            } else {
+                console.warn('Mobile menu elements not found. Please check the IDs in the script.');
+            }
+        });
+    </script>
+    <!-- END NEW SCRIPT -->
+
 </body>
 </html>
-
