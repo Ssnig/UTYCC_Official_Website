@@ -118,19 +118,8 @@
 
     // Processing form data when the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-        // --- PRG Pattern Step 1: Preserve existing data and process new data ---
-        
-        // Preserve the existing photo URL from the session before overwriting.
         $existing_photo_url = $_SESSION['form1_data']['photo_url'] ?? '';
-
-        // Store all incoming text POST data into the session.
         $_SESSION['form1_data'] = $_POST;
-        
-        // ❌ REMOVED: Force academic year to be 'First Year'
-        // $_SESSION['form1_data']['academic_year'] = 'First Year';
-
-        // Restore the preserved photo URL. If a new photo is uploaded, this will be replaced later.
         $_SESSION['form1_data']['photo_url'] = $existing_photo_url;
 
         $validation_errors = [];
@@ -403,7 +392,6 @@
                     <label for="academic_year" class="block text-sm font-medium text-gray-700">သင်တန်းနှစ်</label>
                     <select id="academic_year" name="academic_year" class="mt-1" required>
                         <option value="">-- Select Academic Year --</option>
-                        <option value="First Year" <?php echo (getValue('academic_year') == 'First Year') ? 'selected' : ''; ?>>First Year</option>
                         <option value="Second Year" <?php echo (getValue('academic_year') == 'Second Year') ? 'selected' : ''; ?>>Second Year</option>
                         <option value="Third Year" <?php echo (getValue('academic_year') == 'Third Year') ? 'selected' : ''; ?>>Third Year</option>
                         <option value="Fourth Year" <?php echo (getValue('academic_year') == 'Fourth Year') ? 'selected' : ''; ?>>Fourth Year</option>

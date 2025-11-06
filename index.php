@@ -556,29 +556,14 @@ $pdo = null;
                     <a href="./Rform/Verify_new.php" class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect" data-lang-key="enroll_new_button">Enroll as a Fresher</a>
                 </div>
                 <div class="border-t md:border-t-0 md:border-l border-gray-300"></div>
-                <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
-                    <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4" data-lang-key="enroll_current_title">Current Students</h3>
-                    <p class="text-base sm:text-lg text-gray-700 mb-6 max-w-sm" data-lang-key="enroll_current_text">Welcome back! Continue your studies by enrolling for the next year.</p>
-                    
-                    <!-- Two Options Box -->
-                    <div id="current-student-options" class="w-full max-w-xs bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4 hidden">
-                        <h4 class="font-semibold text-blue-800 mb-3" data-lang-key="choose_option">Choose an option:</h4>
-                        <div class="space-y-3">
-                            <button id="register-first-btn" class="w-full bg-green-600 text-white font-medium py-2 px-4 rounded hover:bg-green-700 transition btn-hover-effect" data-lang-key="register_first">
-                                Register First
-                            </button>
-                            <button id="already-added-btn" class="w-full bg-blue-600 text-white font-medium py-2 px-4 rounded hover:bg-blue-700 transition btn-hover-effect" data-lang-key="already_added">
-                                Already Added Data
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Main enroll button that shows the options -->
-                    <button id="show-options-btn" class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect" data-lang-key="enroll_current_button">
-                        Enroll for Next Year
-                    </button>
-                </div>
-            </div>
+    <div class="flex-1 p-6 sm:p-10 flex flex-col items-center justify-center text-center">
+    <h3 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-4" data-lang-key="enroll_current_title">Current Students</h3>
+    <p class="text-base sm:text-lg text-gray-700 mb-6 max-w-sm" data-lang-key="enroll_current_text">Welcome back! Continue your studies by enrolling for the next year.</p>
+    <a href="./Rform/data_add.php" class="w-full sm:w-auto bg-blue-800 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition shadow-lg btn-hover-effect" data-lang-key="enroll_current_button">
+        Enroll for Next Year
+    </a>
+</div>
+</div>
 
             <div id="enrollment-closed" class="hidden">
                 <div class="p-8 md:p-12 text-center w-full">
@@ -708,9 +693,6 @@ $pdo = null;
                 enroll_current_title: "လက်ရှိကျောင်းသား/သူများ",
                 enroll_current_text: "ပြန်လည်ကြိုဆိုပါသည်။ နောက်နှစ်အတွက် ကျောင်းအပ်ခြင်းဖြင့် သင်၏ပညာရေးကို ဆက်လက်သင်ယူပါ။",
                 enroll_current_button: "နောက်နှစ်အတွက် စာရင်းသွင်းရန်",
-                choose_option: "ရွေးချယ်ရန်:",
-                register_first: "စာရင်းသွင်းရန်",
-                already_added: "ဒေတာရှိပြီးသား",
                 footer_address: "ရတနာပုံဆိုက်ဘာစီးတီး၊\nပြင်ဦးလွင်မြို့အနီး၊\nမန္တလေးတိုင်းဒေသကြီး၊ မြန်မာနိုင်ငံ",
                 footer_faculties_title: "မဟာဌာနများ",
                 footer_faculty_ist: "သတင်းအချက်အလက် သိပ္ပံနှင့် နည်းပညာ",
@@ -775,9 +757,6 @@ $pdo = null;
                 enroll_current_title: "Current Students",
                 enroll_current_text: "Welcome back! Continue your studies by enrolling for the next year.",
                 enroll_current_button: "Enroll for Next Year",
-                choose_option: "Choose an option:",
-                register_first: "Register First",
-                already_added: "Already Added Data",
                 footer_address: "Yatanarpon Cyber City,\nNear Pyin Oo Lwin,\nMandalay Region, Myanmar",
                 footer_faculties_title: "Faculties",
                 footer_faculty_ist: "Information Science Technology",
@@ -982,62 +961,6 @@ $pdo = null;
                 closedSection.classList.toggle('hidden', !isClosed);
             }
         };
-
-        const setupEnrollmentOptions = () => {
-            const showOptionsBtn = document.getElementById('show-options-btn');
-            const optionsBox = document.getElementById('current-student-options');
-            const registerFirstBtn = document.getElementById('register-first-btn');
-            const alreadyAddedBtn = document.getElementById('already-added-btn');
-
-            if (!showOptionsBtn || !optionsBox) return;
-
-            showOptionsBtn.addEventListener('click', () => {
-                optionsBox.classList.toggle('hidden');
-                
-                // Optional: Smooth animation
-                if (!optionsBox.classList.contains('hidden')) {
-                    optionsBox.style.opacity = '0';
-                    optionsBox.style.transform = 'translateY(-10px)';
-                    optionsBox.classList.remove('hidden');
-                    
-                    requestAnimationFrame(() => {
-                        optionsBox.style.transition = 'all 0.3s ease';
-                        optionsBox.style.opacity = '1';
-                        optionsBox.style.transform = 'translateY(0)';
-                    });
-                } else {
-                    optionsBox.style.opacity = '0';
-                    optionsBox.style.transform = 'translateY(-10px)';
-                    setTimeout(() => {
-                        optionsBox.classList.add('hidden');
-                        optionsBox.style.transition = '';
-                    }, 300);
-                }
-            });
-
-            // Handle button clicks
-            if (registerFirstBtn) {
-                registerFirstBtn.addEventListener('click', () => {
-                    window.location.href = './Rform/data_add.php';
-                });
-            }
-
-            if (alreadyAddedBtn) {
-                alreadyAddedBtn.addEventListener('click', () => {
-                    window.location.href = './Rform/verify_student.php';
-                });
-            }
-
-            // Close options when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!optionsBox.classList.contains('hidden') && 
-                    !showOptionsBtn.contains(e.target) && 
-                    !optionsBox.contains(e.target)) {
-                    optionsBox.classList.add('hidden');
-                }
-            });
-        };
-
         const setupBackToTopButton = () => {
             const btn = document.getElementById('back-to-top-btn');
             if (!btn) return;
@@ -1171,7 +1094,6 @@ $pdo = null;
             setupHeroSlideshow();
             setupAnimations();
             setupEnrollmentStatus();
-            setupEnrollmentOptions();
             setupBackToTopButton();
             setupLightbox();
             setupEasterEggGame();
